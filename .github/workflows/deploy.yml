@@ -1,4 +1,4 @@
-name: CI / CD
+name: Automate Deployment
 
 on:
   push:
