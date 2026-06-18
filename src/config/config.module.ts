@@ -38,4 +38,4 @@ import jwtConfig from './jwt.config';
     }),
   ],
 })
-export class ConfigModule { }
+export class ConfigModule {}

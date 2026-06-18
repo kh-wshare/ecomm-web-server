@@ -13,7 +13,8 @@ import { AppModule } from '../src/app.module';
 describe('Auth (e2e)', () => {
   let app: INestApplication<App>;
 
-  const unique = () => Date.now().toString(36) + Math.random().toString(36).slice(2);
+  const unique = () =>
+    Date.now().toString(36) + Math.random().toString(36).slice(2);
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -21,7 +22,9 @@ describe('Auth (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+    app.useGlobalPipes(
+      new ValidationPipe({ whitelist: true, transform: true }),
+    );
     await app.init();
   });
 
@@ -133,7 +136,11 @@ describe('Auth (e2e)', () => {
       registeredEmail = `me-${unique()}@example.com`;
       const res = await request(app.getHttpServer())
         .post('/auth/register')
-        .send({ email: registeredEmail, password: 'mypassword1', name: 'Me User' })
+        .send({
+          email: registeredEmail,
+          password: 'mypassword1',
+          name: 'Me User',
+        })
         .expect(201);
 
       accessToken = res.body.access_token;

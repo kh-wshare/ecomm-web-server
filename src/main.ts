@@ -10,7 +10,9 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('E-Commerce API')
-    .setDescription('REST API with JWT auth and role-based access (ADMIN / USER)')
+    .setDescription(
+      'REST API with JWT auth and role-based access (ADMIN / USER)',
+    )
     .setVersion('1.0')
     .addBearerAuth()
     .build();

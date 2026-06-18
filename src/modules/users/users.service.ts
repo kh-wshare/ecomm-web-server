@@ -1,5 +1,9 @@
 import { PrismaService } from '@/infrastructure/database/prisma.service';
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { Role } from '../../generated/prisma/enums';
 import { Prisma } from '../../generated/prisma/client';
@@ -11,7 +15,14 @@ export class UsersService {
 
   async findAll() {
     return this.prisma.user.findMany({
-      select: { id: true, email: true, name: true, role: true, createdAt: true, updatedAt: true },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   }
 
@@ -35,7 +46,12 @@ export class UsersService {
 
     const hashed = await bcrypt.hash(dto.password, 10);
     const user = await this.prisma.user.create({
-      data: { email: dto.email, password: hashed, name: dto.name, role: dto.role ?? Role.USER },
+      data: {
+        email: dto.email,
+        password: hashed,
+        name: dto.name,
+        role: dto.role ?? Role.USER,
+      },
     });
     const { password: _pw, ...result } = user;
     return result;
