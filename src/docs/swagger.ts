@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AuthModule } from '#app/modules/authenticated/auth.module';
-import { MerchantsModule } from '#app/modules/merchants/merchants.module';
+import { MerchantsModule } from '#app/src/modules/merchant/merchants.module.js';
 import { UsersModule } from '#app/modules/users/users.module';
 
 function envFlag(name: string, fallback: boolean): boolean {

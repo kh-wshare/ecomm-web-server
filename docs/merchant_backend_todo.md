@@ -15,7 +15,7 @@ This document lists backend implementation tasks for the Merchant Commerce Hub. 
   - [x] `roles`
   - [x] `permissions`
   - [x] `sessions`
-  - [x] `merchant` (implemented in `modules/merchants`)
+  - [x] `merchant`
   - [x] `merchant-users`
   - [x] `catalog`
   - [x] `inventory`

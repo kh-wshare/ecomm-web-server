@@ -22,7 +22,7 @@ import { CatalogModule } from '#app/modules/catalog/catalog.module';
 import { CheckoutModule } from '#app/modules/checkout/checkout.module';
 import { InventoryModule } from '#app/modules/inventory/inventory.module';
 import { MerchantUsersModule } from '#app/modules/merchant-users/merchant-users.module';
-import { MerchantsModule } from '#app/modules/merchants/merchants.module';
+import { MerchantModule } from '#app/src/modules/merchant/merchant.module.js';
 import { NotificationModule } from '#app/modules/notification/notification.module';
 import { OrderModule } from '#app/modules/order/order.module';
 import { PaymentModule } from '#app/modules/payment/payment.module';
@@ -47,7 +47,7 @@ import { UsersModule } from '#app/modules/users/users.module';
     RolesModule,
     PermissionsModule,
     SessionsModule,
-    MerchantsModule,
+    MerchantModule,
     MerchantUsersModule,
     AuthorizationModule,
     CatalogModule,
