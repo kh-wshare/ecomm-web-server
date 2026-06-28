@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AuthModule } from '#app/modules/authenticated/auth.module';
-import { MerchantsModule } from '#app/src/modules/merchant/merchants.module.js';
+import { MerchantModule } from '#app/modules/merchant/merchant.module';
 import { UsersModule } from '#app/modules/users/users.module';
 
 function envFlag(name: string, fallback: boolean): boolean {
@@ -48,7 +48,7 @@ export function setupSwagger(
       )
       .build();
     const document = SwaggerModule.createDocument(app, config, {
-      include: [MerchantsModule],
+      include: [MerchantModule],
     });
     SwaggerModule.setup('docs/merchant', app, document, {
       jsonDocumentUrl: 'docs/merchant/openapi.json',
