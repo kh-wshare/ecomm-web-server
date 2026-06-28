@@ -1,30 +1,206 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-enum Role {
+enum PlatformRole {
   USER
   ADMIN
 }
 
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}
+
+enum MerchantStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum MerchantUserStatus {
+  ACTIVE
+  INVITED
+  DISABLED
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String?
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 String               @id @default(uuid()) @db.Uuid
+  fullName           String
+  email              String               @unique
+  phone              String?
+  passwordHash       String
+  status             UserStatus           @default(ACTIVE)
+  platformRole       PlatformRole         @default(USER)
+  mustChangePassword Boolean              @default(false)
+  lastLoginAt        DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  deletedAt          DateTime?
+  memberships        MerchantUser[]        @relation("MembershipUser")
+  invitedMemberships MerchantUser[]        @relation("MembershipInviter")
+  sessions           Session[]
+  passwordResetTokens PasswordResetToken[]
+  invitationsSent    MerchantInvitation[] @relation("InvitationInviter")
+  auditLogs           AuditLog[]
 
   @@map("users")
+}
+
+model Merchant {
+  id          String               @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String               @unique
+  email       String?
+  phone       String?
+  status      MerchantStatus       @default(ACTIVE)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  memberships MerchantUser[]
+  roles       Role[]
+  sessions    Session[]
+  invitations MerchantInvitation[]
+  auditLogs   AuditLog[]
+
+  @@map("merchants")
+}
+
+model MerchantUser {
+  id          String             @id @default(uuid()) @db.Uuid
+  merchantId  String             @db.Uuid
+  userId      String             @db.Uuid
+  roleId      String             @db.Uuid
+  status      MerchantUserStatus @default(ACTIVE)
+  invitedById String?            @db.Uuid
+  joinedAt    DateTime?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  merchant    Merchant           @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  user        User               @relation("MembershipUser", fields: [userId], references: [id], onDelete: Cascade)
+  role        Role               @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  invitedBy   User?              @relation("MembershipInviter", fields: [invitedById], references: [id], onDelete: SetNull)
+
+  @@unique([merchantId, userId])
+  @@index([userId, status])
+  @@index([roleId])
+  @@map("merchant_users")
+}
+
+model Role {
+  id              String           @id @default(uuid()) @db.Uuid
+  merchantId      String           @db.Uuid
+  name            String
+  code            String
+  description     String?
+  isSystemRole    Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  merchant        Merchant         @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  memberships     MerchantUser[]
+  rolePermissions RolePermission[]
+  invitations     MerchantInvitation[]
+
+  @@unique([merchantId, code])
+  @@index([merchantId])
+  @@map("roles")
+}
+
+model Permission {
+  id              String           @id @default(uuid()) @db.Uuid
+  module          String
+  action          String
+  code            String           @unique
+  description     String?
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  id           String     @id @default(uuid()) @db.Uuid
+  roleId       String     @db.Uuid
+  permissionId String     @db.Uuid
+  createdAt    DateTime   @default(now())
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@index([permissionId])
+  @@map("role_permissions")
+}
+
+model Session {
+  id               String    @id @default(uuid()) @db.Uuid
+  userId           String    @db.Uuid
+  merchantId       String?   @db.Uuid
+  refreshTokenHash String    @unique
+  userAgent        String?
+  ipAddress        String?
+  expiresAt        DateTime
+  revokedAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  merchant         Merchant? @relation(fields: [merchantId], references: [id], onDelete: SetNull)
+
+  @@index([userId, revokedAt])
+  @@map("sessions")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+model MerchantInvitation {
+  id          String    @id @default(uuid()) @db.Uuid
+  merchantId  String    @db.Uuid
+  email       String
+  roleId      String    @db.Uuid
+  invitedById String    @db.Uuid
+  tokenHash   String    @unique
+  expiresAt   DateTime
+  acceptedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  merchant    Merchant  @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  role        Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  invitedBy   User      @relation("InvitationInviter", fields: [invitedById], references: [id], onDelete: Cascade)
+
+  @@index([merchantId, email])
+  @@map("merchant_invitations")
+}
+
+model AuditLog {
+  id         String    @id @default(uuid()) @db.Uuid
+  merchantId String?   @db.Uuid
+  userId     String?   @db.Uuid
+  action     String
+  entityType String
+  entityId   String?
+  before     Json?
+  after      Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime  @default(now())
+  merchant   Merchant? @relation(fields: [merchantId], references: [id], onDelete: SetNull)
+  user       User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([merchantId, createdAt])
+  @@index([userId, createdAt])
+  @@map("audit_logs")
 }

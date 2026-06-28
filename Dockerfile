@@ -1,4 +1,4 @@
-# ─── Stage 1: build ───────────────────────────────────────────────────────────
+# Stage 1: build
 FROM node:20-alpine AS builder
 WORKDIR /app
 
@@ -11,7 +11,7 @@ COPY . .
 RUN pnpm run prisma:generate
 RUN pnpm run build
 
-# ─── Stage 2: production ──────────────────────────────────────────────────────
+# Stage 2: production
 FROM node:20-alpine AS production
 WORKDIR /app
 
@@ -21,7 +21,6 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --prod
 
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/generated ./generated
 COPY prisma ./prisma
 
 ENV NODE_ENV=production

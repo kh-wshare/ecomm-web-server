@@ -4,58 +4,43 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
+  ParseUUIDPipe,
   Post,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Role } from '../../generated/prisma/enums';
-import { Roles } from '@/auth/decorators/roles.decorator';
-import { CurrentUser } from '@/auth/decorators/current-user.decorator';
+import { PlatformRole } from '#app/generated/prisma/enums';
+import { PlatformRoles } from '#app/modules/authorization/decorators/platform-roles.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 
-@ApiTags('Users')
+@ApiTags('Platform Admin — Users')
 @ApiBearerAuth()
-@Controller('users')
+@PlatformRoles(PlatformRole.ADMIN)
+@Controller('admin/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  /** GET /users — Admin only: list all users */
   @Get()
-  @Roles(Role.ADMIN)
-  @ApiOperation({ summary: '[Admin] List all users' })
+  @ApiOperation({ summary: 'List platform users' })
   findAll() {
     return this.usersService.findAll();
   }
 
-  /** GET /users/me — Any authenticated user: get own profile */
-  @Get('me')
-  @ApiOperation({ summary: 'Get own profile' })
-  getMe(@CurrentUser() user: any) {
-    return user;
-  }
-
-  /** GET /users/:id — Admin only */
   @Get(':id')
-  @Roles(Role.ADMIN)
-  @ApiOperation({ summary: '[Admin] Get user by ID' })
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  @ApiOperation({ summary: 'Get a platform user' })
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.findOne(id);
   }
 
-  /** POST /users — Admin only: create user with any role */
   @Post()
-  @Roles(Role.ADMIN)
-  @ApiOperation({ summary: '[Admin] Create user with specified role' })
+  @ApiOperation({ summary: 'Create a platform user' })
   create(@Body() dto: CreateUserDto) {
     return this.usersService.adminCreate(dto);
   }
 
-  /** DELETE /users/:id — Admin only */
   @Delete(':id')
-  @Roles(Role.ADMIN)
-  @ApiOperation({ summary: '[Admin] Delete user by ID' })
-  remove(@Param('id', ParseIntPipe) id: number) {
+  @ApiOperation({ summary: 'Deactivate a platform user' })
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.remove(id);
   }
 }

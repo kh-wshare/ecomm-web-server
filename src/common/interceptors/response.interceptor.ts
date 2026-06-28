@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import {
   Injectable,
   NestInterceptor,
@@ -11,7 +10,8 @@ import { Request, Response } from 'express';
 import {
   PaginatedResult,
   PaginationMeta,
-} from '@common/responses/pagination.response';
+} from '#app/common/responses/pagination.response';
+import { CORRELATION_ID_HEADER } from '#app/common/middleware/correlation-id.middleware';
 
 export interface ApiResponse<T> {
   statusCode: number;
@@ -20,6 +20,7 @@ export interface ApiResponse<T> {
   meta?: PaginationMeta;
   timestamp: string;
   path: string;
+  correlationId?: string;
 }
 
 function isPaginatedResult<T>(value: unknown): value is PaginatedResult<T> {
@@ -44,6 +45,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<
     const ctx = context.switchToHttp();
     const request = ctx.getRequest<Request>();
     const statusCode = ctx.getResponse<Response>().statusCode;
+    const correlationId = request.header(CORRELATION_ID_HEADER);
 
     return next.handle().pipe(
       map((value): ApiResponse<T> => {
@@ -55,6 +57,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<
             meta: value.meta,
             timestamp: new Date().toISOString(),
             path: request.url,
+            correlationId,
           };
         }
 
@@ -64,6 +67,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<
           data: value as T,
           timestamp: new Date().toISOString(),
           path: request.url,
+          correlationId,
         };
       }),
     );

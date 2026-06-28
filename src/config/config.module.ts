@@ -4,6 +4,9 @@ import * as Joi from 'joi';
 import appConfig from './app.config';
 import databaseConfig from './database.config';
 import jwtConfig from './jwt.config';
+import paymentConfig from './payment.config';
+import redisConfig from './redis.config';
+import storageConfig from './storage.config';
 
 @Global()
 @Module({
@@ -11,31 +14,62 @@ import jwtConfig from './jwt.config';
     NestConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [`.env.${process.env.NODE_ENV ?? 'development'}`, '.env'],
-      load: [appConfig, databaseConfig, jwtConfig],
+      load: [
+        appConfig,
+        databaseConfig,
+        jwtConfig,
+        redisConfig,
+        paymentConfig,
+        storageConfig,
+      ],
       validationSchema: Joi.object({
-        // App
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test')
           .default('development'),
-        APP_PORT: Joi.number().default(3000),
-        APP_NAME: Joi.string().default('MyApp'),
+        PORT: Joi.number().default(3000),
+        APP_NAME: Joi.string().default('Merchant Commerce Hub'),
         APP_PREFIX: Joi.string().default('api'),
-
-        // Database
-        DB_HOST: Joi.string().required(),
-        DB_PORT: Joi.number().default(5432),
-        DB_USERNAME: Joi.string().required(),
-        DB_PASSWORD: Joi.string().required(),
-        DB_NAME: Joi.string().required(),
-
-        // JWT
-        JWT_SECRET: Joi.string().min(32).required(),
-        JWT_EXPIRES_IN: Joi.string().default('1h'),
-      }),
+        DATABASE_URL: Joi.string().required(),
+        REDIS_URL: Joi.string().uri().optional(),
+        REDIS_HOST: Joi.string().default('localhost'),
+        REDIS_PORT: Joi.number().default(6379),
+        REDIS_PASSWORD: Joi.string().allow('').optional(),
+        JWT_SECRET: Joi.string().min(32).optional(),
+        JWT_ACCESS_SECRET: Joi.string().min(32).optional(),
+        JWT_REFRESH_SECRET: Joi.string().min(32).optional(),
+        JWT_EXPIRES_IN: Joi.string().default('15m'),
+        REFRESH_TOKEN_TTL_DAYS: Joi.number()
+          .integer()
+          .min(1)
+          .max(90)
+          .default(30),
+        SWAGGER_ENABLED: Joi.boolean().optional(),
+        SWAGGER_USER_ENABLED: Joi.boolean().optional(),
+        SWAGGER_MERCHANT_ENABLED: Joi.boolean().optional(),
+        SWAGGER_ADMIN_ENABLED: Joi.boolean().optional(),
+        PAYMENT_WEBHOOK_SECRET: Joi.string().min(16).optional(),
+        PAYMENT_PROVIDER: Joi.string().optional(),
+        PAYMENT_PROVIDER_API_KEY: Joi.string().optional(),
+        PAYMENT_PROVIDER_PUBLIC_KEY: Joi.string().optional(),
+        STORAGE_PROVIDER: Joi.string().optional(),
+        STORAGE_ENDPOINT: Joi.string().uri().optional(),
+        STORAGE_REGION: Joi.string().optional(),
+        STORAGE_BUCKET: Joi.string().optional(),
+        STORAGE_ACCESS_KEY: Joi.string().optional(),
+        STORAGE_SECRET_KEY: Joi.string().optional(),
+        DASHBOARD_FRONTEND_URL: Joi.string()
+          .uri()
+          .default('http://localhost:3000'),
+        PUBLIC_STOREFRONT_URL: Joi.string()
+          .uri()
+          .default('http://localhost:3001'),
+      })
+        .or('JWT_ACCESS_SECRET', 'JWT_SECRET')
+        .or('REDIS_URL', 'REDIS_HOST'),
       validationOptions: {
         abortEarly: true,
       },
     }),
   ],
 })
-export class ConfigModule {}
+export class AppConfigModule {}

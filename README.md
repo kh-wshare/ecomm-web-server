@@ -49,24 +49,26 @@ Edit `.env` and fill in your values:
 
 ```env
 # App
-PORT=3000
+PORT=9001
 NODE_ENV=development
 
 # Database (PostgreSQL)
 DB_USER=dev_user
 DB_PASSWORD=soklay512
 DB_NAME=dev_db
-DB_PORT=5432
+DB_PORT=5448
 DATABASE_URL="postgresql://${DB_USER}:${DB_PASSWORD}@localhost:${DB_PORT}/${DB_NAME}?schema=public"
 
 # Redis
 REDIS_HOST=localhost
-REDIS_PORT=6379
+REDIS_PORT=6388
 REDIS_PASSWORD=
 
 # JWT
-JWT_SECRET=change_this_to_a_long_random_secret_in_production
-JWT_EXPIRES_IN=1h
+JWT_ACCESS_SECRET=replace_with_at_least_32_random_characters
+JWT_REFRESH_SECRET=replace_with_a_different_32_character_secret
+JWT_EXPIRES_IN=15m
+REFRESH_TOKEN_TTL_DAYS=30
 ```
 
 ### 4. Start infrastructure (PostgreSQL + Redis)
@@ -103,8 +105,12 @@ pnpm prisma:generate
 pnpm start:dev
 ```
 
-The server will be available at `http://localhost:3000`.  
-Swagger UI: `http://localhost:3000/api`
+The server will be available at `http://localhost:9001`.
+Swagger UI:
+
+- User: `http://localhost:9001/docs/user`
+- Merchant: `http://localhost:9001/docs/merchant`
+- Platform admin: `http://localhost:9001/docs/admin`
 
 ---
 
@@ -143,7 +149,7 @@ Build and run the full stack (app + PostgreSQL + Redis) with Docker Compose:
 ```bash
 # Copy and configure env
 cp .env.example .env
-# Edit .env with production values — especially JWT_SECRET and DB passwords
+# Edit .env with production values — especially JWT secrets and DB passwords
 
 docker compose up -d --build
 ```
@@ -171,17 +177,8 @@ docker compose down -v
 
 ## Database Schema
 
-```prisma
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String?
-  role      Role     @default(USER)  // USER | ADMIN
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-```
+See [`prisma/schema.prisma`](./prisma/schema.prisma) for the current
+merchant-aware schema.
 
 ---
 
@@ -191,13 +188,19 @@ model User {
 src/
 ├── app.module.ts
 ├── main.ts
-├── auth/                 # JWT + Local auth strategies
-├── config/               # App configuration module
+├── common/               # Filters, interceptors, DTOs, middleware
+├── config/               # Validated environment configuration
+├── docs/                 # Swagger document setup
 ├── infrastructure/
 │   ├── database/         # Prisma service
-│   └── radis/            # Redis service
+│   ├── events/           # Application event bus
+│   ├── logger/           # Logging infrastructure
+│   └── redis/            # Redis service
 └── modules/
-    └── users/            # Users CRUD module
+    ├── authenticated/    # Authentication and JWT
+    ├── authorization/    # Tenant and permission guards
+    ├── merchants/        # Merchant APIs
+    └── ...               # Remaining domain modules
 prisma/
 ├── schema.prisma
 ├── migrations/
