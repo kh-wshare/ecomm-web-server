@@ -8,15 +8,15 @@ This document lists frontend implementation tasks for the Merchant Commerce Hub 
 
 ## 1. Frontend Foundation
 
-- [ ] Set up Next.js App Router.
-- [ ] Set up TypeScript.
-- [ ] Set up Tailwind CSS.
-- [ ] Set up HeroUI.
-- [ ] Set up TanStack Query.
-- [ ] Set up Zustand or Redux Toolkit.
-- [ ] Set up Zod validation.
-- [ ] Set up ESLint and Prettier.
-- [ ] Set up environment variables.
+- [x] Set up Next.js App Router.
+- [x] Set up TypeScript.
+- [x] Set up Tailwind CSS.
+- [x] Set up HeroUI.
+- [x] Set up TanStack Query.
+- [x] Set up Zustand or Redux Toolkit.
+- [x] Set up Zod validation.
+- [x] Set up ESLint and Prettier.
+- [x] Set up environment variables.
 
 ### Route Groups
 
@@ -29,38 +29,52 @@ This document lists frontend implementation tasks for the Merchant Commerce Hub 
 
 ### Shared Utilities
 
-- [ ] Create API client.
-- [ ] Create auth token helper.
-- [ ] Create error handler.
-- [ ] Create currency formatter.
-- [ ] Create date formatter.
-- [ ] Create form validation helper.
-- [ ] Create query key factory.
-- [ ] Create toast helper.
+- [x] Create API client.
+- [x] Create auth token helper.
+- [x] Create error handler.
+- [x] Create currency formatter.
+- [x] Create date formatter.
+- [x] Create form validation helper.
+- [x] Create query key factory.
+- [x] Create toast helper.
+
+> Foundation implementation lives in `dashboard/config/`, `dashboard/lib/`, and
+> `dashboard/stores/`. The root provider composes TanStack Query, theme, and
+> HeroUI toast providers, while the three App Router groups establish boundaries
+> for later auth, dashboard, and storefront layouts.
 
 ---
 
 ## 2. Dashboard Layout
 
-- [ ] Create dashboard protected layout.
-- [ ] Create sidebar navigation.
-- [ ] Create top navigation.
-- [ ] Create merchant switcher.
-- [ ] Create user profile menu.
-- [ ] Create notification dropdown.
-- [ ] Create responsive mobile menu.
-- [ ] Add page loading state.
-- [ ] Add route-level error state.
+- [x] Create dashboard protected layout.
+- [x] Create sidebar navigation.
+- [x] Create top navigation.
+- [x] Create merchant switcher.
+- [x] Create user profile menu.
+- [x] Create notification dropdown.
+- [x] Create responsive mobile menu.
+- [x] Add page loading state.
+- [x] Add route-level error state.
+
+> `/dashboard` is wrapped by a client-side session boundary that redirects missing
+> or expired bearer sessions to `/auth/login`. Navigation is filtered by the active
+> merchant's permissions. Merchant switching rotates the access token and refreshes
+> query state; notifications use the live inbox, unread, and read APIs.
 
 ---
 
 ## 3. Auth Pages
 
-- [ ] Create login page: `/auth/login`.
-- [ ] Create merchant registration page: `/auth/register`.
-- [ ] Create forgot password page: `/auth/forgot-password`.
-- [ ] Create reset password page: `/auth/reset-password`.
-- [ ] Create accept invitation page: `/auth/invite`.
+- [x] Create login page: `/auth/login`.
+- [x] Create merchant registration page: `/auth/register`.
+- [x] Create forgot password page: `/auth/forgot-password`.
+- [x] Create reset password page: `/auth/reset-password`.
+- [x] Create accept invitation page: `/auth/invite`.
+
+> Login and registration are connected to the backend. Forgot password, reset
+> password, and invitation acceptance include complete validated UI and pending
+> integration notices because the corresponding backend endpoints do not exist yet.
 
 ---
 
@@ -74,17 +88,20 @@ Route:
 
 Tasks:
 
-- [ ] Create dashboard overview page.
-- [ ] Add total revenue card.
-- [ ] Add total orders card.
-- [ ] Add pending orders card.
-- [ ] Add low stock card.
-- [ ] Add recent orders table.
-- [ ] Add sales chart.
-- [ ] Add stock alert section.
-- [ ] Add loading skeleton.
-- [ ] Add empty state.
-- [ ] Add error state.
+- [x] Create dashboard overview page.
+- [x] Add total revenue card.
+- [x] Add total orders card.
+- [x] Add pending orders card.
+- [x] Add low stock card.
+- [x] Add recent orders table.
+- [x] Add sales chart.
+- [x] Add stock alert section.
+- [x] Add loading skeleton.
+- [x] Add empty state.
+- [x] Add error state.
+
+> Dashboard metrics are calculated from complete paginated order and inventory
+> data, including paid revenue and a seven-day sales trend.
 
 ---
 
@@ -98,15 +115,15 @@ Route:
 /dashboard/products
 ```
 
-- [ ] Create product list page.
-- [ ] Add search.
-- [ ] Add filter by status.
-- [ ] Add filter by channel.
-- [ ] Add stock indicator.
-- [ ] Add bulk action.
-- [ ] Add create product button.
-- [ ] Add pagination.
-- [ ] Add permission-based action visibility.
+- [x] Create product list page.
+- [x] Add search.
+- [x] Add filter by status.
+- [x] Add filter by channel.
+- [x] Add stock indicator.
+- [x] Add bulk action.
+- [x] Add create product button.
+- [x] Add pagination.
+- [x] Add permission-based action visibility.
 
 ### Product Create Page
 
@@ -116,17 +133,17 @@ Route:
 /dashboard/products/new
 ```
 
-- [ ] Create product create page.
-- [ ] Add basic information form.
-- [ ] Add price field.
-- [ ] Add SKU field.
-- [ ] Add variant editor.
-- [ ] Add image uploader.
-- [ ] Add channel visibility selector.
-- [ ] Add safety buffer input.
-- [ ] Add form validation.
-- [ ] Add submit success toast.
-- [ ] Add submit error handling.
+- [x] Create product create page.
+- [x] Add basic information form.
+- [x] Add price field.
+- [x] Add SKU field.
+- [x] Add variant editor.
+- [x] Add image uploader.
+- [x] Add channel visibility selector.
+- [x] Add safety buffer input.
+- [x] Add form validation.
+- [x] Add submit success toast.
+- [x] Add submit error handling.
 
 ### Product Edit Page
 
@@ -136,13 +153,13 @@ Route:
 /dashboard/products/[id]/edit
 ```
 
-- [ ] Create product edit page.
-- [ ] Edit product detail.
-- [ ] Edit variants.
-- [ ] Edit stock.
-- [ ] Edit channel visibility.
-- [ ] Show unsaved changes warning.
-- [ ] Add permission check.
+- [x] Create product edit page.
+- [x] Edit product detail.
+- [x] Edit variants.
+- [x] Edit stock.
+- [x] Edit channel visibility.
+- [x] Show unsaved changes warning.
+- [x] Add permission check.
 
 ### Product Detail Page
 
@@ -152,13 +169,17 @@ Route:
 /dashboard/products/[id]
 ```
 
-- [ ] Create product detail page.
-- [ ] Show product summary.
-- [ ] Show stock movement history.
-- [ ] Show sales history.
-- [ ] Show channel visibility.
-- [ ] Show product media.
-- [ ] Add edit button if allowed.
+- [x] Create product detail page.
+- [x] Show product summary.
+- [x] Show stock movement history.
+- [x] Show sales history.
+- [x] Show channel visibility.
+- [x] Show product media.
+- [x] Add edit button if allowed.
+
+> Product media uses hosted image/video URLs because the backend has no binary
+> media upload endpoint. Channel filtering is composed from product detail data
+> because the product list API does not expose a channel query parameter.
 
 ---
 
@@ -172,27 +193,27 @@ Route:
 /dashboard/inventory
 ```
 
-- [ ] Create inventory list page.
-- [ ] Show product.
-- [ ] Show SKU.
-- [ ] Show total stock.
-- [ ] Show reserved stock.
-- [ ] Show sold stock.
-- [ ] Show safety buffer.
-- [ ] Show online sellable stock.
-- [ ] Show low stock warning.
-- [ ] Add search and filter.
+- [x] Create inventory list page.
+- [x] Show product.
+- [x] Show SKU.
+- [x] Show total stock.
+- [x] Show reserved stock.
+- [x] Show sold stock.
+- [x] Show safety buffer.
+- [x] Show online sellable stock.
+- [x] Show low stock warning.
+- [x] Add search and filter.
 
 ### Stock Adjustment
 
-- [ ] Create stock adjustment modal.
-- [ ] Add adjustment type.
-- [ ] Add quantity field.
-- [ ] Add adjustment reason.
-- [ ] Add validation.
-- [ ] Add confirmation dialog.
-- [ ] Add success toast.
-- [ ] Update inventory table after success.
+- [x] Create stock adjustment modal.
+- [x] Add adjustment type.
+- [x] Add quantity field.
+- [x] Add adjustment reason.
+- [x] Add validation.
+- [x] Add confirmation dialog.
+- [x] Add success toast.
+- [x] Update inventory table after success.
 
 ### Stock Movement History
 
@@ -202,11 +223,11 @@ Route:
 /dashboard/inventory/movements
 ```
 
-- [ ] Create stock movement history page.
-- [ ] Add filters by product.
-- [ ] Add filters by movement type.
-- [ ] Add date range filter.
-- [ ] Add movement timeline.
+- [x] Create stock movement history page.
+- [x] Add filters by product.
+- [x] Add filters by movement type.
+- [x] Add date range filter.
+- [x] Add movement timeline.
 
 ### Low Stock Alert Page
 
@@ -216,10 +237,13 @@ Route:
 /dashboard/inventory/alerts
 ```
 
-- [ ] Create low stock alert page.
-- [ ] Show products below threshold.
-- [ ] Show out-of-stock products.
-- [ ] Add quick stock adjustment action.
+- [x] Create low stock alert page.
+- [x] Show products below threshold.
+- [x] Show out-of-stock products.
+- [x] Add quick stock adjustment action.
+
+> Movement history is aggregated from the backend's per-product inventory
+> detail endpoint because no merchant-wide movement endpoint exists.
 
 ---
 
@@ -231,29 +255,29 @@ Route:
 /dashboard/storefront/theme
 ```
 
-- [ ] Create theme designer page.
-- [ ] Add theme selector.
-- [ ] Add color token panel.
-- [ ] Add font selector.
-- [ ] Add border radius selector.
-- [ ] Add spacing selector.
-- [ ] Add section list.
-- [ ] Add preview panel.
-- [ ] Add mobile preview mode.
-- [ ] Add desktop preview mode.
-- [ ] Create draggable section editor.
-- [ ] Add hero banner section.
-- [ ] Add product grid section.
-- [ ] Add featured collection section.
-- [ ] Add social feed section.
-- [ ] Add contact form section.
-- [ ] Add footer section.
-- [ ] Add draft save button.
-- [ ] Add publish button.
-- [ ] Add reset button.
-- [ ] Add live preview mode.
-- [ ] Add unsaved changes warning.
-- [ ] Add permission check for publish.
+- [x] Create theme designer page.
+- [x] Add theme selector.
+- [x] Add color token panel.
+- [x] Add font selector.
+- [x] Add border radius selector.
+- [x] Add spacing selector.
+- [x] Add section list.
+- [x] Add preview panel.
+- [x] Add mobile preview mode.
+- [x] Add desktop preview mode.
+- [x] Create draggable section editor.
+- [x] Add hero banner section.
+- [x] Add product grid section.
+- [x] Add featured collection section.
+- [x] Add social feed section.
+- [x] Add contact form section.
+- [x] Add footer section.
+- [x] Add draft save button.
+- [x] Add publish button.
+- [x] Add reset button.
+- [x] Add live preview mode.
+- [x] Add unsaved changes warning.
+- [x] Add permission check for publish.
 
 ---
 
@@ -265,17 +289,21 @@ Route:
 /dashboard/storefront/settings
 ```
 
-- [ ] Create storefront settings page.
-- [ ] Add store name field.
-- [ ] Add store slug field.
-- [ ] Add custom domain field.
-- [ ] Add SEO title field.
-- [ ] Add SEO description field.
-- [ ] Add logo uploader.
-- [ ] Add favicon uploader.
-- [ ] Add save button.
-- [ ] Add validation.
-- [ ] Add success toast.
+- [x] Create storefront settings page.
+- [x] Add store name field.
+- [x] Add store slug field.
+- [x] Add custom domain field.
+- [x] Add SEO title field.
+- [x] Add SEO description field.
+- [x] Add logo uploader.
+- [x] Add favicon uploader.
+- [x] Add save button.
+- [x] Add validation.
+- [x] Add success toast.
+
+> Logo, favicon, and hero media use publicly hosted URLs because binary media
+> storage is not configured. Theme section order, design tokens, SEO, and asset
+> URLs are persisted in the validated theme configuration.
 
 ---
 
@@ -289,14 +317,14 @@ Route:
 /dashboard/orders
 ```
 
-- [ ] Create order list page.
-- [ ] Add search by order number.
-- [ ] Add filter by payment status.
-- [ ] Add filter by fulfillment status.
-- [ ] Add filter by source channel.
-- [ ] Add date range filter.
-- [ ] Add order status badge.
-- [ ] Add pagination.
+- [x] Create order list page.
+- [x] Add search by order number.
+- [x] Add filter by payment status.
+- [x] Add filter by fulfillment status.
+- [x] Add filter by source channel.
+- [x] Add date range filter.
+- [x] Add order status badge.
+- [x] Add pagination.
 
 ### Order Detail Page
 
@@ -306,24 +334,24 @@ Route:
 /dashboard/orders/[id]
 ```
 
-- [ ] Create order detail page.
-- [ ] Show customer info.
-- [ ] Show ordered items.
-- [ ] Show payment info.
-- [ ] Show fulfillment status.
-- [ ] Show order timeline.
-- [ ] Show order notes.
-- [ ] Add action buttons.
+- [x] Create order detail page.
+- [x] Show customer info.
+- [x] Show ordered items.
+- [x] Show payment info.
+- [x] Show fulfillment status.
+- [x] Show order timeline.
+- [x] Show order notes.
+- [x] Add action buttons.
 
 ### Order Actions
 
-- [ ] Add mark as processing button.
-- [ ] Add mark as fulfilled button.
-- [ ] Add cancel order button.
-- [ ] Add refund order button.
-- [ ] Add confirmation dialogs.
-- [ ] Add permission checks.
-- [ ] Add success and error toast.
+- [x] Add mark as processing button.
+- [x] Add mark as fulfilled button.
+- [x] Add cancel order button.
+- [x] Add refund order button.
+- [x] Add confirmation dialogs.
+- [x] Add permission checks.
+- [x] Add success and error toast.
 
 ---
 
@@ -337,14 +365,14 @@ Route:
 /dashboard/payments/providers
 ```
 
-- [ ] Create payment provider settings page.
-- [ ] Add Stripe connection card.
-- [ ] Add PayPal connection card.
-- [ ] Add regional QR payment card.
-- [ ] Add manual bank transfer card.
-- [ ] Add provider status badge.
-- [ ] Add connect/disconnect action.
-- [ ] Add permission check.
+- [x] Create payment provider settings page.
+- [x] Add Stripe connection card.
+- [x] Add PayPal connection card.
+- [x] Add regional QR payment card.
+- [x] Add manual bank transfer card.
+- [x] Add provider status badge.
+- [x] Add connect/disconnect action.
+- [x] Add permission check.
 
 ### Transactions
 
@@ -354,12 +382,12 @@ Route:
 /dashboard/payments/transactions
 ```
 
-- [ ] Create payment transaction list page.
-- [ ] Add transaction table.
-- [ ] Add provider filter.
-- [ ] Add status filter.
-- [ ] Add date filter.
-- [ ] Add order link.
+- [x] Create payment transaction list page.
+- [x] Add transaction table.
+- [x] Add provider filter.
+- [x] Add status filter.
+- [x] Add date filter.
+- [x] Add order link.
 
 ### Payment Detail
 
@@ -369,12 +397,16 @@ Route:
 /dashboard/payments/transactions/[id]
 ```
 
-- [ ] Create payment detail page.
-- [ ] Show provider transaction ID.
-- [ ] Show amount.
-- [ ] Show status.
-- [ ] Show related order.
-- [ ] Show webhook logs if allowed.
+- [x] Create payment detail page.
+- [x] Show provider transaction ID.
+- [x] Show amount.
+- [x] Show status.
+- [x] Show related order.
+- [x] Show webhook logs if allowed.
+
+> The HMAC webhook gateway is the currently supported provider adapter. Stripe,
+> PayPal, regional QR, and manual bank transfer are represented as clearly labeled
+> planned cards until their backend adapters and credential flows are implemented.
 
 ---
 

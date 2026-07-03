@@ -51,6 +51,7 @@ import storageConfig from './storage.config';
         PAYMENT_PROVIDER: Joi.string().optional(),
         PAYMENT_PROVIDER_API_KEY: Joi.string().optional(),
         PAYMENT_PROVIDER_PUBLIC_KEY: Joi.string().optional(),
+        PAYMENT_CONFIG_ENCRYPTION_KEY: Joi.string().min(32).optional(),
         STORAGE_PROVIDER: Joi.string().optional(),
         STORAGE_ENDPOINT: Joi.string().uri().optional(),
         STORAGE_REGION: Joi.string().optional(),

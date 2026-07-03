@@ -68,21 +68,21 @@ Merchant fulfills order
 
 ### Sprint 1: Authentication & Merchant Foundation
 
-- [ ] Register merchant owner.
-- [ ] Login.
-- [ ] Refresh token.
-- [ ] Logout.
-- [ ] Current user profile.
-- [ ] Merchant context.
-- [ ] Default roles.
-- [ ] Default permissions.
-- [ ] JWT guard.
-- [ ] Merchant scope guard.
-- [ ] Permission guard.
-- [ ] Dashboard protected layout.
-- [ ] Frontend login page.
-- [ ] Frontend register page.
-- [ ] Frontend auth store.
+- [x] Register merchant owner.
+- [x] Login.
+- [x] Refresh token.
+- [x] Logout.
+- [x] Current user profile.
+- [x] Merchant context.
+- [x] Default roles.
+- [x] Default permissions.
+- [x] JWT guard.
+- [x] Merchant scope guard.
+- [x] Permission guard.
+- [x] Dashboard protected layout.
+- [x] Frontend login page.
+- [x] Frontend register page.
+- [x] Frontend auth store.
 
 ### Sprint 2: Staff & Authorization
 
@@ -91,84 +91,84 @@ Merchant fulfills order
 - [ ] Staff list.
 - [ ] Role assignment.
 - [ ] Permission matrix.
-- [ ] Frontend permission helper.
-- [ ] Hide restricted UI actions.
+- [x] Frontend permission helper.
+- [x] Hide restricted UI actions.
 - [ ] Audit logs.
 
 ### Sprint 3: Catalog & Inventory
 
-- [ ] Product CRUD APIs.
-- [ ] Product dashboard pages.
-- [ ] Inventory tables.
-- [ ] Stock adjustment.
-- [ ] Channel visibility.
-- [ ] Inventory movement history.
-- [ ] Permission checks for product and inventory APIs.
+- [x] Product CRUD APIs.
+- [x] Product dashboard pages.
+- [x] Inventory tables.
+- [x] Stock adjustment.
+- [x] Channel visibility.
+- [x] Inventory movement history.
+- [x] Permission checks for product and inventory APIs.
 
 ### Sprint 4: Storefront
 
-- [ ] Public storefront API.
+- [x] Public storefront API.
 - [ ] Storefront renderer.
 - [ ] Product detail page.
-- [ ] Basic theme config.
-- [ ] Redis cache for storefront.
-- [ ] Product availability on storefront.
+- [x] Basic theme config.
+- [x] Redis cache for storefront.
+- [x] Product availability on storefront.
 
 ### Sprint 5: Checkout & Order
 
-- [ ] Checkout session.
-- [ ] Inventory reservation.
-- [ ] Order creation.
-- [ ] Payment intent.
+- [x] Checkout session.
+- [x] Inventory reservation.
+- [x] Order creation.
+- [x] Payment intent.
 - [ ] Checkout frontend.
 - [ ] Order success page.
-- [ ] Order list page.
-- [ ] Order detail page.
+- [x] Order list page.
+- [x] Order detail page.
 
 ### Sprint 6: Payment & Webhook
 
-- [ ] Payment provider config.
-- [ ] Webhook verification.
-- [ ] Payment confirmation.
-- [ ] Order paid flow.
-- [ ] Inventory confirmation.
-- [ ] Merchant notification.
-- [ ] Payment webhook idempotency.
+- [x] Payment provider config.
+- [x] Webhook verification.
+- [x] Payment confirmation.
+- [x] Order paid flow.
+- [x] Inventory confirmation.
+- [x] Merchant notification.
+- [x] Payment webhook idempotency.
 
 ### Sprint 7: Theme Builder
 
-- [ ] Draft theme config.
-- [ ] Live theme config.
+- [x] Draft theme config.
+- [x] Live theme config.
 - [ ] Theme editor UI.
-- [ ] Preview mode.
-- [ ] Publish flow.
-- [ ] Theme cache invalidation.
+- [x] Preview mode.
+- [x] Publish flow.
+- [x] Theme cache invalidation.
 
 ### Sprint 8: Social Commerce
 
-- [ ] Social post composer.
+- [x] Social post composer.
 - [ ] Media upload.
 - [ ] Product hotspot editor.
-- [ ] Publish logs.
-- [ ] Website blog post integration.
-- [ ] Social checkout link routing.
+- [x] Publish logs.
+- [x] Website blog post integration.
+- [x] Social checkout link routing.
 
 ### Sprint 9: Real-Time & Notifications
 
-- [ ] WebSocket connection.
-- [ ] New order notification.
-- [ ] Payment confirmed notification.
-- [ ] Low stock notification.
-- [ ] Out-of-stock notification.
-- [ ] Social post published notification.
+- [x] WebSocket connection.
+- [x] New order notification.
+- [x] Payment confirmed notification.
+- [x] Low stock notification.
+- [x] Out-of-stock notification.
+- [x] Social post published notification.
 
 ### Sprint 10: Polish, Security & Testing
 
 - [ ] E2E checkout test.
 - [ ] Payment webhook test.
-- [ ] Inventory race condition test.
-- [ ] Merchant scope test.
-- [ ] Permission guard test.
+- [x] Inventory race condition test.
+- [x] Merchant scope test.
+- [x] Permission guard test.
 - [ ] Dashboard UX polish.
 - [ ] Error handling.
 - [ ] Deployment preparation.
@@ -181,32 +181,32 @@ Merchant fulfills order
 - [ ] User module.
 - [ ] Role module.
 - [ ] Permission module.
-- [ ] Merchant module.
+- [x] Merchant module.
 - [ ] Merchant user module.
-- [ ] Product module.
-- [ ] Inventory module.
-- [ ] Order module.
-- [ ] Checkout module.
-- [ ] Payment webhook module.
-- [ ] Theme live config module.
-- [ ] Public storefront APIs.
-- [ ] Redis cache.
-- [ ] Notification module.
+- [x] Product module.
+- [x] Inventory module.
+- [x] Order module.
+- [x] Checkout module.
+- [x] Payment webhook module.
+- [x] Theme live config module.
+- [x] Public storefront APIs.
+- [x] Redis cache.
+- [x] Notification module.
 - [ ] Audit log module.
 
 ---
 
 ## 6. Frontend MVP Checklist
 
-- [ ] Auth pages.
-- [ ] Protected dashboard layout.
-- [ ] Merchant switcher.
-- [ ] Permission helper.
-- [ ] Dashboard overview.
-- [ ] Product CRUD.
-- [ ] Inventory page.
-- [ ] Stock adjustment modal.
-- [ ] Simple theme settings.
+- [x] Auth pages.
+- [x] Protected dashboard layout.
+- [x] Merchant switcher.
+- [x] Permission helper.
+- [x] Dashboard overview.
+- [x] Product CRUD.
+- [x] Inventory page.
+- [x] Stock adjustment modal.
+- [x] Simple theme settings.
 - [ ] Public storefront.
 - [ ] Product detail page.
 - [ ] Checkout page.

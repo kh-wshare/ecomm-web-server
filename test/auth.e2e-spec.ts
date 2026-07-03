@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
+import { PrismaService } from '../src/infrastructure/database/prisma.service';
 
 describe('Merchant auth and authorization (e2e)', () => {
   let app: INestApplication<App>;
@@ -149,5 +150,128 @@ describe('Merchant auth and authorization (e2e)', () => {
       .get('/auth/me')
       .set('Authorization', `Bearer ${rotated.body.data.accessToken}`)
       .expect(401);
+  });
+
+  it('creates, switches, updates, and summarizes an isolated merchant', async () => {
+    const suffix = unique();
+    const registered = await request(app.getHttpServer())
+      .post('/auth/register-merchant')
+      .send(registration(suffix))
+      .expect(201);
+    const originalToken = registered.body.data.accessToken;
+    const originalMerchantId = registered.body.data.activeMerchant.merchant.id;
+
+    const created = await request(app.getHttpServer())
+      .post('/merchants')
+      .set('Authorization', `Bearer ${originalToken}`)
+      .send({
+        name: `Second Store ${suffix}`,
+        email: `second-${suffix}@example.com`,
+      })
+      .expect(201);
+    const secondMerchantId = created.body.data.id;
+
+    const originalMerchant = await request(app.getHttpServer())
+      .get('/merchant')
+      .set('Authorization', `Bearer ${originalToken}`)
+      .expect(200);
+    expect(originalMerchant.body.data.id).toBe(originalMerchantId);
+
+    const switched = await request(app.getHttpServer())
+      .post('/auth/switch-merchant')
+      .set('Authorization', `Bearer ${originalToken}`)
+      .send({ merchantId: secondMerchantId })
+      .expect(200);
+    const secondToken = switched.body.data.accessToken;
+    const updatedSlug = `renamed-store-${suffix}`;
+
+    const updated = await request(app.getHttpServer())
+      .patch('/merchant')
+      .set('Authorization', `Bearer ${secondToken}`)
+      .send({ name: 'Renamed Store', slug: updatedSlug })
+      .expect(200);
+    expect(updated.body.data).toMatchObject({
+      id: secondMerchantId,
+      name: 'Renamed Store',
+      slug: updatedSlug,
+    });
+
+    const dashboard = await request(app.getHttpServer())
+      .get('/merchant/dashboard')
+      .set('Authorization', `Bearer ${secondToken}`)
+      .expect(200);
+    expect(dashboard.body.data).toMatchObject({
+      merchant: { id: secondMerchantId },
+      memberships: { total: 1, active: 1, invited: 0, disabled: 0 },
+      pendingInvitations: 0,
+    });
+    expect(dashboard.body.data.recentActivity).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ action: 'merchant.updated' }),
+        expect.objectContaining({ action: 'merchant.created' }),
+      ]),
+    );
+
+    await request(app.getHttpServer())
+      .get('/merchant')
+      .set('Authorization', `Bearer ${secondToken}`)
+      .set('X-Merchant-ID', originalMerchantId)
+      .expect(403);
+  });
+
+  it('enforces merchant update permissions and unique slugs', async () => {
+    const ownerRegistration = await request(app.getHttpServer())
+      .post('/auth/register-merchant')
+      .send(registration())
+      .expect(201);
+    const targetMerchant = ownerRegistration.body.data.activeMerchant.merchant;
+
+    const viewerRegistration = await request(app.getHttpServer())
+      .post('/auth/register-merchant')
+      .send(registration())
+      .expect(201);
+    const viewerToken = viewerRegistration.body.data.accessToken;
+    const viewerId = viewerRegistration.body.data.user.id;
+    const prisma = app.get(PrismaService);
+    const viewerRole = await prisma.role.findUniqueOrThrow({
+      where: {
+        merchantId_code: {
+          merchantId: targetMerchant.id,
+          code: 'viewer',
+        },
+      },
+    });
+    await prisma.merchantUser.create({
+      data: {
+        merchantId: targetMerchant.id,
+        userId: viewerId,
+        roleId: viewerRole.id,
+        status: 'ACTIVE',
+        joinedAt: new Date(),
+      },
+    });
+
+    const switched = await request(app.getHttpServer())
+      .post('/auth/switch-merchant')
+      .set('Authorization', `Bearer ${viewerToken}`)
+      .send({ merchantId: targetMerchant.id })
+      .expect(200);
+    const scopedViewerToken = switched.body.data.accessToken;
+
+    await request(app.getHttpServer())
+      .patch('/merchant')
+      .set('Authorization', `Bearer ${scopedViewerToken}`)
+      .send({ name: 'Forbidden Rename' })
+      .expect(403);
+
+    const secondOwner = await request(app.getHttpServer())
+      .post('/auth/register-merchant')
+      .send(registration())
+      .expect(201);
+    await request(app.getHttpServer())
+      .patch('/merchant')
+      .set('Authorization', `Bearer ${secondOwner.body.data.accessToken}`)
+      .send({ slug: targetMerchant.slug })
+      .expect(409);
   });
 });

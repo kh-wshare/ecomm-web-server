@@ -56,7 +56,7 @@ users {
 
 ### Merchants
 
-- [ ] Create `merchants` table.
+- [x] Create `merchants` table.
 
 ```ts
 merchants {
@@ -68,6 +68,7 @@ merchants {
   status: 'active' | 'inactive' | 'suspended'
   createdAt: datetime
   updatedAt: datetime
+  deletedAt?: datetime
 }
 ```
 
@@ -643,14 +644,23 @@ Track these actions:
 - [ ] `auth.login`
 - [ ] `auth.logout`
 - [ ] `auth.password_changed`
-- [ ] `merchant.updated`
+- [x] `merchant.created`
+- [x] `merchant.updated`
 - [ ] `user.invited`
 - [ ] `user.removed`
 - [ ] `role.updated`
-- [ ] `product.created`
-- [ ] `product.updated`
-- [ ] `inventory.adjusted`
-- [ ] `theme.published`
+- [x] `product.created`
+- [x] `product.updated`
+- [x] `product.deleted`
+- [x] `product.channel_visibility_updated`
+- [x] `inventory.adjusted`
+- [x] `inventory.reserved`
+- [x] `inventory.released`
+- [x] `inventory.confirmed`
+- [x] `inventory.expired`
+- [x] `theme.draft_updated`
+- [x] `theme.draft_reset`
+- [x] `theme.published`
 - [ ] `order.refunded`
 - [ ] `payment.provider_updated`
 
@@ -695,18 +705,18 @@ private endpoint.
 
 ### Backend
 
-- [ ] Test register merchant owner.
-- [ ] Test login success.
-- [ ] Test login wrong password.
+- [x] Test register merchant owner.
+- [x] Test login success.
+- [x] Test login wrong password.
 - [ ] Test blocked user cannot login.
-- [ ] Test refresh token rotation.
-- [ ] Test logout revokes session.
+- [x] Test refresh token rotation.
+- [x] Test logout revokes session.
 - [ ] Test expired token is rejected.
-- [ ] Test user cannot access another merchant data.
-- [ ] Test permission guard blocks invalid action.
+- [x] Test user cannot access another merchant data.
+- [x] Test permission guard blocks invalid action.
 - [ ] Test owner can invite staff.
 - [ ] Test staff cannot manage payment provider.
-- [ ] Test viewer cannot update product.
+- [x] Test viewer cannot update product.
 - [ ] Test audit log is created.
 
 ### Frontend

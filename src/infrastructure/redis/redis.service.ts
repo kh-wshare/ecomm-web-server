@@ -20,9 +20,15 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     const port = this.config.get<number>('redis.port', 6379);
     const password = this.config.get<string>('redis.password');
 
+    const connectionOptions = {
+      lazyConnect: true,
+      enableOfflineQueue: false,
+      maxRetriesPerRequest: 1,
+      connectTimeout: 1_000,
+    } as const;
     this.client = url
-      ? new Redis(url, { lazyConnect: true })
-      : new Redis({ host, port, password, lazyConnect: true });
+      ? new Redis(url, connectionOptions)
+      : new Redis({ host, port, password, ...connectionOptions });
 
     this.client.on('connect', () =>
       this.logger.log(`Redis connected at ${url ?? `${host}:${port}`}`),
@@ -55,6 +61,25 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     } else {
       await this.getClient().set(key, value);
     }
+  }
+
+  async hget(key: string, field: string): Promise<string | null> {
+    return this.getClient().hget(key, field);
+  }
+
+  async hset(
+    key: string,
+    field: string,
+    value: string,
+    ttlSeconds?: number,
+  ): Promise<void> {
+    const transaction = this.getClient().multi().hset(key, field, value);
+    if (ttlSeconds) transaction.expire(key, ttlSeconds);
+    await transaction.exec();
+  }
+
+  async hdel(key: string, field: string): Promise<void> {
+    await this.getClient().hdel(key, field);
   }
 
   async del(key: string): Promise<void> {

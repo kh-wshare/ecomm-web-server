@@ -6,10 +6,27 @@ import { correlationIdMiddleware } from '#app/common/middleware/correlation-id.m
 import { setupSwagger } from '#app/docs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { rawBody: true });
   const configService = app.get(ConfigService);
+  const allowedOrigins = [
+    configService.get<string>('app.dashboardUrl'),
+    configService.get<string>('app.storefrontUrl'),
+  ].filter((origin): origin is string => Boolean(origin));
 
   app.use(correlationIdMiddleware);
+  app.enableCors({
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Accept',
+      'Authorization',
+      'Content-Type',
+      'X-Correlation-ID',
+      'X-Merchant-ID',
+      'X-Payment-Signature',
+    ],
+  });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
   const swaggerDocuments = setupSwagger(app, configService);
@@ -20,4 +37,4 @@ async function bootstrap() {
     console.log(`Swagger docs: ${await app.getUrl()}${path}`);
   }
 }
-bootstrap();
+void bootstrap();

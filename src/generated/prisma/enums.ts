@@ -42,3 +42,171 @@ export const MerchantUserStatus = {
 } as const
 
 export type MerchantUserStatus = (typeof MerchantUserStatus)[keyof typeof MerchantUserStatus]
+
+
+export const ProductStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE'
+} as const
+
+export type ProductStatus = (typeof ProductStatus)[keyof typeof ProductStatus]
+
+
+export const ProductVariantStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE'
+} as const
+
+export type ProductVariantStatus = (typeof ProductVariantStatus)[keyof typeof ProductVariantStatus]
+
+
+export const ProductMediaType = {
+  IMAGE: 'IMAGE',
+  VIDEO: 'VIDEO'
+} as const
+
+export type ProductMediaType = (typeof ProductMediaType)[keyof typeof ProductMediaType]
+
+
+export const SalesChannel = {
+  POS: 'POS',
+  WEBSITE: 'WEBSITE',
+  FACEBOOK: 'FACEBOOK',
+  INSTAGRAM: 'INSTAGRAM',
+  TIKTOK: 'TIKTOK'
+} as const
+
+export type SalesChannel = (typeof SalesChannel)[keyof typeof SalesChannel]
+
+
+export const InventoryReservationStatus = {
+  ACTIVE: 'ACTIVE',
+  CONFIRMED: 'CONFIRMED',
+  RELEASED: 'RELEASED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type InventoryReservationStatus = (typeof InventoryReservationStatus)[keyof typeof InventoryReservationStatus]
+
+
+export const InventoryMovementType = {
+  STOCK_IN: 'STOCK_IN',
+  STOCK_OUT: 'STOCK_OUT',
+  RESERVED: 'RESERVED',
+  RESERVATION_RELEASED: 'RESERVATION_RELEASED',
+  SOLD: 'SOLD',
+  REFUND_RETURN: 'REFUND_RETURN',
+  MANUAL_ADJUSTMENT: 'MANUAL_ADJUSTMENT'
+} as const
+
+export type InventoryMovementType = (typeof InventoryMovementType)[keyof typeof InventoryMovementType]
+
+
+export const CheckoutSessionStatus = {
+  ACTIVE: 'ACTIVE',
+  CONFIRMED: 'CONFIRMED',
+  CANCELLED: 'CANCELLED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type CheckoutSessionStatus = (typeof CheckoutSessionStatus)[keyof typeof CheckoutSessionStatus]
+
+
+export const OrderStatus = {
+  DRAFT: 'DRAFT',
+  PENDING_PAYMENT: 'PENDING_PAYMENT',
+  RESERVED: 'RESERVED',
+  PAID: 'PAID',
+  PROCESSING: 'PROCESSING',
+  FULFILLED: 'FULFILLED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  PAYMENT_FAILED: 'PAYMENT_FAILED',
+  EXPIRED: 'EXPIRED',
+  REFUNDED: 'REFUNDED'
+} as const
+
+export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
+
+
+export const PaymentStatus = {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  FAILED: 'FAILED',
+  REFUNDED: 'REFUNDED'
+} as const
+
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
+
+export const FulfillmentStatus = {
+  UNFULFILLED: 'UNFULFILLED',
+  PROCESSING: 'PROCESSING',
+  FULFILLED: 'FULFILLED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type FulfillmentStatus = (typeof FulfillmentStatus)[keyof typeof FulfillmentStatus]
+
+
+export const PaymentProviderCode = {
+  HMAC: 'HMAC'
+} as const
+
+export type PaymentProviderCode = (typeof PaymentProviderCode)[keyof typeof PaymentProviderCode]
+
+
+export const PaymentProviderStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE'
+} as const
+
+export type PaymentProviderStatus = (typeof PaymentProviderStatus)[keyof typeof PaymentProviderStatus]
+
+
+export const PaymentTransactionStatus = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  FAILED: 'FAILED',
+  REFUNDED: 'REFUNDED'
+} as const
+
+export type PaymentTransactionStatus = (typeof PaymentTransactionStatus)[keyof typeof PaymentTransactionStatus]
+
+
+export const PaymentWebhookStatus = {
+  RECEIVED: 'RECEIVED',
+  PROCESSED: 'PROCESSED',
+  FAILED: 'FAILED'
+} as const
+
+export type PaymentWebhookStatus = (typeof PaymentWebhookStatus)[keyof typeof PaymentWebhookStatus]
+
+
+export const SocialPlatform = {
+  WEBSITE: 'WEBSITE',
+  FACEBOOK: 'FACEBOOK',
+  INSTAGRAM: 'INSTAGRAM',
+  TIKTOK: 'TIKTOK'
+} as const
+
+export type SocialPlatform = (typeof SocialPlatform)[keyof typeof SocialPlatform]
+
+
+export const SocialPostStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  PARTIALLY_PUBLISHED: 'PARTIALLY_PUBLISHED',
+  FAILED: 'FAILED'
+} as const
+
+export type SocialPostStatus = (typeof SocialPostStatus)[keyof typeof SocialPostStatus]
+
+
+export const SocialPublishStatus = {
+  PUBLISHED: 'PUBLISHED',
+  FAILED: 'FAILED'
+} as const
+
+export type SocialPublishStatus = (typeof SocialPublishStatus)[keyof typeof SocialPublishStatus]

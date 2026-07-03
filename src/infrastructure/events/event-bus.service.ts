@@ -18,8 +18,6 @@ export class EventBusService {
   ofType<T>(type: string): Observable<AppEvent<T>> {
     return this.events
       .asObservable()
-      .pipe(
-        filter((event): event is AppEvent<T> => event.type === type),
-      );
+      .pipe(filter((event): event is AppEvent<T> => event.type === type));
   }
 }

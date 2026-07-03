@@ -1,0 +1,534 @@
+"use client";
+
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
+
+import { OrderStatusBadge } from "./order-status-badge";
+
+import type { Order } from "@/types/order";
+import { usePermissions } from "@/hooks/use-permissions";
+import { formatCurrency } from "@/lib/formatters/currency";
+import { formatDate } from "@/lib/formatters/date";
+import {
+  cancelOrder,
+  getOrder,
+  refundOrder,
+  updateOrderStatus,
+} from "@/lib/orders/order-data";
+import { queryKeys } from "@/lib/query/keys";
+import { notify } from "@/lib/toast/notify";
+
+type OrderAction = "PROCESSING" | "FULFILLED" | "CANCEL" | "REFUND";
+
+export function OrderDetail({ orderId }: { orderId: string }) {
+  const { can } = usePermissions();
+  const canRead = can("order.read");
+  const canUpdate = can("order.update");
+  const canCancel = can("order.cancel");
+  const canRefund = can("order.refund");
+  const queryClient = useQueryClient();
+  const [confirming, setConfirming] = useState<OrderAction | null>(null);
+  const [returnStock, setReturnStock] = useState(true);
+  const orderQuery = useQuery({
+    queryKey: queryKeys.orders.detail(orderId),
+    queryFn: () => getOrder(orderId),
+    enabled: canRead,
+  });
+  const actionMutation = useMutation({
+    mutationFn: async (action: OrderAction) => {
+      if (action === "CANCEL") return cancelOrder(orderId);
+      if (action === "REFUND") return refundOrder(orderId, returnStock);
+
+      return updateOrderStatus(orderId, action);
+    },
+    onSuccess: async (_, action) => {
+      notify.success(actionSuccess(action));
+      setConfirming(null);
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.orders.detail(orderId),
+        }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.orders.all }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.merchant.dashboard(),
+        }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.payments.all }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.inventory.all }),
+      ]);
+    },
+    onError: (error) => notify.error(error, "Unable to update order"),
+  });
+
+  if (!canRead) {
+    return (
+      <Notice message="You do not have permission to view order details." />
+    );
+  }
+  if (orderQuery.isPending) return <DetailLoading />;
+  if (orderQuery.isError) {
+    return (
+      <ErrorState
+        message={orderQuery.error.message}
+        onRetry={() => orderQuery.refetch()}
+      />
+    );
+  }
+
+  const order = orderQuery.data;
+
+  return (
+    <section className="space-y-6">
+      <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <Link
+            className="text-sm font-medium text-accent hover:underline"
+            href="/dashboard/orders"
+          >
+            ← Orders
+          </Link>
+          <div className="mt-2 flex flex-wrap items-center gap-3">
+            <h2 className="text-2xl font-semibold tracking-tight">
+              {order.orderNumber}
+            </h2>
+            <OrderStatusBadge status={order.status} />
+          </div>
+          <p className="mt-2 text-sm text-muted">
+            Placed through {order.sourceChannel.toLowerCase()} on{" "}
+            {formatDate(
+              order.createdAt,
+              { dateStyle: "long", timeStyle: "short" },
+              "en-US",
+            )}
+          </p>
+        </div>
+        <OrderActions
+          canCancel={canCancel}
+          canRefund={canRefund}
+          canUpdate={canUpdate}
+          order={order}
+          onAction={setConfirming}
+        />
+      </header>
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <SummaryCard
+          label="Total"
+          value={formatCurrency(order.totalAmount, order.currency)}
+        />
+        <SummaryCard label="Payment" value={order.paymentStatus} />
+        <SummaryCard label="Fulfillment" value={order.fulfillmentStatus} />
+        <SummaryCard
+          label="Items"
+          value={String(
+            order.items.reduce((total, item) => total + item.quantity, 0),
+          )}
+        />
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-3">
+        <div className="space-y-6 xl:col-span-2">
+          <Panel title="Ordered items">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[620px] text-left text-sm">
+                <thead className="text-xs text-muted">
+                  <tr>
+                    <th className="pb-3 font-medium">Product</th>
+                    <th className="pb-3 font-medium">SKU</th>
+                    <th className="pb-3 text-right font-medium">Price</th>
+                    <th className="pb-3 text-right font-medium">Qty</th>
+                    <th className="pb-3 text-right font-medium">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {order.items.map((item) => (
+                    <tr className="border-t border-separator" key={item.id}>
+                      <td className="py-4">
+                        <Link
+                          className="font-semibold hover:text-accent"
+                          href={`/dashboard/products/${item.productId}`}
+                        >
+                          {item.name}
+                        </Link>
+                        <p className="mt-1 text-xs text-muted">
+                          {item.variantId ? "Product variant" : "Base product"}
+                        </p>
+                      </td>
+                      <td className="py-4 font-mono text-xs">{item.sku}</td>
+                      <td className="py-4 text-right">
+                        {formatCurrency(item.unitPrice, order.currency)}
+                      </td>
+                      <td className="py-4 text-right">{item.quantity}</td>
+                      <td className="py-4 text-right font-semibold">
+                        {formatCurrency(item.totalPrice, order.currency)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <dl className="ml-auto mt-4 max-w-xs space-y-2 border-t border-separator pt-4 text-sm">
+              <AmountRow
+                label="Subtotal"
+                value={formatCurrency(order.subtotalAmount, order.currency)}
+              />
+              <AmountRow
+                label="Discount"
+                value={formatCurrency(order.discountAmount, order.currency)}
+              />
+              <AmountRow
+                label="Fees"
+                value={formatCurrency(order.feeAmount, order.currency)}
+              />
+              <AmountRow
+                strong
+                label="Total"
+                value={formatCurrency(order.totalAmount, order.currency)}
+              />
+            </dl>
+          </Panel>
+
+          <Panel title="Order timeline">
+            {order.timeline?.length ? (
+              <ol className="space-y-4">
+                {order.timeline.map((event) => (
+                  <li className="flex gap-3" key={event.id}>
+                    <span className="mt-1.5 size-2 shrink-0 rounded-full bg-accent" />
+                    <div>
+                      <p className="text-sm font-semibold">
+                        {timelineLabel(event.action)}
+                      </p>
+                      <p className="mt-1 text-xs text-muted">
+                        {formatDate(event.createdAt)}
+                        {event.user?.fullName
+                          ? ` · ${event.user.fullName}`
+                          : " · System"}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p className="text-sm text-muted">
+                No order events have been recorded.
+              </p>
+            )}
+          </Panel>
+        </div>
+
+        <div className="space-y-6">
+          <Panel title="Customer">
+            <dl className="space-y-4">
+              <DetailTerm
+                label="Name"
+                value={order.customerName || "Guest customer"}
+              />
+              <DetailTerm
+                label="Email"
+                value={order.customerEmail || "Not provided"}
+              />
+              <DetailTerm
+                label="Phone"
+                value={order.customerPhone || "Not provided"}
+              />
+            </dl>
+          </Panel>
+
+          <Panel title="Payment">
+            <dl className="space-y-4">
+              <DetailTerm label="Status" value={order.paymentStatus} />
+              <DetailTerm
+                label="Paid"
+                value={order.paidAt ? formatDate(order.paidAt) : "Not paid"}
+              />
+              <DetailTerm
+                label="Amount"
+                value={formatCurrency(order.totalAmount, order.currency)}
+              />
+            </dl>
+            {order.payment && (
+              <Link
+                className="mt-5 inline-flex text-sm font-semibold text-accent hover:underline"
+                href={`/dashboard/payments/transactions/${order.payment.id}`}
+              >
+                View transaction →
+              </Link>
+            )}
+          </Panel>
+
+          <Panel title="Fulfillment">
+            <dl className="space-y-4">
+              <DetailTerm label="Status" value={order.fulfillmentStatus} />
+              <DetailTerm
+                label="Fulfilled"
+                value={
+                  order.fulfilledAt
+                    ? formatDate(order.fulfilledAt)
+                    : "Not fulfilled"
+                }
+              />
+            </dl>
+          </Panel>
+
+          <Panel title="Order notes">
+            <p className="text-sm text-muted">
+              No internal notes have been recorded for this order.
+            </p>
+          </Panel>
+        </div>
+      </div>
+
+      {confirming && (
+        <ConfirmationDialog
+          action={confirming}
+          isPending={actionMutation.isPending}
+          returnStock={returnStock}
+          onClose={() => setConfirming(null)}
+          onConfirm={() => actionMutation.mutate(confirming)}
+          onReturnStock={setReturnStock}
+        />
+      )}
+    </section>
+  );
+}
+
+function OrderActions({
+  canCancel,
+  canRefund,
+  canUpdate,
+  onAction,
+  order,
+}: {
+  canCancel: boolean;
+  canRefund: boolean;
+  canUpdate: boolean;
+  onAction: (action: OrderAction) => void;
+  order: Order;
+}) {
+  const actions: Array<{
+    action: OrderAction;
+    label: string;
+    visible: boolean;
+    danger?: boolean;
+  }> = [
+    {
+      action: "PROCESSING",
+      label: "Mark processing",
+      visible: canUpdate && order.status === "PAID",
+    },
+    {
+      action: "FULFILLED",
+      label: "Mark fulfilled",
+      visible: canUpdate && order.status === "PROCESSING",
+    },
+    {
+      action: "CANCEL",
+      label: "Cancel order",
+      danger: true,
+      visible:
+        canCancel &&
+        order.paymentStatus !== "PAID" &&
+        !["CANCELLED", "REFUNDED", "COMPLETED", "FULFILLED"].includes(
+          order.status,
+        ),
+    },
+    {
+      action: "REFUND",
+      label: "Refund order",
+      danger: true,
+      visible: canRefund && order.paymentStatus === "PAID",
+    },
+  ];
+  const visible = actions.filter((action) => action.visible);
+
+  if (!visible.length) return null;
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {visible.map((item) => (
+        <button
+          className={
+            item.danger
+              ? "h-10 rounded-xl border border-danger/40 px-4 text-sm font-semibold text-danger"
+              : "h-10 rounded-xl bg-accent px-4 text-sm font-semibold text-accent-foreground"
+          }
+          key={item.action}
+          type="button"
+          onClick={() => onAction(item.action)}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ConfirmationDialog({
+  action,
+  isPending,
+  onClose,
+  onConfirm,
+  onReturnStock,
+  returnStock,
+}: {
+  action: OrderAction;
+  isPending: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  onReturnStock: (value: boolean) => void;
+  returnStock: boolean;
+}) {
+  const label = action.toLowerCase().replace("_", " ");
+
+  return (
+    <div
+      aria-modal="true"
+      className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4"
+      role="dialog"
+    >
+      <div className="w-full max-w-md rounded-2xl border border-separator bg-surface p-5 shadow-2xl">
+        <h2 className="text-lg font-semibold">Confirm {label}</h2>
+        <p className="mt-2 text-sm text-muted">
+          This changes the order state immediately and records the action in its
+          timeline.
+        </p>
+        {action === "REFUND" && (
+          <label className="mt-4 flex items-center gap-3 rounded-xl bg-surface-secondary p-3 text-sm">
+            <input
+              checked={returnStock}
+              type="checkbox"
+              onChange={(event) => onReturnStock(event.target.checked)}
+            />
+            Return refunded items to available stock
+          </label>
+        )}
+        <div className="mt-5 flex justify-end gap-3">
+          <button
+            className="h-10 rounded-xl border border-separator px-4 text-sm font-semibold"
+            disabled={isPending}
+            type="button"
+            onClick={onClose}
+          >
+            Keep order
+          </button>
+          <button
+            className="h-10 rounded-xl bg-accent px-4 text-sm font-semibold text-accent-foreground disabled:opacity-60"
+            disabled={isPending}
+            type="button"
+            onClick={onConfirm}
+          >
+            {isPending ? "Updating…" : `Confirm ${label}`}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Panel({
+  children,
+  title,
+}: {
+  children: React.ReactNode;
+  title: string;
+}) {
+  return (
+    <section className="rounded-2xl border border-separator bg-surface p-5 shadow-sm">
+      <h3 className="mb-5 font-semibold">{title}</h3>
+      {children}
+    </section>
+  );
+}
+
+function SummaryCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-separator bg-surface p-4">
+      <p className="text-xs font-medium text-muted">{label}</p>
+      <p className="mt-2 text-xl font-semibold">{value.replaceAll("_", " ")}</p>
+    </div>
+  );
+}
+
+function DetailTerm({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="text-xs font-medium text-muted">{label}</dt>
+      <dd className="mt-1 break-words text-sm font-medium">
+        {value.replaceAll("_", " ")}
+      </dd>
+    </div>
+  );
+}
+
+function AmountRow({
+  label,
+  strong = false,
+  value,
+}: {
+  label: string;
+  strong?: boolean;
+  value: string;
+}) {
+  return (
+    <div className={`flex justify-between ${strong ? "font-bold" : ""}`}>
+      <dt className="text-muted">{label}</dt>
+      <dd>{value}</dd>
+    </div>
+  );
+}
+
+function timelineLabel(action: string) {
+  return action
+    .replaceAll(".", " ")
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, (character) => character.toUpperCase());
+}
+
+function actionSuccess(action: OrderAction) {
+  if (action === "CANCEL") return "Order cancelled";
+  if (action === "REFUND") return "Order refunded";
+  if (action === "PROCESSING") return "Order marked as processing";
+
+  return "Order marked as fulfilled";
+}
+
+function Notice({ message }: { message: string }) {
+  return (
+    <div className="rounded-2xl border border-warning/30 bg-warning/10 p-6 text-sm">
+      {message}
+    </div>
+  );
+}
+
+function DetailLoading() {
+  return (
+    <div className="space-y-4 animate-pulse">
+      <div className="h-24 rounded-2xl bg-surface-secondary" />
+      <div className="h-[540px] rounded-2xl bg-surface-secondary" />
+    </div>
+  );
+}
+
+function ErrorState({
+  message,
+  onRetry,
+}: {
+  message: string;
+  onRetry: () => void;
+}) {
+  return (
+    <div className="grid min-h-[50vh] place-items-center text-center">
+      <div>
+        <h2 className="text-xl font-semibold">Order is unavailable</h2>
+        <p className="mt-2 text-sm text-muted">{message}</p>
+        <button
+          className="mt-5 rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
+          type="button"
+          onClick={onRetry}
+        >
+          Try again
+        </button>
+      </div>
+    </div>
+  );
+}

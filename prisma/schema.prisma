@@ -31,45 +31,599 @@ enum MerchantUserStatus {
   DISABLED
 }
 
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+}
+
+enum ProductVariantStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum ProductMediaType {
+  IMAGE
+  VIDEO
+}
+
+enum SalesChannel {
+  POS
+  WEBSITE
+  FACEBOOK
+  INSTAGRAM
+  TIKTOK
+}
+
+enum InventoryReservationStatus {
+  ACTIVE
+  CONFIRMED
+  RELEASED
+  EXPIRED
+}
+
+enum InventoryMovementType {
+  STOCK_IN
+  STOCK_OUT
+  RESERVED
+  RESERVATION_RELEASED
+  SOLD
+  REFUND_RETURN
+  MANUAL_ADJUSTMENT
+}
+
+enum CheckoutSessionStatus {
+  ACTIVE
+  CONFIRMED
+  CANCELLED
+  EXPIRED
+}
+
+enum OrderStatus {
+  DRAFT
+  PENDING_PAYMENT
+  RESERVED
+  PAID
+  PROCESSING
+  FULFILLED
+  COMPLETED
+  CANCELLED
+  PAYMENT_FAILED
+  EXPIRED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum FulfillmentStatus {
+  UNFULFILLED
+  PROCESSING
+  FULFILLED
+  CANCELLED
+}
+
+enum PaymentProviderCode {
+  HMAC
+}
+
+enum PaymentProviderStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum PaymentTransactionStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentWebhookStatus {
+  RECEIVED
+  PROCESSED
+  FAILED
+}
+
+enum SocialPlatform {
+  WEBSITE
+  FACEBOOK
+  INSTAGRAM
+  TIKTOK
+}
+
+enum SocialPostStatus {
+  DRAFT
+  PUBLISHED
+  PARTIALLY_PUBLISHED
+  FAILED
+}
+
+enum SocialPublishStatus {
+  PUBLISHED
+  FAILED
+}
+
 model User {
-  id                 String               @id @default(uuid()) @db.Uuid
-  fullName           String
-  email              String               @unique
-  phone              String?
-  passwordHash       String
-  status             UserStatus           @default(ACTIVE)
-  platformRole       PlatformRole         @default(USER)
-  mustChangePassword Boolean              @default(false)
-  lastLoginAt        DateTime?
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  deletedAt          DateTime?
-  memberships        MerchantUser[]        @relation("MembershipUser")
-  invitedMemberships MerchantUser[]        @relation("MembershipInviter")
-  sessions           Session[]
+  id                  String               @id @default(uuid()) @db.Uuid
+  fullName            String
+  email               String               @unique
+  phone               String?
+  passwordHash        String
+  status              UserStatus           @default(ACTIVE)
+  platformRole        PlatformRole         @default(USER)
+  mustChangePassword  Boolean              @default(false)
+  lastLoginAt         DateTime?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  deletedAt           DateTime?
+  memberships         MerchantUser[]       @relation("MembershipUser")
+  invitedMemberships  MerchantUser[]       @relation("MembershipInviter")
+  sessions            Session[]
   passwordResetTokens PasswordResetToken[]
-  invitationsSent    MerchantInvitation[] @relation("InvitationInviter")
+  invitationsSent     MerchantInvitation[] @relation("InvitationInviter")
   auditLogs           AuditLog[]
+  inventoryMovements  InventoryMovement[]  @relation("InventoryMovementCreator")
 
   @@map("users")
 }
 
 model Merchant {
-  id          String               @id @default(uuid()) @db.Uuid
-  name        String
-  slug        String               @unique
-  email       String?
-  phone       String?
-  status      MerchantStatus       @default(ACTIVE)
-  createdAt   DateTime             @default(now())
-  updatedAt   DateTime             @updatedAt
-  memberships MerchantUser[]
-  roles       Role[]
-  sessions    Session[]
-  invitations MerchantInvitation[]
-  auditLogs   AuditLog[]
+  id                    String                 @id @default(uuid()) @db.Uuid
+  name                  String
+  slug                  String                 @unique
+  email                 String?
+  phone                 String?
+  status                MerchantStatus         @default(ACTIVE)
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  deletedAt             DateTime?
+  memberships           MerchantUser[]
+  roles                 Role[]
+  sessions              Session[]
+  invitations           MerchantInvitation[]
+  auditLogs             AuditLog[]
+  products              Product[]
+  inventoryStocks       InventoryStock[]
+  inventoryReservations InventoryReservation[]
+  inventoryMovements    InventoryMovement[]
+  theme                 MerchantTheme?
+  checkoutSessions      CheckoutSession[]
+  orders                Order[]
+  returnStockOnRefund   Boolean                @default(true)
+  paymentProviders      PaymentProvider[]
+  payments              Payment[]
+  paymentWebhookEvents  PaymentWebhookEvent[]
+  notifications         Notification[]
+  socialPosts           SocialPost[]
+  websiteArticles       WebsiteArticle[]
 
   @@map("merchants")
+}
+
+model Product {
+  id                 String                     @id @default(uuid()) @db.Uuid
+  merchantId         String                     @db.Uuid
+  name               String
+  slug               String
+  description        String?
+  sku                String
+  price              Decimal                    @db.Decimal(12, 2)
+  currency           String                     @default("USD") @db.Char(3)
+  status             ProductStatus              @default(DRAFT)
+  createdAt          DateTime                   @default(now())
+  updatedAt          DateTime                   @updatedAt
+  deletedAt          DateTime?
+  merchant           Merchant                   @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  variants           ProductVariant[]
+  media              ProductMedia[]
+  channelVisibility  ProductChannelVisibility[]
+  inventoryStocks    InventoryStock[]
+  reservations       InventoryReservation[]
+  inventoryMovements InventoryMovement[]
+  checkoutItems      CheckoutItem[]
+  orderItems         OrderItem[]
+  shoppableHotspots  ShoppableHotspot[]
+
+  @@unique([merchantId, sku])
+  @@unique([merchantId, slug])
+  @@unique([id, merchantId])
+  @@index([merchantId, status, deletedAt])
+  @@map("products")
+}
+
+model MerchantTheme {
+  id           String    @id @default(uuid()) @db.Uuid
+  merchantId   String    @unique @db.Uuid
+  liveConfig   Json
+  draftConfig  Json
+  customDomain String?   @unique
+  publishedAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  merchant     Merchant  @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  @@map("merchant_themes")
+}
+
+model ProductVariant {
+  id                 String                 @id @default(uuid()) @db.Uuid
+  productId          String                 @db.Uuid
+  merchantId         String                 @db.Uuid
+  sku                String
+  name               String
+  price              Decimal                @db.Decimal(12, 2)
+  attributes         Json
+  status             ProductVariantStatus   @default(ACTIVE)
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  product            Product                @relation(fields: [productId, merchantId], references: [id, merchantId], onDelete: Cascade)
+  inventoryStocks    InventoryStock[]
+  reservations       InventoryReservation[]
+  inventoryMovements InventoryMovement[]
+  checkoutItems      CheckoutItem[]
+  orderItems         OrderItem[]
+  shoppableHotspots  ShoppableHotspot[]
+
+  @@unique([merchantId, sku])
+  @@index([productId])
+  @@map("product_variants")
+}
+
+model ProductMedia {
+  id        String           @id @default(uuid()) @db.Uuid
+  productId String           @db.Uuid
+  url       String
+  type      ProductMediaType @default(IMAGE)
+  sortOrder Int              @default(0)
+  createdAt DateTime         @default(now())
+  product   Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, sortOrder])
+  @@map("product_media")
+}
+
+model ProductChannelVisibility {
+  id            String       @id @default(uuid()) @db.Uuid
+  productId     String       @db.Uuid
+  channel       SalesChannel
+  isVisible     Boolean      @default(false)
+  isPurchasable Boolean      @default(false)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  product       Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, channel])
+  @@index([productId])
+  @@map("product_channel_visibility")
+}
+
+model InventoryStock {
+  id            String                 @id @default(uuid()) @db.Uuid
+  merchantId    String                 @db.Uuid
+  productId     String                 @db.Uuid
+  variantId     String?                @db.Uuid
+  stockKey      String
+  totalStock    Int                    @default(0)
+  reservedStock Int                    @default(0)
+  soldStock     Int                    @default(0)
+  safetyBuffer  Int                    @default(0)
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+  merchant      Merchant               @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  product       Product                @relation(fields: [productId], references: [id], onDelete: Restrict)
+  variant       ProductVariant?        @relation(fields: [variantId], references: [id], onDelete: Restrict)
+  reservations  InventoryReservation[]
+  movements     InventoryMovement[]
+
+  @@unique([merchantId, stockKey])
+  @@index([merchantId, productId])
+  @@index([variantId])
+  @@map("inventory_stocks")
+}
+
+model InventoryReservation {
+  id                String                     @id @default(uuid()) @db.Uuid
+  merchantId        String                     @db.Uuid
+  inventoryStockId  String                     @db.Uuid
+  productId         String                     @db.Uuid
+  variantId         String?                    @db.Uuid
+  orderId           String?                    @db.Uuid
+  checkoutSessionId String                     @db.Uuid
+  quantity          Int
+  status            InventoryReservationStatus @default(ACTIVE)
+  expiresAt         DateTime
+  createdAt         DateTime                   @default(now())
+  updatedAt         DateTime                   @updatedAt
+  merchant          Merchant                   @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  inventoryStock    InventoryStock             @relation(fields: [inventoryStockId], references: [id], onDelete: Restrict)
+  product           Product                    @relation(fields: [productId], references: [id], onDelete: Restrict)
+  variant           ProductVariant?            @relation(fields: [variantId], references: [id], onDelete: Restrict)
+
+  @@unique([checkoutSessionId, inventoryStockId])
+  @@index([merchantId, status, expiresAt])
+  @@index([orderId])
+  @@map("inventory_reservations")
+}
+
+model CheckoutSession {
+  id              String                @id @default(uuid()) @db.Uuid
+  merchantId      String                @db.Uuid
+  customerId      String?               @db.Uuid
+  customerName    String?
+  customerEmail   String?
+  customerPhone   String?
+  sourceChannel   SalesChannel
+  status          CheckoutSessionStatus @default(ACTIVE)
+  accessTokenHash String                @unique
+  subtotalAmount  Decimal               @db.Decimal(12, 2)
+  discountAmount  Decimal               @default(0) @db.Decimal(12, 2)
+  feeAmount       Decimal               @default(0) @db.Decimal(12, 2)
+  totalAmount     Decimal               @db.Decimal(12, 2)
+  currency        String                @db.Char(3)
+  expiresAt       DateTime
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  merchant        Merchant              @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  items           CheckoutItem[]
+  order           Order?
+
+  @@index([merchantId, status, expiresAt])
+  @@map("checkout_sessions")
+}
+
+model CheckoutItem {
+  id                String          @id @default(uuid()) @db.Uuid
+  checkoutSessionId String          @db.Uuid
+  productId         String          @db.Uuid
+  variantId         String?         @db.Uuid
+  sku               String
+  name              String
+  quantity          Int
+  unitPrice         Decimal         @db.Decimal(12, 2)
+  totalPrice        Decimal         @db.Decimal(12, 2)
+  createdAt         DateTime        @default(now())
+  checkoutSession   CheckoutSession @relation(fields: [checkoutSessionId], references: [id], onDelete: Cascade)
+  product           Product         @relation(fields: [productId], references: [id], onDelete: Restrict)
+  variant           ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Restrict)
+
+  @@index([checkoutSessionId])
+  @@index([productId])
+  @@index([variantId])
+  @@map("checkout_items")
+}
+
+model Order {
+  id                String            @id @default(uuid()) @db.Uuid
+  merchantId        String            @db.Uuid
+  checkoutSessionId String            @unique @db.Uuid
+  customerId        String?           @db.Uuid
+  customerName      String?
+  customerEmail     String?
+  customerPhone     String?
+  sourceChannel     SalesChannel
+  orderNumber       String
+  status            OrderStatus       @default(PENDING_PAYMENT)
+  subtotalAmount    Decimal           @db.Decimal(12, 2)
+  discountAmount    Decimal           @default(0) @db.Decimal(12, 2)
+  feeAmount         Decimal           @default(0) @db.Decimal(12, 2)
+  totalAmount       Decimal           @db.Decimal(12, 2)
+  currency          String            @db.Char(3)
+  paymentStatus     PaymentStatus     @default(PENDING)
+  fulfillmentStatus FulfillmentStatus @default(UNFULFILLED)
+  paidAt            DateTime?
+  fulfilledAt       DateTime?
+  cancelledAt       DateTime?
+  refundedAt        DateTime?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  merchant          Merchant          @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  checkoutSession   CheckoutSession   @relation(fields: [checkoutSessionId], references: [id], onDelete: Restrict)
+  items             OrderItem[]
+  payment           Payment?
+
+  @@unique([merchantId, orderNumber])
+  @@index([merchantId, status, createdAt])
+  @@index([merchantId, paymentStatus, fulfillmentStatus])
+  @@map("orders")
+}
+
+model OrderItem {
+  id         String          @id @default(uuid()) @db.Uuid
+  orderId    String          @db.Uuid
+  productId  String          @db.Uuid
+  variantId  String?         @db.Uuid
+  sku        String
+  name       String
+  quantity   Int
+  unitPrice  Decimal         @db.Decimal(12, 2)
+  totalPrice Decimal         @db.Decimal(12, 2)
+  createdAt  DateTime        @default(now())
+  order      Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product    Product         @relation(fields: [productId], references: [id], onDelete: Restrict)
+  variant    ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Restrict)
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([variantId])
+  @@map("order_items")
+}
+
+model PaymentProvider {
+  id            String                @id @default(uuid()) @db.Uuid
+  merchantId    String                @db.Uuid
+  provider      PaymentProviderCode
+  config        Json
+  status        PaymentProviderStatus @default(ACTIVE)
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  merchant      Merchant              @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  payments      Payment[]
+  webhookEvents PaymentWebhookEvent[]
+
+  @@unique([merchantId, provider])
+  @@index([merchantId, status])
+  @@map("payment_providers")
+}
+
+model Payment {
+  id                    String                   @id @default(uuid()) @db.Uuid
+  merchantId            String                   @db.Uuid
+  orderId               String                   @unique @db.Uuid
+  paymentProviderId     String                   @db.Uuid
+  provider              PaymentProviderCode
+  providerTransactionId String                   @unique
+  amount                Decimal                  @db.Decimal(12, 2)
+  currency              String                   @db.Char(3)
+  status                PaymentTransactionStatus @default(PENDING)
+  paidAt                DateTime?
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
+  merchant              Merchant                 @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  order                 Order                    @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  paymentProvider       PaymentProvider          @relation(fields: [paymentProviderId], references: [id], onDelete: Restrict)
+  webhookEvents         PaymentWebhookEvent[]
+
+  @@index([merchantId, status, createdAt])
+  @@index([paymentProviderId])
+  @@map("payments")
+}
+
+model PaymentWebhookEvent {
+  id                String               @id @default(uuid()) @db.Uuid
+  merchantId        String               @db.Uuid
+  paymentProviderId String               @db.Uuid
+  paymentId         String               @db.Uuid
+  provider          PaymentProviderCode
+  eventId           String
+  payload           Json
+  status            PaymentWebhookStatus @default(RECEIVED)
+  error             String?
+  processedAt       DateTime?
+  createdAt         DateTime             @default(now())
+  merchant          Merchant             @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  paymentProvider   PaymentProvider      @relation(fields: [paymentProviderId], references: [id], onDelete: Restrict)
+  payment           Payment              @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+
+  @@unique([paymentProviderId, eventId])
+  @@index([merchantId, status, createdAt])
+  @@index([paymentId])
+  @@map("payment_webhook_events")
+}
+
+model Notification {
+  id         String    @id @default(uuid()) @db.Uuid
+  merchantId String    @db.Uuid
+  dedupeKey  String?   @unique
+  type       String
+  title      String
+  message    String
+  data       Json?
+  readAt     DateTime?
+  createdAt  DateTime  @default(now())
+  merchant   Merchant  @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  @@index([merchantId, readAt, createdAt])
+  @@map("notifications")
+}
+
+model SocialPost {
+  id              String                 @id @default(uuid()) @db.Uuid
+  merchantId      String                 @db.Uuid
+  title           String
+  slug            String
+  content         String
+  mediaUrls       String[]
+  status          SocialPostStatus       @default(DRAFT)
+  targetPlatforms SocialPlatform[]
+  publishedAt     DateTime?
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  merchant        Merchant               @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  hotspots        ShoppableHotspot[]
+  publishLogs     SocialPostPublishLog[]
+  websiteArticle  WebsiteArticle?
+
+  @@unique([merchantId, slug])
+  @@index([merchantId, status, createdAt])
+  @@map("social_posts")
+}
+
+model ShoppableHotspot {
+  id           String          @id @default(uuid()) @db.Uuid
+  socialPostId String          @db.Uuid
+  productId    String          @db.Uuid
+  variantId    String?         @db.Uuid
+  xPercent     Decimal         @db.Decimal(5, 2)
+  yPercent     Decimal         @db.Decimal(5, 2)
+  label        String?
+  createdAt    DateTime        @default(now())
+  socialPost   SocialPost      @relation(fields: [socialPostId], references: [id], onDelete: Cascade)
+  product      Product         @relation(fields: [productId], references: [id], onDelete: Restrict)
+  variant      ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Restrict)
+
+  @@index([socialPostId])
+  @@index([productId])
+  @@index([variantId])
+  @@map("shoppable_hotspots")
+}
+
+model SocialPostPublishLog {
+  id             String              @id @default(uuid()) @db.Uuid
+  socialPostId   String              @db.Uuid
+  platform       SocialPlatform
+  status         SocialPublishStatus
+  externalPostId String?
+  externalUrl    String?
+  error          String?
+  createdAt      DateTime            @default(now())
+  socialPost     SocialPost          @relation(fields: [socialPostId], references: [id], onDelete: Cascade)
+
+  @@index([socialPostId, platform, createdAt])
+  @@map("social_post_publish_logs")
+}
+
+model WebsiteArticle {
+  id           String     @id @default(uuid()) @db.Uuid
+  merchantId   String     @db.Uuid
+  socialPostId String     @unique @db.Uuid
+  slug         String
+  publishedAt  DateTime   @default(now())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  merchant     Merchant   @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  socialPost   SocialPost @relation(fields: [socialPostId], references: [id], onDelete: Cascade)
+
+  @@unique([merchantId, slug])
+  @@index([merchantId, publishedAt])
+  @@map("website_articles")
+}
+
+model InventoryMovement {
+  id               String                @id @default(uuid()) @db.Uuid
+  merchantId       String                @db.Uuid
+  inventoryStockId String                @db.Uuid
+  productId        String                @db.Uuid
+  variantId        String?               @db.Uuid
+  type             InventoryMovementType
+  quantity         Int
+  referenceId      String?
+  referenceType    String?
+  createdById      String?               @db.Uuid
+  createdAt        DateTime              @default(now())
+  merchant         Merchant              @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  inventoryStock   InventoryStock        @relation(fields: [inventoryStockId], references: [id], onDelete: Restrict)
+  product          Product               @relation(fields: [productId], references: [id], onDelete: Restrict)
+  variant          ProductVariant?       @relation(fields: [variantId], references: [id], onDelete: Restrict)
+  createdBy        User?                 @relation("InventoryMovementCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([merchantId, productId, createdAt])
+  @@index([inventoryStockId, createdAt])
+  @@map("inventory_movements")
 }
 
 model MerchantUser {
@@ -94,15 +648,15 @@ model MerchantUser {
 }
 
 model Role {
-  id              String           @id @default(uuid()) @db.Uuid
-  merchantId      String           @db.Uuid
+  id              String               @id @default(uuid()) @db.Uuid
+  merchantId      String               @db.Uuid
   name            String
   code            String
   description     String?
-  isSystemRole    Boolean          @default(false)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  merchant        Merchant         @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  isSystemRole    Boolean              @default(false)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  merchant        Merchant             @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   memberships     MerchantUser[]
   rolePermissions RolePermission[]
   invitations     MerchantInvitation[]
