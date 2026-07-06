@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { DashboardIcon } from "./icon";
 import { SidebarContent } from "./dashboard-sidebar";
 
+import { Button } from "@/components/ui/hero-controls";
 import { useUiStore } from "@/stores/ui-store";
 
 export function MobileNavigation({ permissions }: { permissions: string[] }) {
@@ -32,21 +33,21 @@ export function MobileNavigation({ permissions }: { permissions: string[] }) {
 
   return (
     <div className="fixed inset-0 z-50 lg:hidden">
-      <button
+      <Button
         aria-label="Close navigation"
         className="absolute inset-0 bg-black/45 backdrop-blur-sm"
         type="button"
         onClick={close}
       />
       <aside className="relative flex h-full w-[min(19rem,86vw)] flex-col border-r border-separator bg-surface shadow-2xl">
-        <button
+        <Button
           aria-label="Close navigation"
           className="absolute right-3 top-3 z-10 grid size-10 place-items-center rounded-xl text-muted hover:bg-surface-secondary hover:text-foreground"
           type="button"
           onClick={close}
         >
           <DashboardIcon name="close" />
-        </button>
+        </Button>
         <SidebarContent onNavigate={close} permissions={permissions} />
       </aside>
     </div>

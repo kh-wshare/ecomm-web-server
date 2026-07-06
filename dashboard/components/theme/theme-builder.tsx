@@ -1,13 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 
+import {
+  DevicePreviewToggle,
+  PublishThemeButton,
+} from "./theme-builder-shared";
+
+import { Button, Input, Select } from "@/components/ui/hero-controls";
 import type { CurrentTheme, ThemeConfig, ThemeSection } from "@/types/theme";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { useThemeConfig } from "@/hooks/api/use-theme";
 import { usePermissions } from "@/hooks/use-permissions";
 import {
-  getCurrentTheme,
   normalizeThemeConfig,
   publishTheme,
   resetThemeDraft,
@@ -52,11 +59,7 @@ const presets: Record<
 export function ThemeBuilder() {
   const { can } = usePermissions();
   const canRead = can("theme.read");
-  const themeQuery = useQuery({
-    queryKey: queryKeys.theme.current(),
-    queryFn: getCurrentTheme,
-    enabled: canRead,
-  });
+  const themeQuery = useThemeConfig(canRead);
 
   if (!canRead)
     return <Notice text="You do not have permission to view themes." />;
@@ -82,6 +85,7 @@ function ThemeEditor({ theme }: { theme: CurrentTheme }) {
   const [livePreview, setLivePreview] = useState(true);
   const [showPublished, setShowPublished] = useState(false);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [resetOpen, setResetOpen] = useState(false);
   const dirty = JSON.stringify(config) !== JSON.stringify(initial);
   const refresh = () =>
     queryClient.invalidateQueries({ queryKey: queryKeys.theme.all });
@@ -125,255 +129,289 @@ function ThemeEditor({ theme }: { theme: CurrentTheme }) {
   const previewConfig = showPublished ? live : livePreview ? config : initial;
 
   return (
-    <section className="space-y-5">
-      <header className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-        <div>
-          <p className="text-sm font-medium text-accent">Storefront</p>
-          <h2 className="mt-1 text-2xl font-semibold">Theme Builder</h2>
-          <p className="mt-2 text-sm text-muted">
-            Design, preview, save, and publish the active storefront theme.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Link
-            className="rounded-xl border border-separator px-3 py-2 text-xs font-semibold"
-            href="/dashboard/storefront/settings"
-          >
-            Storefront settings
-          </Link>
-          {canUpdate && (
-            <>
-              <button
-                className="rounded-xl border border-separator px-3 py-2 text-xs font-semibold"
-                disabled={reset.isPending}
-                type="button"
-                onClick={() =>
-                  window.confirm("Reset the draft to its default theme?") &&
-                  reset.mutate()
-                }
-              >
-                Reset
-              </button>
-              <button
-                className="rounded-xl bg-accent px-3 py-2 text-xs font-semibold text-accent-foreground disabled:opacity-50"
-                disabled={!dirty || save.isPending}
-                type="button"
-                onClick={() => save.mutate()}
-              >
-                {save.isPending ? "Saving…" : "Save draft"}
-              </button>
-            </>
-          )}
-          {canPublish && (
-            <button
-              className="rounded-xl bg-success px-3 py-2 text-xs font-semibold text-white disabled:opacity-50"
-              disabled={publish.isPending}
-              type="button"
-              onClick={() => publish.mutate()}
-            >
-              {publish.isPending ? "Publishing…" : "Publish"}
-            </button>
-          )}
-        </div>
-      </header>
-
-      {dirty && (
-        <div className="rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-sm font-medium">
-          You have unsaved theme changes.
-        </div>
-      )}
-
-      <div className="grid gap-5 xl:grid-cols-[430px_1fr]">
-        <div className="space-y-4">
-          <Panel title="Theme preset">
-            <div className="grid grid-cols-3 gap-2">
-              {(Object.keys(presets) as ThemeConfig["preset"][]).map(
-                (preset) => (
-                  <button
-                    className={`rounded-xl border px-3 py-3 text-xs font-semibold capitalize ${
-                      config.preset === preset
-                        ? "border-accent bg-accent/10 text-accent"
-                        : "border-separator"
-                    }`}
-                    key={preset}
-                    type="button"
-                    onClick={() => patch({ preset, ...presets[preset] })}
-                  >
-                    {preset}
-                  </button>
-                ),
-              )}
-            </div>
-          </Panel>
-
-          <Panel title="Design tokens">
-            <div className="grid grid-cols-2 gap-3">
-              {(
-                Object.keys(config.colors) as Array<keyof ThemeConfig["colors"]>
-              ).map((token) => (
-                <label className="text-xs font-medium capitalize" key={token}>
-                  {token}
-                  <span className="mt-1 flex h-10 items-center gap-2 rounded-xl border border-separator px-2">
-                    <input
-                      className="size-6"
-                      type="color"
-                      value={config.colors[token]}
-                      onChange={(event) =>
-                        patch({
-                          colors: {
-                            ...config.colors,
-                            [token]: event.target.value,
-                          },
-                        })
-                      }
-                    />
-                    <span className="font-mono text-[10px]">
-                      {config.colors[token]}
-                    </span>
-                  </span>
-                </label>
-              ))}
-              <SelectField
-                label="Heading font"
-                value={config.typography.headingFont}
-                values={["Inter", "Space Grotesk", "Playfair Display", "Lora"]}
-                onChange={(headingFont) =>
-                  patch({
-                    typography: { ...config.typography, headingFont },
-                  })
-                }
-              />
-              <SelectField
-                label="Body font"
-                value={config.typography.bodyFont}
-                values={["Inter", "Lora", "System UI", "Roboto"]}
-                onChange={(bodyFont) =>
-                  patch({ typography: { ...config.typography, bodyFont } })
-                }
-              />
-              <SelectField
-                label="Border radius"
-                value={config.layout.borderRadius}
-                values={["none", "small", "medium", "large"]}
-                onChange={(borderRadius) =>
-                  patch({
-                    layout: {
-                      ...config.layout,
-                      borderRadius:
-                        borderRadius as ThemeConfig["layout"]["borderRadius"],
-                    },
-                  })
-                }
-              />
-              <SelectField
-                label="Spacing"
-                value={config.layout.spacing}
-                values={["compact", "comfortable", "spacious"]}
-                onChange={(spacing) =>
-                  patch({
-                    layout: {
-                      ...config.layout,
-                      spacing: spacing as ThemeConfig["layout"]["spacing"],
-                    },
-                  })
-                }
-              />
-            </div>
-          </Panel>
-
-          <Panel title="Sections">
-            <div className="space-y-2">
-              {config.sections.map((section, index) => (
-                <div
-                  className="flex cursor-grab items-center gap-3 rounded-xl border border-separator bg-background p-3"
-                  draggable
-                  key={section.id}
-                  onDragStart={() => setDragIndex(index)}
-                  onDragOver={(event) => event.preventDefault()}
-                  onDrop={() => {
-                    if (dragIndex === null || dragIndex === index) return;
-                    const sections = [...config.sections];
-                    const [moved] = sections.splice(dragIndex, 1);
-                    sections.splice(index, 0, moved);
-                    patch({ sections });
-                    setDragIndex(null);
-                  }}
-                >
-                  <span className="text-muted">⋮⋮</span>
-                  <span className="flex-1 text-sm font-semibold">
-                    {sectionLabel(section)}
-                  </span>
-                  <input
-                    aria-label={`Enable ${sectionLabel(section)}`}
-                    checked={section.enabled}
-                    type="checkbox"
-                    onChange={(event) => {
-                      const sections = [...config.sections];
-                      sections[index] = {
-                        ...section,
-                        enabled: event.target.checked,
-                      };
-                      patch({
-                        sections,
-                        ...(section.type === "hero"
-                          ? {
-                              layout: {
-                                ...config.layout,
-                                showHero: event.target.checked,
-                              },
-                            }
-                          : {}),
-                      });
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-            <SectionContent config={config} patch={patch} />
-          </Panel>
-        </div>
-
-        <div className="xl:sticky xl:top-24 xl:self-start">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex gap-2">
-              {(["mobile", "desktop"] as const).map((mode) => (
-                <button
-                  className={`rounded-lg px-3 py-2 text-xs font-semibold capitalize ${
-                    device === mode
-                      ? "bg-accent text-accent-foreground"
-                      : "border border-separator"
-                  }`}
-                  key={mode}
-                  type="button"
-                  onClick={() => setDevice(mode)}
-                >
-                  {mode}
-                </button>
-              ))}
-            </div>
-            <div className="flex gap-4 text-xs">
-              <label className="flex items-center gap-2">
-                <input
-                  checked={livePreview}
-                  type="checkbox"
-                  onChange={(event) => setLivePreview(event.target.checked)}
-                />
-                Live preview
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  checked={showPublished}
-                  type="checkbox"
-                  onChange={(event) => setShowPublished(event.target.checked)}
-                />
-                Published
-              </label>
-            </div>
+    <>
+      <section className="space-y-5">
+        <header className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+          <div>
+            <p className="text-sm font-medium text-accent">Storefront</p>
+            <h2 className="mt-1 text-2xl font-semibold">Theme Builder</h2>
+            <p className="mt-2 text-sm text-muted">
+              Design, preview, save, and publish the active storefront theme.
+            </p>
           </div>
-          <ThemePreview config={previewConfig} device={device} />
+          <div className="flex flex-wrap gap-2">
+            <Link
+              className="rounded-xl border border-separator px-3 py-2 text-xs font-semibold"
+              href="/dashboard/storefront/settings"
+            >
+              Storefront settings
+            </Link>
+            {canUpdate && (
+              <>
+                <Button
+                  className="rounded-xl border border-separator px-3 py-2 text-xs font-semibold"
+                  disabled={reset.isPending}
+                  type="button"
+                  onClick={() => setResetOpen(true)}
+                >
+                  Reset
+                </Button>
+                <Button
+                  className="rounded-xl bg-accent px-3 py-2 text-xs font-semibold text-accent-foreground disabled:opacity-50"
+                  disabled={!dirty || save.isPending}
+                  type="button"
+                  onClick={() => save.mutate()}
+                >
+                  {save.isPending ? "Saving…" : "Save draft"}
+                </Button>
+              </>
+            )}
+            {canPublish && (
+              <PublishThemeButton
+                isPending={publish.isPending}
+                onPublish={() => publish.mutate()}
+              />
+            )}
+          </div>
+        </header>
+
+        {dirty && (
+          <div className="rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-sm font-medium">
+            You have unsaved theme changes.
+          </div>
+        )}
+
+        <div className="grid gap-5 xl:grid-cols-[430px_1fr]">
+          <div className="space-y-4">
+            <Panel title="Theme preset">
+              <div className="grid grid-cols-3 gap-2">
+                {(Object.keys(presets) as ThemeConfig["preset"][]).map(
+                  (preset) => (
+                    <Button
+                      className={`rounded-xl border px-3 py-3 text-xs font-semibold capitalize ${
+                        config.preset === preset
+                          ? "border-accent bg-accent/10 text-accent"
+                          : "border-separator"
+                      }`}
+                      key={preset}
+                      type="button"
+                      onClick={() => patch({ preset, ...presets[preset] })}
+                    >
+                      {preset}
+                    </Button>
+                  ),
+                )}
+              </div>
+            </Panel>
+
+            <Panel title="Design tokens">
+              <div className="grid grid-cols-2 gap-3">
+                {(
+                  Object.keys(config.colors) as Array<
+                    keyof ThemeConfig["colors"]
+                  >
+                ).map((token) => (
+                  <label className="text-xs font-medium capitalize" key={token}>
+                    {token}
+                    <span className="mt-1 flex h-10 items-center gap-2 rounded-xl border border-separator px-2">
+                      <Input
+                        className="size-6"
+                        type="color"
+                        value={config.colors[token]}
+                        onChange={(event) =>
+                          patch({
+                            colors: {
+                              ...config.colors,
+                              [token]: event.target.value,
+                            },
+                          })
+                        }
+                      />
+                      <span className="font-mono text-[10px]">
+                        {config.colors[token]}
+                      </span>
+                    </span>
+                  </label>
+                ))}
+                <SelectField
+                  label="Heading font"
+                  value={config.typography.headingFont}
+                  values={[
+                    "Inter",
+                    "Space Grotesk",
+                    "Playfair Display",
+                    "Lora",
+                  ]}
+                  onChange={(headingFont) =>
+                    patch({
+                      typography: { ...config.typography, headingFont },
+                    })
+                  }
+                />
+                <SelectField
+                  label="Body font"
+                  value={config.typography.bodyFont}
+                  values={["Inter", "Lora", "System UI", "Roboto"]}
+                  onChange={(bodyFont) =>
+                    patch({ typography: { ...config.typography, bodyFont } })
+                  }
+                />
+                <SelectField
+                  label="Border radius"
+                  value={config.layout.borderRadius}
+                  values={["none", "small", "medium", "large"]}
+                  onChange={(borderRadius) =>
+                    patch({
+                      layout: {
+                        ...config.layout,
+                        borderRadius:
+                          borderRadius as ThemeConfig["layout"]["borderRadius"],
+                      },
+                    })
+                  }
+                />
+                <SelectField
+                  label="Spacing"
+                  value={config.layout.spacing}
+                  values={["compact", "comfortable", "spacious"]}
+                  onChange={(spacing) =>
+                    patch({
+                      layout: {
+                        ...config.layout,
+                        spacing: spacing as ThemeConfig["layout"]["spacing"],
+                      },
+                    })
+                  }
+                />
+              </div>
+            </Panel>
+
+            <Panel title="Sections">
+              <div className="space-y-2">
+                {config.sections.map((section, index) => (
+                  <div
+                    className="flex cursor-grab items-center gap-3 rounded-xl border border-separator bg-background p-3"
+                    draggable
+                    key={section.id}
+                    onDragStart={() => setDragIndex(index)}
+                    onDragOver={(event) => event.preventDefault()}
+                    onDrop={() => {
+                      if (dragIndex === null || dragIndex === index) return;
+                      const sections = [...config.sections];
+                      const [moved] = sections.splice(dragIndex, 1);
+                      sections.splice(index, 0, moved);
+                      patch({ sections });
+                      setDragIndex(null);
+                    }}
+                  >
+                    <span className="text-muted">⋮⋮</span>
+                    <span className="flex-1 text-sm font-semibold">
+                      {sectionLabel(section)}
+                    </span>
+                    <div className="flex gap-1">
+                      <Button
+                        aria-label={`Move ${sectionLabel(section)} up`}
+                        className="grid size-7 place-items-center rounded-md border border-separator text-xs disabled:opacity-30"
+                        disabled={index === 0}
+                        type="button"
+                        onClick={() => {
+                          const sections = [...config.sections];
+                          [sections[index - 1], sections[index]] = [
+                            sections[index],
+                            sections[index - 1],
+                          ];
+                          patch({ sections });
+                        }}
+                      >
+                        ↑
+                      </Button>
+                      <Button
+                        aria-label={`Move ${sectionLabel(section)} down`}
+                        className="grid size-7 place-items-center rounded-md border border-separator text-xs disabled:opacity-30"
+                        disabled={index === config.sections.length - 1}
+                        type="button"
+                        onClick={() => {
+                          const sections = [...config.sections];
+                          [sections[index], sections[index + 1]] = [
+                            sections[index + 1],
+                            sections[index],
+                          ];
+                          patch({ sections });
+                        }}
+                      >
+                        ↓
+                      </Button>
+                    </div>
+                    <Input
+                      aria-label={`Enable ${sectionLabel(section)}`}
+                      checked={section.enabled}
+                      type="checkbox"
+                      onChange={(event) => {
+                        const sections = [...config.sections];
+                        sections[index] = {
+                          ...section,
+                          enabled: event.target.checked,
+                        };
+                        patch({
+                          sections,
+                          ...(section.type === "hero"
+                            ? {
+                                layout: {
+                                  ...config.layout,
+                                  showHero: event.target.checked,
+                                },
+                              }
+                            : {}),
+                        });
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+              <SectionContent config={config} patch={patch} />
+            </Panel>
+          </div>
+
+          <div className="xl:sticky xl:top-24 xl:self-start">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+              <DevicePreviewToggle device={device} onChange={setDevice} />
+              <div className="flex gap-4 text-xs">
+                <label className="flex items-center gap-2">
+                  <Input
+                    checked={livePreview}
+                    type="checkbox"
+                    onChange={(event) => setLivePreview(event.target.checked)}
+                  />
+                  Live preview
+                </label>
+                <label className="flex items-center gap-2">
+                  <Input
+                    checked={showPublished}
+                    type="checkbox"
+                    onChange={(event) => setShowPublished(event.target.checked)}
+                  />
+                  Published
+                </label>
+              </div>
+            </div>
+            <ThemePreview config={previewConfig} device={device} />
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+      <ConfirmDialog
+        confirmLabel="Reset draft"
+        description="This replaces every unsaved theme setting with the default theme."
+        isPending={reset.isPending}
+        open={resetOpen}
+        title="Reset theme draft?"
+        onCancel={() => setResetOpen(false)}
+        onConfirm={() =>
+          reset.mutate(undefined, {
+            onSuccess: () => setResetOpen(false),
+          })
+        }
+      />
+    </>
   );
 }
 
@@ -411,7 +449,7 @@ function SectionContent({
       />
       <label className="block text-xs font-medium">
         Product grid columns
-        <input
+        <Input
           className="mt-1 w-full"
           max={6}
           min={1}
@@ -517,13 +555,13 @@ function PreviewSection({
       >
         <h3 className="text-3xl font-bold">{config.hero.title}</h3>
         <p className="mt-3 text-sm">{config.hero.subtitle}</p>
-        <button
+        <Button
           className="mt-5 px-4 py-2 text-xs font-semibold text-white"
           style={{ background: config.colors.accent, borderRadius: radius }}
           type="button"
         >
           Shop now
-        </button>
+        </Button>
       </div>
     );
   }
@@ -603,7 +641,7 @@ function TextField({
   return (
     <label className="block text-xs font-medium">
       {label}
-      <input
+      <Input
         className="mt-1 h-10 w-full rounded-xl border border-separator bg-background px-3 text-sm"
         value={value}
         onChange={(event) => onChange(event.target.value)}
@@ -626,7 +664,7 @@ function SelectField({
   return (
     <label className="text-xs font-medium">
       {label}
-      <select
+      <Select
         className="mt-1 h-10 w-full rounded-xl border border-separator bg-background px-2 text-sm capitalize"
         value={value}
         onChange={(event) => onChange(event.target.value)}
@@ -634,7 +672,7 @@ function SelectField({
         {values.map((item) => (
           <option key={item}>{item}</option>
         ))}
-      </select>
+      </Select>
     </label>
   );
 }

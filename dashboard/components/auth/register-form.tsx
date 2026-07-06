@@ -1,5 +1,6 @@
 "use client";
 
+import { Form } from "@heroui/react";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -65,7 +66,11 @@ export function RegisterForm() {
   };
 
   return (
-    <form className="space-y-4" noValidate onSubmit={handleSubmit}>
+    <Form
+      className="space-y-4"
+      validationBehavior="aria"
+      onSubmit={handleSubmit}
+    >
       {registerMutation.isError && (
         <div
           className="rounded-xl border border-danger/20 bg-danger/10 px-3 py-2 text-sm text-danger"
@@ -127,6 +132,6 @@ export function RegisterForm() {
       <SubmitButton isPending={registerMutation.isPending}>
         Create merchant account
       </SubmitButton>
-    </form>
+    </Form>
   );
 }

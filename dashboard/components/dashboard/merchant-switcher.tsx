@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { DashboardIcon } from "./icon";
 
+import { Select } from "@/components/ui/hero-controls";
 import type { MerchantAccess, SwitchMerchantResult } from "@/types/auth";
 import { apiClient } from "@/lib/api/client";
 import { authTokenStorage } from "@/lib/auth/token-storage";
@@ -42,13 +43,13 @@ export function MerchantSwitcher({
   return (
     <label className="relative min-w-0 flex-1 md:flex-none">
       <span className="sr-only">Active merchant</span>
-      <DashboardIcon
+      {/* <DashboardIcon
         className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted"
         name="globe"
-      />
-      <select
+      /> */}
+      <Select
         aria-label="Active merchant"
-        className="h-10 w-full min-w-0 appearance-none truncate rounded-xl border border-separator bg-surface py-0 pl-9 pr-8 text-sm font-medium outline-none transition hover:bg-surface-secondary focus:border-accent md:w-56"
+        // className="h-10 w-full min-w-0 appearance-none truncate rounded-xl border border-separator bg-surface py-0 pl-9 pr-8 text-sm font-medium outline-none transition hover:bg-surface-secondary focus:border-accent md:w-56"
         disabled={switchMutation.isPending}
         value={activeMerchant.merchant.id}
         onChange={(event) => switchMutation.mutate(event.target.value)}
@@ -58,11 +59,11 @@ export function MerchantSwitcher({
             {merchant.name}
           </option>
         ))}
-      </select>
-      <DashboardIcon
+      </Select>
+      {/* <DashboardIcon
         className="pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-muted"
         name="chevron-down"
-      />
+      /> */}
     </label>
   );
 }

@@ -2,6 +2,7 @@ import type {
   InventoryStock,
   Product,
   ProductInventoryDetail,
+  ProductFormChannel,
   ProductListFilters,
   ProductListItem,
   ProductOrder,
@@ -64,6 +65,17 @@ export async function updateProduct(
     `/products/${productId}`,
     payload,
   );
+
+  return response.data;
+}
+
+export async function updateProductChannelVisibility(
+  productId: string,
+  channelVisibility: ProductFormChannel[],
+) {
+  const response = await apiClient.patch<Product>(`/products/${productId}`, {
+    channelVisibility,
+  });
 
   return response.data;
 }

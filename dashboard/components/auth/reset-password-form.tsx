@@ -1,5 +1,6 @@
 "use client";
 
+import { Button, Form } from "@heroui/react";
 import { useState } from "react";
 
 import { FormField } from "./form-field";
@@ -32,7 +33,11 @@ export function ResetPasswordForm({ token }: { token: string }) {
   };
 
   return (
-    <form className="space-y-4" noValidate onSubmit={handleSubmit}>
+    <Form
+      className="space-y-4"
+      validationBehavior="aria"
+      onSubmit={handleSubmit}
+    >
       <PendingIntegrationNotice endpoint="POST /auth/reset-password" />
       <FormField
         defaultValue={token}
@@ -62,12 +67,9 @@ export function ResetPasswordForm({ token }: { token: string }) {
           Password and token validation passed.
         </p>
       )}
-      <button
-        className="h-11 w-full rounded-xl border border-separator bg-surface-secondary text-sm font-semibold transition hover:bg-surface-tertiary"
-        type="submit"
-      >
+      <Button fullWidth type="submit" variant="secondary">
         Validate new password
-      </button>
-    </form>
+      </Button>
+    </Form>
   );
 }

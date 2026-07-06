@@ -1,3 +1,5 @@
+import { Button, Spinner } from "@heroui/react";
+
 export function SubmitButton({
   children,
   isPending,
@@ -6,19 +8,20 @@ export function SubmitButton({
   isPending: boolean;
 }) {
   return (
-    <button
-      className="flex h-11 w-full items-center justify-center rounded-xl bg-accent px-4 text-sm font-semibold text-accent-foreground shadow-lg shadow-accent/15 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-      disabled={isPending}
+    <Button
+      fullWidth
       type="submit"
+      isDisabled={isPending}
+      isPending={isPending}
     >
       {isPending ? (
         <span className="flex items-center gap-2">
-          <span className="size-4 animate-spin rounded-full border-2 border-current/30 border-t-current" />
+          <Spinner size="sm" />
           Please wait…
         </span>
       ) : (
         children
       )}
-    </button>
+    </Button>
   );
 }

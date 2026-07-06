@@ -1,5 +1,6 @@
 "use client";
 
+import { Button, Form } from "@heroui/react";
 import { useState } from "react";
 
 import { FormField } from "./form-field";
@@ -33,7 +34,11 @@ export function InvitationForm({ token }: { token: string }) {
   };
 
   return (
-    <form className="space-y-4" noValidate onSubmit={handleSubmit}>
+    <Form
+      className="space-y-4"
+      validationBehavior="aria"
+      onSubmit={handleSubmit}
+    >
       <PendingIntegrationNotice endpoint="POST /merchant-users/accept-invite" />
       <FormField
         defaultValue={token}
@@ -70,12 +75,9 @@ export function InvitationForm({ token }: { token: string }) {
           Invitation details are valid and ready to submit.
         </p>
       )}
-      <button
-        className="h-11 w-full rounded-xl border border-separator bg-surface-secondary text-sm font-semibold transition hover:bg-surface-tertiary"
-        type="submit"
-      >
+      <Button fullWidth type="submit" variant="secondary">
         Validate invitation
-      </button>
-    </form>
+      </Button>
+    </Form>
   );
 }

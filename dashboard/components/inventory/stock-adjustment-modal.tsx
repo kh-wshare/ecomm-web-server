@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { Button, Input, Select } from "@/components/ui/hero-controls";
 import type {
   AdjustableStock,
   InventoryAdjustmentValues,
@@ -98,7 +99,7 @@ export function StockAdjustmentModal({
               {stock.variant?.sku ?? stock.product.sku})
             </p>
           </div>
-          <button
+          <Button
             aria-label="Close stock adjustment"
             className="grid size-9 place-items-center rounded-lg text-muted hover:bg-surface-secondary"
             disabled={mutation.isPending}
@@ -106,7 +107,7 @@ export function StockAdjustmentModal({
             onClick={onClose}
           >
             ×
-          </button>
+          </Button>
         </div>
 
         {!confirming ? (
@@ -115,7 +116,7 @@ export function StockAdjustmentModal({
               <span className="mb-1.5 block text-sm font-medium">
                 Adjustment type
               </span>
-              <select
+              <Select
                 className="h-11 w-full rounded-xl border border-separator bg-background px-3 text-sm"
                 value={values.type}
                 onChange={(event) =>
@@ -128,7 +129,7 @@ export function StockAdjustmentModal({
               >
                 <option value="STOCK_IN">Stock in</option>
                 <option value="STOCK_OUT">Stock out</option>
-              </select>
+              </Select>
             </label>
             <div className="grid gap-4 sm:grid-cols-2">
               <ModalField
@@ -165,20 +166,20 @@ export function StockAdjustmentModal({
               {stock.onlineSellableStock} online sellable.
             </div>
             <div className="flex justify-end gap-3">
-              <button
+              <Button
                 className="h-10 rounded-xl border border-separator px-4 text-sm font-semibold"
                 type="button"
                 onClick={onClose}
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 className="h-10 rounded-xl bg-accent px-4 text-sm font-semibold text-accent-foreground"
                 type="button"
                 onClick={validate}
               >
                 Review adjustment
-              </button>
+              </Button>
             </div>
           </div>
         ) : (
@@ -194,22 +195,22 @@ export function StockAdjustmentModal({
               <p className="mt-2 text-xs text-muted">Reason: {values.reason}</p>
             </div>
             <div className="mt-5 flex justify-end gap-3">
-              <button
+              <Button
                 className="h-10 rounded-xl border border-separator px-4 text-sm font-semibold"
                 disabled={mutation.isPending}
                 type="button"
                 onClick={() => setConfirming(false)}
               >
                 Back
-              </button>
-              <button
+              </Button>
+              <Button
                 className="h-10 rounded-xl bg-accent px-4 text-sm font-semibold text-accent-foreground disabled:opacity-60"
                 disabled={mutation.isPending}
                 type="button"
                 onClick={() => mutation.mutate()}
               >
                 {mutation.isPending ? "Updating…" : "Confirm adjustment"}
-              </button>
+              </Button>
             </div>
           </div>
         )}
@@ -231,7 +232,7 @@ function ModalField({
   return (
     <label className="block">
       <span className="mb-1.5 block text-sm font-medium">{label}</span>
-      <input
+      <Input
         {...props}
         aria-invalid={Boolean(error)}
         className={`h-11 w-full rounded-xl border bg-background px-3 text-sm outline-none ${

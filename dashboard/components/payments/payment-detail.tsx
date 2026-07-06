@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 
 import { OrderStatusBadge } from "@/components/orders/order-status-badge";
+import { Button } from "@/components/ui/hero-controls";
+import { Table } from "@/components/ui/hero-table";
 import { usePermissions } from "@/hooks/use-permissions";
 import { formatCurrency } from "@/lib/formatters/currency";
 import { formatDate } from "@/lib/formatters/date";
@@ -39,13 +41,13 @@ export function PaymentDetail({ paymentId }: { paymentId: string }) {
           <p className="mt-2 text-sm text-muted">
             {paymentQuery.error.message}
           </p>
-          <button
+          <Button
             className="mt-5 rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
             type="button"
             onClick={() => paymentQuery.refetch()}
           >
             Try again
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -129,7 +131,7 @@ export function PaymentDetail({ paymentId }: { paymentId: string }) {
       <Panel title="Webhook logs">
         {payment.webhookEvents?.length ? (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] text-left text-sm">
+            <Table className="w-full min-w-[760px] text-left text-sm">
               <thead className="text-xs text-muted">
                 <tr>
                   <th className="pb-3 font-medium">Event ID</th>
@@ -160,7 +162,7 @@ export function PaymentDetail({ paymentId }: { paymentId: string }) {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </Table>
           </div>
         ) : (
           <p className="text-sm text-muted">

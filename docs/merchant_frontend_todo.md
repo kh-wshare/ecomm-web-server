@@ -420,12 +420,12 @@ Route:
 /dashboard/social-posts
 ```
 
-- [ ] Create social post list page.
-- [ ] Show draft posts.
-- [ ] Show published posts.
-- [ ] Show failed posts.
-- [ ] Add platform filters.
-- [ ] Add publish status badge.
+- [x] Create social post list page.
+- [x] Show draft posts.
+- [x] Show published posts.
+- [x] Show failed posts.
+- [x] Add platform filters.
+- [x] Add publish status badge.
 
 ### Social Post Composer
 
@@ -435,14 +435,14 @@ Route:
 /dashboard/social-posts/new
 ```
 
-- [ ] Create social post composer page.
-- [ ] Add content editor.
-- [ ] Add media upload.
-- [ ] Add platform selector.
-- [ ] Add product hotspot editor.
-- [ ] Add preview per platform.
-- [ ] Add save draft button.
-- [ ] Add publish button.
+- [x] Create social post composer page.
+- [x] Add content editor.
+- [x] Add media upload.
+- [x] Add platform selector.
+- [x] Add product hotspot editor.
+- [x] Add preview per platform.
+- [x] Add save draft button.
+- [x] Add publish button.
 
 ### Social Post Detail
 
@@ -452,12 +452,18 @@ Route:
 /dashboard/social-posts/[id]
 ```
 
-- [ ] Create social post detail page.
-- [ ] Show post content.
-- [ ] Show media.
-- [ ] Show hotspots.
-- [ ] Show publish logs.
-- [ ] Show external platform links.
+- [x] Create social post detail page.
+- [x] Show post content.
+- [x] Show media.
+- [x] Show hotspots.
+- [x] Show publish logs.
+- [x] Show external platform links.
+
+> The composer attaches hosted media, builds active-product/variant hotspots, and
+> previews all supported platform layouts before saving or publishing. The list is
+> server-filtered and paginated; detail views expose per-platform outcomes and live
+> external links. External adapters continue to fail closed until credentials are
+> configured, while website publishing creates the canonical storefront article.
 
 ---
 
@@ -471,15 +477,15 @@ Route:
 /store/[merchantSlug]
 ```
 
-- [ ] Create merchant storefront route.
-- [ ] Load live theme config.
-- [ ] Load public products.
-- [ ] Render dynamic sections from theme config.
-- [ ] Apply theme tokens dynamically.
-- [ ] Show product availability.
-- [ ] Hide unavailable products if configured.
-- [ ] Add storefront loading state.
-- [ ] Add storefront error page.
+- [x] Create merchant storefront route.
+- [x] Load live theme config.
+- [x] Load public products.
+- [x] Render dynamic sections from theme config.
+- [x] Apply theme tokens dynamically.
+- [x] Show product availability.
+- [x] Hide unavailable products if configured.
+- [x] Add storefront loading state.
+- [x] Add storefront error page.
 
 ### Product Detail
 
@@ -489,15 +495,21 @@ Route:
 /store/[merchantSlug]/products/[productSlug]
 ```
 
-- [ ] Create product detail page.
-- [ ] Show product images.
-- [ ] Show variants.
-- [ ] Show price.
-- [ ] Show stock status.
-- [ ] Show quantity selector.
-- [ ] Show buy button.
-- [ ] Disable buy button when out of stock.
-- [ ] Show social sharing links.
+- [x] Create product detail page.
+- [x] Show product images.
+- [x] Show variants.
+- [x] Show price.
+- [x] Show stock status.
+- [x] Show quantity selector.
+- [x] Show buy button.
+- [x] Disable buy button when out of stock.
+- [x] Show social sharing links.
+
+> Store routes render the published section order, brand tokens, typography,
+> spacing, radius, SEO, catalog, and social content. Public catalog responses enforce
+> lifecycle, channel visibility, purchasability, safety-buffer, and live-stock rules;
+> unavailable products are therefore omitted before rendering. Buy-now revalidates
+> price and reserves inventory through the checkout API.
 
 ---
 
@@ -511,15 +523,15 @@ Route:
 /checkout/[sessionId]
 ```
 
-- [ ] Create checkout page.
-- [ ] Show checkout items.
-- [ ] Show price summary.
-- [ ] Show payment methods.
-- [ ] Show expiration countdown.
-- [ ] Handle expired session.
-- [ ] Confirm payment.
-- [ ] Redirect to success page.
-- [ ] Add payment error state.
+- [x] Create checkout page.
+- [x] Show checkout items.
+- [x] Show price summary.
+- [x] Show payment methods.
+- [x] Show expiration countdown.
+- [x] Handle expired session.
+- [x] Confirm payment.
+- [x] Redirect to success page.
+- [x] Add payment error state.
 
 ### Order Success Page
 
@@ -529,11 +541,16 @@ Route:
 /checkout/[sessionId]/success
 ```
 
-- [ ] Create success page.
-- [ ] Show order number.
-- [ ] Show payment status.
-- [ ] Show receipt summary.
-- [ ] Show continue shopping button.
+- [x] Create success page.
+- [x] Show order number.
+- [x] Show payment status.
+- [x] Show receipt summary.
+- [x] Show continue shopping button.
+
+> The one-time checkout secret stays in tab-scoped session storage and is never
+> placed in the URL. Confirmation idempotently creates the order and HMAC payment
+> intent; the receipt distinguishes an order confirmation from the provider's
+> webhook-driven final payment confirmation.
 
 ---
 
@@ -541,132 +558,153 @@ Route:
 
 ### Common
 
-- [ ] `DataTable`
-- [ ] `StatusBadge`
-- [ ] `MoneyText`
-- [ ] `DateTimeText`
-- [ ] `ConfirmDialog`
-- [ ] `EmptyState`
-- [ ] `LoadingState`
-- [ ] `ErrorState`
-- [ ] `FileUploader`
-- [ ] `ImageGallery`
-- [ ] `SearchInput`
-- [ ] `FilterDropdown`
-- [ ] `Pagination`
+- [x] `DataTable`
+- [x] `StatusBadge`
+- [x] `MoneyText`
+- [x] `DateTimeText`
+- [x] `ConfirmDialog`
+- [x] `EmptyState`
+- [x] `LoadingState`
+- [x] `ErrorState`
+- [x] `FileUploader`
+- [x] `ImageGallery`
+- [x] `SearchInput`
+- [x] `FilterDropdown`
+- [x] `Pagination`
 
 ### Product
 
-- [ ] `ProductForm`
-- [ ] `ProductCard`
-- [ ] `ProductVariantEditor`
-- [ ] `ProductImageUploader`
-- [ ] `ChannelVisibilitySelector`
-- [ ] `SafetyBufferInput`
-- [ ] `StockStatusBadge`
+- [x] `ProductForm`
+- [x] `ProductCard`
+- [x] `ProductVariantEditor`
+- [x] `ProductImageUploader`
+- [x] `ChannelVisibilitySelector`
+- [x] `SafetyBufferInput`
+- [x] `StockStatusBadge`
 
 ### Inventory
 
-- [ ] `InventoryTable`
-- [ ] `StockAdjustmentModal`
-- [ ] `StockMovementTimeline`
-- [ ] `LowStockWarning`
+- [x] `InventoryTable`
+- [x] `StockAdjustmentModal`
+- [x] `StockMovementTimeline`
+- [x] `LowStockWarning`
 
 ### Theme Builder
 
-- [ ] `ThemeTokenPanel`
-- [ ] `SectionEditor`
-- [ ] `SectionSortableList`
-- [ ] `StorefrontPreview`
-- [ ] `DevicePreviewToggle`
-- [ ] `PublishThemeButton`
+- [x] `ThemeTokenPanel`
+- [x] `SectionEditor`
+- [x] `SectionSortableList`
+- [x] `StorefrontPreview`
+- [x] `DevicePreviewToggle`
+- [x] `PublishThemeButton`
 
 ### Social Commerce
 
-- [ ] `SocialPostComposer`
-- [ ] `PlatformSelector`
-- [ ] `MediaUploader`
-- [ ] `HotspotEditor`
-- [ ] `HotspotProductSearch`
-- [ ] `PlatformPreviewCard`
+- [x] `SocialPostComposer`
+- [x] `PlatformSelector`
+- [x] `MediaUploader`
+- [x] `HotspotEditor`
+- [x] `HotspotProductSearch`
+- [x] `PlatformPreviewCard`
 
 ### Order
 
-- [ ] `OrderTable`
-- [ ] `OrderTimeline`
-- [ ] `OrderItemList`
-- [ ] `OrderStatusActions`
-- [ ] `PaymentSummaryCard`
+- [x] `OrderTable`
+- [x] `OrderTimeline`
+- [x] `OrderItemList`
+- [x] `OrderStatusActions`
+- [x] `PaymentSummaryCard`
+
+> Shared primitives now own table structure, status/date/money display, feedback
+> states, confirmation, media selection, filters, and pagination. Feature-level
+> composites expose controlled props so Product, Inventory, Theme, Social, and Order
+> workflows can reuse them without coupling UI state to API calls.
 
 ---
 
 ## 15. Frontend API Hooks
 
-- [ ] `useProducts`
-- [ ] `useProduct`
-- [ ] `useCreateProduct`
-- [ ] `useUpdateProduct`
-- [ ] `useDeleteProduct`
-- [ ] `useUpdateProductChannelVisibility`
-- [ ] `useInventory`
-- [ ] `useInventoryItem`
-- [ ] `useAdjustStock`
-- [ ] `useStockMovements`
-- [ ] `useThemeConfig`
-- [ ] `useSaveDraftTheme`
-- [ ] `usePublishTheme`
-- [ ] `useResetTheme`
-- [ ] `useStorefront`
-- [ ] `useStorefrontProducts`
-- [ ] `useStorefrontProduct`
-- [ ] `useCheckoutSession`
-- [ ] `useOrders`
-- [ ] `useOrder`
-- [ ] `useUpdateOrderStatus`
-- [ ] `useCancelOrder`
-- [ ] `useRefundOrder`
-- [ ] `usePaymentProviders`
-- [ ] `useCreatePaymentIntent`
-- [ ] `usePayments`
-- [ ] `usePayment`
-- [ ] `useSocialPosts`
-- [ ] `useSocialPost`
-- [ ] `useCreateSocialPost`
-- [ ] `useUpdateSocialPost`
-- [ ] `usePublishSocialPost`
-- [ ] `useAddHotspot`
+- [x] `useProducts`
+- [x] `useProduct`
+- [x] `useCreateProduct`
+- [x] `useUpdateProduct`
+- [x] `useDeleteProduct`
+- [x] `useUpdateProductChannelVisibility`
+- [x] `useInventory`
+- [x] `useInventoryItem`
+- [x] `useAdjustStock`
+- [x] `useStockMovements`
+- [x] `useThemeConfig`
+- [x] `useSaveDraftTheme`
+- [x] `usePublishTheme`
+- [x] `useResetTheme`
+- [x] `useStorefront`
+- [x] `useStorefrontProducts`
+- [x] `useStorefrontProduct`
+- [x] `useCheckoutSession`
+- [x] `useOrders`
+- [x] `useOrder`
+- [x] `useUpdateOrderStatus`
+- [x] `useCancelOrder`
+- [x] `useRefundOrder`
+- [x] `usePaymentProviders`
+- [x] `useCreatePaymentIntent`
+- [x] `usePayments`
+- [x] `usePayment`
+- [x] `useSocialPosts`
+- [x] `useSocialPost`
+- [x] `useCreateSocialPost`
+- [x] `useUpdateSocialPost`
+- [x] `usePublishSocialPost`
+- [x] `useAddHotspot`
+
+> Hooks use centralized query keys, permission-aware enablement, detail cache writes,
+> and domain-level invalidation after mutations. Public storefront and checkout hooks
+> preserve unauthenticated request semantics, while checkout secrets remain explicit
+> hook inputs rather than URL state.
 
 ---
 
 ## 16. UX Tasks
 
-- [ ] Add loading skeletons for all pages.
-- [ ] Add empty states for all tables.
-- [ ] Add clear error messages.
-- [ ] Add success toast after create/update/delete.
-- [ ] Add confirmation dialog before destructive actions.
-- [ ] Add optimistic update for simple status changes.
-- [ ] Add form validation using Zod.
-- [ ] Add responsive layout for mobile dashboard.
-- [ ] Add keyboard accessible controls.
-- [ ] Add preview before publishing theme.
-- [ ] Add warning when unsaved theme changes exist.
-- [ ] Add countdown timer for checkout reservation expiry.
-- [ ] Add 403 permission error UI.
-- [ ] Add 401 session expired redirect.
+- [x] Add loading skeletons for all pages.
+- [x] Add empty states for all tables.
+- [x] Add clear error messages.
+- [x] Add success toast after create/update/delete.
+- [x] Add confirmation dialog before destructive actions.
+- [x] Add optimistic update for simple status changes.
+- [x] Add form validation using Zod.
+- [x] Add responsive layout for mobile dashboard.
+- [x] Add keyboard accessible controls.
+- [x] Add preview before publishing theme.
+- [x] Add warning when unsaved theme changes exist.
+- [x] Add countdown timer for checkout reservation expiry.
+- [x] Add 403 permission error UI.
+- [x] Add 401 session expired redirect.
+
+> Notification read state updates optimistically with cache rollback. Destructive
+> product/theme actions use native accessible dialogs, section ordering has keyboard
+> controls, and forms use shared Zod validation. Authenticated 401 responses clear the
+> tab-scoped session and trigger the login redirect; unexpected 403 responses render a
+> dedicated permission state.
 
 ---
 
 ## 17. Real-Time Frontend Tasks
 
-- [ ] Connect dashboard to WebSocket.
-- [ ] Listen for order events.
-- [ ] Listen for payment events.
-- [ ] Listen for inventory events.
-- [ ] Show toast when new order arrives.
-- [ ] Update order table automatically.
-- [ ] Update inventory stock automatically.
-- [ ] Show low-stock warning in real time.
+- [x] Connect dashboard to WebSocket.
+- [x] Listen for order events.
+- [x] Listen for payment events.
+- [x] Listen for inventory events.
+- [x] Show toast when new order arrives.
+- [x] Update order table automatically.
+- [x] Update inventory stock automatically.
+- [x] Show low-stock warning in real time.
+
+> The authenticated dashboard connects to the merchant-scoped `/notifications`
+> namespace and reconnects when its token or active merchant changes. One typed event
+> envelope drives permission-aware toasts, targeted query invalidation, immediate
+> inventory cache patches, notification refreshes, and a visible connection status.
 
 ---
 
@@ -674,13 +712,18 @@ Route:
 
 A frontend task is done when:
 
-- [ ] Page or component is implemented.
-- [ ] API hook is connected.
-- [ ] Loading state is handled.
-- [ ] Empty state is handled.
-- [ ] Error state is handled.
-- [ ] Form validation is added.
-- [ ] Permission visibility is handled.
-- [ ] Success and failure messages are shown.
-- [ ] Responsive design is checked.
+- [x] Page or component is implemented.
+- [x] API hook is connected.
+- [x] Loading state is handled.
+- [x] Empty state is handled.
+- [x] Error state is handled.
+- [x] Form validation is added.
+- [x] Permission visibility is handled.
+- [x] Success and failure messages are shown.
+- [x] Responsive design is checked.
 - [ ] Feature works in staging.
+
+> Local implementation and verification satisfy every repository-controlled
+> definition-of-done criterion. Staging remains intentionally unchecked because no
+> staging dashboard/API URLs or deployment credentials are configured in this
+> workspace; it requires an external deployment smoke test.

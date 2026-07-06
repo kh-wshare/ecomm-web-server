@@ -8,6 +8,7 @@ import { RecentOrders } from "./recent-orders";
 import { SalesChart } from "./sales-chart";
 import { StockAlerts } from "./stock-alerts";
 
+import { Button } from "@/components/ui/hero-controls";
 import { getDashboardHomeData } from "@/lib/dashboard/home-data";
 import { formatCurrency } from "@/lib/formatters/currency";
 import { queryKeys } from "@/lib/query/keys";
@@ -33,13 +34,13 @@ export function DashboardOverview() {
           <p className="mt-2 text-sm text-muted">
             {dashboardQuery.error.message}
           </p>
-          <button
+          <Button
             className="mt-5 rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
             type="button"
             onClick={() => dashboardQuery.refetch()}
           >
             Try again
-          </button>
+          </Button>
         </div>
       </div>
     );

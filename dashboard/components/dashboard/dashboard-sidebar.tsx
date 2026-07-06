@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 
 import { DashboardIcon } from "./icon";
 
+import { Button } from "@/components/ui/hero-controls";
 import { useUiStore } from "@/stores/ui-store";
 
 type NavigationItem = {
@@ -72,7 +73,7 @@ export function DashboardSidebar({ permissions }: { permissions: string[] }) {
       }`}
     >
       <SidebarContent collapsed={isCollapsed} permissions={permissions} />
-      <button
+      <Button
         aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         className="m-4 grid size-10 place-items-center self-end rounded-xl text-muted transition hover:bg-surface-secondary hover:text-foreground"
         type="button"
@@ -84,7 +85,7 @@ export function DashboardSidebar({ permissions }: { permissions: string[] }) {
           }`}
           name="collapse"
         />
-      </button>
+      </Button>
     </aside>
   );
 }

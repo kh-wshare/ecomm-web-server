@@ -7,6 +7,8 @@ import Link from "next/link";
 import { isLowStock, StockHealth } from "./inventory-list";
 import { StockAdjustmentModal } from "./stock-adjustment-modal";
 
+import { Button } from "@/components/ui/hero-controls";
+import { Table } from "@/components/ui/hero-table";
 import type { DashboardInventoryStock } from "@/types/dashboard";
 import { usePermissions } from "@/hooks/use-permissions";
 import { getInventory } from "@/lib/inventory/inventory-data";
@@ -85,7 +87,7 @@ export function LowStockAlerts() {
       <div className="overflow-hidden rounded-2xl border border-separator bg-surface shadow-sm">
         {alerts.length ? (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] text-left text-sm">
+            <Table className="w-full min-w-[760px] text-left text-sm">
               <thead className="bg-surface-secondary text-xs text-muted">
                 <tr>
                   <th className="px-4 py-3 font-medium">Product</th>
@@ -121,19 +123,19 @@ export function LowStockAlerts() {
                     </td>
                     <td className="px-4 py-4 text-right">
                       {canAdjust && (
-                        <button
+                        <Button
                           className="rounded-lg bg-accent px-3 py-2 text-xs font-semibold text-accent-foreground"
                           type="button"
                           onClick={() => setAdjusting(stock)}
                         >
                           Add stock
-                        </button>
+                        </Button>
                       )}
                     </td>
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </Table>
           </div>
         ) : (
           <div className="px-6 py-16 text-center">

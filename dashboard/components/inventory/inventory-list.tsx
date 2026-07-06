@@ -6,8 +6,11 @@ import Link from "next/link";
 
 import { StockAdjustmentModal } from "./stock-adjustment-modal";
 
+import { Button, Input, Select } from "@/components/ui/hero-controls";
+import { Table } from "@/components/ui/hero-table";
 import type { DashboardInventoryStock } from "@/types/dashboard";
 import type { InventoryFilter } from "@/types/inventory";
+import { StockStatusBadge } from "@/components/products/product-editor-fields";
 import { usePermissions } from "@/hooks/use-permissions";
 import { getInventory } from "@/lib/inventory/inventory-data";
 import { formatDate } from "@/lib/formatters/date";
@@ -15,7 +18,7 @@ import { queryKeys } from "@/lib/query/keys";
 
 const pageSize = 12;
 
-export function InventoryList() {
+export function InventoryTable() {
   const { can } = usePermissions();
   const canRead = can("inventory.read");
   const canAdjust = can("inventory.adjust");
@@ -93,7 +96,7 @@ export function InventoryList() {
       <div className="grid gap-3 rounded-2xl border border-separator bg-surface p-4 sm:grid-cols-[1fr_220px]">
         <label>
           <span className="sr-only">Search inventory</span>
-          <input
+          <Input
             className="h-11 w-full rounded-xl border border-separator bg-background px-3 text-sm outline-none focus:border-accent"
             placeholder="Search product or SKU"
             type="search"
@@ -106,7 +109,7 @@ export function InventoryList() {
         </label>
         <label>
           <span className="sr-only">Stock filter</span>
-          <select
+          <Select
             className="h-11 w-full rounded-xl border border-separator bg-background px-3 text-sm outline-none focus:border-accent"
             value={filter}
             onChange={(event) => {
@@ -117,7 +120,7 @@ export function InventoryList() {
             <option value="ALL">All inventory</option>
             <option value="LOW">Low stock</option>
             <option value="OUT">Out of stock</option>
-          </select>
+          </Select>
         </label>
       </div>
 
@@ -125,7 +128,7 @@ export function InventoryList() {
         {stocks.length ? (
           <>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[1050px] text-left text-sm">
+              <Table className="w-full min-w-[1050px] text-left text-sm">
                 <thead className="bg-surface-secondary text-xs text-muted">
                   <tr>
                     <th className="px-4 py-3 font-medium">Product</th>
@@ -182,19 +185,19 @@ export function InventoryList() {
                       </td>
                       <td className="px-4 py-4 text-right">
                         {canAdjust && (
-                          <button
+                          <Button
                             className="rounded-lg border border-separator px-3 py-1.5 text-xs font-semibold hover:bg-surface-secondary"
                             type="button"
                             onClick={() => setAdjusting(stock)}
                           >
                             Adjust
-                          </button>
+                          </Button>
                         )}
                       </td>
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </Table>
             </div>
             <div className="flex items-center justify-between border-t border-separator px-4 py-3">
               <p className="text-xs text-muted">
@@ -238,25 +241,12 @@ export function InventoryList() {
 }
 
 export function StockHealth({ stock }: { stock: DashboardInventoryStock }) {
-  if (stock.onlineSellableStock <= 0) {
-    return (
-      <span className="rounded-full bg-danger/10 px-2.5 py-1 text-[10px] font-bold text-danger">
-        OUT OF STOCK
-      </span>
-    );
-  }
-  if (isLowStock(stock)) {
-    return (
-      <span className="rounded-full bg-warning/10 px-2.5 py-1 text-[10px] font-bold text-warning-foreground">
-        LOW STOCK
-      </span>
-    );
-  }
-
   return (
-    <span className="rounded-full bg-success/10 px-2.5 py-1 text-[10px] font-bold text-success">
-      HEALTHY
-    </span>
+    <StockStatusBadge
+      availableStock={stock.availableStock}
+      onlineSellableStock={stock.onlineSellableStock}
+      safetyBuffer={stock.safetyBuffer}
+    />
   );
 }
 
@@ -266,6 +256,8 @@ export function isLowStock(stock: DashboardInventoryStock) {
     (stock.safetyBuffer > 0 && stock.availableStock <= stock.safetyBuffer)
   );
 }
+
+export const InventoryList = InventoryTable;
 
 function NumberCell({ value }: { value: number }) {
   return <td className="px-4 py-4 text-right font-medium">{value}</td>;
@@ -281,14 +273,14 @@ function PageButton({
   onClick: () => void;
 }) {
   return (
-    <button
+    <Button
       className="rounded-lg border border-separator px-3 py-1.5 text-xs font-semibold disabled:opacity-40"
       disabled={disabled}
       type="button"
       onClick={onClick}
     >
       {label}
-    </button>
+    </Button>
   );
 }
 
@@ -321,13 +313,13 @@ function ErrorNotice({
       <div>
         <h2 className="text-xl font-semibold">Inventory is unavailable</h2>
         <p className="mt-2 text-sm text-muted">{message}</p>
-        <button
+        <Button
           className="mt-5 rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
           type="button"
           onClick={onRetry}
         >
           Try again
-        </button>
+        </Button>
       </div>
     </div>
   );

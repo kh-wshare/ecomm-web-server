@@ -38,6 +38,32 @@ export const queryKeys = {
     detail: (paymentId: string) =>
       [...queryKeys.payments.all, "detail", paymentId] as const,
   },
+  socialPosts: {
+    all: ["social-posts"] as const,
+    list: (filters: Record<string, unknown> = {}) =>
+      [...queryKeys.socialPosts.all, "list", filters] as const,
+    detail: (postId: string) =>
+      [...queryKeys.socialPosts.all, "detail", postId] as const,
+    logs: (postId: string) =>
+      [...queryKeys.socialPosts.all, "detail", postId, "logs"] as const,
+  },
+  storefront: {
+    all: ["storefront"] as const,
+    home: (merchantSlug: string) =>
+      [...queryKeys.storefront.all, merchantSlug] as const,
+    product: (merchantSlug: string, productSlug: string) =>
+      [
+        ...queryKeys.storefront.all,
+        merchantSlug,
+        "products",
+        productSlug,
+      ] as const,
+  },
+  checkout: {
+    all: ["checkout"] as const,
+    detail: (sessionId: string) =>
+      [...queryKeys.checkout.all, sessionId] as const,
+  },
   notifications: {
     all: ["notifications"] as const,
     list: (filters: Record<string, unknown> = {}) =>

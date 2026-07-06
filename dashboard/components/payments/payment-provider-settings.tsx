@@ -1,9 +1,11 @@
 "use client";
 
+import { Form } from "@heroui/react";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 
+import { Button, Input } from "@/components/ui/hero-controls";
 import type { PaymentProviderCode } from "@/types/payment";
 import { usePermissions } from "@/hooks/use-permissions";
 import {
@@ -165,13 +167,13 @@ function ProviderCard({
         {description}
       </p>
       {action && !isLoading && (
-        <button
+        <Button
           className="mt-5 h-10 rounded-xl border border-separator px-4 text-sm font-semibold hover:bg-surface-secondary"
           type="button"
           onClick={action.onClick}
         >
           {action.label}
-        </button>
+        </Button>
       )}
     </article>
   );
@@ -222,7 +224,7 @@ function ConnectProviderDialog({
       className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4"
       role="dialog"
     >
-      <form
+      <Form
         className="w-full max-w-md rounded-2xl border border-separator bg-surface p-5 shadow-2xl"
         onSubmit={(event) => {
           event.preventDefault();
@@ -237,7 +239,7 @@ function ConnectProviderDialog({
           <span className="mb-1.5 block text-sm font-medium">
             Account label
           </span>
-          <input
+          <Input
             className="h-11 w-full rounded-xl border border-separator bg-background px-3 text-sm"
             maxLength={80}
             placeholder="Primary checkout gateway"
@@ -249,7 +251,7 @@ function ConnectProviderDialog({
           <span className="mb-1.5 block text-sm font-medium">
             Webhook signing secret
           </span>
-          <input
+          <Input
             autoComplete="new-password"
             className="h-11 w-full rounded-xl border border-separator bg-background px-3 text-sm"
             maxLength={200}
@@ -262,23 +264,23 @@ function ConnectProviderDialog({
           />
         </label>
         <div className="mt-5 flex justify-end gap-3">
-          <button
+          <Button
             className="h-10 rounded-xl border border-separator px-4 text-sm font-semibold"
             disabled={mutation.isPending}
             type="button"
             onClick={onClose}
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             className="h-10 rounded-xl bg-accent px-4 text-sm font-semibold text-accent-foreground disabled:opacity-50"
             disabled={!valid || mutation.isPending}
             type="submit"
           >
             {mutation.isPending ? "Connecting…" : "Connect gateway"}
-          </button>
+          </Button>
         </div>
-      </form>
+      </Form>
     </div>
   );
 }

@@ -1,9 +1,11 @@
 "use client";
 
+import { Form } from "@heroui/react";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 
+import { Button, Input, TextArea } from "@/components/ui/hero-controls";
 import type { CurrentTheme, MerchantProfile } from "@/types/theme";
 import { usePermissions } from "@/hooks/use-permissions";
 import {
@@ -131,7 +133,7 @@ function SettingsForm({
   };
 
   return (
-    <form
+    <Form
       className="space-y-5"
       onSubmit={(event) => {
         event.preventDefault();
@@ -158,13 +160,13 @@ function SettingsForm({
           </p>
         </div>
         {canSave && (
-          <button
+          <Button
             className="h-11 rounded-xl bg-accent px-5 text-sm font-semibold text-accent-foreground disabled:opacity-50"
             disabled={save.isPending}
             type="submit"
           >
             {save.isPending ? "Saving…" : "Save settings"}
-          </button>
+          </Button>
         )}
       </header>
 
@@ -216,7 +218,7 @@ function SettingsForm({
             <span className="mb-1.5 block text-sm font-medium">
               SEO description
             </span>
-            <textarea
+            <TextArea
               className="min-h-24 w-full rounded-xl border border-separator bg-background p-3 text-sm outline-none focus:border-accent"
               maxLength={160}
               value={values.seoDescription}
@@ -248,7 +250,7 @@ function SettingsForm({
           />
         </div>
       </SettingsPanel>
-    </form>
+    </Form>
   );
 }
 
@@ -284,7 +286,7 @@ function Field({
   return (
     <label className={className}>
       <span className="mb-1.5 block text-sm font-medium">{label}</span>
-      <input
+      <Input
         {...props}
         className={`h-11 w-full rounded-xl border bg-background px-3 text-sm outline-none ${
           error ? "border-danger" : "border-separator focus:border-accent"

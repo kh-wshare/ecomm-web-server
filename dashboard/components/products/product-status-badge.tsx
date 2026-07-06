@@ -1,17 +1,18 @@
 import type { ProductStatus } from "@/types/product";
+import { Chip } from "@heroui/react/chip";
 
 export function ProductStatusBadge({ status }: { status: ProductStatus }) {
-  const styles = {
-    ACTIVE: "bg-success/10 text-success",
-    DRAFT: "bg-warning/10 text-warning-foreground",
-    INACTIVE: "bg-surface-secondary text-muted",
+
+  const statusColorMap: Record<string, "success" | "danger" | "warning"> = {
+    ACTIVE: "success",
+    DRAFT: "warning",
+    INACTIVE: "danger",
+    "On Leave": "warning",
   };
 
   return (
-    <span
-      className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wide ${styles[status]}`}
-    >
+    <Chip color={statusColorMap[status]} size="sm" variant="soft">
       {status}
-    </span>
+    </Chip>
   );
 }

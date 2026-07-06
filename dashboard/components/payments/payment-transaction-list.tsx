@@ -1,20 +1,20 @@
 "use client";
 
 import { useDeferredValue, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 
 import { OrderStatusBadge } from "@/components/orders/order-status-badge";
+import { Button, Input, Select } from "@/components/ui/hero-controls";
+import { Table } from "@/components/ui/hero-table";
 import type {
   PaymentFilters,
   PaymentProviderCode,
   PaymentTransactionStatus,
 } from "@/types/payment";
+import { usePayments } from "@/hooks/api/use-payments";
 import { usePermissions } from "@/hooks/use-permissions";
 import { formatCurrency } from "@/lib/formatters/currency";
 import { formatDate } from "@/lib/formatters/date";
-import { getPayments } from "@/lib/payments/payment-data";
-import { queryKeys } from "@/lib/query/keys";
 
 const initialFilters: PaymentFilters = {
   search: "",
@@ -33,11 +33,7 @@ export function PaymentTransactionList() {
   const [filters, setFilters] = useState(initialFilters);
   const deferredSearch = useDeferredValue(filters.search.trim());
   const queryFilters = { ...filters, search: deferredSearch };
-  const paymentsQuery = useQuery({
-    queryKey: queryKeys.payments.list(queryFilters),
-    queryFn: () => getPayments(queryFilters),
-    enabled: canRead,
-  });
+  const paymentsQuery = usePayments(queryFilters, canRead);
   const update = <Key extends keyof PaymentFilters>(
     key: Key,
     value: PaymentFilters[Key],
@@ -78,7 +74,7 @@ export function PaymentTransactionList() {
           <span className="mb-1 block text-xs font-medium text-muted">
             Transaction or order
           </span>
-          <input
+          <Input
             className="h-10 w-full rounded-xl border border-separator bg-background px-3 text-sm"
             placeholder="Search transaction ID or order"
             type="search"
@@ -127,7 +123,7 @@ export function PaymentTransactionList() {
         ) : paymentsQuery.data.items.length ? (
           <>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[900px] text-left text-sm">
+              <Table className="w-full min-w-[900px] text-left text-sm">
                 <thead className="bg-surface-secondary text-xs text-muted">
                   <tr>
                     <th className="px-4 py-3 font-medium">Transaction</th>
@@ -175,7 +171,7 @@ export function PaymentTransactionList() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </Table>
             </div>
             <div className="flex items-center justify-between border-t border-separator px-4 py-3">
               <p className="text-xs text-muted">
@@ -236,7 +232,7 @@ function SelectField({
   return (
     <label>
       <span className="mb-1 block text-xs font-medium text-muted">{label}</span>
-      <select
+      <Select
         className="h-10 w-full rounded-xl border border-separator bg-background px-3 text-sm"
         value={value}
         onChange={(event) => onChange(event.target.value)}
@@ -244,7 +240,7 @@ function SelectField({
         {options.map((option) => (
           <option key={option}>{option}</option>
         ))}
-      </select>
+      </Select>
     </label>
   );
 }
@@ -261,7 +257,7 @@ function DateField({
   return (
     <label>
       <span className="mb-1 block text-xs font-medium text-muted">{label}</span>
-      <input
+      <Input
         className="h-10 w-full rounded-xl border border-separator bg-background px-2 text-xs"
         type="date"
         value={value}
@@ -281,14 +277,14 @@ function PageButton({
   onClick: () => void;
 }) {
   return (
-    <button
+    <Button
       className="rounded-lg border border-separator px-3 py-1.5 text-xs font-semibold disabled:opacity-40"
       disabled={disabled}
       type="button"
       onClick={onClick}
     >
       {label}
-    </button>
+    </Button>
   );
 }
 
@@ -303,13 +299,13 @@ function ErrorState({
     <div className="px-6 py-16 text-center">
       <p className="font-semibold">Transactions are unavailable</p>
       <p className="mt-1 text-sm text-muted">{message}</p>
-      <button
+      <Button
         className="mt-4 rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
         type="button"
         onClick={onRetry}
       >
         Try again
-      </button>
+      </Button>
     </div>
   );
 }

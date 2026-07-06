@@ -6,6 +6,8 @@ import Link from "next/link";
 
 import { OrderStatusBadge } from "./order-status-badge";
 
+import { Button, Input } from "@/components/ui/hero-controls";
+import { Table } from "@/components/ui/hero-table";
 import type { Order } from "@/types/order";
 import { usePermissions } from "@/hooks/use-permissions";
 import { formatCurrency } from "@/lib/formatters/currency";
@@ -130,7 +132,7 @@ export function OrderDetail({ orderId }: { orderId: string }) {
         <div className="space-y-6 xl:col-span-2">
           <Panel title="Ordered items">
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[620px] text-left text-sm">
+              <Table className="w-full min-w-[620px] text-left text-sm">
                 <thead className="text-xs text-muted">
                   <tr>
                     <th className="pb-3 font-medium">Product</th>
@@ -165,7 +167,7 @@ export function OrderDetail({ orderId }: { orderId: string }) {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </Table>
             </div>
             <dl className="ml-auto mt-4 max-w-xs space-y-2 border-t border-separator pt-4 text-sm">
               <AmountRow
@@ -346,7 +348,7 @@ function OrderActions({
   return (
     <div className="flex flex-wrap gap-2">
       {visible.map((item) => (
-        <button
+        <Button
           className={
             item.danger
               ? "h-10 rounded-xl border border-danger/40 px-4 text-sm font-semibold text-danger"
@@ -357,7 +359,7 @@ function OrderActions({
           onClick={() => onAction(item.action)}
         >
           {item.label}
-        </button>
+        </Button>
       ))}
     </div>
   );
@@ -394,7 +396,7 @@ function ConfirmationDialog({
         </p>
         {action === "REFUND" && (
           <label className="mt-4 flex items-center gap-3 rounded-xl bg-surface-secondary p-3 text-sm">
-            <input
+            <Input
               checked={returnStock}
               type="checkbox"
               onChange={(event) => onReturnStock(event.target.checked)}
@@ -403,22 +405,22 @@ function ConfirmationDialog({
           </label>
         )}
         <div className="mt-5 flex justify-end gap-3">
-          <button
+          <Button
             className="h-10 rounded-xl border border-separator px-4 text-sm font-semibold"
             disabled={isPending}
             type="button"
             onClick={onClose}
           >
             Keep order
-          </button>
-          <button
+          </Button>
+          <Button
             className="h-10 rounded-xl bg-accent px-4 text-sm font-semibold text-accent-foreground disabled:opacity-60"
             disabled={isPending}
             type="button"
             onClick={onConfirm}
           >
             {isPending ? "Updating…" : `Confirm ${label}`}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -521,13 +523,13 @@ function ErrorState({
       <div>
         <h2 className="text-xl font-semibold">Order is unavailable</h2>
         <p className="mt-2 text-sm text-muted">{message}</p>
-        <button
+        <Button
           className="mt-5 rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
           type="button"
           onClick={onRetry}
         >
           Try again
-        </button>
+        </Button>
       </div>
     </div>
   );

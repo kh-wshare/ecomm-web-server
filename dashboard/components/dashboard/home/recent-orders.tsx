@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import type { DashboardOrder } from "@/types/dashboard";
+import { Table } from "@/components/ui/hero-table";
 import { formatCurrency } from "@/lib/formatters/currency";
 import { formatDate } from "@/lib/formatters/date";
 
@@ -21,7 +22,7 @@ export function RecentOrders({ orders }: { orders: DashboardOrder[] }) {
       </div>
       {orders.length ? (
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[640px] text-left text-sm">
+          <Table className="w-full min-w-[640px] text-left text-sm">
             <thead className="bg-surface-secondary text-xs text-muted">
               <tr>
                 <th className="px-5 py-3 font-medium">Order</th>
@@ -68,7 +69,7 @@ export function RecentOrders({ orders }: { orders: DashboardOrder[] }) {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </Table>
         </div>
       ) : (
         <div className="px-5 py-12 text-center">

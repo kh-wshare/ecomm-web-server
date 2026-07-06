@@ -1,13 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 
+import { StockMovementTimeline } from "./inventory-shared";
+
+import { Button, Input, Select } from "@/components/ui/hero-controls";
+import { useStockMovements } from "@/hooks/api/use-inventory";
 import { usePermissions } from "@/hooks/use-permissions";
-import { getInventoryMovements } from "@/lib/inventory/inventory-data";
-import { formatDate } from "@/lib/formatters/date";
-import { queryKeys } from "@/lib/query/keys";
 
 export function InventoryMovements() {
   const { can } = usePermissions();
@@ -16,11 +16,7 @@ export function InventoryMovements() {
   const [movementType, setMovementType] = useState("ALL");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
-  const movementsQuery = useQuery({
-    queryKey: [...queryKeys.inventory.all, "movements"],
-    queryFn: getInventoryMovements,
-    enabled: canRead,
-  });
+  const movementsQuery = useStockMovements(canRead);
   const movements = useMemo(
     () => movementsQuery.data ?? [],
     [movementsQuery.data],
@@ -77,13 +73,13 @@ export function InventoryMovements() {
           <p className="mt-2 text-sm text-muted">
             {movementsQuery.error.message}
           </p>
-          <button
+          <Button
             className="mt-5 rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
             type="button"
             onClick={() => movementsQuery.refetch()}
           >
             Try again
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -139,51 +135,7 @@ export function InventoryMovements() {
           </p>
         </div>
         {filtered.length ? (
-          <ol className="relative ml-2 border-l border-separator">
-            {filtered.map((movement) => (
-              <li className="relative pb-6 pl-7 last:pb-0" key={movement.id}>
-                <span
-                  className={`absolute -left-2 top-1 grid size-4 place-items-center rounded-full ring-4 ring-surface ${
-                    movement.quantity < 0 ? "bg-danger" : "bg-success"
-                  }`}
-                />
-                <div className="flex flex-col gap-2 rounded-xl bg-surface-secondary p-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-semibold">{movement.productName}</p>
-                      <span className="rounded-md bg-background px-2 py-1 text-[10px] font-semibold text-muted">
-                        {movement.productSku}
-                      </span>
-                    </div>
-                    <p className="mt-1 text-xs text-muted">
-                      {toLabel(movement.type)}
-                      {movement.referenceType
-                        ? ` · ${toLabel(movement.referenceType)}`
-                        : ""}
-                      {movement.referenceId ? ` · ${movement.referenceId}` : ""}
-                    </p>
-                  </div>
-                  <div className="sm:text-right">
-                    <p
-                      className={`font-bold ${
-                        movement.quantity < 0 ? "text-danger" : "text-success"
-                      }`}
-                    >
-                      {movement.quantity > 0 ? "+" : ""}
-                      {movement.quantity}
-                    </p>
-                    <time className="mt-1 block text-[10px] text-muted">
-                      {formatDate(
-                        movement.createdAt,
-                        { dateStyle: "medium", timeStyle: "short" },
-                        "en-US",
-                      )}
-                    </time>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ol>
+          <StockMovementTimeline movements={filtered} />
         ) : (
           <p className="rounded-xl border border-dashed border-separator px-4 py-12 text-center text-sm text-muted">
             No stock movements match these filters.
@@ -210,13 +162,13 @@ function Filter({
       <span className="mb-1.5 block text-xs font-medium text-muted">
         {label}
       </span>
-      <select
+      <Select
         className="h-11 w-full rounded-xl border border-separator bg-background px-3 text-sm"
         value={value}
         onChange={(event) => onChange(event.target.value)}
       >
         {children}
-      </select>
+      </Select>
     </label>
   );
 }
@@ -235,7 +187,7 @@ function DateField({
       <span className="mb-1.5 block text-xs font-medium text-muted">
         {label}
       </span>
-      <input
+      <Input
         className="h-11 w-full rounded-xl border border-separator bg-background px-3 text-sm"
         type="date"
         value={value}

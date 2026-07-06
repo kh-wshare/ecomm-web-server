@@ -70,7 +70,10 @@ class ApiClient {
     });
     const payload = await parseResponse(response);
 
-    if (!response.ok) throw createApiError(response.status, payload);
+    if (!response.ok) {
+      if (authenticated && response.status === 401) authTokenStorage.clear();
+      throw createApiError(response.status, payload);
+    }
 
     return payload as ApiResponse<T>;
   }

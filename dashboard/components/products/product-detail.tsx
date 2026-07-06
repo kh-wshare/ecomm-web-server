@@ -5,11 +5,14 @@ import Link from "next/link";
 
 import { ProductStatusBadge } from "./product-status-badge";
 
+import { Button } from "@/components/ui/hero-controls";
+import { Table } from "@/components/ui/hero-table";
 import type {
   Product,
   ProductInventoryDetail,
   ProductOrder,
 } from "@/types/product";
+import { ImageGallery } from "@/components/ui/image-gallery";
 import { usePermissions } from "@/hooks/use-permissions";
 import {
   getProduct,
@@ -62,13 +65,13 @@ export function ProductDetail({ productId }: { productId: string }) {
           <p className="mt-2 text-sm text-muted">
             {productQuery.error.message}
           </p>
-          <button
+          <Button
             className="mt-5 rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
             type="button"
             onClick={() => productQuery.refetch()}
           >
             Try again
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -172,7 +175,7 @@ function Overview({ product }: { product: Product }) {
         <p className="mb-3 text-xs font-medium text-muted">Variants</p>
         {product.variants?.length ? (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[560px] text-left text-sm">
+            <Table className="w-full min-w-[560px] text-left text-sm">
               <thead className="text-xs text-muted">
                 <tr>
                   <th className="pb-2 font-medium">Name</th>
@@ -193,7 +196,7 @@ function Overview({ product }: { product: Product }) {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </Table>
           </div>
         ) : (
           <p className="text-sm text-muted">No variants.</p>
@@ -222,7 +225,7 @@ function SalesHistory({
         <LoadingRows />
       ) : orders?.length ? (
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[600px] text-left text-sm">
+          <Table className="w-full min-w-[600px] text-left text-sm">
             <thead className="text-xs text-muted">
               <tr>
                 <th className="pb-2 font-medium">Order</th>
@@ -265,7 +268,7 @@ function SalesHistory({
                 );
               })}
             </tbody>
-          </table>
+          </Table>
         </div>
       ) : (
         <EmptyMessage message="No orders contain this product yet." />
@@ -291,7 +294,7 @@ function StockHistory({
         <LoadingRows />
       ) : inventory?.recentMovements.length ? (
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[560px] text-left text-sm">
+          <Table className="w-full min-w-[560px] text-left text-sm">
             <thead className="text-xs text-muted">
               <tr>
                 <th className="pb-2 font-medium">Movement</th>
@@ -329,7 +332,7 @@ function StockHistory({
                 </tr>
               ))}
             </tbody>
-          </table>
+          </Table>
         </div>
       ) : (
         <EmptyMessage message="No stock movements recorded." />
@@ -375,29 +378,7 @@ function ProductMedia({ product }: { product: Product }) {
   return (
     <DetailSection title="Product media">
       {media.length ? (
-        <div className="grid grid-cols-2 gap-3">
-          {media.map((item) => (
-            <a
-              aria-label={`Open product ${item.type.toLowerCase()}`}
-              className="aspect-square rounded-xl bg-surface-secondary bg-cover bg-center ring-1 ring-separator"
-              href={item.url}
-              key={item.id}
-              rel="noreferrer"
-              style={
-                item.type === "IMAGE"
-                  ? { backgroundImage: `url("${item.url}")` }
-                  : undefined
-              }
-              target="_blank"
-            >
-              {item.type === "VIDEO" && (
-                <span className="grid h-full place-items-center text-xs font-semibold">
-                  Open video
-                </span>
-              )}
-            </a>
-          ))}
-        </div>
+        <ImageGallery media={media} />
       ) : (
         <EmptyMessage message="No product media." />
       )}

@@ -1,22 +1,22 @@
 "use client";
 
 import { useDeferredValue, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 
 import { OrderStatusBadge } from "./order-status-badge";
 
+import { Button, Input, Select } from "@/components/ui/hero-controls";
+import { Table } from "@/components/ui/hero-table";
 import type {
   FulfillmentStatus,
   OrderFilters,
   PaymentStatus,
   SalesChannel,
 } from "@/types/order";
+import { useOrders } from "@/hooks/api/use-orders";
 import { usePermissions } from "@/hooks/use-permissions";
 import { formatCurrency } from "@/lib/formatters/currency";
 import { formatDate } from "@/lib/formatters/date";
-import { getOrders } from "@/lib/orders/order-data";
-import { queryKeys } from "@/lib/query/keys";
 
 const initialFilters: OrderFilters = {
   search: "",
@@ -29,17 +29,13 @@ const initialFilters: OrderFilters = {
   limit: 15,
 };
 
-export function OrderList() {
+export function OrderTable() {
   const { can } = usePermissions();
   const canRead = can("order.read");
   const [filters, setFilters] = useState(initialFilters);
   const deferredSearch = useDeferredValue(filters.search.trim());
   const queryFilters = { ...filters, search: deferredSearch };
-  const ordersQuery = useQuery({
-    queryKey: queryKeys.orders.list(queryFilters),
-    queryFn: () => getOrders(queryFilters),
-    enabled: canRead,
-  });
+  const ordersQuery = useOrders(queryFilters, canRead);
   const update = <Key extends keyof OrderFilters>(
     key: Key,
     value: OrderFilters[Key],
@@ -64,7 +60,7 @@ export function OrderList() {
           <span className="mb-1 block text-xs font-medium text-muted">
             Order or customer
           </span>
-          <input
+          <Input
             className="h-10 w-full rounded-xl border border-separator bg-background px-3 text-sm outline-none focus:border-accent"
             placeholder="Search order number, name, or email"
             type="search"
@@ -127,7 +123,7 @@ export function OrderList() {
         ) : ordersQuery.data.items.length ? (
           <>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[980px] text-left text-sm">
+              <Table className="w-full min-w-[980px] text-left text-sm">
                 <thead className="bg-surface-secondary text-xs text-muted">
                   <tr>
                     <th className="px-4 py-3 font-medium">Order</th>
@@ -186,7 +182,7 @@ export function OrderList() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </Table>
             </div>
             <Pagination
               page={ordersQuery.data.meta.page}
@@ -208,6 +204,8 @@ export function OrderList() {
   );
 }
 
+export const OrderList = OrderTable;
+
 function FilterSelect({
   label,
   onChange,
@@ -222,7 +220,7 @@ function FilterSelect({
   return (
     <label>
       <span className="mb-1 block text-xs font-medium text-muted">{label}</span>
-      <select
+      <Select
         className="h-10 w-full rounded-xl border border-separator bg-background px-3 text-sm"
         value={value}
         onChange={(event) => onChange(event.target.value)}
@@ -232,7 +230,7 @@ function FilterSelect({
             {option.replaceAll("_", " ")}
           </option>
         ))}
-      </select>
+      </Select>
     </label>
   );
 }
@@ -249,7 +247,7 @@ function DateField({
   return (
     <label>
       <span className="mb-1 block text-xs font-medium text-muted">{label}</span>
-      <input
+      <Input
         className="h-10 w-full rounded-xl border border-separator bg-background px-2 text-xs"
         type="date"
         value={value}
@@ -302,14 +300,14 @@ function PageButton({
   onClick: () => void;
 }) {
   return (
-    <button
+    <Button
       className="rounded-lg border border-separator px-3 py-1.5 text-xs font-semibold disabled:opacity-40"
       disabled={disabled}
       type="button"
       onClick={onClick}
     >
       {label}
-    </button>
+    </Button>
   );
 }
 
@@ -336,13 +334,13 @@ function ErrorState({
     <div className="px-6 py-16 text-center">
       <p className="font-semibold">Orders are unavailable</p>
       <p className="mt-1 text-sm text-muted">{message}</p>
-      <button
+      <Button
         className="mt-4 rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
         type="button"
         onClick={onRetry}
       >
         Try again
-      </button>
+      </Button>
     </div>
   );
 }
