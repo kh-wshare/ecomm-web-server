@@ -2,6 +2,9 @@
 
 import { useDeferredValue, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+import { Button } from "@/components/ui/hero-controls";
 
 import { SocialPostStatusBadge } from "./social-post-status-badge";
 
@@ -47,6 +50,8 @@ export function SocialPostList() {
     );
   }
 
+  const router = useRouter();
+
   return (
     <section className="space-y-5">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -60,12 +65,13 @@ export function SocialPostList() {
           </p>
         </div>
         {canCreate && (
-          <Link
+          <Button
             className="inline-flex h-11 items-center justify-center rounded-xl bg-accent px-4 text-sm font-semibold text-accent-foreground"
-            href="/dashboard/social-posts/new"
+            type="button"
+            onPress={() => router.push("/dashboard/social-posts/new")}
           >
             Create social post
-          </Link>
+          </Button>
         )}
       </header>
 
@@ -202,12 +208,13 @@ export function SocialPostList() {
               !deferredSearch &&
               filters.status === "ALL" &&
               filters.platform === "ALL" ? (
-                <Link
+                <Button
                   className="inline-flex rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground"
-                  href="/dashboard/social-posts/new"
+                  type="button"
+                  onPress={() => router.push("/dashboard/social-posts/new")}
                 >
                   Create social post
-                </Link>
+                </Button>
               ) : undefined
             }
           />

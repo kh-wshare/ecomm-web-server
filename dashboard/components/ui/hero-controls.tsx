@@ -122,10 +122,10 @@ export function Select({
                 {loadingText}
               </ListBox.Item>
             ) : (
-              options.map((option) => (
+              options.map((option, index) => (
                 <ListBox.Item
                   id={option.key}
-                  key={option.key}
+                  key={`${option.key}-${index}`}
                   textValue={toTextValue(option.label)}
                 >
                   {option.label}

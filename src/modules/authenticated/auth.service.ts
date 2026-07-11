@@ -13,6 +13,14 @@ import {
   SessionMetadata,
   SessionsService,
 } from '#app/modules/sessions/sessions.service';
+import {
+  SocialAuthService,
+  type SocialProfile,
+} from '#app/modules/social-auth/social-auth.service';
+import {
+  FirebaseGoogleLoginDto,
+  TelegramLoginDto,
+} from '#app/modules/social-auth/dto/social-login.dto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { JwtPayload } from './strategies/jwt.strategy';
@@ -24,6 +32,7 @@ export class AuthService {
     private readonly authorization: AuthorizationService,
     private readonly sessions: SessionsService,
     private readonly jwtService: JwtService,
+    private readonly socialAuth: SocialAuthService,
   ) {}
 
   async registerMerchant(dto: RegisterDto, metadata: SessionMetadata) {
@@ -129,6 +138,43 @@ export class AuthService {
       refreshToken,
       merchantAccess,
     );
+  }
+
+  async loginWithFirebaseGoogle(
+    dto: FirebaseGoogleLoginDto,
+    metadata: SessionMetadata,
+  ) {
+    const profile = await this.socialAuth.firebaseGoogleProfile(dto.idToken);
+    return this.loginWithSocialProfile(profile, metadata, {
+      scope: 'merchant',
+    });
+  }
+
+  async loginWithTelegram(dto: TelegramLoginDto, metadata: SessionMetadata) {
+    const profile = await this.socialAuth.telegramProfile(dto.idToken);
+    return this.loginWithSocialProfile(profile, metadata, {
+      scope: 'merchant',
+    });
+  }
+
+  async loginCustomerWithFirebaseGoogle(
+    dto: FirebaseGoogleLoginDto,
+    metadata: SessionMetadata,
+  ) {
+    const profile = await this.socialAuth.firebaseGoogleProfile(dto.idToken);
+    return this.loginWithSocialProfile(profile, metadata, {
+      scope: 'customer',
+    });
+  }
+
+  async loginCustomerWithTelegram(
+    dto: TelegramLoginDto,
+    metadata: SessionMetadata,
+  ) {
+    const profile = await this.socialAuth.telegramProfile(dto.idToken);
+    return this.loginWithSocialProfile(profile, metadata, {
+      scope: 'customer',
+    });
   }
 
   async refresh(refreshToken: string) {
@@ -261,6 +307,53 @@ export class AuthService {
       activeMerchant,
       merchants,
     };
+  }
+
+  private async loginWithSocialProfile(
+    profile: SocialProfile,
+    metadata: SessionMetadata,
+    options: { scope: 'merchant' | 'customer' },
+  ) {
+    const user = await this.socialAuth.findOrCreateUser(profile, options);
+    if (user.status !== 'ACTIVE' || user.deletedAt) {
+      throw new UnauthorizedException('User is no longer active');
+    }
+
+    const merchantAccess = await this.authorization.listMerchantAccess(user.id);
+    const merchantId = merchantAccess[0]?.merchant.id ?? null;
+    const { session, refreshToken } = await this.sessions.create(
+      user.id,
+      merchantId,
+      metadata,
+    );
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id: user.id },
+        data: { lastLoginAt: new Date() },
+      }),
+      this.prisma.auditLog.create({
+        data: {
+          merchantId,
+          userId: user.id,
+          action: 'auth.social_login',
+          entityType: 'session',
+          entityId: session.id,
+          after: {
+            provider: profile.provider,
+            scope: options.scope,
+          },
+          ...metadata,
+        },
+      }),
+    ]);
+
+    return this.authResponse(
+      user,
+      session.id,
+      merchantId,
+      refreshToken,
+      merchantAccess,
+    );
   }
 
   private signAccessToken(

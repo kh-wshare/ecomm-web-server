@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { ProductStatusBadge } from "./product-status-badge";
 
@@ -27,6 +28,7 @@ export function ProductDetail({ productId }: { productId: string }) {
   const { can } = usePermissions();
   const canRead = can("product.read");
   const canEdit = can("product.update");
+  const router = useRouter();
   const canReadInventory = can("inventory.read");
   const canReadOrders = can("order.read");
   const productQuery = useQuery({
@@ -101,12 +103,13 @@ export function ProductDetail({ productId }: { productId: string }) {
           </p>
         </div>
         {canEdit && (
-          <Link
+          <Button
             className="inline-flex h-11 items-center justify-center rounded-xl bg-accent px-4 text-sm font-semibold text-accent-foreground"
-            href={`/dashboard/products/${product.id}/edit`}
+            type="button"
+            onPress={() => router.push(`/dashboard/products/${product.id}/edit`)}
           >
             Edit product
-          </Link>
+          </Button>
         )}
       </header>
 

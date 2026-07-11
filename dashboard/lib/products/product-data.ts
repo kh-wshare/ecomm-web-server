@@ -90,9 +90,11 @@ export async function adjustProductStock(
   productId: string,
   quantityDelta: number,
   safetyBuffer: number,
+  variantId?: string,
 ) {
   const response = await apiClient.post<InventoryStock>("/inventory/adjust", {
     productId,
+    ...(variantId ? { variantId } : {}),
     quantityDelta,
     safetyBuffer,
     referenceType: "dashboard_product",

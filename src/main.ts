@@ -22,6 +22,7 @@ async function bootstrap() {
       'Accept',
       'Authorization',
       'Content-Type',
+      'X-Checkout-Token',
       'X-Correlation-ID',
       'X-Merchant-ID',
       'X-Payment-Signature',

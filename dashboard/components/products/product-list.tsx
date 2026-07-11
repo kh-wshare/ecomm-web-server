@@ -2,6 +2,7 @@
 
 import { Checkbox, Label, Pagination, SearchField, Table, Tooltip, type Selection } from "@heroui/react";
 import { useDeferredValue, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
@@ -28,6 +29,7 @@ import { PRODUCT_STATUSES, SALES_CHANNELS } from "@/types/product";
 const pageSize = 10;
 
 export function ProductList() {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { can } = usePermissions();
   const canRead = can("product.read");
@@ -133,13 +135,14 @@ export function ProductList() {
             </div>
           )}
           {canCreate && (
-            <Link
-              href="/dashboard/products/new"
-            >
-              <Button type="button" variant="primary" size="md">
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                onPress={() => router.push("/dashboard/products/new")}
+              >
                 Create product
               </Button>
-            </Link>
           )}
         </div>
       </header>
@@ -148,11 +151,11 @@ export function ProductList() {
         <div className="flex flex-col col-span-2 gap-1">
           <SearchField name="search" value={search}>
             <Label>Search</Label>
-            <SearchField.Group className="bg-surface-secondary">
+            <SearchField.Group className="bg-surface-secondary shadow-none">
               <SearchField.SearchIcon />
               <SearchField.Input value={search} onChange={(event) => {
                 setSearch(event.target.value),
-                  setPage(1);
+                setPage(1);
                 setSelected([]);
               }} placeholder="Search products..." />
               <SearchField.ClearButton />
@@ -192,72 +195,6 @@ export function ProductList() {
           ))}
         </FilterSelect>
       </div>
-
-      {/* <div className="flex flex-col gap-4 rounded-2xl border border-separator bg-surface p-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="w-full sm:max-w-md">
-          <SearchField name="search" value={search}>
-            <Label className="text-xs font-medium text-muted">Search</Label>
-
-            <SearchField.Group className="mt-1 flex h-10 items-center gap-2 rounded-xl border border-separator bg-surface-secondary px-3 transition focus-within:border-accent/60 focus-within:bg-surface focus-within:ring-2 focus-within:ring-accent/15">
-              <SearchField.SearchIcon className="size-4 shrink-0 text-muted" />
-
-              <SearchField.Input
-                className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
-                placeholder="Search products..."
-                value={search}
-                onChange={(event) => {
-                  setSearch(event.target.value);
-                  setPage(1);
-                  setSelected([]);
-                }}
-              />
-
-              <SearchField.ClearButton className="rounded-md text-muted transition hover:bg-surface hover:text-foreground" />
-            </SearchField.Group>
-          </SearchField>
-        </div>
-
-        <div className="flex w-full flex-col gap-3 sm:ml-auto sm:w-auto sm:flex-row sm:items-end sm:justify-end">
-          <div className="w-full sm:w-44">
-            <FilterSelect
-              label="Status"
-              value={status}
-              onChange={(value) => {
-                setStatus(value as ProductStatus | "ALL");
-                setPage(1);
-                setSelected([]);
-              }}
-            >
-              <option value="ALL">All statuses</option>
-              {PRODUCT_STATUSES.map((item) => (
-                <option key={item} value={item}>
-                  {toLabel(item)}
-                </option>
-              ))}
-            </FilterSelect>
-          </div>
-
-          <div className="w-full sm:w-44">
-            <FilterSelect
-              label="Channel"
-              value={channel}
-              onChange={(value) => {
-                setChannel(value as SalesChannel | "ALL");
-                setPage(1);
-                setSelected([]);
-              }}
-            >
-              <option value="ALL">All channels</option>
-              {SALES_CHANNELS.map((item) => (
-                <option key={item} value={item}>
-                  {toLabel(item)}
-                </option>
-              ))}
-            </FilterSelect>
-          </div>
-        </div>
-      </div> */}
-
       <div className="overflow-hidden rounded-2xl border border-separator bg-surface">
         {products.length ? (
           <Table variant="secondary">
@@ -428,6 +365,7 @@ function ProductRow({
   showStock: boolean;
   onDelete: () => void;
 }) {
+  const router = useRouter();
   const totalStock = product.stocks.reduce(
     (total, stock) => total + stock.totalStock,
     0,
@@ -529,36 +467,44 @@ function ProductRow({
       <Table.Cell className="px-4 py-4 w-34">
         <div className="flex items-center gap-1">
           <Tooltip delay={0}>
-            <Link href={`/dashboard/products/${product.id}`}>
-              <Button type="button" isIconOnly size="sm" variant="tertiary">
-                <Icon className="size-4" icon="gravity-ui:eye" />
-              </Button>
-            </Link>
+            <Button
+              type="button"
+              isIconOnly
+              size="sm"
+              variant="tertiary"
+              onPress={() => router.push(`/dashboard/products/${product.id}`)}
+            >
+              <Icon className="size-4" icon="gravity-ui:eye" />
+            </Button>
             <Tooltip.Content>
               <p>View</p>
             </Tooltip.Content>
           </Tooltip>
           {canUpdate && (
-            <Tooltip delay={0}>
-              <Link href={`/dashboard/products/${product.id}/edit`}>
-                <Button type="button" isIconOnly size="sm" variant="tertiary">
+              <Tooltip delay={0}>
+                <Button
+                  type="button"
+                  isIconOnly
+                  size="sm"
+                  variant="tertiary"
+                  onPress={() => router.push(`/dashboard/products/${product.id}/edit`)}
+                >
                   <Icon className="size-4" icon="gravity-ui:pencil" />
                 </Button>
-              </Link>
-              <Tooltip.Content>
-                <p>Edit</p>
-              </Tooltip.Content>
-            </Tooltip>
+                <Tooltip.Content>
+                  <p>Edit</p>
+                </Tooltip.Content>
+              </Tooltip>
           )}
           {canDelete && (
-            <Tooltip delay={0}>
-              <Button type="button" isIconOnly size="sm" variant="danger-soft" onClick={onDelete}>
-                <Icon className="size-4" icon="gravity-ui:trash-bin" />
-              </Button>
-              <Tooltip.Content>
-                <p>Delete</p>
-              </Tooltip.Content>
-            </Tooltip>
+              <Tooltip delay={0}>
+                <Button type="button" isIconOnly size="sm" variant="danger-soft" onPress={onDelete}>
+                  <Icon className="size-4" icon="gravity-ui:trash-bin" />
+                </Button>
+                <Tooltip.Content>
+                  <p>Delete</p>
+                </Tooltip.Content>
+              </Tooltip>
           )}
         </div>
       </Table.Cell>

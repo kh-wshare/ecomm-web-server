@@ -25,6 +25,15 @@ const variantSchema = z.object({
     .trim()
     .refine(isJsonObject, "Enter a valid JSON object"),
   status: z.enum(VARIANT_STATUSES),
+  initialStock: integerString("Variant initial stock"),
+  safetyBuffer: integerString("Variant safety buffer"),
+  stockAdjustment: z
+    .string()
+    .trim()
+    .refine(
+      (value) => value === "" || /^-?\d+$/.test(value),
+      "Enter a whole number",
+    ),
 });
 
 const mediaSchema = z.object({

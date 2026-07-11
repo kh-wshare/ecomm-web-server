@@ -23,7 +23,7 @@ export class StorefrontController {
   }
 
   @Get('products')
-  @ApiOperation({ summary: 'List publicly purchasable products' })
+  @ApiOperation({ summary: 'List publicly visible products' })
   @ApiOkResponse({ type: [PublicProductDto] })
   listProducts(
     @Param('merchantSlug') merchantSlug: string,
@@ -33,7 +33,7 @@ export class StorefrontController {
   }
 
   @Get('products/:productSlug')
-  @ApiOperation({ summary: 'Get a publicly purchasable product' })
+  @ApiOperation({ summary: 'Get a publicly visible product' })
   @ApiOkResponse({ type: PublicProductDto })
   getProduct(
     @Param('merchantSlug') merchantSlug: string,

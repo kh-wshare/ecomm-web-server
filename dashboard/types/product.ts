@@ -125,12 +125,19 @@ export type ProductFormVariant = {
   price: string;
   attributes: string;
   status: VariantStatus;
+  initialStock: string;
+  safetyBuffer: string;
+  stockAdjustment: string;
 };
 
 export type ProductFormMedia = {
   key: string;
   type: "IMAGE" | "VIDEO";
   url: string;
+  file?: File;
+  previewUrl?: string;
+  fileName?: string;
+  fileSize?: number;
 };
 
 export type ProductFormChannel = {

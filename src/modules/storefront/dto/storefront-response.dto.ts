@@ -75,6 +75,9 @@ export class PublicProductDto {
   channel!: SalesChannel;
 
   @ApiProperty()
+  baseIsAvailable!: boolean;
+
+  @ApiProperty()
   isAvailable!: boolean;
 
   @ApiProperty()

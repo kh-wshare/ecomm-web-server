@@ -13,6 +13,7 @@ import { checkoutStorage } from "@/lib/checkout/checkout-storage";
 import { formatCurrency } from "@/lib/formatters/currency";
 import { getErrorMessage } from "@/lib/errors/api-error";
 import { radiusValue } from "@/components/storefront/storefront-shell";
+import { storefrontCustomerSession } from "@/lib/storefront/customer-session";
 
 export function PurchasePanel({
   config,
@@ -32,16 +33,26 @@ export function PurchasePanel({
   const selectedVariant = product.variants.find(
     (variant) => variant.id === variantId,
   );
-  const requiresVariant = product.variants.length > 0;
+  const hasVariants = product.variants.length > 0;
+  const selectedTargetAvailable = selectedVariant
+    ? selectedVariant.isAvailable
+    : product.baseIsAvailable;
   const canBuy =
-    product.isAvailable &&
-    product.isPurchasable &&
-    (!requiresVariant || Boolean(selectedVariant?.isAvailable));
+    product.isAvailable && product.isPurchasable && selectedTargetAvailable;
   const price = selectedVariant?.price ?? product.price;
   const checkout = useMutation({
-    mutationFn: () =>
-      createCheckoutSession({
+    mutationFn: () => {
+      const customer = storefrontCustomerSession.get()?.user;
+      return createCheckoutSession({
         merchantSlug,
+        ...(customer
+          ? {
+              customerEmail: customer.email,
+              customerId: customer.id,
+              customerName: customer.fullName,
+              ...(customer.phone ? { customerPhone: customer.phone } : {}),
+            }
+          : {}),
         sourceChannel: "WEBSITE",
         items: [
           {
@@ -50,7 +61,8 @@ export function PurchasePanel({
             quantity,
           },
         ],
-      }),
+      });
+    },
     onSuccess: (session) => {
       checkoutStorage.set(session.id, {
         token: session.checkoutToken,
@@ -94,10 +106,35 @@ export function PurchasePanel({
         </p>
       )}
 
-      {requiresVariant && (
+      {hasVariants && (
         <fieldset className="mt-8">
           <legend className="text-sm font-semibold">Choose an option</legend>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            <Button
+              className="flex items-center justify-between gap-3 border px-4 py-3 text-left text-sm transition disabled:cursor-not-allowed disabled:opacity-40"
+              disabled={!product.baseIsAvailable}
+              style={{
+                backgroundColor: !selectedVariant
+                  ? `color-mix(in srgb, ${config.colors.accent} 10%, transparent)`
+                  : "transparent",
+                borderColor: !selectedVariant
+                  ? config.colors.accent
+                  : `color-mix(in srgb, ${config.colors.text} 15%, transparent)`,
+                borderRadius: radiusValue(config.layout.borderRadius),
+              }}
+              type="button"
+              onClick={() => setVariantId("")}
+            >
+              <span>
+                <span className="block font-semibold">{product.name}</span>
+                <span className="mt-0.5 block text-xs opacity-55">
+                  {product.baseIsAvailable ? product.sku : "Sold out"}
+                </span>
+              </span>
+              <span className="font-semibold">
+                {formatCurrency(product.price, product.currency)}
+              </span>
+            </Button>
             {product.variants.map((variant) => {
               const selected = variant.id === variantId;
               return (

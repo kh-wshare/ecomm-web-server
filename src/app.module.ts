@@ -20,6 +20,7 @@ import { PermissionGuard } from '#app/modules/authorization/guards/permission.gu
 import { PlatformRolesGuard } from '#app/modules/authorization/guards/platform-roles.guard';
 import { CatalogModule } from '#app/modules/catalog/catalog.module';
 import { CheckoutModule } from '#app/modules/checkout/checkout.module';
+import { FileStorageModule } from '#app/modules/file-storage/file-storage.module';
 import { InventoryModule } from '#app/modules/inventory/inventory.module';
 import { MerchantModule } from '#app/modules/merchant/merchant.module';
 import { NotificationModule } from '#app/modules/notification/notification.module';
@@ -49,14 +50,15 @@ import { UsersModule } from '#app/modules/users/users.module';
     MerchantModule,
     AuthorizationModule,
     CatalogModule,
+    FileStorageModule,
     InventoryModule,
-    StorefrontModule,
     ThemeModule,
     CheckoutModule,
     PaymentModule,
     OrderModule,
     SocialPostModule,
     NotificationModule,
+    StorefrontModule,
     AuditLogModule,
   ],
   controllers: [AppController],

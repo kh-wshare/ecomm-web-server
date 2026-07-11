@@ -49,6 +49,10 @@ export type CreatedCheckoutSession = CheckoutSession & {
 
 export type CreateCheckoutPayload = {
   merchantSlug: string;
+  customerId?: string;
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
   sourceChannel: "WEBSITE";
   items: Array<{
     productId: string;

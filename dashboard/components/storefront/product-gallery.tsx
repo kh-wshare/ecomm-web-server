@@ -64,6 +64,9 @@ export function ProductGallery({
               type="button"
               onClick={() => setSelected(index)}
             >
+              <span aria-hidden="true" className="sr-only">
+                {item.type === "VIDEO" ? "Video preview" : "Image preview"}
+              </span>
               {item.type === "VIDEO" && (
                 <span className="grid size-full place-items-center text-xs font-bold">
                   VIDEO

@@ -30,9 +30,32 @@ export class CheckoutItemDto {
   totalPrice!: string;
 }
 
+export class CheckoutOrderDto {
+  @ApiProperty({ format: 'uuid' })
+  id!: string;
+
+  @ApiProperty()
+  orderNumber!: string;
+
+  @ApiProperty()
+  status!: string;
+}
+
 export class CheckoutSessionDto {
   @ApiProperty({ format: 'uuid' })
   id!: string;
+
+  @ApiPropertyOptional({ format: 'uuid', nullable: true })
+  customerId!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  customerName!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  customerEmail!: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  customerPhone!: string | null;
 
   @ApiProperty({ enum: SalesChannel })
   sourceChannel!: SalesChannel;
@@ -58,11 +81,17 @@ export class CheckoutSessionDto {
   @ApiProperty()
   expiresAt!: Date;
 
+  @ApiProperty()
+  createdAt!: Date;
+
+  @ApiProperty()
+  updatedAt!: Date;
+
   @ApiProperty({ type: [CheckoutItemDto] })
   items!: CheckoutItemDto[];
 
-  @ApiPropertyOptional({ format: 'uuid' })
-  orderId?: string;
+  @ApiPropertyOptional({ type: CheckoutOrderDto, nullable: true })
+  order!: CheckoutOrderDto | null;
 }
 
 export class CreatedCheckoutSessionDto extends CheckoutSessionDto {

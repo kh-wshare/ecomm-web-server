@@ -2,7 +2,6 @@
 
 import {
   Button,
-  Checkbox,
   Description,
   FieldError,
   Fieldset,
@@ -17,7 +16,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { usePermissions } from "@/hooks/use-permissions";
 import {
@@ -27,6 +26,7 @@ import {
   getProductInventory,
   updateProduct,
 } from "@/lib/products/product-data";
+import { uploadMerchantFile } from "@/lib/files/file-data";
 import { queryKeys } from "@/lib/query/keys";
 import { notify } from "@/lib/toast/notify";
 import { validateForm } from "@/lib/validation/form";
@@ -52,15 +52,98 @@ type SelectOption<T extends string = string> = {
   value: T;
 };
 
+type ProductMediaType = "IMAGE" | "VIDEO";
+
+type ProductFormMedia = ProductFormValues["media"][number] & {
+  file?: File;
+  previewUrl?: string;
+  fileName?: string;
+  fileSize?: number;
+};
+
+type ProductFormDraftValues = Omit<ProductFormValues, "media"> & {
+  media: ProductFormMedia[];
+};
+
+type ChannelMode = "off" | "visible" | "selling";
+
+type StockAdjustmentDraft = {
+  productId: string;
+  quantityDelta: number;
+  safetyBuffer: number;
+  variantId?: string;
+};
+
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const MAX_IMAGE_SIZE_MB = 5;
+
+const CHANNEL_MODES: {
+  value: ChannelMode;
+  label: string;
+  description: string;
+}[] = [
+  {
+    value: "off",
+    label: "Off",
+    description: "Hidden from customers",
+  },
+  {
+    value: "visible",
+    label: "Visible",
+    description: "Customers can see it",
+  },
+  {
+    value: "selling",
+    label: "Selling",
+    description: "Customers can buy it",
+  },
+];
+
+function getChannelMode(item: {
+  isVisible: boolean;
+  isPurchasable: boolean;
+}): ChannelMode {
+  if (item.isPurchasable) return "selling";
+  if (item.isVisible) return "visible";
+  return "off";
+}
+
+function getChannelPatch(mode: ChannelMode) {
+  if (mode === "selling") {
+    return {
+      isVisible: true,
+      isPurchasable: true,
+    };
+  }
+
+  if (mode === "visible") {
+    return {
+      isVisible: true,
+      isPurchasable: false,
+    };
+  }
+
+  return {
+    isVisible: false,
+    isPurchasable: false,
+  };
+}
+
+function formatFileSize(bytes?: number) {
+  if (!bytes) return "";
+
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+}
+
 const fieldClassName = "w-full";
 const inputClassName =
-  "min-h-11 rounded-xl border border-separator bg-background px-3 text-sm outline-none transition hover:border-accent/60 focus-visible:border-accent focus-visible:ring-2 focus-visible:ring-accent/15 data-[invalid=true]:border-danger";
+  "rounded-xl border border-separator bg-background px-3 text-sm outline-none transition shadow-none";
 const textAreaClassName =
-  "min-h-32 w-full resize-y rounded-xl border border-separator bg-background p-3 text-sm outline-none transition hover:border-accent/60 focus-visible:border-accent focus-visible:ring-2 focus-visible:ring-accent/15 data-[invalid=true]:border-danger";
+  "min-h-32 w-full rounded-xl border border-separator bg-background p-3 text-sm outline-none transition shadow-none";
 const selectTriggerClassName =
-  "min-h-11 rounded-xl border border-separator bg-background px-3 text-sm transition hover:border-accent/60 data-[focus-visible=true]:border-accent data-[focus-visible=true]:ring-2 data-[focus-visible=true]:ring-accent/15 data-[invalid=true]:border-danger";
+  "rounded-xl border border-separator bg-background px-3 text-sm transition shadow-none";
 const selectPopoverClassName =
-  "rounded-xl border border-separator bg-surface p-1 shadow-xl";
+  "rounded-xl border border-separator bg-surface p-1 shadow-none";
 
 export function NewProductForm() {
   const { can } = usePermissions();
@@ -136,7 +219,7 @@ function ProductForm({
     [inventory, product],
   );
 
-  const [values, setValues] = useState<ProductFormValues>(initialValues);
+  const [values, setValues] = useState<ProductFormDraftValues>(initialValues);
   const [errors, setErrors] = useState<FormErrors>({});
 
   const isDirty = JSON.stringify(values) !== JSON.stringify(initialValues);
@@ -146,14 +229,35 @@ function ProductForm({
   const purchasableChannelCount = values.channels.filter(
     (item) => item.isPurchasable,
   ).length;
+  const baseStock = inventory?.stocks.find((stock) => stock.variantId === null);
   const mainImage = values.media.find(
-    (item) => item.type === "IMAGE" && item.url.trim(),
+    (item) =>
+      item.type === "IMAGE" && Boolean(item.previewUrl || item.url.trim()),
   );
+  const mainImageUrl = mainImage?.previewUrl || mainImage?.url;
+  const previewUrlsRef = useRef<Set<string>>(new Set());
+
+  const revokePreviewUrl = (previewUrl?: string) => {
+    if (!previewUrl) return;
+
+    URL.revokeObjectURL(previewUrl);
+    previewUrlsRef.current.delete(previewUrl);
+  };
+
+  const revokeAllPreviewUrls = () => {
+    previewUrlsRef.current.forEach((previewUrl) =>
+      URL.revokeObjectURL(previewUrl),
+    );
+    previewUrlsRef.current.clear();
+  };
 
   useEffect(() => {
+    revokeAllPreviewUrls();
     setValues(initialValues);
     setErrors({});
   }, [initialValues]);
+
+  useEffect(() => revokeAllPreviewUrls, []);
 
   useEffect(() => {
     if (!isDirty) return;
@@ -168,23 +272,29 @@ function ProductForm({
   }, [isDirty]);
 
   const saveMutation = useMutation({
-    mutationFn: async (formValues: ProductFormValues) => {
-      const payload = toPayload(formValues);
+    mutationFn: async (formValues: ProductFormDraftValues) => {
+      const payload = await toPayload(formValues);
       const savedProduct =
         mode === "create"
           ? await createProduct(payload)
           : await updateProduct(product!.id, payload);
 
-      const quantityDelta =
-        mode === "create"
-          ? Number(formValues.initialStock || 0)
-          : Number(formValues.stockAdjustment || 0);
+      const stockAdjustments = buildStockAdjustments({
+        formValues,
+        mode,
+        savedProduct,
+      });
 
-      if (canAdjustStock && quantityDelta !== 0) {
-        await adjustProductStock(
-          savedProduct.id,
-          quantityDelta,
-          Number(formValues.safetyBuffer || 0),
+      if (canAdjustStock && stockAdjustments.length) {
+        await Promise.all(
+          stockAdjustments.map((stock) =>
+            adjustProductStock(
+              stock.productId,
+              stock.quantityDelta,
+              stock.safetyBuffer,
+              stock.variantId,
+            ),
+          ),
         );
       }
 
@@ -206,9 +316,9 @@ function ProductForm({
     onError: (error) => notify.error(error, "Unable to save product"),
   });
 
-  const setField = <K extends keyof ProductFormValues>(
+  const setField = <K extends keyof ProductFormDraftValues>(
     field: K,
-    value: ProductFormValues[K],
+    value: ProductFormDraftValues[K],
   ) => {
     setValues((current) => ({ ...current, [field]: value }));
     setErrors((current) => {
@@ -219,7 +329,82 @@ function ProductForm({
     });
   };
 
+  const addMedia = () => {
+    setField("media", [
+      ...values.media,
+      {
+        key: uniqueKey("media"),
+        type: "IMAGE",
+        url: "",
+      },
+    ]);
+  };
+
+  const updateMedia = (index: number, patch: Partial<ProductFormMedia>) => {
+    const mediaItems = [...values.media];
+
+    mediaItems[index] = {
+      ...mediaItems[index],
+      ...patch,
+    };
+
+    setField("media", mediaItems);
+  };
+
+  const removeMedia = (index: number) => {
+    revokePreviewUrl(values.media[index]?.previewUrl);
+
+    setField(
+      "media",
+      values.media.filter((_, itemIndex) => itemIndex !== index),
+    );
+  };
+
+  const handleMediaTypeChange = (index: number, type: ProductMediaType) => {
+    revokePreviewUrl(values.media[index]?.previewUrl);
+
+    updateMedia(index, {
+      type,
+      url: "",
+      file: undefined,
+      previewUrl: undefined,
+      fileName: undefined,
+      fileSize: undefined,
+    });
+  };
+
+  const handleImageUpload = (index: number, file?: File) => {
+    if (!file) return;
+
+    const isValidType = ACCEPTED_IMAGE_TYPES.includes(file.type);
+    const isValidSize = file.size <= MAX_IMAGE_SIZE_MB * 1024 * 1024;
+
+    if (!isValidType) {
+      notify.warning("Upload JPG, PNG, or WEBP images only");
+      return;
+    }
+
+    if (!isValidSize) {
+      notify.warning(`Image must be ${MAX_IMAGE_SIZE_MB} MB or smaller`);
+      return;
+    }
+
+    revokePreviewUrl(values.media[index]?.previewUrl);
+
+    const previewUrl = URL.createObjectURL(file);
+    previewUrlsRef.current.add(previewUrl);
+
+    updateMedia(index, {
+      type: "IMAGE",
+      file,
+      previewUrl,
+      fileName: file.name,
+      fileSize: file.size,
+    });
+  };
+
   const reset = () => {
+    revokeAllPreviewUrls();
     setValues(initialValues);
     setErrors({});
   };
@@ -227,7 +412,7 @@ function ProductForm({
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const result = validateForm(productFormSchema, values);
+    const result = validateForm(productFormSchema, toValidationValues(values));
 
     if (!result.success) {
       setErrors(result.errors);
@@ -236,30 +421,22 @@ function ProductForm({
       return;
     }
 
-    const quantityDelta =
-      mode === "create"
-        ? Number(result.data.initialStock || 0)
-        : Number(result.data.stockAdjustment || 0);
-    const safetyChanged =
-      result.data.safetyBuffer !== initialValues.safetyBuffer;
+    const stockErrors = canAdjustStock
+      ? validateStockChanges({
+          formValues: result.data,
+          initialValues,
+          mode,
+        })
+      : {};
 
-    if (
-      canAdjustStock &&
-      quantityDelta === 0 &&
-      ((mode === "create" && Number(result.data.safetyBuffer) > 0) ||
-        (mode === "edit" && safetyChanged))
-    ) {
-      setErrors({
-        safetyBuffer: [
-          "A non-zero stock change is required to apply this safety buffer",
-        ],
-      });
-      notify.warning("Add a stock quantity to apply the safety buffer");
+    if (Object.keys(stockErrors).length) {
+      setErrors(stockErrors);
+      notify.warning("Add a stock quantity where a safety buffer changes");
 
       return;
     }
 
-    saveMutation.mutate(result.data);
+    saveMutation.mutate({ ...values, ...result.data, media: values.media });
   };
 
   return (
@@ -293,7 +470,7 @@ function ProductForm({
 
           <div className="flex flex-col gap-2 sm:flex-row">
             <Link
-              className="inline-flex h-11 items-center justify-center rounded-xl border border-separator px-4 text-sm font-semibold transition hover:bg-surface-secondary"
+              className="inline-flex h-9.5 items-center justify-center rounded-full border border-separator px-4 text-sm font-semibold transition hover:bg-surface-secondary"
               href={
                 product
                   ? `/dashboard/products/${product.id}`
@@ -302,11 +479,7 @@ function ProductForm({
             >
               Cancel
             </Link>
-            <Button
-              className="h-11 rounded-xl bg-accent px-5 text-sm font-semibold text-accent-foreground disabled:opacity-60"
-              isDisabled={saveMutation.isPending}
-              type="submit"
-            >
+            <Button isDisabled={saveMutation.isPending} type="submit">
               {saveMutation.isPending
                 ? "Saving…"
                 : mode === "create"
@@ -320,9 +493,14 @@ function ProductForm({
           <HeaderMetric label="SKU" value={values.sku || "Not set"} />
           <HeaderMetric
             label="Price"
-            value={values.price ? `${values.price} ${values.currency}` : "Not set"}
+            value={
+              values.price ? `${values.price} ${values.currency}` : "Not set"
+            }
           />
-          <HeaderMetric label="Variants" value={String(values.variants.length)} />
+          <HeaderMetric
+            label="Variants"
+            value={String(values.variants.length)}
+          />
           <HeaderMetric
             label="Channels"
             value={`${purchasableChannelCount}/${values.channels.length} selling`}
@@ -348,7 +526,7 @@ function ProductForm({
                 label="Product name"
                 maxLength={160}
                 name="name"
-                placeholder="Classic T-Shirt"
+                placeholder="Enter product name, e.g. Classic T-Shirt"
                 required
                 value={values.name}
                 onChange={(value) => setField("name", value)}
@@ -360,7 +538,7 @@ function ProductForm({
                 label="URL slug"
                 maxLength={180}
                 name="slug"
-                placeholder="classic-t-shirt"
+                placeholder="Enter product slug"
                 value={values.slug}
                 onChange={(value) => setField("slug", value)}
               />
@@ -370,7 +548,7 @@ function ProductForm({
                 label="SKU"
                 maxLength={80}
                 name="sku"
-                placeholder="SHIRT-001"
+                placeholder="Enter SKU, e.g. SHIRT-001"
                 required
                 value={values.sku}
                 onChange={(value) => setField("sku", value)}
@@ -382,7 +560,7 @@ function ProductForm({
                   inputMode="decimal"
                   label="Price"
                   name="price"
-                  placeholder="29.99"
+                  placeholder="0.00"
                   required
                   value={values.price}
                   onChange={(value) => setField("price", value)}
@@ -395,7 +573,9 @@ function ProductForm({
                   placeholder="USD"
                   required
                   value={values.currency}
-                  onChange={(value) => setField("currency", value.toUpperCase())}
+                  onChange={(value) =>
+                    setField("currency", value.toUpperCase())
+                  }
                 />
               </div>
 
@@ -419,7 +599,7 @@ function ProductForm({
                 label="Description"
                 maxLength={10000}
                 name="description"
-                placeholder="Describe the product, materials, fit, or important details."
+                placeholder="Describe the product, key features, materials, or usage..."
                 value={values.description}
                 onChange={(value) => setField("description", value)}
               />
@@ -429,7 +609,6 @@ function ProductForm({
           <FormSection
             action={
               <Button
-                className="rounded-xl border border-separator px-3 py-2 text-xs font-semibold transition hover:bg-surface-secondary"
                 type="button"
                 onPress={() =>
                   setField("variants", [
@@ -461,8 +640,8 @@ function ProductForm({
                         </p>
                       </div>
                       <Button
-                        className="rounded-lg px-2 py-1 text-xs font-semibold text-danger hover:bg-danger/10"
                         type="button"
+                        variant="danger"
                         onPress={() =>
                           setField(
                             "variants",
@@ -521,20 +700,107 @@ function ProductForm({
                         }))}
                         value={variant.status}
                         onChange={(value) =>
-                          updateVariant(values, setField, index, "status", value)
+                          updateVariant(
+                            values,
+                            setField,
+                            index,
+                            "status",
+                            value,
+                          )
                         }
                       />
 
                       <HeroTextAreaInput
                         className="sm:col-span-2"
                         description="Must be valid JSON, for example"
-                        error={firstError(errors, `variants.${index}.attributes`)}
+                        error={firstError(
+                          errors,
+                          `variants.${index}.attributes`,
+                        )}
                         label="Attributes JSON"
                         name={`variant-${index}-attributes`}
-
                         value={variant.attributes}
-                        onChange={(value) => updateVariant(values, setField, index, "attributes", value)}
+                        onChange={(value) =>
+                          updateVariant(
+                            values,
+                            setField,
+                            index,
+                            "attributes",
+                            value,
+                          )
+                        }
                       />
+
+                      {canAdjustStock && (
+                        <>
+                          {mode === "create" ? (
+                            <HeroTextInput
+                              error={firstError(
+                                errors,
+                                `variants.${index}.initialStock`,
+                              )}
+                              inputMode="numeric"
+                              label="Initial stock"
+                              name={`variant-${index}-initial-stock`}
+                              placeholder="0"
+                              value={variant.initialStock}
+                              onChange={(value) =>
+                                updateVariant(
+                                  values,
+                                  setField,
+                                  index,
+                                  "initialStock",
+                                  value,
+                                )
+                              }
+                            />
+                          ) : (
+                            <HeroTextInput
+                              description="Use positive or negative value."
+                              error={firstError(
+                                errors,
+                                `variants.${index}.stockAdjustment`,
+                              )}
+                              inputMode="numeric"
+                              label="Stock adjustment"
+                              name={`variant-${index}-stock-adjustment`}
+                              placeholder="e.g. 10 or -2"
+                              value={variant.stockAdjustment}
+                              onChange={(value) =>
+                                updateVariant(
+                                  values,
+                                  setField,
+                                  index,
+                                  "stockAdjustment",
+                                  value,
+                                )
+                              }
+                            />
+                          )}
+
+                          <HeroTextInput
+                            description="Reserve stock not available online."
+                            error={firstError(
+                              errors,
+                              `variants.${index}.safetyBuffer`,
+                            )}
+                            inputMode="numeric"
+                            label="Safety buffer"
+                            name={`variant-${index}-safety-buffer`}
+                            placeholder="0"
+                            value={variant.safetyBuffer}
+                            onChange={(value) =>
+                              updateVariant(
+                                values,
+                                setField,
+                                index,
+                                "safetyBuffer",
+                                value,
+                              )
+                            }
+                          />
+                        </>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -552,131 +818,195 @@ function ProductForm({
 
           <FormSection
             action={
-              <Button
-                className="rounded-xl border border-separator px-3 py-2 text-xs font-semibold transition hover:bg-surface-secondary"
-                type="button"
-                onPress={() =>
-                  setField("media", [
-                    ...values.media,
-                    { key: uniqueKey("media"), type: "IMAGE", url: "" },
-                  ])
-                }
-              >
-                Add image
+              <Button variant="primary" type="button" onPress={addMedia}>
+                Add media
               </Button>
             }
-            description="Add hosted image URLs. Binary upload is unavailable until a media storage endpoint is added."
+            description="Add product photos or videos. Photos can be uploaded or pasted as a link. Videos support link only."
             title="Product media"
           >
             {values.media.length ? (
               <div className="grid gap-4 md:grid-cols-2">
-                {values.media.map((media, index) => (
-                  <div
-                    className="rounded-2xl border border-separator bg-background p-3 transition hover:border-accent/30"
-                    key={media.key}
-                  >
-                    <div className="flex gap-3">
+                {values.media.map((media, index) => {
+                  const isImage = media.type === "IMAGE";
+                  const previewUrl = media.previewUrl || media.url;
+
+                  return (
+                    <div
+                      className="overflow-hidden rounded-2xl border border-separator bg-background transition hover:border-accent/30"
+                      key={media.key}
+                    >
                       <div
                         aria-label={
-                          media.url && media.type === "IMAGE"
-                            ? `Preview image ${index + 1}`
-                            : "Media preview"
+                          isImage && previewUrl
+                            ? `Product photo ${index + 1}`
+                            : `Product media ${index + 1}`
                         }
-                        className="grid size-20 shrink-0 place-items-center rounded-xl bg-surface-secondary bg-cover bg-center text-[10px] font-semibold uppercase tracking-wide text-muted"
+                        className="aspect-[4/3] bg-surface-secondary bg-cover bg-center"
                         role="img"
                         style={
-                          media.url && media.type === "IMAGE"
-                            ? { backgroundImage: `url("${media.url}")` }
+                          isImage && previewUrl
+                            ? { backgroundImage: `url("${previewUrl}")` }
                             : undefined
                         }
                       >
-                        {media.url ? null : media.type}
+                        {!previewUrl && (
+                          <div className="flex h-full flex-col items-center justify-center px-4 text-center">
+                            <div className="grid size-12 place-items-center rounded-full bg-surface text-lg">
+                              {isImage ? "🖼️" : "▶"}
+                            </div>
+
+                            <p className="mt-3 text-sm font-semibold">
+                              {isImage ? "Photo preview" : "Video link"}
+                            </p>
+
+                            <p className="mt-1 text-xs text-muted">
+                              {isImage
+                                ? "Upload a photo or paste an image URL"
+                                : "Paste a video URL only"}
+                            </p>
+                          </div>
+                        )}
+
+                        {!isImage && media.url && (
+                          <div className="flex h-full items-center justify-center bg-surface-secondary px-4 text-center">
+                            <div>
+                              <div className="mx-auto grid size-12 place-items-center rounded-full bg-surface text-lg">
+                                ▶
+                              </div>
+                              <p className="mt-3 truncate text-sm font-semibold">
+                                Video URL added
+                              </p>
+                              <p className="mt-1 text-xs text-muted">
+                                Video preview is not uploaded here
+                              </p>
+                            </div>
+                          </div>
+                        )}
                       </div>
 
-                      <div className="min-w-0 flex-1 space-y-3">
-                        <div className="grid grid-cols-[105px_minmax(0,1fr)] gap-2">
-                          <HeroSelectField<"IMAGE" | "VIDEO">
-                            label="Type"
-                            name={`media-${index}-type`}
-                            options={[
-                              { label: "Image", value: "IMAGE" },
-                              { label: "Video", value: "VIDEO" },
-                            ]}
-                            value={media.type}
-                            onChange={(value) => {
-                              const mediaItems = [...values.media];
-                              mediaItems[index] = {
-                                ...mediaItems[index],
-                                type: value,
-                              };
-                              setField("media", mediaItems);
-                            }}
-                          />
+                      <div className="space-y-4 p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold">
+                              Media {index + 1}
+                            </p>
 
-                          <HeroTextInput
-                            error={firstError(errors, `media.${index}.url`)}
-                            label={`URL ${index + 1}`}
-                            name={`media-${index}-url`}
-                            placeholder="https://cdn.example.com/product.jpg"
-                            value={media.url}
-                            onChange={(value) => {
-                              const mediaItems = [...values.media];
-                              mediaItems[index] = {
-                                ...mediaItems[index],
-                                url: value,
-                              };
-                              setField("media", mediaItems);
-                            }}
-                          />
+                            <p className="mt-1 truncate text-xs text-muted">
+                              {isImage
+                                ? media.fileName
+                                  ? `${media.fileName} · ${formatFileSize(media.fileSize)}`
+                                  : "Photo upload or image URL"
+                                : "Video URL only"}
+                            </p>
+                          </div>
+
+                          <Button
+                            variant="danger"
+                            type="button"
+                            onPress={() => removeMedia(index)}
+                          >
+                            Remove
+                          </Button>
                         </div>
 
-                        <Button
-                          className="rounded-lg px-2 py-1 text-xs font-semibold text-danger hover:bg-danger/10"
-                          type="button"
-                          onPress={() =>
-                            setField(
-                              "media",
-                              values.media.filter(
-                                (_, itemIndex) => itemIndex !== index,
-                              ),
-                            )
+                        <HeroSelectField<"IMAGE" | "VIDEO">
+                          label="Media type"
+                          name={`media-${index}-type`}
+                          options={[
+                            { label: "Photo", value: "IMAGE" },
+                            { label: "Video", value: "VIDEO" },
+                          ]}
+                          value={media.type}
+                          onChange={(value) =>
+                            handleMediaTypeChange(index, value)
                           }
-                        >
-                          Remove media
-                        </Button>
+                        />
+
+                        {isImage && (
+                          <div className="rounded-2xl border border-dashed border-separator bg-surface p-4">
+                            <label className="flex cursor-pointer flex-col items-center justify-center text-center">
+                              <div className="grid size-10 place-items-center rounded-full bg-surface-secondary text-lg">
+                                +
+                              </div>
+
+                              <p className="mt-2 text-sm font-semibold">
+                                Upload photo
+                              </p>
+
+                              <p className="mt-1 text-xs text-muted">
+                                JPG, PNG, or WEBP. Max {MAX_IMAGE_SIZE_MB} MB.
+                              </p>
+
+                              <input
+                                accept={ACCEPTED_IMAGE_TYPES.join(",")}
+                                className="sr-only"
+                                type="file"
+                                onChange={(event) => {
+                                  handleImageUpload(
+                                    index,
+                                    event.target.files?.[0],
+                                  );
+                                  event.currentTarget.value = "";
+                                }}
+                              />
+                            </label>
+                          </div>
+                        )}
+
+                        <HeroTextInput
+                          error={firstError(errors, `media.${index}.url`)}
+                          label={isImage ? "Photo URL" : "Video URL"}
+                          name={`media-${index}-url`}
+                          placeholder={
+                            isImage
+                              ? "https://cdn.example.com/product.jpg"
+                              : "https://youtube.com/watch?v=..."
+                          }
+                          value={media.url}
+                          onChange={(value) =>
+                            updateMedia(index, {
+                              url: value,
+                            })
+                          }
+                        />
+
+                        {isImage ? (
+                          <p className="rounded-xl bg-surface px-3 py-2 text-xs text-muted">
+                            For photos, users can either upload an image or
+                            paste a hosted image URL.
+                          </p>
+                        ) : (
+                          <p className="rounded-xl bg-surface px-3 py-2 text-xs text-muted">
+                            For videos, only paste a video link. File upload is
+                            disabled.
+                          </p>
+                        )}
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <EmptySection
-                actionLabel="Add image URL"
-                message="No media added. Add a hosted image URL to show product media."
-                onAction={() =>
-                  setField("media", [
-                    { key: uniqueKey("media"), type: "IMAGE", url: "" },
-                  ])
-                }
+                actionLabel="Add media"
+                message="No media added yet. Add photos or video links for this product."
+                onAction={addMedia}
               />
             )}
           </FormSection>
           <FormSection
             compact
-            description="Choose where the product is visible and available to purchase."
+            description="Choose how this product behaves in each sales channel."
             title="Channel visibility"
           >
-            <div className="space-y-3">
+            <div className="grid gap-3">
               {values.channels.map((item, index) => {
-                const state = item.isPurchasable
-                  ? "Selling"
-                  : item.isVisible
-                    ? "Visible"
-                    : "Off";
+                const selectedMode = getChannelMode(item);
 
                 return (
                   <div
-                    className="rounded-2xl border border-separator bg-background p-4 transition hover:border-accent/30"
+                    className="rounded-2xl border border-separator bg-background p-4"
                     key={item.channel}
                   >
                     <div className="mb-4 flex items-start justify-between gap-3">
@@ -685,48 +1015,63 @@ function ProductForm({
                           {toLabel(item.channel)}
                         </p>
                         <p className="mt-1 text-xs text-muted">
-                          Control if customers can see and buy from this
-                          channel.
+                          Select one simple status for this channel.
                         </p>
                       </div>
+
                       <span
-                        className={`rounded-full px-2 py-1 text-[11px] font-semibold ${state === "Selling"
+                        className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                          selectedMode === "selling"
                             ? "bg-success/10 text-success"
-                            : state === "Visible"
+                            : selectedMode === "visible"
                               ? "bg-warning/10 text-warning"
                               : "bg-surface-secondary text-muted"
-                          }`}
+                        }`}
                       >
-                        {state}
+                        {selectedMode === "selling"
+                          ? "Selling"
+                          : selectedMode === "visible"
+                            ? "Visible"
+                            : "Off"}
                       </span>
                     </div>
 
-                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-                      <HeroCheckBox
-                        checked={item.isVisible}
-                        description="Show product"
-                        label="Visible"
-                        onChange={(checked) =>
-                          updateChannel(values, setField, index, {
-                            isVisible: checked,
-                            isPurchasable: checked
-                              ? item.isPurchasable
-                              : false,
-                          })
-                        }
-                      />
+                    <div className="grid gap-2 sm:grid-cols-3">
+                      {CHANNEL_MODES.map((mode) => {
+                        const isSelected = selectedMode === mode.value;
 
-                      <HeroCheckBox
-                        checked={item.isPurchasable}
-                        description="Allow checkout"
-                        label="Purchasable"
-                        onChange={(checked) =>
-                          updateChannel(values, setField, index, {
-                            isPurchasable: checked,
-                            isVisible: checked ? true : item.isVisible,
-                          })
-                        }
-                      />
+                        return (
+                          <button
+                            className={`rounded-xl border px-3 py-3 text-left transition ${
+                              isSelected
+                                ? "border-accent bg-accent/10"
+                                : "border-separator bg-surface hover:bg-surface-secondary"
+                            }`}
+                            key={mode.value}
+                            type="button"
+                            onClick={() =>
+                              updateChannel(
+                                values,
+                                setField,
+                                index,
+                                getChannelPatch(mode.value),
+                              )
+                            }
+                          >
+                            <span
+                              className={`block text-sm font-semibold ${
+                                isSelected ? "text-accent" : "text-foreground"
+                              }`}
+                            >
+                              {mode.label}
+                            </span>
+
+                            <span className="mt-1 block text-xs text-muted">
+                              {mode.description}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 );
@@ -739,7 +1084,7 @@ function ProductForm({
           <ProductPreviewCard
             channelCount={values.channels.length}
             currency={values.currency}
-            imageUrl={mainImage?.url}
+            imageUrl={mainImageUrl}
             mediaCount={values.media.length}
             name={values.name}
             price={values.price}
@@ -755,20 +1100,20 @@ function ProductForm({
               compact
               description={
                 mode === "create"
-                  ? "Create the product's base inventory record with starting stock."
-                  : "Apply a signed adjustment to base stock. Variant inventory is managed from Inventory."
+                  ? "Create the product's base stock. Variant stock can be set inside each variant."
+                  : "Apply a signed adjustment to base stock. Variant stock can be adjusted inside each variant."
               }
               title="Inventory"
             >
-              {mode === "edit" && inventory?.stocks[0] && (
+              {mode === "edit" && baseStock && (
                 <div className="mb-4 grid grid-cols-2 gap-3">
                   <MiniMetricCard
                     label="Base stock"
-                    value={inventory.stocks[0].totalStock}
+                    value={baseStock.totalStock}
                   />
                   <MiniMetricCard
                     label="Sellable"
-                    value={inventory.stocks[0].onlineSellableStock}
+                    value={baseStock.onlineSellableStock}
                   />
                 </div>
               )}
@@ -863,8 +1208,9 @@ function FormSection({
 }) {
   return (
     <Fieldset
-      className={`rounded-3xl border border-separator bg-surface shadow-sm ${compact ? "p-5" : "p-5 sm:p-6"
-        }`}
+      className={`rounded-3xl border border-separator bg-surface shadow-sm ${
+        compact ? "p-5" : "p-5 sm:p-6"
+      }`}
     >
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
@@ -888,7 +1234,10 @@ function HeroTextInput({
   required,
   value,
   ...props
-}: Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange" | "required"> & {
+}: Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "onChange" | "required"
+> & {
   className?: string;
   description?: string;
   error?: string;
@@ -912,7 +1261,9 @@ function HeroTextInput({
           {description}
         </Description>
       )}
-      {error && <FieldError className="mt-1 text-xs text-danger">{error}</FieldError>}
+      {error && (
+        <FieldError className="mt-1 text-xs text-danger">{error}</FieldError>
+      )}
     </TextField>
   );
 }
@@ -926,7 +1277,10 @@ function HeroTextAreaInput({
   required,
   value,
   ...props
-}: Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange" | "required"> & {
+}: Omit<
+  React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+  "onChange" | "required"
+> & {
   className?: string;
   description?: string;
   error?: string;
@@ -955,7 +1309,9 @@ function HeroTextAreaInput({
           {description}
         </Description>
       )}
-      {error && <FieldError className="mt-1 text-xs text-danger">{error}</FieldError>}
+      {error && (
+        <FieldError className="mt-1 text-xs text-danger">{error}</FieldError>
+      )}
     </TextField>
   );
 }
@@ -1004,7 +1360,9 @@ function HeroSelectField<T extends string>({
           {description}
         </Description>
       )}
-      {error && <FieldError className="mt-1 text-xs text-danger">{error}</FieldError>}
+      {error && (
+        <FieldError className="mt-1 text-xs text-danger">{error}</FieldError>
+      )}
       <Select.Popover className={selectPopoverClassName}>
         <ListBox>
           {options.map((option) => (
@@ -1021,38 +1379,6 @@ function HeroSelectField<T extends string>({
         </ListBox>
       </Select.Popover>
     </Select>
-  );
-}
-
-function HeroCheckBox({
-  checked,
-  description,
-  label,
-  onChange,
-}: {
-  checked: boolean;
-  description?: string;
-  label: string;
-  onChange: (checked: boolean) => void;
-}) {
-  return (
-    <Checkbox isSelected={checked} variant="secondary" onChange={onChange}>
-      <Checkbox.Content className="items-start gap-3 rounded-xl border border-separator bg-surface px-3 py-2 transition hover:border-accent/40 hover:bg-surface-secondary/70">
-        <Checkbox.Control className="mt-0.5 size-4 rounded border border-separator bg-background data-[selected=true]:border-accent data-[selected=true]:bg-accent">
-          <Checkbox.Indicator className="text-accent-foreground" />
-        </Checkbox.Control>
-        <span>
-          <span className="block text-xs font-semibold text-foreground">
-            {label}
-          </span>
-          {description && (
-            <span className="mt-0.5 block text-[11px] text-muted">
-              {description}
-            </span>
-          )}
-        </span>
-      </Checkbox.Content>
-    </Checkbox>
   );
 }
 
@@ -1146,7 +1472,9 @@ function StatusBadge({ status }: { status: ProductStatus }) {
         : "bg-surface-secondary text-muted";
 
   return (
-    <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${className}`}>
+    <span
+      className={`rounded-full px-2.5 py-1 text-xs font-semibold ${className}`}
+    >
       {toLabel(status)}
     </span>
   );
@@ -1163,7 +1491,13 @@ function HeaderMetric({ label, value }: { label: string; value: string }) {
   );
 }
 
-function MiniMetricCard({ label, value }: { label: string; value: number | string }) {
+function MiniMetricCard({
+  label,
+  value,
+}: {
+  label: string;
+  value: number | string;
+}) {
   return (
     <div className="rounded-2xl border border-separator bg-background p-3">
       <p className="text-[11px] font-medium uppercase tracking-wide text-muted">
@@ -1185,13 +1519,9 @@ function EmptySection({
 }) {
   return (
     <div className="rounded-2xl border border-dashed border-separator bg-background px-4 py-8 text-center">
-      <p className="text-sm text-muted">{message}</p>
+      <p className="text-sm text-muted mb-6">{message}</p>
       {actionLabel && onAction && (
-        <Button
-          className="mt-4 rounded-xl border border-separator px-3 py-2 text-xs font-semibold hover:bg-surface-secondary"
-          type="button"
-          onPress={onAction}
-        >
+        <Button type="button" onPress={onAction}>
           {actionLabel}
         </Button>
       )}
@@ -1252,7 +1582,9 @@ function LoadError({
 function toInitialValues(
   product?: Product,
   inventory?: ProductInventoryDetail,
-): ProductFormValues {
+): ProductFormDraftValues {
+  const baseStock = inventory?.stocks.find((stock) => stock.variantId === null);
+
   return {
     name: product?.name ?? "",
     slug: product?.slug ?? "",
@@ -1262,14 +1594,23 @@ function toInitialValues(
     currency: product?.currency ?? "USD",
     status: product?.status ?? "DRAFT",
     variants:
-      product?.variants?.map((variant) => ({
-        key: variant.id,
-        sku: variant.sku,
-        name: variant.name,
-        price: variant.price,
-        attributes: JSON.stringify(variant.attributes),
-        status: variant.status,
-      })) ?? [],
+      product?.variants?.map((variant) => {
+        const variantStock = inventory?.stocks.find(
+          (stock) => stock.variantId === variant.id,
+        );
+
+        return {
+          key: variant.id,
+          sku: variant.sku,
+          name: variant.name,
+          price: variant.price,
+          attributes: JSON.stringify(variant.attributes),
+          status: variant.status,
+          initialStock: "0",
+          safetyBuffer: String(variantStock?.safetyBuffer ?? 0),
+          stockAdjustment: "",
+        };
+      }) ?? [],
     media:
       product?.media?.map((item) => ({
         key: item.id,
@@ -1288,12 +1629,16 @@ function toInitialValues(
       };
     }),
     initialStock: "0",
-    safetyBuffer: String(inventory?.stocks[0]?.safetyBuffer ?? 0),
+    safetyBuffer: String(baseStock?.safetyBuffer ?? 0),
     stockAdjustment: "",
   };
 }
 
-function toPayload(values: ProductFormValues): ProductPayload {
+async function toPayload(
+  values: ProductFormDraftValues,
+): Promise<ProductPayload> {
+  const media = await normalizeMediaBeforeSubmit(values.media);
+
   return {
     name: values.name.trim(),
     ...(values.slug.trim() ? { slug: values.slug.trim() } : {}),
@@ -1312,13 +1657,161 @@ function toPayload(values: ProductFormValues): ProductPayload {
       >,
       status: variant.status,
     })),
-    media: values.media.map((media, index) => ({
-      url: media.url.trim(),
-      type: media.type,
-      sortOrder: index,
-    })),
+    media,
     channelVisibility: values.channels,
   };
+}
+
+function toValidationValues(values: ProductFormDraftValues): ProductFormValues {
+  return {
+    ...values,
+    media: values.media
+      .filter((media) => media.url.trim() || media.file)
+      .map((media) => ({
+        key: media.key,
+        type: media.type,
+        url:
+          media.url.trim() ||
+          "https://placeholder.local/product-image-upload.jpg",
+      })),
+  };
+}
+
+function validateStockChanges({
+  formValues,
+  initialValues,
+  mode,
+}: {
+  formValues: ProductFormValues;
+  initialValues: ProductFormDraftValues;
+  mode: "create" | "edit";
+}) {
+  const errors: FormErrors = {};
+  const baseQuantityDelta =
+    mode === "create"
+      ? Number(formValues.initialStock || 0)
+      : Number(formValues.stockAdjustment || 0);
+  const baseSafetyChanged =
+    formValues.safetyBuffer !== initialValues.safetyBuffer;
+
+  if (
+    baseQuantityDelta === 0 &&
+    ((mode === "create" && Number(formValues.safetyBuffer) > 0) ||
+      (mode === "edit" && baseSafetyChanged))
+  ) {
+    errors.safetyBuffer = [
+      "A non-zero stock change is required to apply this safety buffer",
+    ];
+  }
+
+  formValues.variants.forEach((variant, index) => {
+    const quantityDelta =
+      mode === "create"
+        ? Number(variant.initialStock || 0)
+        : Number(variant.stockAdjustment || 0);
+    const initialVariant = initialValues.variants.find(
+      (item) => item.key === variant.key,
+    );
+    const safetyChanged =
+      variant.safetyBuffer !== (initialVariant?.safetyBuffer ?? "0");
+
+    if (
+      quantityDelta === 0 &&
+      ((mode === "create" && Number(variant.safetyBuffer) > 0) ||
+        (mode === "edit" && safetyChanged))
+    ) {
+      errors[`variants.${index}.safetyBuffer`] = [
+        "A non-zero stock change is required to apply this safety buffer",
+      ];
+    }
+  });
+
+  return errors;
+}
+
+function buildStockAdjustments({
+  formValues,
+  mode,
+  savedProduct,
+}: {
+  formValues: ProductFormDraftValues;
+  mode: "create" | "edit";
+  savedProduct: Product;
+}) {
+  const adjustments: StockAdjustmentDraft[] = [];
+  const baseQuantityDelta =
+    mode === "create"
+      ? Number(formValues.initialStock || 0)
+      : Number(formValues.stockAdjustment || 0);
+
+  if (baseQuantityDelta !== 0) {
+    adjustments.push({
+      productId: savedProduct.id,
+      quantityDelta: baseQuantityDelta,
+      safetyBuffer: Number(formValues.safetyBuffer || 0),
+    });
+  }
+
+  const savedVariantBySku = new Map(
+    savedProduct.variants?.map((variant) => [
+      normalizeSku(variant.sku),
+      variant,
+    ]) ?? [],
+  );
+
+  formValues.variants.forEach((variant) => {
+    const quantityDelta =
+      mode === "create"
+        ? Number(variant.initialStock || 0)
+        : Number(variant.stockAdjustment || 0);
+    const savedVariant = savedVariantBySku.get(normalizeSku(variant.sku));
+
+    if (quantityDelta === 0 || !savedVariant) return;
+
+    adjustments.push({
+      productId: savedProduct.id,
+      variantId: savedVariant.id,
+      quantityDelta,
+      safetyBuffer: Number(variant.safetyBuffer || 0),
+    });
+  });
+
+  return adjustments;
+}
+
+async function normalizeMediaBeforeSubmit(
+  mediaItems: ProductFormMedia[],
+): Promise<ProductPayload["media"]> {
+  const media = await Promise.all(
+    mediaItems.map(async (item, index) => {
+      let url = item.url.trim();
+
+      if (item.type === "IMAGE" && item.file && !url) {
+        const uploaded = await uploadProductImage(item.file);
+        url = uploaded.url;
+      }
+
+      if (!url) return null;
+
+      return {
+        url,
+        type: item.type,
+        sortOrder: index,
+      };
+    }),
+  );
+
+  return media.filter((item): item is ProductPayload["media"][number] =>
+    Boolean(item),
+  );
+}
+
+async function uploadProductImage(file: File): Promise<{ url: string }> {
+  const uploaded = await uploadMerchantFile(file, {
+    purpose: "product-media",
+    visibility: "public",
+  });
+  return { url: uploaded.url };
 }
 
 function emptyVariant(index: number) {
@@ -1329,18 +1822,23 @@ function emptyVariant(index: number) {
     price: "",
     attributes: "{}",
     status: "ACTIVE" as const,
+    initialStock: "0",
+    safetyBuffer: "0",
+    stockAdjustment: "",
   };
 }
 
-function updateVariant<K extends keyof ProductFormValues["variants"][number]>(
-  values: ProductFormValues,
-  setField: <T extends keyof ProductFormValues>(
+function updateVariant<
+  K extends keyof ProductFormDraftValues["variants"][number],
+>(
+  values: ProductFormDraftValues,
+  setField: <T extends keyof ProductFormDraftValues>(
     field: T,
-    value: ProductFormValues[T],
+    value: ProductFormDraftValues[T],
   ) => void,
   index: number,
   field: K,
-  value: ProductFormValues["variants"][number][K],
+  value: ProductFormDraftValues["variants"][number][K],
 ) {
   const variants = [...values.variants];
   variants[index] = { ...variants[index], [field]: value };
@@ -1348,13 +1846,13 @@ function updateVariant<K extends keyof ProductFormValues["variants"][number]>(
 }
 
 function updateChannel(
-  values: ProductFormValues,
-  setField: <T extends keyof ProductFormValues>(
+  values: ProductFormDraftValues,
+  setField: <T extends keyof ProductFormDraftValues>(
     field: T,
-    value: ProductFormValues[T],
+    value: ProductFormDraftValues[T],
   ) => void,
   index: number,
-  patch: Partial<ProductFormValues["channels"][number]>,
+  patch: Partial<ProductFormDraftValues["channels"][number]>,
 ) {
   const channels = [...values.channels];
   channels[index] = { ...channels[index], ...patch };
@@ -1367,6 +1865,10 @@ function firstError(errors: FormErrors, field: string) {
 
 function uniqueKey(prefix: string) {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function normalizeSku(value: string) {
+  return value.trim().toUpperCase();
 }
 
 function toLabel(value: string) {

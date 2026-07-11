@@ -21,7 +21,6 @@ export function StorefrontHome({
 }) {
   const config = normalizeThemeConfig(storefront.theme.config);
   const enabledSections = config.sections.filter((section) => section.enabled);
-  const visibleProducts = products.filter((product) => product.isAvailable);
 
   return (
     <StorefrontShell config={config} merchant={storefront.merchant}>
@@ -42,7 +41,7 @@ export function StorefrontHome({
                   config={config}
                   key={section.id}
                   merchant={storefront.merchant}
-                  products={visibleProducts}
+                  products={products}
                   title="Shop all"
                 />
               );
@@ -52,9 +51,7 @@ export function StorefrontHome({
                   config={config}
                   key={section.id}
                   merchant={storefront.merchant}
-                  products={storefront.featuredProducts
-                    .filter((product) => product.isAvailable)
-                    .slice(0, 4)}
+                  products={storefront.featuredProducts.slice(0, 4)}
                   title={config.featuredCollection.title}
                 />
               );
@@ -197,7 +194,7 @@ function ProductGrid({
           >
             <p className="font-semibold">The next collection is on its way</p>
             <p className="mt-2 text-sm opacity-60">
-              There are no in-stock products available online right now.
+              There are no products published to this storefront right now.
             </p>
           </div>
         )}

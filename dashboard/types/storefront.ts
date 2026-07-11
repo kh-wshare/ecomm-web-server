@@ -33,6 +33,7 @@ export type PublicProduct = {
   price: string;
   currency: string;
   channel: "WEBSITE";
+  baseIsAvailable: boolean;
   isAvailable: boolean;
   isPurchasable: boolean;
   media: PublicProductMedia[];

@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { createHash } from 'node:crypto';
+
 import { PaginatedResult } from '#app/common/responses/pagination.response';
 import { Prisma } from '#app/generated/prisma/client';
-import { SalesChannel } from '#app/generated/prisma/enums';
+import { ProductStatus, SalesChannel } from '#app/generated/prisma/enums';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
 import { CommerceCacheService } from '#app/infrastructure/redis/commerce-cache.service';
 import { ThemeService } from '#app/modules/theme/theme.service';
@@ -57,21 +58,17 @@ export class StorefrontService {
           where: {
             merchantId: merchant.id,
             slug: normalizedSlug,
-            status: 'ACTIVE',
+            status: ProductStatus.ACTIVE,
             deletedAt: null,
             channelVisibility: {
-              some: { channel, isVisible: true, isPurchasable: true },
+              some: { channel, isVisible: true },
             },
           },
           include: this.publicProductInclude(merchant.id, channel),
         });
         if (!product) throw new NotFoundException('Product not found');
 
-        const publicProduct = this.toPublicProduct(product, channel);
-        if (!publicProduct.isAvailable) {
-          throw new NotFoundException('Product not found');
-        }
-        return publicProduct;
+        return this.toPublicProduct(product, channel);
       },
       60,
     );
@@ -137,14 +134,6 @@ export class StorefrontService {
           OR p."slug" ILIKE ${`%${search}%`}
         )`
       : Prisma.empty;
-    const availabilityClause =
-      channel === SalesChannel.POS
-        ? Prisma.sql`(
-            s."totalStock" - s."reservedStock" - s."soldStock"
-          ) > 0`
-        : Prisma.sql`(
-            s."totalStock" - s."reservedStock" - s."soldStock" - s."safetyBuffer"
-          ) > 0`;
     const baseWhere = Prisma.sql`
       p."merchantId" = CAST(${merchantId} AS uuid)
       AND p."status" = 'ACTIVE'::"ProductStatus"
@@ -155,32 +144,6 @@ export class StorefrontService {
         WHERE pcv."productId" = p."id"
           AND pcv."channel" = CAST(${channel} AS "SalesChannel")
           AND pcv."isVisible" = true
-          AND pcv."isPurchasable" = true
-      )
-      AND EXISTS (
-        SELECT 1
-        FROM "inventory_stocks" s
-        WHERE s."productId" = p."id"
-          AND s."merchantId" = p."merchantId"
-          AND ${availabilityClause}
-          AND (
-            (
-              s."variantId" IS NULL
-              AND NOT EXISTS (
-                SELECT 1
-                FROM "product_variants" pv
-                WHERE pv."productId" = p."id"
-                  AND pv."status" = 'ACTIVE'::"ProductVariantStatus"
-              )
-            )
-            OR EXISTS (
-              SELECT 1
-              FROM "product_variants" pv
-              WHERE pv."id" = s."variantId"
-                AND pv."productId" = p."id"
-                AND pv."status" = 'ACTIVE'::"ProductVariantStatus"
-            )
-          )
       )
       ${searchClause}
     `;
@@ -245,6 +208,7 @@ export class StorefrontService {
       price: { toString(): string };
       currency: string;
       media: Array<{ url: string; type: string; sortOrder: number }>;
+      channelVisibility: Array<{ isPurchasable: boolean }>;
       inventoryStocks: Array<{
         variantId: string | null;
         totalStock: number;
@@ -267,6 +231,9 @@ export class StorefrontService {
       }>;
     },
   >(product: T, channel: SalesChannel) {
+    const baseIsAvailable = product.inventoryStocks
+      .filter(({ variantId }) => variantId === null)
+      .some((stock) => this.isStockAvailable(stock, channel));
     const variants = product.variants.map((variant) => ({
       id: variant.id,
       name: variant.name,
@@ -277,11 +244,10 @@ export class StorefrontService {
         this.isStockAvailable(stock, channel),
       ),
     }));
-    const isAvailable = variants.length
-      ? variants.some((variant) => variant.isAvailable)
-      : product.inventoryStocks
-          .filter(({ variantId }) => variantId === null)
-          .some((stock) => this.isStockAvailable(stock, channel));
+    const isAvailable =
+      baseIsAvailable || variants.some((variant) => variant.isAvailable);
+    const isChannelPurchasable =
+      product.channelVisibility[0]?.isPurchasable ?? false;
 
     return {
       id: product.id,
@@ -292,8 +258,9 @@ export class StorefrontService {
       price: product.price.toString(),
       currency: product.currency,
       channel,
+      baseIsAvailable,
       isAvailable,
-      isPurchasable: isAvailable,
+      isPurchasable: isChannelPurchasable && isAvailable,
       media: product.media,
       variants,
     };

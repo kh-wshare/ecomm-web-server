@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import type { PublicMerchant } from "@/types/storefront";
 import type { ThemeConfig } from "@/types/theme";
+import { StorefrontCustomerAuth } from "@/components/storefront/storefront-customer-auth";
 
 type StorefrontStyle = CSSProperties & {
   "--store-accent": string;
@@ -80,6 +81,7 @@ export function StorefrontShell({
                 Contact
               </a>
             )}
+            <StorefrontCustomerAuth />
           </nav>
         </div>
       </header>

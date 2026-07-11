@@ -59,6 +59,7 @@ export class CatalogService {
     metadata: AuditMetadata,
   ) {
     this.validateChannels(dto.channelVisibility);
+    this.validateVariants(dto.variants);
     const baseSlug = this.toSlug(dto.slug ?? dto.name);
 
     for (let attempt = 0; attempt < 5; attempt += 1) {
@@ -161,21 +162,13 @@ export class CatalogService {
     metadata: AuditMetadata,
   ) {
     this.validateChannels(dto.channelVisibility);
+    this.validateVariants(dto.variants);
     const before = await this.findOne(merchantId, productId);
 
     try {
       const product = await this.prisma.$transaction(async (tx) => {
         if (dto.variants !== undefined) {
-          await tx.productVariant.deleteMany({ where: { productId } });
-          if (dto.variants.length) {
-            await tx.productVariant.createMany({
-              data: this.variantData(dto.variants).map((variant) => ({
-                productId,
-                merchantId,
-                ...variant,
-              })),
-            });
-          }
+          await this.syncVariants(tx, merchantId, productId, dto.variants);
         }
         if (dto.media !== undefined) {
           await tx.productMedia.deleteMany({ where: { productId } });
@@ -353,6 +346,60 @@ export class CatalogService {
     }));
   }
 
+  private async syncVariants(
+    tx: Prisma.TransactionClient,
+    merchantId: string,
+    productId: string,
+    variants: ProductVariantInputDto[],
+  ) {
+    const nextVariants = this.variantData(variants);
+    const nextSkus = nextVariants.map((variant) => variant.sku);
+
+    await tx.productVariant.updateMany({
+      where: {
+        productId,
+        ...(nextSkus.length ? { sku: { notIn: nextSkus } } : {}),
+      },
+      data: { status: 'INACTIVE' },
+    });
+    if (!nextVariants.length) return;
+
+    const existingVariants = await tx.productVariant.findMany({
+      where: { merchantId, sku: { in: nextSkus } },
+      select: { id: true, productId: true, sku: true },
+    });
+    const existingBySku = new Map(
+      existingVariants.map((variant) => [variant.sku, variant]),
+    );
+    const conflictingVariant = existingVariants.find(
+      (variant) => variant.productId !== productId,
+    );
+    if (conflictingVariant) {
+      throw new ConflictException(
+        `Variant SKU ${conflictingVariant.sku} is already in use for this merchant`,
+      );
+    }
+
+    for (const variant of nextVariants) {
+      const existingVariant = existingBySku.get(variant.sku);
+      if (existingVariant) {
+        await tx.productVariant.update({
+          where: { id: existingVariant.id },
+          data: variant,
+        });
+        continue;
+      }
+
+      await tx.productVariant.create({
+        data: {
+          productId,
+          merchantId,
+          ...variant,
+        },
+      });
+    }
+  }
+
   private mediaData(media: ProductMediaInputDto[]) {
     return media.map((item) => ({
       url: item.url.trim(),
@@ -379,6 +426,16 @@ export class CatalogService {
       throw new BadRequestException(
         'A purchasable channel must also be visible',
       );
+    }
+  }
+
+  private validateVariants(variants?: ProductVariantInputDto[]) {
+    if (!variants) return;
+    const uniqueSkus = new Set(
+      variants.map((variant) => this.normalizeSku(variant.sku)),
+    );
+    if (uniqueSkus.size !== variants.length) {
+      throw new BadRequestException('Each variant SKU may appear only once');
     }
   }
 

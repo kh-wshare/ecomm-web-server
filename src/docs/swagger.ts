@@ -3,12 +3,15 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AuthModule } from '#app/modules/authenticated/auth.module';
 import { CatalogModule } from '#app/modules/catalog/catalog.module';
+import { CheckoutModule } from '#app/modules/checkout/checkout.module';
+import { FileStorageModule } from '#app/modules/file-storage/file-storage.module';
 import { InventoryModule } from '#app/modules/inventory/inventory.module';
 import { MerchantModule } from '#app/modules/merchant/merchant.module';
 import { NotificationModule } from '#app/modules/notification/notification.module';
 import { OrderModule } from '#app/modules/order/order.module';
 import { PaymentModule } from '#app/modules/payment/payment.module';
 import { SocialPostModule } from '#app/modules/social-post/social-post.module';
+import { StorefrontModule } from '#app/modules/storefront/storefront.module';
 import { ThemeModule } from '#app/modules/theme/theme.module';
 import { UsersModule } from '#app/modules/users/users.module';
 
@@ -58,6 +61,7 @@ export function setupSwagger(
       include: [
         MerchantModule,
         CatalogModule,
+        FileStorageModule,
         InventoryModule,
         ThemeModule,
         OrderModule,
@@ -70,6 +74,27 @@ export function setupSwagger(
       jsonDocumentUrl: 'docs/merchant/openapi.json',
     });
     documents.push('/docs/merchant');
+  }
+
+  if (envFlag('SWAGGER_STOREFRONT_ENABLED', true)) {
+    const config = new DocumentBuilder()
+      .setTitle('Merchant Commerce Hub — Storefront API')
+      .setDescription(
+        'Public storefront browsing, checkout sessions, and stock reservations',
+      )
+      .setVersion('1.0')
+      .addApiKey(
+        { type: 'apiKey', name: 'X-Checkout-Token', in: 'header' },
+        'checkout-token',
+      )
+      .build();
+    const document = SwaggerModule.createDocument(app, config, {
+      include: [StorefrontModule, CheckoutModule],
+    });
+    SwaggerModule.setup('docs/storefront', app, document, {
+      jsonDocumentUrl: 'docs/storefront/openapi.json',
+    });
+    documents.push('/docs/storefront');
   }
 
   if (envFlag('SWAGGER_ADMIN_ENABLED', !isProduction)) {

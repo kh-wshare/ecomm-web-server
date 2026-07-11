@@ -89,12 +89,6 @@ export class CheckoutService {
       if (item.variantId && (!variant || variant.status !== 'ACTIVE')) {
         throw new ConflictException('Product variant is unavailable');
       }
-      if (
-        !item.variantId &&
-        product.variants.some((v) => v.status === 'ACTIVE')
-      ) {
-        throw new ConflictException('A product variant must be selected');
-      }
       const targetKey = item.variantId
         ? `variant:${item.variantId}`
         : `product:${item.productId}`;

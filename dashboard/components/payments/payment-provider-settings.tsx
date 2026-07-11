@@ -3,7 +3,7 @@
 import { Form } from "@heroui/react";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { Button, Input } from "@/components/ui/hero-controls";
 import type { PaymentProviderCode } from "@/types/payment";
@@ -38,6 +38,7 @@ const plannedProviders = [
 export function PaymentProviderSettings() {
   const { can } = usePermissions();
   const canManage = can("payment.provider_manage");
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [connecting, setConnecting] = useState(false);
   const providersQuery = useQuery({
@@ -81,12 +82,13 @@ export function PaymentProviderSettings() {
             Configure payment gateways and review adapter availability.
           </p>
         </div>
-        <Link
+        <Button
           className="inline-flex h-10 items-center rounded-xl border border-separator px-4 text-sm font-semibold"
-          href="/dashboard/payments/transactions"
+          type="button"
+          onPress={() => router.push("/dashboard/payments/transactions")}
         >
           View transactions
-        </Link>
+        </Button>
       </header>
 
       <div className="grid gap-4 lg:grid-cols-2">

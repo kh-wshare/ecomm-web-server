@@ -19,6 +19,11 @@ export function ProductCard({
     product.variants.length > 0
       ? Math.min(...product.variants.map((variant) => Number(variant.price)))
       : Number(product.price);
+  const availabilityLabel = product.isPurchasable
+    ? "In stock"
+    : product.isAvailable
+      ? "Browsing only"
+      : "Sold out";
 
   return (
     <Link
@@ -53,13 +58,13 @@ export function ProductCard({
         <span
           className="absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide"
           style={{
-            backgroundColor: product.isAvailable
+            backgroundColor: product.isPurchasable
               ? config.colors.background
               : "#fee2e2",
-            color: product.isAvailable ? config.colors.text : "#b91c1c",
+            color: product.isPurchasable ? config.colors.text : "#b91c1c",
           }}
         >
-          {product.isAvailable ? "In stock" : "Sold out"}
+          {availabilityLabel}
         </span>
       </div>
       <div className="p-4">

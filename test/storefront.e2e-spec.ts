@@ -162,7 +162,7 @@ describe('Public storefront (e2e)', () => {
     expect(theme.body.data).not.toHaveProperty('draftConfig');
   });
 
-  it('filters products by lifecycle, channel visibility, and channel stock rules', async () => {
+  it('lists visible products and reports channel stock availability', async () => {
     const account = await register();
     const token = account.accessToken;
     const merchantSlug = account.activeMerchant.merchant.slug;
@@ -175,12 +175,23 @@ describe('Public storefront (e2e)', () => {
     const draft = await createProduct(token, { status: 'DRAFT' });
     await adjust(token, draft.id, 5).expect(201);
 
-    await createProduct(token);
+    const unstocked = await createProduct(token);
 
     const website = await request(app.getHttpServer())
       .get(`/storefront/${merchantSlug}/products`)
       .expect(200);
-    expect(website.body.data).toHaveLength(0);
+    expect(website.body.data.map(({ id }: { id: string }) => id)).toEqual(
+      expect.arrayContaining([buffered.id, unstocked.id]),
+    );
+    expect(website.body.data.map(({ id }: { id: string }) => id)).not.toContain(
+      hidden.id,
+    );
+    expect(website.body.data.map(({ id }: { id: string }) => id)).not.toContain(
+      draft.id,
+    );
+    expect(
+      website.body.data.find(({ id }: { id: string }) => id === buffered.id),
+    ).toMatchObject({ isAvailable: false, isPurchasable: false });
 
     const pos = await request(app.getHttpServer())
       .get(`/storefront/${merchantSlug}/products`)
@@ -197,9 +208,9 @@ describe('Public storefront (e2e)', () => {
     const available = await request(app.getHttpServer())
       .get(`/storefront/${merchantSlug}/products`)
       .expect(200);
-    expect(available.body.data.map(({ id }: { id: string }) => id)).toContain(
-      buffered.id,
-    );
+    expect(
+      available.body.data.find(({ id }: { id: string }) => id === buffered.id),
+    ).toMatchObject({ isAvailable: true, isPurchasable: true });
 
     await request(app.getHttpServer())
       .delete(`/products/${buffered.id}`)
@@ -213,6 +224,44 @@ describe('Public storefront (e2e)', () => {
       .get(`/storefront/${merchantSlug}/products`)
       .query({ channel: 'not-a-channel' })
       .expect(400);
+  });
+
+  it('allows checkout for base product stock even when variants exist', async () => {
+    const account = await register();
+    const token = account.accessToken;
+    const merchantSlug = account.activeMerchant.merchant.slug;
+    const product = await createProduct(token, { withVariant: true });
+    await adjust(token, product.id, 3).expect(201);
+
+    const detail = await request(app.getHttpServer())
+      .get(`/storefront/${merchantSlug}/products/${product.slug}`)
+      .expect(200);
+    expect(detail.body.data).toMatchObject({
+      id: product.id,
+      baseIsAvailable: true,
+      isAvailable: true,
+      isPurchasable: true,
+      variants: [
+        expect.objectContaining({
+          id: product.variants[0].id,
+          isAvailable: false,
+        }),
+      ],
+    });
+
+    const checkout = await request(app.getHttpServer())
+      .post('/checkout/session')
+      .send({
+        merchantSlug,
+        sourceChannel: 'WEBSITE',
+        items: [{ productId: product.id, quantity: 1 }],
+      })
+      .expect(201);
+    expect(checkout.body.data.items[0]).toMatchObject({
+      productId: product.id,
+      variantId: null,
+      quantity: 1,
+    });
   });
 
   it('does not expose inactive or suspended merchant storefronts', async () => {
