@@ -13,12 +13,17 @@ import { Public } from '#app/modules/authenticated/decorators/public.decorator';
 import {
   FirebaseGoogleLoginDto,
   TelegramLoginDto,
+  TelegramTokenExchangeDto,
 } from './dto/social-login.dto';
+import { SocialAuthService } from './social-auth.service';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class SocialAuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly socialAuth: SocialAuthService,
+  ) {}
 
   @Public()
   @Post('login/firebase-google')
@@ -40,6 +45,16 @@ export class SocialAuthController {
   @ApiOperation({ summary: 'Login with a Telegram OIDC ID token' })
   loginWithTelegram(@Body() dto: TelegramLoginDto, @Req() request: Request) {
     return this.authService.loginWithTelegram(dto, this.metadata(request));
+  }
+
+  @Public()
+  @Post('telegram/token')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Exchange a Telegram OAuth code for an ID token' })
+  async exchangeTelegramCode(@Body() dto: TelegramTokenExchangeDto) {
+    return {
+      idToken: await this.socialAuth.exchangeTelegramCode(dto),
+    };
   }
 
   @Public()

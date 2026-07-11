@@ -52,6 +52,7 @@ import storageConfig from './storage.config';
         SWAGGER_ADMIN_ENABLED: Joi.boolean().optional(),
         FIREBASE_PROJECT_ID: Joi.string().optional(),
         TELEGRAM_CLIENT_ID: Joi.string().optional(),
+        TELEGRAM_CLIENT_SECRET: Joi.string().optional(),
         TELEGRAM_ISSUER: Joi.string().uri().optional(),
         PAYMENT_WEBHOOK_SECRET: Joi.string().min(16).optional(),
         PAYMENT_PROVIDER: Joi.string().optional(),

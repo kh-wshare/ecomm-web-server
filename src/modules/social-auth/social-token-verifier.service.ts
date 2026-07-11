@@ -43,6 +43,13 @@ export type VerifiedTelegramUser = {
   username: string | null;
 };
 
+type TelegramTokenResponse = {
+  error?: unknown;
+  error_description?: unknown;
+  idToken?: unknown;
+  id_token?: unknown;
+};
+
 @Injectable()
 export class SocialTokenVerifierService {
   private firebaseCertificates = new Map<string, string>();
@@ -120,6 +127,93 @@ export class SocialTokenVerifierService {
       providerUserId: payload.sub,
       username: payload.preferred_username ?? null,
     };
+  }
+
+  async exchangeTelegramCode(options: {
+    code: string;
+    codeVerifier: string;
+    redirectUri: string;
+  }) {
+    const clientId = this.config.get<string>('socialAuth.telegramClientId');
+    const clientSecret = this.config.get<string>(
+      'socialAuth.telegramClientSecret',
+    );
+    const issuer = this.config.get<string>('socialAuth.telegramIssuer');
+    if (!clientId || !clientSecret || !issuer) {
+      throw new ServiceUnavailableException('Telegram login is not configured');
+    }
+
+    const body = new URLSearchParams({
+      client_id: clientId,
+      code: options.code,
+      code_verifier: options.codeVerifier,
+      grant_type: 'authorization_code',
+      redirect_uri: options.redirectUri,
+    });
+    const response = await fetch(`${issuer.replace(/\/+$/, '')}/token`, {
+      body,
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Basic ${Buffer.from(
+          `${clientId}:${clientSecret}`,
+        ).toString('base64')}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      method: 'POST',
+    });
+    const payload = await this.parseTelegramTokenResponse(response);
+
+    if (!response.ok) {
+      const reason = this.telegramTokenError(payload);
+      if (response.status >= 400 && response.status < 500) {
+        throw new UnauthorizedException(
+          reason
+            ? `Telegram authorization code is invalid: ${reason}`
+            : 'Telegram authorization code is invalid',
+        );
+      }
+      throw new ServiceUnavailableException(
+        reason
+          ? `Telegram token endpoint failed: ${reason}`
+          : 'Telegram token endpoint failed',
+      );
+    }
+
+    const idToken =
+      typeof payload.id_token === 'string'
+        ? payload.id_token
+        : typeof payload.idToken === 'string'
+          ? payload.idToken
+          : null;
+    if (!idToken) {
+      const reason = this.telegramTokenError(payload);
+      throw new UnauthorizedException(
+        reason
+          ? `Telegram token response is missing id_token: ${reason}`
+          : 'Telegram token response is missing id_token',
+      );
+    }
+    return idToken;
+  }
+
+  private async parseTelegramTokenResponse(response: Response) {
+    const text = await response.text();
+    if (!text) return {};
+
+    try {
+      return JSON.parse(text) as TelegramTokenResponse;
+    } catch {
+      return { error_description: text };
+    }
+  }
+
+  private telegramTokenError(payload: TelegramTokenResponse) {
+    const description =
+      typeof payload.error_description === 'string'
+        ? payload.error_description
+        : null;
+    const error = typeof payload.error === 'string' ? payload.error : null;
+    return description ?? error;
   }
 
   private providerMetadata(payload: JwtPayload): Record<string, unknown> {

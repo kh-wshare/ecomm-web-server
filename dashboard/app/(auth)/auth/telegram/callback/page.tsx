@@ -8,7 +8,7 @@ export default function TelegramCallbackPage() {
 
   useEffect(() => {
     if (!window.opener) return;
-    window.opener.postMessage(message, window.location.origin);
+    window.opener.postMessage(message, telegramMessageTargetOrigin(message));
     window.close();
   }, [message]);
 
@@ -24,7 +24,9 @@ export default function TelegramCallbackPage() {
 function telegramCallbackMessage() {
   const params = new URLSearchParams(window.location.search);
   const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  const code = params.get("code") ?? hash.get("code");
   const idToken = params.get("id_token") ?? hash.get("id_token");
+  const state = params.get("state") ?? hash.get("state");
   const error =
     params.get("error_description") ??
     hash.get("error_description") ??
@@ -32,8 +34,30 @@ function telegramCallbackMessage() {
     hash.get("error");
 
   return {
+    code: code ?? undefined,
     error: error ?? undefined,
     idToken: idToken ?? undefined,
+    state: state ?? undefined,
     type: telegramLoginMessageType,
   };
+}
+
+function telegramMessageTargetOrigin(message: { state?: string }) {
+  const encodedOrigin = message.state?.split(".")[1];
+  if (!encodedOrigin) return window.location.origin;
+
+  try {
+    const origin = new TextDecoder().decode(base64UrlToBytes(encodedOrigin));
+    return URL.canParse(origin)
+      ? new URL(origin).origin
+      : window.location.origin;
+  } catch {
+    return window.location.origin;
+  }
+}
+
+function base64UrlToBytes(value: string) {
+  const base64 = value.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, "=");
+  return Uint8Array.from(atob(padded), (character) => character.charCodeAt(0));
 }

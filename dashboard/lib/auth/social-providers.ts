@@ -1,4 +1,5 @@
 import { env } from "@/config/env";
+import { apiClient } from "@/lib/api/client";
 
 declare global {
   interface Window {
@@ -43,9 +44,9 @@ const SOCIAL_LOGIN_CANCELLED_CODES = new Set([
 export const socialProviderConfig = {
   firebaseConfigured: Boolean(
     env.NEXT_PUBLIC_FIREBASE_API_KEY &&
-      env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN &&
-      env.NEXT_PUBLIC_FIREBASE_PROJECT_ID &&
-      env.NEXT_PUBLIC_FIREBASE_APP_ID,
+    env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN &&
+    env.NEXT_PUBLIC_FIREBASE_PROJECT_ID &&
+    env.NEXT_PUBLIC_FIREBASE_APP_ID,
   ),
   telegramConfigured: Boolean(env.NEXT_PUBLIC_TELEGRAM_CLIENT_ID),
 };
@@ -79,11 +80,12 @@ export async function getTelegramIdToken() {
     throw new Error("Telegram login is not configured");
   }
 
+  const authRequest = await createTelegramAuthRequest(clientId);
+
   return new Promise<string>((resolve, reject) => {
     let isSettled = false;
-    const authUrl = telegramAuthUrl(clientId);
     const popup = window.open(
-      authUrl,
+      authRequest.url,
       "telegram_oidc_login",
       popupFeatures(550, 650),
     );
@@ -112,15 +114,15 @@ export async function getTelegramIdToken() {
     const onMessage = (event: MessageEvent<unknown>) => {
       if (
         event.origin !== TELEGRAM_OIDC_ORIGIN &&
-        event.origin !== window.location.origin
+        event.origin !== window.location.origin &&
+        event.origin !== authRequest.redirectOrigin
       ) {
         return;
       }
       if (event.source !== popup) return;
 
       const data = parseTelegramAuthMessage(event.data);
-      console.log("data", data);
-      
+
       if (
         data?.type !== TELEGRAM_MESSAGE_TYPE &&
         data?.event !== "auth_result"
@@ -132,13 +134,35 @@ export async function getTelegramIdToken() {
         return;
       }
 
+      if (data.state !== authRequest.state) {
+        settle(() => reject(new Error("Invalid Telegram login state")));
+        return;
+      }
+
       const idToken = data.idToken ?? data.result;
       if (idToken) {
         settle(() => resolve(idToken));
         return;
       }
+
+      if (data.code) {
+        const code = data.code;
+        settle(() => {
+          void exchangeTelegramCode({
+            code,
+            codeVerifier: authRequest.codeVerifier,
+            redirectUri: authRequest.redirectUri,
+          })
+            .then(resolve)
+            .catch(reject);
+        });
+        return;
+      }
+
       settle(() =>
-        reject(new Error("Telegram login did not return an ID token")),
+        reject(
+          new Error("Telegram login did not return an authorization code"),
+        ),
       );
     };
 
@@ -148,14 +172,64 @@ export async function getTelegramIdToken() {
   });
 }
 
-function telegramAuthUrl(clientId: number) {
+async function createTelegramAuthRequest(clientId: number) {
+  const state = telegramState();
+  const codeVerifier = randomBase64Url(32);
+  const codeChallenge = await sha256Base64Url(codeVerifier);
+  const redirectUri = telegramRedirectUri();
+
+  return {
+    codeVerifier,
+    redirectOrigin: new URL(redirectUri).origin,
+    redirectUri,
+    state,
+    url: telegramAuthUrl({
+      clientId,
+      codeChallenge,
+      redirectUri,
+      state,
+    }),
+  };
+}
+
+function telegramState() {
+  return `${randomBase64Url(32)}.${base64Url(
+    new TextEncoder().encode(window.location.origin),
+  )}`;
+}
+
+function telegramAuthUrl(options: {
+  clientId: number;
+  codeChallenge: string;
+  redirectUri: string;
+  state: string;
+}) {
   const url = new URL(TELEGRAM_AUTH_URL);
-  url.searchParams.set("response_type", "post_message");
-  url.searchParams.set("client_id", String(clientId));
-  url.searchParams.set("redirect_uri", telegramRedirectUri());
-  url.searchParams.set("scope", "openid profile");
+  url.searchParams.set("response_type", "code");
+  url.searchParams.set("client_id", String(options.clientId));
+  url.searchParams.set("redirect_uri", options.redirectUri);
+  url.searchParams.set("scope", "openid profile phone");
+  url.searchParams.set("state", options.state);
+  url.searchParams.set("code_challenge", options.codeChallenge);
+  url.searchParams.set("code_challenge_method", "S256");
   url.searchParams.set("nonce", crypto.randomUUID());
   return url.toString();
+}
+
+async function exchangeTelegramCode(options: {
+  code: string;
+  codeVerifier: string;
+  redirectUri: string;
+}) {
+  const response = await apiClient.post<{ idToken: string }>(
+    "/auth/telegram/token",
+    options,
+    {
+      authenticated: false,
+      merchantId: null,
+    },
+  );
+  return response.data.idToken;
 }
 
 function telegramRedirectUri() {
@@ -187,12 +261,15 @@ function parseTelegramAuthMessage(data: unknown) {
     const message = parsed as {
       error?: unknown;
       event?: unknown;
+      code?: unknown;
       idToken?: unknown;
       id_token?: unknown;
       result?: unknown;
+      state?: unknown;
       type?: unknown;
     };
     return {
+      code: typeof message.code === "string" ? message.code : undefined,
       error: typeof message.error === "string" ? message.error : undefined,
       event: typeof message.event === "string" ? message.event : undefined,
       idToken:
@@ -202,11 +279,36 @@ function parseTelegramAuthMessage(data: unknown) {
             ? message.id_token
             : undefined,
       result: typeof message.result === "string" ? message.result : undefined,
+      state: typeof message.state === "string" ? message.state : undefined,
       type: typeof message.type === "string" ? message.type : undefined,
     };
   } catch {
     return null;
   }
+}
+
+function randomBase64Url(byteLength: number) {
+  const bytes = new Uint8Array(byteLength);
+  crypto.getRandomValues(bytes);
+  return base64Url(bytes);
+}
+
+async function sha256Base64Url(value: string) {
+  const hash = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(value),
+  );
+  return base64Url(new Uint8Array(hash));
+}
+
+function base64Url(bytes: Uint8Array) {
+  const binary = Array.from(bytes, (byte) => String.fromCharCode(byte)).join(
+    "",
+  );
+  return btoa(binary)
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/g, "");
 }
 
 export const telegramLoginMessageType = TELEGRAM_MESSAGE_TYPE;
@@ -222,7 +324,7 @@ export function isSocialLoginCancelled(error: unknown) {
 
   return Boolean(
     (code && SOCIAL_LOGIN_CANCELLED_CODES.has(code)) ||
-      (message && SOCIAL_LOGIN_CANCELLED_CODES.has(message)),
+    (message && SOCIAL_LOGIN_CANCELLED_CODES.has(message)),
   );
 }
 

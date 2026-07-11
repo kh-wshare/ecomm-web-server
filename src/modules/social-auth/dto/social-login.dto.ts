@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsJWT, IsString } from 'class-validator';
+import { IsJWT, IsString, IsUrl, MinLength } from 'class-validator';
 
 export class FirebaseGoogleLoginDto {
   @ApiProperty({
@@ -17,4 +17,26 @@ export class TelegramLoginDto {
   @IsString()
   @IsJWT()
   idToken!: string;
+}
+
+export class TelegramTokenExchangeDto {
+  @ApiProperty({
+    description: 'Authorization code returned by Telegram OAuth',
+  })
+  @IsString()
+  code!: string;
+
+  @ApiProperty({
+    description: 'PKCE code verifier generated before authorization',
+  })
+  @IsString()
+  @MinLength(43)
+  codeVerifier!: string;
+
+  @ApiProperty({
+    description: 'Redirect URI used for the Telegram authorization request',
+  })
+  @IsString()
+  @IsUrl({ require_tld: false })
+  redirectUri!: string;
 }

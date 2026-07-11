@@ -56,6 +56,14 @@ export class SocialAuthService {
     };
   }
 
+  exchangeTelegramCode(options: {
+    code: string;
+    codeVerifier: string;
+    redirectUri: string;
+  }) {
+    return this.socialTokens.exchangeTelegramCode(options);
+  }
+
   async findOrCreateUser(
     profile: SocialProfile,
     options: { scope: SocialAuthScope },
