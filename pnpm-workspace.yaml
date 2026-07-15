@@ -6,3 +6,6 @@ ignoredBuiltDependencies:
   - esbuild
   - prisma
   - unrs-resolver
+packages:
+  - apps/*
+  - packages/*

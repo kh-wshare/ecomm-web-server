@@ -1,4 +1,9 @@
-import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+  OmitType,
+  PartialType,
+} from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   ArrayMaxSize,
@@ -62,6 +67,34 @@ export class ProductVariantInputDto {
   @IsEnum(ProductVariantStatus)
   @IsOptional()
   status?: ProductVariantStatus;
+}
+
+export class CreateProductInventoryInputDto {
+  @ApiPropertyOptional({
+    example: 'SHIRT-BLK-M',
+    description:
+      'Variant SKU to initialize. Omit to initialize the base product stock.',
+    maxLength: 80,
+  })
+  @IsString()
+  @Matches(SKU_PATTERN)
+  @MaxLength(80)
+  @IsOptional()
+  variantSku?: string;
+
+  @ApiPropertyOptional({ example: 25, minimum: 0, default: 0 })
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  @IsOptional()
+  initialStock?: number;
+
+  @ApiPropertyOptional({ example: 2, minimum: 0, default: 0 })
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  @IsOptional()
+  safetyBuffer?: number;
 }
 
 export class ProductMediaInputDto {
@@ -173,9 +206,19 @@ export class CreateProductDto {
   @Type(() => ChannelVisibilityInputDto)
   @IsOptional()
   channelVisibility?: ChannelVisibilityInputDto[];
+
+  @ApiPropertyOptional({ type: [CreateProductInventoryInputDto] })
+  @IsArray()
+  @ArrayMaxSize(101)
+  @ValidateNested({ each: true })
+  @Type(() => CreateProductInventoryInputDto)
+  @IsOptional()
+  inventory?: CreateProductInventoryInputDto[];
 }
 
-export class UpdateProductDto extends PartialType(CreateProductDto) {}
+export class UpdateProductDto extends PartialType(
+  OmitType(CreateProductDto, ['inventory'] as const),
+) {}
 
 export class UpdateChannelVisibilityDto {
   @ApiProperty({ type: [ChannelVisibilityInputDto] })

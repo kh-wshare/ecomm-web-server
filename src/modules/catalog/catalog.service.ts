@@ -12,6 +12,7 @@ import { CommerceCacheService } from '#app/infrastructure/redis/commerce-cache.s
 import {
   ChannelVisibilityInputDto,
   CreateProductDto,
+  CreateProductInventoryInputDto,
   ProductMediaInputDto,
   ProductVariantInputDto,
   UpdateChannelVisibilityDto,
@@ -60,6 +61,7 @@ export class CatalogService {
   ) {
     this.validateChannels(dto.channelVisibility);
     this.validateVariants(dto.variants);
+    this.validateInventory(dto.inventory, dto.variants);
     const baseSlug = this.toSlug(dto.slug ?? dto.name);
 
     for (let attempt = 0; attempt < 5; attempt += 1) {
@@ -91,6 +93,13 @@ export class CatalogService {
             },
             include: productDetailInclude,
           });
+          await this.createInitialInventory(
+            tx,
+            merchantId,
+            userId,
+            product,
+            dto.inventory,
+          );
           await tx.auditLog.create({
             data: {
               merchantId,
@@ -437,6 +446,98 @@ export class CatalogService {
     if (uniqueSkus.size !== variants.length) {
       throw new BadRequestException('Each variant SKU may appear only once');
     }
+  }
+
+  private validateInventory(
+    inventory?: CreateProductInventoryInputDto[],
+    variants?: ProductVariantInputDto[],
+  ) {
+    if (!inventory) return;
+
+    const variantSkus = new Set(
+      variants?.map((variant) => this.normalizeSku(variant.sku)) ?? [],
+    );
+    const targets = new Set<string>();
+
+    for (const item of inventory) {
+      const target = item.variantSku
+        ? `variant:${this.normalizeSku(item.variantSku)}`
+        : 'product';
+
+      if (targets.has(target)) {
+        throw new BadRequestException(
+          'Each inventory target may appear only once',
+        );
+      }
+      targets.add(target);
+
+      if (
+        item.variantSku &&
+        !variantSkus.has(this.normalizeSku(item.variantSku))
+      ) {
+        throw new BadRequestException(
+          `Inventory variant SKU ${item.variantSku} must match a product variant`,
+        );
+      }
+    }
+  }
+
+  private async createInitialInventory(
+    tx: Prisma.TransactionClient,
+    merchantId: string,
+    userId: string,
+    product: {
+      id: string;
+      variants: Array<{ id: string; sku: string }>;
+    },
+    inventory?: CreateProductInventoryInputDto[],
+  ) {
+    if (!inventory?.length) return;
+
+    const variantsBySku = new Map(
+      product.variants.map((variant) => [
+        this.normalizeSku(variant.sku),
+        variant,
+      ]),
+    );
+
+    for (const item of inventory) {
+      const variant = item.variantSku
+        ? variantsBySku.get(this.normalizeSku(item.variantSku))
+        : undefined;
+      const initialStock = item.initialStock ?? 0;
+      const safetyBuffer = item.safetyBuffer ?? 0;
+      const stock = await tx.inventoryStock.create({
+        data: {
+          merchantId,
+          productId: product.id,
+          variantId: variant?.id,
+          stockKey: this.stockKey(product.id, variant?.id),
+          totalStock: initialStock,
+          safetyBuffer,
+        },
+      });
+
+      if (initialStock > 0) {
+        await tx.inventoryMovement.create({
+          data: {
+            merchantId,
+            inventoryStockId: stock.id,
+            productId: product.id,
+            variantId: variant?.id,
+            type: 'STOCK_IN',
+            quantity: initialStock,
+            referenceId: product.id,
+            referenceType: 'product_create',
+            createdById: userId,
+          },
+        });
+      }
+    }
+  }
+
+  private stockKey(productId: string, variantId?: string) {
+    return variantId ? `variant:${variantId}` : `product:${productId}`;
   }
 
   private normalizeSku(sku: string) {

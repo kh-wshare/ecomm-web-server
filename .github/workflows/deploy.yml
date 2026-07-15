@@ -20,11 +20,11 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10.30.1
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '26.5.0'
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -38,6 +38,15 @@ jobs:
 
       - name: Type check
         run: pnpm run type-check
+
+      - name: Lint micro-frontends
+        run: pnpm run mfe:lint
+
+      - name: Type check micro-frontends and shared packages
+        run: pnpm run mfe:type-check
+
+      - name: Build micro-frontends and shared packages
+        run: pnpm run mfe:build
 
       - name: Test
         run: pnpm run test

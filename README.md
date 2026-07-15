@@ -1,208 +1,118 @@
-# NestJS Server
+# Merchant Commerce Platform
 
-A production-ready REST API built with [NestJS](https://nestjs.com/), [Prisma](https://www.prisma.io/), PostgreSQL, and Redis. Includes JWT authentication, role-based access control, and Swagger documentation.
+NestJS API plus independently deployable merchant, POS, and storefront
+frontends.
 
-## Tech Stack
+## Stack
 
-- **Framework:** NestJS 11
-- **ORM:** Prisma 7 (PostgreSQL)
-- **Cache / Session:** Redis (ioredis)
-- **Auth:** Passport.js — JWT + Local strategy
-- **Validation:** class-validator / class-transformer
-- **API Docs:** Swagger (@nestjs/swagger)
-- **Runtime:** Node.js 20, pnpm
+| Area | Technology |
+|------|------------|
+| API | NestJS 11, Prisma 7, PostgreSQL, Redis |
+| Frontends | Next.js 16, React 19, HeroUI 3, Tailwind CSS 4 |
+| Workspace | pnpm 10.30.1, Turborepo |
+| Runtime | Node.js >= 26.5.0 |
+| Deployment | Docker Compose, nginx gateway |
 
----
+## Apps
 
-## Prerequisites
+| App | Package | Local route | Purpose |
+|-----|---------|-------------|---------|
+| API | root package | `http://localhost:3000` | Commerce API, auth, checkout, payments, realtime events |
+| Merchant | `@repo/merchant` | `http://localhost/merchant` | Merchant admin dashboard |
+| POS | `@repo/pos` | `http://localhost/pos` | Staff point-of-sale |
+| Storefront | `@repo/storefront` | `http://localhost` | Public storefront and checkout |
 
-| Tool | Version |
-|------|---------|
-| Node.js | >= 20 |
-| pnpm | >= 9 |
-| Docker & Docker Compose | any recent version |
+The legacy monolithic `dashboard/` app is archived and removed from the active
+workspace. New frontend work should live in `apps/*` and shared code should move
+through `packages/*`.
 
----
-
-## Local Development Setup
-
-### 1. Clone the repository
-
-```bash
-git clone <repo-url>
-cd nest-server
-```
-
-### 2. Install dependencies
+## Local Setup
 
 ```bash
 pnpm install
-```
-
-### 3. Configure environment variables
-
-```bash
 cp .env.example .env
-```
-
-Edit `.env` and fill in your values:
-
-```env
-# App
-PORT=9001
-NODE_ENV=development
-
-# Database (PostgreSQL)
-DB_USER=dev_user
-DB_PASSWORD=soklay512
-DB_NAME=dev_db
-DB_PORT=5448
-DATABASE_URL="postgresql://${DB_USER}:${DB_PASSWORD}@localhost:${DB_PORT}/${DB_NAME}?schema=public"
-
-# Redis
-REDIS_HOST=localhost
-REDIS_PORT=6388
-REDIS_PASSWORD=
-
-# JWT
-JWT_ACCESS_SECRET=replace_with_at_least_32_random_characters
-JWT_REFRESH_SECRET=replace_with_a_different_32_character_secret
-JWT_EXPIRES_IN=15m
-REFRESH_TOKEN_TTL_DAYS=30
-```
-
-### 4. Start infrastructure (PostgreSQL + Redis)
-
-```bash
 docker compose -f docker-compose.dev.yml up -d
-```
-
-This spins up:
-- `nest_postgres_dev` — PostgreSQL 16 on port `5432`
-- `nest_redis_dev` — Redis 7 on port `6379`
-
-### 5. Run database migrations
-
-```bash
 pnpm prisma:migrate
-```
-
-### 6. (Optional) Seed the database
-
-```bash
-pnpm prisma:seed
-```
-
-### 7. Generate Prisma client
-
-```bash
 pnpm prisma:generate
 ```
 
-### 8. Start the development server
+Run the API:
 
 ```bash
 pnpm start:dev
 ```
 
-The server will be available at `http://localhost:9001`.
-Swagger UI:
-
-- User: `http://localhost:9001/docs/user`
-- Merchant: `http://localhost:9001/docs/merchant`
-- Platform admin: `http://localhost:9001/docs/admin`
-
----
-
-## Available Scripts
-
-| Command | Description |
-|---------|-------------|
-| `pnpm start` | Start in standard mode |
-| `pnpm start:dev` | Start with hot-reload (watch mode) |
-| `pnpm start:debug` | Start with debugger + hot-reload |
-| `pnpm start:prod` | Run compiled production build |
-| `pnpm build` | Compile TypeScript to `dist/` |
-| `pnpm lint` | Lint and auto-fix with ESLint |
-| `pnpm format` | Format with Prettier |
-| `pnpm test` | Run unit tests |
-| `pnpm test:watch` | Run unit tests in watch mode |
-| `pnpm test:cov` | Run tests with coverage report |
-| `pnpm test:e2e` | Run end-to-end tests |
-
-### Prisma commands
-
-| Command | Description |
-|---------|-------------|
-| `pnpm prisma:generate` | Regenerate Prisma client |
-| `pnpm prisma:migrate` | Create and apply a new migration (dev) |
-| `pnpm prisma:migrate:prod` | Apply pending migrations (production) |
-| `pnpm prisma:studio` | Open Prisma Studio GUI |
-| `pnpm prisma:seed` | Seed the database |
-
----
-
-## Production Deployment (Docker)
-
-Build and run the full stack (app + PostgreSQL + Redis) with Docker Compose:
+Run the frontends:
 
 ```bash
-# Copy and configure env
-cp .env.example .env
-# Edit .env with production values — especially JWT secrets and DB passwords
+pnpm mfe:dev
+```
 
+Or run one frontend:
+
+```bash
+pnpm merchant:dev
+pnpm pos:dev
+pnpm storefront:dev
+```
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `pnpm build` | Build the NestJS API |
+| `pnpm start:dev` | Run the API in watch mode |
+| `pnpm test` | Run API unit tests |
+| `pnpm test:e2e` | Run API end-to-end tests |
+| `pnpm mfe:build` | Build all active frontend apps and shared packages |
+| `pnpm mfe:lint` | Lint active frontend apps |
+| `pnpm mfe:type-check` | Type-check active frontend apps and shared packages |
+| `pnpm prisma:generate` | Generate Prisma Client |
+| `pnpm prisma:migrate` | Run development migrations |
+| `pnpm prisma:migrate:prod` | Run production migrations |
+
+## Docker
+
+Build and run the full stack:
+
+```bash
 docker compose up -d --build
 ```
 
-The app container automatically runs `prisma migrate deploy` before starting.
+Gateway routes:
 
-Services exposed:
-- API: `http://localhost:3000`
-- PostgreSQL: port `5432`
-- Redis: port `6379`
-
-To stop:
-
-```bash
-docker compose down
+```txt
+/merchant/* -> merchant app
+/pos/*      -> POS app
+/*          -> storefront app
 ```
 
-To stop and remove volumes (wipes database data):
+See [docs/docker-deployment.md](docs/docker-deployment.md) for build,
+verification, and shutdown commands.
 
-```bash
-docker compose down -v
-```
+## Documentation
 
----
+- [Docker deployment](docs/docker-deployment.md)
+- [Gateway routing](docs/gateway-routing.md)
+- [Monolith removal](docs/monolith-removal.md)
+- [Migration checklist](dashboard/docs/improvment.md)
+- [Merchant roadmap](docs/merchant_master_roadmap.md)
 
-## Database Schema
+## Structure
 
-See [`prisma/schema.prisma`](./prisma/schema.prisma) for the current
-merchant-aware schema.
-
----
-
-## Project Structure
-
-```
-src/
-├── app.module.ts
-├── main.ts
-├── common/               # Filters, interceptors, DTOs, middleware
-├── config/               # Validated environment configuration
-├── docs/                 # Swagger document setup
-├── infrastructure/
-│   ├── database/         # Prisma service
-│   ├── events/           # Application event bus
-│   ├── logger/           # Logging infrastructure
-│   └── redis/            # Redis service
-└── modules/
-    ├── authenticated/    # Authentication and JWT
-    ├── authorization/    # Tenant and permission guards
-    ├── merchants/        # Merchant APIs
-    └── ...               # Remaining domain modules
-prisma/
-├── schema.prisma
-├── migrations/
-└── seed.ts
+```txt
+apps/
+  merchant/       Merchant admin app
+  pos/            POS app
+  storefront/     Public storefront app
+packages/
+  api-client/     Shared API helpers
+  auth-client/    Shared auth/session helpers
+  query-client/   Shared query keys/client helpers
+  types/          Shared domain types
+  ui/             Shared HeroUI-based primitives
+src/              NestJS API
+prisma/           Prisma schema, migrations, seed
+deploy/nginx/     Docker gateway config
+dashboard/        Archived legacy monolith
 ```

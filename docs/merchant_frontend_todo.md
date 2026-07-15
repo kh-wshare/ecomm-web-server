@@ -4,6 +4,8 @@
 
 This document lists frontend implementation tasks for the Merchant Commerce Hub dashboard, public storefront, checkout, theme builder, social commerce, and real-time merchant experience.
 
+For the planned move from the current monolithic `dashboard/` frontend to independently deployable micro-frontends, see `dashboard/docs/improvment.md`.
+
 ---
 
 ## 1. Frontend Foundation

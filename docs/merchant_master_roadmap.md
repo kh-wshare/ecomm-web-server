@@ -21,7 +21,9 @@ The platform must use one source of truth for product, stock, order, and payment
 ## 2. Core System Principle
 
 ```txt
-One merchant dashboard
+One merchant admin app
+One POS app
+One public storefront app
 One product catalog
 One inventory source of truth
 Multiple selling channels
@@ -29,6 +31,10 @@ One order engine
 Multiple payment providers
 One fulfillment flow
 ```
+
+The frontend is now split into independently deployable apps under `apps/*`.
+The old monolithic `dashboard/` frontend is archived and removed from the
+active workspace.
 
 ---
 
@@ -169,9 +175,9 @@ Merchant fulfills order
 - [x] Inventory race condition test.
 - [x] Merchant scope test.
 - [x] Permission guard test.
-- [ ] Dashboard UX polish.
-- [ ] Error handling.
-- [ ] Deployment preparation.
+- [x] Merchant dashboard UX polish.
+- [x] Error handling.
+- [x] Deployment preparation.
 
 ---
 
@@ -207,12 +213,13 @@ Merchant fulfills order
 - [x] Inventory page.
 - [x] Stock adjustment modal.
 - [x] Simple theme settings.
-- [ ] Public storefront.
-- [ ] Product detail page.
-- [ ] Checkout page.
-- [ ] Order success page.
-- [ ] Order list page.
-- [ ] Order detail page.
+- [x] Public storefront.
+- [x] Product detail page.
+- [x] Checkout page.
+- [x] Order success page.
+- [x] Order list page.
+- [x] Order detail page.
+- [x] POS app.
 
 ---
 
@@ -254,6 +261,20 @@ Merchant fulfills order
 14. Theme Builder
 15. Social Post Composer
 ```
+
+---
+
+## 8.1 Active Frontend Architecture
+
+| Surface | App | Public base path |
+|---------|-----|------------------|
+| Merchant admin | `apps/merchant` | `/merchant` |
+| POS | `apps/pos` | `/pos` |
+| Storefront | `apps/storefront` | `/` |
+
+Shared UI, type, API, auth, and query helpers live in `packages/*`. The legacy
+`dashboard/` app is archived for reference only and must not receive new
+production routes.
 
 ---
 

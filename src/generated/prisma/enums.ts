@@ -151,7 +151,9 @@ export type FulfillmentStatus = (typeof FulfillmentStatus)[keyof typeof Fulfillm
 
 
 export const PaymentProviderCode = {
-  HMAC: 'HMAC'
+  HMAC: 'HMAC',
+  KHQR: 'KHQR',
+  ABA_PAYWAY: 'ABA_PAYWAY'
 } as const
 
 export type PaymentProviderCode = (typeof PaymentProviderCode)[keyof typeof PaymentProviderCode]

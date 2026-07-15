@@ -109,6 +109,8 @@ enum FulfillmentStatus {
 
 enum PaymentProviderCode {
   HMAC
+  KHQR
+  ABA_PAYWAY
 }
 
 enum PaymentProviderStatus {

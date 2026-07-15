@@ -1,0 +1,191 @@
+import type { PosBranch, PosProduct } from "@/types/pos";
+
+export const demoBranches: PosBranch[] = [
+  {
+    id: "branch-central",
+    name: "Central Counter",
+    register: "Register 01",
+    location: "Main floor",
+  },
+  {
+    id: "branch-express",
+    name: "Express Pickup",
+    register: "Register 02",
+    location: "Pickup lane",
+  },
+  {
+    id: "branch-market",
+    name: "Market Booth",
+    register: "Mobile 01",
+    location: "Weekend market",
+  },
+];
+
+export const demoProducts: PosProduct[] = [
+  {
+    id: "prod-espresso",
+    merchantId: "demo-merchant",
+    name: "Signature Espresso",
+    slug: "signature-espresso",
+    description: "Double shot with balanced body.",
+    sku: "COF-ESP",
+    price: "3.50",
+    currency: "USD",
+    status: "ACTIVE",
+    category: "Coffee",
+    imageUrl:
+      "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=600&q=80",
+    media: [],
+    channelVisibility: [
+      { channel: "POS", isVisible: true, isPurchasable: true },
+    ],
+    variants: [
+      {
+        id: "var-espresso-single",
+        productId: "prod-espresso",
+        sku: "COF-ESP-S",
+        name: "Single",
+        price: "3.50",
+        attributes: { size: "Single" },
+        status: "ACTIVE",
+      },
+      {
+        id: "var-espresso-double",
+        productId: "prod-espresso",
+        sku: "COF-ESP-D",
+        name: "Double",
+        price: "4.75",
+        attributes: { size: "Double" },
+        status: "ACTIVE",
+      },
+    ],
+    stocks: [
+      { productId: "prod-espresso", variantId: "var-espresso-single", availableStock: 42 },
+      { productId: "prod-espresso", variantId: "var-espresso-double", availableStock: 37 },
+    ],
+  },
+  {
+    id: "prod-matcha",
+    merchantId: "demo-merchant",
+    name: "Iced Matcha",
+    slug: "iced-matcha",
+    description: "Ceremonial matcha over milk.",
+    sku: "TEA-MAT",
+    price: "5.25",
+    currency: "USD",
+    status: "ACTIVE",
+    category: "Tea",
+    imageUrl:
+      "https://images.unsplash.com/photo-1515823064-d6e0c04616a7?auto=format&fit=crop&w=600&q=80",
+    media: [],
+    channelVisibility: [
+      { channel: "POS", isVisible: true, isPurchasable: true },
+    ],
+    variants: [
+      {
+        id: "var-matcha-oat",
+        productId: "prod-matcha",
+        sku: "TEA-MAT-OAT",
+        name: "Oat milk",
+        price: "5.75",
+        attributes: { milk: "Oat" },
+        status: "ACTIVE",
+      },
+      {
+        id: "var-matcha-whole",
+        productId: "prod-matcha",
+        sku: "TEA-MAT-WHOLE",
+        name: "Whole milk",
+        price: "5.25",
+        attributes: { milk: "Whole" },
+        status: "ACTIVE",
+      },
+    ],
+    stocks: [
+      { productId: "prod-matcha", variantId: "var-matcha-oat", availableStock: 18 },
+      { productId: "prod-matcha", variantId: "var-matcha-whole", availableStock: 25 },
+    ],
+  },
+  {
+    id: "prod-sandwich",
+    merchantId: "demo-merchant",
+    name: "Market Sandwich",
+    slug: "market-sandwich",
+    description: "Toasted sourdough with seasonal filling.",
+    sku: "FOOD-SAND",
+    price: "8.90",
+    currency: "USD",
+    status: "ACTIVE",
+    category: "Food",
+    imageUrl:
+      "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=80",
+    media: [],
+    channelVisibility: [
+      { channel: "POS", isVisible: true, isPurchasable: true },
+    ],
+    variants: [
+      {
+        id: "var-sandwich-veg",
+        productId: "prod-sandwich",
+        sku: "FOOD-SAND-VEG",
+        name: "Vegetarian",
+        price: "8.90",
+        attributes: { style: "Vegetarian" },
+        status: "ACTIVE",
+      },
+      {
+        id: "var-sandwich-chicken",
+        productId: "prod-sandwich",
+        sku: "FOOD-SAND-CHK",
+        name: "Chicken",
+        price: "9.60",
+        attributes: { style: "Chicken" },
+        status: "ACTIVE",
+      },
+    ],
+    stocks: [
+      { productId: "prod-sandwich", variantId: "var-sandwich-veg", availableStock: 12 },
+      { productId: "prod-sandwich", variantId: "var-sandwich-chicken", availableStock: 9 },
+    ],
+  },
+  {
+    id: "prod-tote",
+    merchantId: "demo-merchant",
+    name: "Canvas Tote",
+    slug: "canvas-tote",
+    description: "Reusable branded tote bag.",
+    sku: "MERCH-TOTE",
+    price: "14.00",
+    currency: "USD",
+    status: "ACTIVE",
+    category: "Merch",
+    imageUrl:
+      "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=600&q=80",
+    media: [],
+    channelVisibility: [
+      { channel: "POS", isVisible: true, isPurchasable: true },
+    ],
+    variants: [],
+    stocks: [{ productId: "prod-tote", variantId: null, availableStock: 16 }],
+  },
+  {
+    id: "prod-beans",
+    merchantId: "demo-merchant",
+    name: "House Beans",
+    slug: "house-beans",
+    description: "Whole bean blend, roasted weekly.",
+    sku: "MERCH-BEANS",
+    price: "18.50",
+    currency: "USD",
+    status: "ACTIVE",
+    category: "Merch",
+    imageUrl:
+      "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=600&q=80",
+    media: [],
+    channelVisibility: [
+      { channel: "POS", isVisible: true, isPurchasable: true },
+    ],
+    variants: [],
+    stocks: [{ productId: "prod-beans", variantId: null, availableStock: 22 }],
+  },
+];

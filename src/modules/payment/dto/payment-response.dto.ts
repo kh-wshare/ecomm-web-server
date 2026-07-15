@@ -22,6 +22,9 @@ export class PaymentProviderDto {
   hasWebhookSecret!: boolean;
 
   @ApiProperty()
+  hasProviderSecret!: boolean;
+
+  @ApiProperty()
   createdAt!: Date;
 
   @ApiProperty()

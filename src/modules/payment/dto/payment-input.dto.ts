@@ -45,11 +45,28 @@ export class ConnectPaymentProviderDto {
   @IsEnum(PaymentProviderCode)
   provider!: PaymentProviderCode;
 
-  @ApiProperty({ minLength: 16, maxLength: 200 })
+  @ApiPropertyOptional({
+    minLength: 16,
+    maxLength: 200,
+    description: 'Webhook signing secret. Required for the HMAC provider.',
+  })
+  @IsOptional()
   @IsString()
   @MinLength(16)
   @MaxLength(200)
-  webhookSecret!: string;
+  webhookSecret?: string;
+
+  @ApiPropertyOptional({
+    minLength: 8,
+    maxLength: 1000,
+    description:
+      'Primary provider secret, such as a Bakong token or PayWay API key.',
+  })
+  @IsOptional()
+  @IsString()
+  @MinLength(8)
+  @MaxLength(1000)
+  providerSecret?: string;
 
   @ApiPropertyOptional({
     type: 'object',

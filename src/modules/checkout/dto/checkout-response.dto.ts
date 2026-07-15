@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   CheckoutSessionStatus,
+  PaymentProviderCode,
   SalesChannel,
 } from '#app/generated/prisma/enums';
 
@@ -39,6 +40,11 @@ export class CheckoutOrderDto {
 
   @ApiProperty()
   status!: string;
+}
+
+export class CheckoutPaymentProviderDto {
+  @ApiProperty({ enum: PaymentProviderCode })
+  provider!: PaymentProviderCode;
 }
 
 export class CheckoutSessionDto {
@@ -92,6 +98,9 @@ export class CheckoutSessionDto {
 
   @ApiPropertyOptional({ type: CheckoutOrderDto, nullable: true })
   order!: CheckoutOrderDto | null;
+
+  @ApiProperty({ type: [CheckoutPaymentProviderDto] })
+  paymentProviders!: CheckoutPaymentProviderDto[];
 }
 
 export class CreatedCheckoutSessionDto extends CheckoutSessionDto {

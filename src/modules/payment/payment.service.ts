@@ -43,8 +43,21 @@ type LockedStock = {
 
 type StoredProviderConfig = {
   settings: Record<string, unknown>;
-  webhookSecret: EncryptedSecret;
+  webhookSecret?: EncryptedSecret;
+  secrets: Record<string, EncryptedSecret>;
 };
+
+const PAYWAY_BASE_URLS = {
+  SANDBOX: 'https://checkout-sandbox.payway.com.kh',
+  PRODUCTION: 'https://checkout.payway.com.kh',
+} as const;
+
+const PAYWAY_PAYMENT_OPTIONS = [
+  'abapay_khqr',
+  'cards',
+  'abapay',
+  'khqr',
+] as const;
 
 @Injectable()
 export class PaymentService {
@@ -61,11 +74,7 @@ export class PaymentService {
     dto: ConnectPaymentProviderDto,
     metadata: RequestMetadata,
   ) {
-    const settings = this.safeSettings(dto.config);
-    const config = this.json({
-      settings,
-      webhookSecret: this.security.encrypt(dto.webhookSecret),
-    });
+    const config = this.buildProviderConfig(dto);
     const provider = await this.prisma.$transaction(async (tx) => {
       const before = await tx.paymentProvider.findUnique({
         where: {
@@ -363,6 +372,7 @@ export class PaymentService {
     const providerConfig = this.providerConfig(payment.paymentProvider.config);
     if (
       !signature ||
+      !providerConfig.webhookSecret ||
       !this.security.verifySignature(
         rawPayload,
         signature,
@@ -866,6 +876,155 @@ export class PaymentService {
     return settings;
   }
 
+  private buildProviderConfig(dto: ConnectPaymentProviderDto) {
+    const settings = this.safeSettings(dto.config);
+
+    switch (dto.provider) {
+      case PaymentProviderCode.HMAC:
+        if (!dto.webhookSecret) {
+          throw new BadRequestException(
+            'Webhook signing secret is required for HMAC',
+          );
+        }
+        return this.json({
+          settings,
+          webhookSecret: this.security.encrypt(dto.webhookSecret),
+          secrets: {},
+        });
+
+      case PaymentProviderCode.KHQR:
+        return this.json({
+          settings: this.khqrSettings(settings),
+          secrets: {
+            bakongToken: this.security.encrypt(
+              this.requireSecret(dto.providerSecret, 'Bakong token'),
+            ),
+          },
+        });
+
+      case PaymentProviderCode.ABA_PAYWAY:
+        return this.json({
+          settings: this.paywaySettings(settings),
+          secrets: {
+            apiKey: this.security.encrypt(
+              this.requireSecret(dto.providerSecret, 'PayWay API key'),
+            ),
+          },
+          ...(dto.webhookSecret
+            ? { webhookSecret: this.security.encrypt(dto.webhookSecret) }
+            : {}),
+        });
+
+      default:
+        throw new BadRequestException('Unsupported payment provider');
+    }
+  }
+
+  private khqrSettings(settings: Record<string, unknown>) {
+    return {
+      accountId: this.requiredString(settings, 'accountId', 120),
+      merchantName: this.requiredString(settings, 'merchantName', 120),
+      merchantCity:
+        this.optionalString(settings, 'merchantCity', 80) ?? 'Phnom Penh',
+      baseUrl:
+        this.optionalUrl(settings, 'baseUrl') ??
+        'https://api-bakong.nbc.gov.kh',
+      sourceAppName: this.optionalString(settings, 'sourceAppName', 80),
+      sourceAppIconUrl: this.optionalUrl(settings, 'sourceAppIconUrl'),
+      sourceAppCallbackUrl: this.optionalUrl(settings, 'sourceAppCallbackUrl'),
+    };
+  }
+
+  private paywaySettings(settings: Record<string, unknown>) {
+    const environment =
+      this.optionalEnumSetting(settings, 'environment', [
+        'SANDBOX',
+        'PRODUCTION',
+      ]) ?? 'SANDBOX';
+    return {
+      merchantId: this.requiredString(settings, 'merchantId', 120),
+      environment,
+      baseUrl:
+        this.optionalUrl(settings, 'baseUrl') ??
+        PAYWAY_BASE_URLS[environment as keyof typeof PAYWAY_BASE_URLS],
+      paymentOption:
+        this.optionalEnumSetting(
+          settings,
+          'paymentOption',
+          PAYWAY_PAYMENT_OPTIONS,
+        ) ?? 'abapay_khqr',
+      returnUrl: this.optionalUrl(settings, 'returnUrl'),
+      cancelUrl: this.optionalUrl(settings, 'cancelUrl'),
+      callbackUrl: this.optionalUrl(settings, 'callbackUrl'),
+      qrImageTemplate:
+        this.optionalString(settings, 'qrImageTemplate', 80) ??
+        'template3_color',
+    };
+  }
+
+  private requireSecret(value: string | undefined, label: string) {
+    if (!value) throw new BadRequestException(`${label} is required`);
+    return value;
+  }
+
+  private requiredString(
+    settings: Record<string, unknown>,
+    key: string,
+    maxLength: number,
+  ) {
+    const value = this.optionalString(settings, key, maxLength);
+    if (!value) throw new BadRequestException(`${key} is required`);
+    return value;
+  }
+
+  private optionalString(
+    settings: Record<string, unknown>,
+    key: string,
+    maxLength: number,
+  ) {
+    const value = settings[key];
+    if (value === undefined || value === null || value === '') return undefined;
+    if (typeof value !== 'string') {
+      throw new BadRequestException(`${key} must be a string`);
+    }
+    const trimmed = value.trim();
+    if (!trimmed) return undefined;
+    if (trimmed.length > maxLength) {
+      throw new BadRequestException(`${key} is too long`);
+    }
+    return trimmed;
+  }
+
+  private optionalUrl(settings: Record<string, unknown>, key: string) {
+    const value = this.optionalString(settings, key, 500);
+    if (!value) return undefined;
+
+    try {
+      const url = new URL(value);
+      if (!['http:', 'https:'].includes(url.protocol)) {
+        throw new Error('Invalid protocol');
+      }
+      return url.toString().replace(/\/$/, '');
+    } catch {
+      throw new BadRequestException(`${key} must be a valid URL`);
+    }
+  }
+
+  private optionalEnumSetting<const Values extends readonly string[]>(
+    settings: Record<string, unknown>,
+    key: string,
+    values: Values,
+  ): Values[number] | undefined {
+    const value = this.optionalString(settings, key, 80);
+    if (!value) return undefined;
+    if (!values.includes(value)) {
+      throw new BadRequestException(
+        `${key} must be one of ${values.join(', ')}`,
+      );
+    }
+    return value;
+  }
+
   private findSensitiveKey(
     value: unknown,
     path = 'config',
@@ -888,7 +1047,7 @@ export class PaymentService {
     }
     const config = value as Record<string, unknown>;
     const secret = config.webhookSecret;
-    if (!secret || typeof secret !== 'object' || Array.isArray(secret)) {
+    if (secret && (typeof secret !== 'object' || Array.isArray(secret))) {
       throw new ConflictException('Payment provider secret is missing');
     }
     return {
@@ -898,7 +1057,13 @@ export class PaymentService {
         !Array.isArray(config.settings)
           ? (config.settings as Record<string, unknown>)
           : {},
-      webhookSecret: secret as EncryptedSecret,
+      webhookSecret: secret as EncryptedSecret | undefined,
+      secrets:
+        config.secrets &&
+        typeof config.secrets === 'object' &&
+        !Array.isArray(config.secrets)
+          ? (config.secrets as Record<string, EncryptedSecret>)
+          : {},
     };
   }
 
@@ -918,7 +1083,8 @@ export class PaymentService {
       provider: provider.provider,
       status: provider.status,
       config: config.settings,
-      hasWebhookSecret: true,
+      hasWebhookSecret: Boolean(config.webhookSecret),
+      hasProviderSecret: Object.keys(config.secrets).length > 0,
       createdAt: provider.createdAt,
       updatedAt: provider.updatedAt,
     };

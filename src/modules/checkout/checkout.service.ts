@@ -228,7 +228,19 @@ export class CheckoutService {
   private async loadSession(sessionId: string) {
     const session = await this.prisma.checkoutSession.findUnique({
       where: { id: sessionId },
-      include: { items: true, order: { include: { items: true } } },
+      include: {
+        items: true,
+        order: { include: { items: true } },
+        merchant: {
+          select: {
+            paymentProviders: {
+              where: { status: 'ACTIVE' },
+              select: { provider: true },
+              orderBy: { createdAt: 'asc' },
+            },
+          },
+        },
+      },
     });
     if (!session) throw new NotFoundException('Checkout session not found');
     return session;
@@ -253,6 +265,9 @@ export class CheckoutService {
       updatedAt: Date;
       items: unknown[];
       order: { id: string; orderNumber: string; status: string } | null;
+      merchant: {
+        paymentProviders: Array<{ provider: string }>;
+      };
     },
   >(session: T) {
     return {
@@ -279,6 +294,9 @@ export class CheckoutService {
             status: session.order.status,
           }
         : null,
+      paymentProviders: session.merchant.paymentProviders.map((provider) => ({
+        provider: provider.provider,
+      })),
     };
   }
 

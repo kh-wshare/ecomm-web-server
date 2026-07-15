@@ -31,9 +31,13 @@ describe('CatalogService', () => {
 
   const createHarness = () => {
     const productCreate = jest.fn().mockResolvedValue(product);
+    const inventoryStockCreate = jest.fn();
+    const inventoryMovementCreate = jest.fn();
     const auditCreate = jest.fn().mockResolvedValue({ id: 'audit-1' });
     const tx = {
       product: { create: productCreate },
+      inventoryStock: { create: inventoryStockCreate },
+      inventoryMovement: { create: inventoryMovementCreate },
       auditLog: { create: auditCreate },
     };
     const transaction = jest
@@ -53,6 +57,8 @@ describe('CatalogService', () => {
     return {
       service: new CatalogService(prisma, cache),
       productCreate,
+      inventoryStockCreate,
+      inventoryMovementCreate,
       auditCreate,
       invalidateCatalog,
     };
@@ -124,6 +130,96 @@ describe('CatalogService', () => {
     expect(harness.invalidateCatalog.mock.calls).toEqual([['merchant-1']]);
   });
 
+  it('creates initial inventory stock and movements with a product', async () => {
+    const harness = createHarness();
+    const productWithVariants = {
+      ...product,
+      variants: [
+        {
+          id: 'variant-1',
+          productId: product.id,
+          merchantId: product.merchantId,
+          sku: 'SHIRT-BLK-M',
+          name: 'Black / Medium',
+          price: new Prisma.Decimal('31.00'),
+          attributes: { color: 'black', size: 'M' },
+          status: ProductVariantStatus.ACTIVE,
+          createdAt: product.createdAt,
+          updatedAt: product.updatedAt,
+        },
+      ],
+    };
+    harness.productCreate.mockResolvedValue(productWithVariants);
+    harness.inventoryStockCreate
+      .mockResolvedValueOnce({ id: 'stock-base' })
+      .mockResolvedValueOnce({ id: 'stock-variant' });
+    const dto = createDto();
+    dto.variants = [
+      {
+        sku: 'shirt-blk-m',
+        name: 'Black / Medium',
+        price: '31.00',
+        attributes: { color: 'black', size: 'M' },
+        status: ProductVariantStatus.ACTIVE,
+      },
+    ];
+    dto.inventory = [
+      { initialStock: 12, safetyBuffer: 2 },
+      { variantSku: 'shirt-blk-m', initialStock: 5, safetyBuffer: 1 },
+    ];
+
+    await expect(
+      harness.service.create('merchant-1', 'user-1', dto, {}),
+    ).resolves.toBe(productWithVariants);
+
+    expect(harness.inventoryStockCreate).toHaveBeenCalledWith({
+      data: {
+        merchantId: 'merchant-1',
+        productId: product.id,
+        variantId: undefined,
+        stockKey: `product:${product.id}`,
+        totalStock: 12,
+        safetyBuffer: 2,
+      },
+    });
+    expect(harness.inventoryStockCreate).toHaveBeenCalledWith({
+      data: {
+        merchantId: 'merchant-1',
+        productId: product.id,
+        variantId: 'variant-1',
+        stockKey: 'variant:variant-1',
+        totalStock: 5,
+        safetyBuffer: 1,
+      },
+    });
+    expect(harness.inventoryMovementCreate).toHaveBeenCalledWith({
+      data: {
+        merchantId: 'merchant-1',
+        inventoryStockId: 'stock-base',
+        productId: product.id,
+        variantId: undefined,
+        type: 'STOCK_IN',
+        quantity: 12,
+        referenceId: product.id,
+        referenceType: 'product_create',
+        createdById: 'user-1',
+      },
+    });
+    expect(harness.inventoryMovementCreate).toHaveBeenCalledWith({
+      data: {
+        merchantId: 'merchant-1',
+        inventoryStockId: 'stock-variant',
+        productId: product.id,
+        variantId: 'variant-1',
+        type: 'STOCK_IN',
+        quantity: 5,
+        referenceId: product.id,
+        referenceType: 'product_create',
+        createdById: 'user-1',
+      },
+    });
+  });
+
   it('rejects invalid or duplicate channel visibility before persistence', async () => {
     const harness = createHarness();
     const purchasableButHidden = createDto();
@@ -154,6 +250,34 @@ describe('CatalogService', () => {
     ];
     await expect(
       harness.service.create('merchant-1', 'user-1', duplicateChannels, {}),
+    ).rejects.toBeInstanceOf(BadRequestException);
+    expect(harness.productCreate.mock.calls).toHaveLength(0);
+  });
+
+  it('rejects invalid or duplicate inventory targets before persistence', async () => {
+    const harness = createHarness();
+    const duplicateBaseInventory = createDto();
+    duplicateBaseInventory.inventory = [
+      { initialStock: 2 },
+      { initialStock: 3 },
+    ];
+
+    await expect(
+      harness.service.create(
+        'merchant-1',
+        'user-1',
+        duplicateBaseInventory,
+        {},
+      ),
+    ).rejects.toBeInstanceOf(BadRequestException);
+
+    const missingVariant = createDto();
+    missingVariant.inventory = [
+      { variantSku: 'missing-variant', initialStock: 2 },
+    ];
+
+    await expect(
+      harness.service.create('merchant-1', 'user-1', missingVariant, {}),
     ).rejects.toBeInstanceOf(BadRequestException);
     expect(harness.productCreate.mock.calls).toHaveLength(0);
   });
