@@ -1,17 +1,17 @@
 # Monolith Removal
 
-Phase 8 removes the legacy `dashboard/` app from active production ownership.
-The directory remains in the repository as an archive only.
+Phase 8 removes the legacy `client/dashboard/` app from active production
+ownership. The directory remains in the frontend workspace as an archive only.
 
 ## Active Frontend Owners
 
 | Surface | Active owner |
 |---------|--------------|
-| Merchant auth | `apps/merchant` |
-| Merchant dashboard | `apps/merchant` |
-| POS | `apps/pos` |
-| Public storefront | `apps/storefront` |
-| Checkout | `apps/storefront` |
+| Merchant auth | `client/apps/merchant` |
+| Merchant dashboard | `client/apps/merchant` |
+| POS | `client/apps/pos` |
+| Public storefront | `client/apps/storefront` |
+| Checkout | `client/apps/storefront` |
 
 ## Route Parity
 
@@ -48,14 +48,16 @@ The directory remains in the repository as an archive only.
 
 ## Build Ownership
 
-- `pnpm-workspace.yaml` includes only `apps/*` and `packages/*`.
+- `client/pnpm-workspace.yaml` includes only `apps/*` and `packages/*`.
 - CI uses Node `26.5.0` and pnpm `10.30.1`.
-- CI validates the API plus `mfe:lint`, `mfe:type-check`, and `mfe:build`.
+- CI validates the API from the repo root and frontend `lint`, `type-check`,
+  and `build` from `client/`.
 - Docker Compose routes public traffic through nginx to the active apps.
 
 ## Archive Rules
 
-- Do not add new production functionality under `dashboard/`.
-- Do not import from `dashboard/*` in `apps/*` or `packages/*`.
-- Move reusable code through `packages/*`.
+- Do not add new production functionality under `client/dashboard/`.
+- Do not import from `client/dashboard/*` in `client/apps/*` or
+  `client/packages/*`.
+- Move reusable frontend code through `client/packages/*`.
 - Remove the archived directory in a later cleanup once no historical reference is needed.

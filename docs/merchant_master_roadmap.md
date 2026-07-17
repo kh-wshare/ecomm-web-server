@@ -32,9 +32,9 @@ Multiple payment providers
 One fulfillment flow
 ```
 
-The frontend is now split into independently deployable apps under `apps/*`.
-The old monolithic `dashboard/` frontend is archived and removed from the
-active workspace.
+The frontend is now split into independently deployable apps under
+`client/apps/*`. The old monolithic `client/dashboard/` frontend is archived and
+removed from the active workspace.
 
 ---
 
@@ -268,13 +268,13 @@ Merchant fulfills order
 
 | Surface | App | Public base path |
 |---------|-----|------------------|
-| Merchant admin | `apps/merchant` | `/merchant` |
-| POS | `apps/pos` | `/pos` |
-| Storefront | `apps/storefront` | `/` |
+| Merchant admin | `client/apps/merchant` | `/merchant` |
+| POS | `client/apps/pos` | `/pos` |
+| Storefront | `client/apps/storefront` | `/` |
 
-Shared UI, type, API, auth, and query helpers live in `packages/*`. The legacy
-`dashboard/` app is archived for reference only and must not receive new
-production routes.
+Shared UI, type, API, auth, and query helpers live in `client/packages/*`. The
+legacy `client/dashboard/` app is archived for reference only and must not
+receive new production routes.
 
 ---
 

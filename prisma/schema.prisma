@@ -31,6 +31,11 @@ enum MerchantUserStatus {
   DISABLED
 }
 
+enum MerchantBranchStatus {
+  ACTIVE
+  INACTIVE
+}
+
 enum ProductStatus {
   DRAFT
   ACTIVE
@@ -221,8 +226,35 @@ model Merchant {
   notifications         Notification[]
   socialPosts           SocialPost[]
   websiteArticles       WebsiteArticle[]
+  branches              MerchantBranch[]
 
   @@map("merchants")
+}
+
+model MerchantBranch {
+  id           String               @id @default(uuid()) @db.Uuid
+  merchantId   String               @db.Uuid
+  name         String
+  code         String
+  phone        String?
+  addressLine1 String?
+  addressLine2 String?
+  city         String?
+  province     String?
+  postalCode   String?
+  country      String?
+  registerName String?
+  isDefault    Boolean              @default(false)
+  status       MerchantBranchStatus @default(ACTIVE)
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  deletedAt    DateTime?
+  merchant     Merchant             @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  @@unique([merchantId, code])
+  @@index([merchantId, status, deletedAt])
+  @@index([merchantId, isDefault])
+  @@map("merchant_branches")
 }
 
 model Product {

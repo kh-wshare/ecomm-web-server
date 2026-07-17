@@ -54,6 +54,7 @@ export const ModelName = {
   User: 'User',
   AuthIdentity: 'AuthIdentity',
   Merchant: 'Merchant',
+  MerchantBranch: 'MerchantBranch',
   Product: 'Product',
   MerchantTheme: 'MerchantTheme',
   ProductVariant: 'ProductVariant',
@@ -147,6 +148,29 @@ export const MerchantScalarFieldEnum = {
 } as const
 
 export type MerchantScalarFieldEnum = (typeof MerchantScalarFieldEnum)[keyof typeof MerchantScalarFieldEnum]
+
+
+export const MerchantBranchScalarFieldEnum = {
+  id: 'id',
+  merchantId: 'merchantId',
+  name: 'name',
+  code: 'code',
+  phone: 'phone',
+  addressLine1: 'addressLine1',
+  addressLine2: 'addressLine2',
+  city: 'city',
+  province: 'province',
+  postalCode: 'postalCode',
+  country: 'country',
+  registerName: 'registerName',
+  isDefault: 'isDefault',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type MerchantBranchScalarFieldEnum = (typeof MerchantBranchScalarFieldEnum)[keyof typeof MerchantBranchScalarFieldEnum]
 
 
 export const ProductScalarFieldEnum = {

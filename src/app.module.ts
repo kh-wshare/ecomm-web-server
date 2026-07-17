@@ -18,6 +18,7 @@ import { AuthorizationModule } from '#app/modules/authorization/authorization.mo
 import { MerchantScopeGuard } from '#app/modules/authorization/guards/merchant-scope.guard';
 import { PermissionGuard } from '#app/modules/authorization/guards/permission.guard';
 import { PlatformRolesGuard } from '#app/modules/authorization/guards/platform-roles.guard';
+import { BranchModule } from '#app/modules/branch/branch.module';
 import { CatalogModule } from '#app/modules/catalog/catalog.module';
 import { CheckoutModule } from '#app/modules/checkout/checkout.module';
 import { FileStorageModule } from '#app/modules/file-storage/file-storage.module';
@@ -49,6 +50,7 @@ import { UsersModule } from '#app/modules/users/users.module';
     SessionsModule,
     MerchantModule,
     AuthorizationModule,
+    BranchModule,
     CatalogModule,
     FileStorageModule,
     InventoryModule,

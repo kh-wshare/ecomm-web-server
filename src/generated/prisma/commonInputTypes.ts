@@ -277,6 +277,23 @@ export type EnumMerchantStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumMerchantStatusFilter<$PrismaModel>
 }
 
+export type EnumMerchantBranchStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.MerchantBranchStatus | Prisma.EnumMerchantBranchStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MerchantBranchStatus[] | Prisma.ListEnumMerchantBranchStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MerchantBranchStatus[] | Prisma.ListEnumMerchantBranchStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMerchantBranchStatusFilter<$PrismaModel> | $Enums.MerchantBranchStatus
+}
+
+export type EnumMerchantBranchStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MerchantBranchStatus | Prisma.EnumMerchantBranchStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MerchantBranchStatus[] | Prisma.ListEnumMerchantBranchStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MerchantBranchStatus[] | Prisma.ListEnumMerchantBranchStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMerchantBranchStatusWithAggregatesFilter<$PrismaModel> | $Enums.MerchantBranchStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMerchantBranchStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMerchantBranchStatusFilter<$PrismaModel>
+}
+
 export type DecimalFilter<$PrismaModel = never> = {
   equals?: runtime.Decimal | runtime.DecimalJsLike | number | string | Prisma.DecimalFieldRefInput<$PrismaModel>
   in?: runtime.Decimal[] | runtime.DecimalJsLike[] | number[] | string[] | Prisma.ListDecimalFieldRefInput<$PrismaModel>
@@ -960,6 +977,23 @@ export type NestedEnumMerchantStatusWithAggregatesFilter<$PrismaModel = never> =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumMerchantStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumMerchantStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumMerchantBranchStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.MerchantBranchStatus | Prisma.EnumMerchantBranchStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MerchantBranchStatus[] | Prisma.ListEnumMerchantBranchStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MerchantBranchStatus[] | Prisma.ListEnumMerchantBranchStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMerchantBranchStatusFilter<$PrismaModel> | $Enums.MerchantBranchStatus
+}
+
+export type NestedEnumMerchantBranchStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MerchantBranchStatus | Prisma.EnumMerchantBranchStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.MerchantBranchStatus[] | Prisma.ListEnumMerchantBranchStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MerchantBranchStatus[] | Prisma.ListEnumMerchantBranchStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMerchantBranchStatusWithAggregatesFilter<$PrismaModel> | $Enums.MerchantBranchStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMerchantBranchStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMerchantBranchStatusFilter<$PrismaModel>
 }
 
 export type NestedDecimalFilter<$PrismaModel = never> = {

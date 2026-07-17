@@ -945,8 +945,7 @@ export class PaymentService {
       merchantId: this.requiredString(settings, 'merchantId', 120),
       environment,
       baseUrl:
-        this.optionalUrl(settings, 'baseUrl') ??
-        PAYWAY_BASE_URLS[environment as keyof typeof PAYWAY_BASE_URLS],
+        this.optionalUrl(settings, 'baseUrl') ?? PAYWAY_BASE_URLS[environment],
       paymentOption:
         this.optionalEnumSetting(
           settings,

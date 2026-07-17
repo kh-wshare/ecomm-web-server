@@ -44,6 +44,14 @@ export const MerchantUserStatus = {
 export type MerchantUserStatus = (typeof MerchantUserStatus)[keyof typeof MerchantUserStatus]
 
 
+export const MerchantBranchStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE'
+} as const
+
+export type MerchantBranchStatus = (typeof MerchantBranchStatus)[keyof typeof MerchantBranchStatus]
+
+
 export const ProductStatus = {
   DRAFT: 'DRAFT',
   ACTIVE: 'ACTIVE',

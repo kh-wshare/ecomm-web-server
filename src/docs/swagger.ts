@@ -2,6 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AuthModule } from '#app/modules/authenticated/auth.module';
+import { BranchModule } from '#app/modules/branch/branch.module';
 import { CatalogModule } from '#app/modules/catalog/catalog.module';
 import { CheckoutModule } from '#app/modules/checkout/checkout.module';
 import { FileStorageModule } from '#app/modules/file-storage/file-storage.module';
@@ -60,6 +61,7 @@ export function setupSwagger(
     const document = SwaggerModule.createDocument(app, config, {
       include: [
         MerchantModule,
+        BranchModule,
         CatalogModule,
         FileStorageModule,
         InventoryModule,

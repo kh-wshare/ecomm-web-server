@@ -11,6 +11,7 @@
 export type * from './models/User.js'
 export type * from './models/AuthIdentity.js'
 export type * from './models/Merchant.js'
+export type * from './models/MerchantBranch.js'
 export type * from './models/Product.js'
 export type * from './models/MerchantTheme.js'
 export type * from './models/ProductVariant.js'

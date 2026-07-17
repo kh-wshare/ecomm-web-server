@@ -28,9 +28,9 @@ The public gateway routes:
 Each app has a checked-in example file:
 
 ```txt
-apps/merchant/.env.example
-apps/pos/.env.example
-apps/storefront/.env.example
+client/apps/merchant/.env.example
+client/apps/pos/.env.example
+client/apps/storefront/.env.example
 ```
 
 The frontend containers validate environment variables with Zod at startup.

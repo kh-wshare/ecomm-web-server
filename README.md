@@ -9,7 +9,8 @@ frontends.
 |------|------------|
 | API | NestJS 11, Prisma 7, PostgreSQL, Redis |
 | Frontends | Next.js 16, React 19, HeroUI 3, Tailwind CSS 4 |
-| Workspace | pnpm 10.30.1, Turborepo |
+| Backend | Root package, pnpm 10.30.1 |
+| Client workspace | `client/`, pnpm 10.30.1, Turborepo |
 | Runtime | Node.js >= 26.5.0 |
 | Deployment | Docker Compose, nginx gateway |
 
@@ -22,9 +23,10 @@ frontends.
 | POS | `@repo/pos` | `http://localhost/pos` | Staff point-of-sale |
 | Storefront | `@repo/storefront` | `http://localhost` | Public storefront and checkout |
 
-The legacy monolithic `dashboard/` app is archived and removed from the active
-workspace. New frontend work should live in `apps/*` and shared code should move
-through `packages/*`.
+The backend lives at the repository root. The frontend monorepo lives in
+`client/`: active frontend work should live in `client/apps/*`, and shared
+frontend code should move through `client/packages/*`. The legacy monolithic
+dashboard is archived at `client/dashboard/`.
 
 ## Local Setup
 
@@ -45,12 +47,14 @@ pnpm start:dev
 Run the frontends:
 
 ```bash
-pnpm mfe:dev
+cd client
+pnpm dev
 ```
 
 Or run one frontend:
 
 ```bash
+cd client
 pnpm merchant:dev
 pnpm pos:dev
 pnpm storefront:dev
@@ -64,12 +68,18 @@ pnpm storefront:dev
 | `pnpm start:dev` | Run the API in watch mode |
 | `pnpm test` | Run API unit tests |
 | `pnpm test:e2e` | Run API end-to-end tests |
-| `pnpm mfe:build` | Build all active frontend apps and shared packages |
-| `pnpm mfe:lint` | Lint active frontend apps |
-| `pnpm mfe:type-check` | Type-check active frontend apps and shared packages |
 | `pnpm prisma:generate` | Generate Prisma Client |
 | `pnpm prisma:migrate` | Run development migrations |
 | `pnpm prisma:migrate:prod` | Run production migrations |
+
+Frontend scripts are run from `client/`:
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Run all active frontend apps |
+| `pnpm build` | Build active frontend apps and shared packages |
+| `pnpm lint` | Lint active frontend apps |
+| `pnpm type-check` | Type-check frontend apps and shared packages |
 
 ## Docker
 
@@ -95,24 +105,25 @@ verification, and shutdown commands.
 - [Docker deployment](docs/docker-deployment.md)
 - [Gateway routing](docs/gateway-routing.md)
 - [Monolith removal](docs/monolith-removal.md)
-- [Migration checklist](dashboard/docs/improvment.md)
+- [Migration checklist](client/dashboard/docs/improvment.md)
 - [Merchant roadmap](docs/merchant_master_roadmap.md)
 
 ## Structure
 
 ```txt
-apps/
-  merchant/       Merchant admin app
-  pos/            POS app
-  storefront/     Public storefront app
-packages/
-  api-client/     Shared API helpers
-  auth-client/    Shared auth/session helpers
-  query-client/   Shared query keys/client helpers
-  types/          Shared domain types
-  ui/             Shared HeroUI-based primitives
+client/
+  apps/
+    merchant/     Merchant admin app
+    pos/          POS app
+    storefront/   Public storefront app
+  packages/
+    api-client/   Shared API helpers
+    auth-client/  Shared auth/session helpers
+    query-client/ Shared query keys/client helpers
+    types/        Shared domain types
+    ui/           Shared HeroUI-based primitives
+  dashboard/      Archived legacy monolith
 src/              NestJS API
 prisma/           Prisma schema, migrations, seed
 deploy/nginx/     Docker gateway config
-dashboard/        Archived legacy monolith
 ```

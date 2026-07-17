@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
-import { randomBytes, randomUUID } from 'node:crypto';
+import { randomBytes } from 'node:crypto';
+import type { Prisma } from '#app/generated/prisma/client';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
 import { AuthorizationService } from '#app/modules/authorization/authorization.service';
 import { SocialTokenVerifierService } from './social-token-verifier.service';
@@ -15,10 +16,6 @@ export type SocialProfile = {
   phone?: string | null;
   provider: SocialProvider;
   providerUserId: string;
-};
-
-type AuthIdentityRow = {
-  userId: string;
 };
 
 @Injectable()
@@ -162,18 +159,19 @@ export class SocialAuthService {
   }
 
   private async findAuthIdentity(profile: SocialProfile) {
-    const rows = await this.prisma.$queryRaw<AuthIdentityRow[]>`
-      SELECT "userId"
-      FROM "auth_identities"
-      WHERE "provider" = ${profile.provider}
-        AND "providerUserId" = ${profile.providerUserId}
-      LIMIT 1
-    `;
-    return rows[0] ?? null;
+    return this.prisma.authIdentity.findUnique({
+      select: { userId: true },
+      where: {
+        provider_providerUserId: {
+          provider: profile.provider,
+          providerUserId: profile.providerUserId,
+        },
+      },
+    });
   }
 
   private async createAuthIdentity(
-    client: Pick<PrismaService, '$executeRaw'>,
+    client: Pick<Prisma.TransactionClient, 'authIdentity'>,
     data: {
       email: string | null;
       metadata: Record<string, unknown>;
@@ -183,28 +181,34 @@ export class SocialAuthService {
       userId: string;
     },
   ) {
-    const now = new Date();
-    const metadata = JSON.stringify(data.metadata);
-    await client.$executeRaw`
-      INSERT INTO "auth_identities" ("id", "userId", "provider", "providerUserId", "email", "phone", "metadata", "createdAt", "updatedAt")
-      VALUES (${randomUUID()}::uuid, ${data.userId}::uuid, ${data.provider}, ${data.providerUserId}, ${data.email}, ${data.phone}, ${metadata}::jsonb, ${now}, ${now})
-    `;
+    await client.authIdentity.create({
+      data: {
+        email: data.email,
+        metadata: data.metadata as Prisma.InputJsonValue,
+        phone: data.phone,
+        provider: data.provider,
+        providerUserId: data.providerUserId,
+        userId: data.userId,
+      },
+    });
   }
 
   private async updateAuthIdentity(profile: SocialProfile) {
     const email = profile.email ? this.normalizeEmail(profile.email) : null;
     const phone = profile.phone?.trim() ?? null;
-    const metadata = JSON.stringify(profile.metadata);
-    await this.prisma.$executeRaw`
-      UPDATE "auth_identities"
-      SET
-        "email" = COALESCE(${email}, "email"),
-        "phone" = COALESCE(${phone}, "phone"),
-        "metadata" = ${metadata}::jsonb,
-        "updatedAt" = ${new Date()}
-      WHERE "provider" = ${profile.provider}
-        AND "providerUserId" = ${profile.providerUserId}
-    `;
+    await this.prisma.authIdentity.update({
+      data: {
+        ...(email ? { email } : {}),
+        ...(phone ? { phone } : {}),
+        metadata: profile.metadata as Prisma.InputJsonValue,
+      },
+      where: {
+        provider_providerUserId: {
+          provider: profile.provider,
+          providerUserId: profile.providerUserId,
+        },
+      },
+    });
   }
 
   private async ensureSocialMerchant(

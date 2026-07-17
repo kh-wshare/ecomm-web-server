@@ -387,6 +387,7 @@ export const ModelName = {
   User: 'User',
   AuthIdentity: 'AuthIdentity',
   Merchant: 'Merchant',
+  MerchantBranch: 'MerchantBranch',
   Product: 'Product',
   MerchantTheme: 'MerchantTheme',
   ProductVariant: 'ProductVariant',
@@ -430,7 +431,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "authIdentity" | "merchant" | "product" | "merchantTheme" | "productVariant" | "productMedia" | "productChannelVisibility" | "inventoryStock" | "inventoryReservation" | "checkoutSession" | "checkoutItem" | "order" | "orderItem" | "paymentProvider" | "payment" | "paymentWebhookEvent" | "notification" | "socialPost" | "shoppableHotspot" | "socialPostPublishLog" | "websiteArticle" | "inventoryMovement" | "merchantUser" | "role" | "permission" | "rolePermission" | "session" | "passwordResetToken" | "merchantInvitation" | "auditLog"
+    modelProps: "user" | "authIdentity" | "merchant" | "merchantBranch" | "product" | "merchantTheme" | "productVariant" | "productMedia" | "productChannelVisibility" | "inventoryStock" | "inventoryReservation" | "checkoutSession" | "checkoutItem" | "order" | "orderItem" | "paymentProvider" | "payment" | "paymentWebhookEvent" | "notification" | "socialPost" | "shoppableHotspot" | "socialPostPublishLog" | "websiteArticle" | "inventoryMovement" | "merchantUser" | "role" | "permission" | "rolePermission" | "session" | "passwordResetToken" | "merchantInvitation" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -653,6 +654,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.MerchantCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.MerchantCountAggregateOutputType> | number
+        }
+      }
+    }
+    MerchantBranch: {
+      payload: Prisma.$MerchantBranchPayload<ExtArgs>
+      fields: Prisma.MerchantBranchFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MerchantBranchFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MerchantBranchPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MerchantBranchFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MerchantBranchPayload>
+        }
+        findFirst: {
+          args: Prisma.MerchantBranchFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MerchantBranchPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MerchantBranchFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MerchantBranchPayload>
+        }
+        findMany: {
+          args: Prisma.MerchantBranchFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MerchantBranchPayload>[]
+        }
+        create: {
+          args: Prisma.MerchantBranchCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MerchantBranchPayload>
+        }
+        createMany: {
+          args: Prisma.MerchantBranchCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MerchantBranchCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MerchantBranchPayload>[]
+        }
+        delete: {
+          args: Prisma.MerchantBranchDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MerchantBranchPayload>
+        }
+        update: {
+          args: Prisma.MerchantBranchUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MerchantBranchPayload>
+        }
+        deleteMany: {
+          args: Prisma.MerchantBranchDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MerchantBranchUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MerchantBranchUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MerchantBranchPayload>[]
+        }
+        upsert: {
+          args: Prisma.MerchantBranchUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MerchantBranchPayload>
+        }
+        aggregate: {
+          args: Prisma.MerchantBranchAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMerchantBranch>
+        }
+        groupBy: {
+          args: Prisma.MerchantBranchGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MerchantBranchGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MerchantBranchCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MerchantBranchCountAggregateOutputType> | number
         }
       }
     }
@@ -2816,6 +2891,29 @@ export const MerchantScalarFieldEnum = {
 export type MerchantScalarFieldEnum = (typeof MerchantScalarFieldEnum)[keyof typeof MerchantScalarFieldEnum]
 
 
+export const MerchantBranchScalarFieldEnum = {
+  id: 'id',
+  merchantId: 'merchantId',
+  name: 'name',
+  code: 'code',
+  phone: 'phone',
+  addressLine1: 'addressLine1',
+  addressLine2: 'addressLine2',
+  city: 'city',
+  province: 'province',
+  postalCode: 'postalCode',
+  country: 'country',
+  registerName: 'registerName',
+  isDefault: 'isDefault',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type MerchantBranchScalarFieldEnum = (typeof MerchantBranchScalarFieldEnum)[keyof typeof MerchantBranchScalarFieldEnum]
+
+
 export const ProductScalarFieldEnum = {
   id: 'id',
   merchantId: 'merchantId',
@@ -3402,6 +3500,20 @@ export type ListEnumMerchantStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'MerchantBranchStatus'
+ */
+export type EnumMerchantBranchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MerchantBranchStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'MerchantBranchStatus[]'
+ */
+export type ListEnumMerchantBranchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MerchantBranchStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Decimal'
  */
 export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
@@ -3807,6 +3919,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   authIdentity?: Prisma.AuthIdentityOmit
   merchant?: Prisma.MerchantOmit
+  merchantBranch?: Prisma.MerchantBranchOmit
   product?: Prisma.ProductOmit
   merchantTheme?: Prisma.MerchantThemeOmit
   productVariant?: Prisma.ProductVariantOmit

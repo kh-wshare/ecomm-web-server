@@ -6,18 +6,7 @@ WORKDIR /app
 
 RUN npm install -g pnpm@10.30.1
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY dashboard/package.json dashboard/package.json
-COPY apps/merchant/package.json apps/merchant/package.json
-COPY apps/pos/package.json apps/pos/package.json
-COPY apps/storefront/package.json apps/storefront/package.json
-COPY packages/api-client/package.json packages/api-client/package.json
-COPY packages/auth-client/package.json packages/auth-client/package.json
-COPY packages/query-client/package.json packages/query-client/package.json
-COPY packages/types/package.json packages/types/package.json
-COPY packages/ui/package.json packages/ui/package.json
-COPY packages/typescript-config/package.json packages/typescript-config/package.json
-COPY packages/eslint-config/package.json packages/eslint-config/package.json
+COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
 COPY . .
@@ -30,18 +19,7 @@ WORKDIR /app
 
 RUN npm install -g pnpm@10.30.1
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY dashboard/package.json dashboard/package.json
-COPY apps/merchant/package.json apps/merchant/package.json
-COPY apps/pos/package.json apps/pos/package.json
-COPY apps/storefront/package.json apps/storefront/package.json
-COPY packages/api-client/package.json packages/api-client/package.json
-COPY packages/auth-client/package.json packages/auth-client/package.json
-COPY packages/query-client/package.json packages/query-client/package.json
-COPY packages/types/package.json packages/types/package.json
-COPY packages/ui/package.json packages/ui/package.json
-COPY packages/typescript-config/package.json packages/typescript-config/package.json
-COPY packages/eslint-config/package.json packages/eslint-config/package.json
+COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --prod
 
 COPY --from=builder /app/dist ./dist

@@ -4,7 +4,7 @@
 
 This document lists frontend implementation tasks for the Merchant Commerce Hub dashboard, public storefront, checkout, theme builder, social commerce, and real-time merchant experience.
 
-For the planned move from the current monolithic `dashboard/` frontend to independently deployable micro-frontends, see `dashboard/docs/improvment.md`.
+For the planned move from the current monolithic `client/dashboard/` frontend to independently deployable micro-frontends, see `client/dashboard/docs/improvment.md`.
 
 ---
 
@@ -40,8 +40,8 @@ For the planned move from the current monolithic `dashboard/` frontend to indepe
 - [x] Create query key factory.
 - [x] Create toast helper.
 
-> Foundation implementation lives in `dashboard/config/`, `dashboard/lib/`, and
-> `dashboard/stores/`. The root provider composes TanStack Query, theme, and
+> Foundation implementation lives in `client/dashboard/config/`,
+> `client/dashboard/lib/`, and `client/dashboard/stores/`. The root provider composes TanStack Query, theme, and
 > HeroUI toast providers, while the three App Router groups establish boundaries
 > for later auth, dashboard, and storefront layouts.
 

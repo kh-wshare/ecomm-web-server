@@ -55,6 +55,11 @@ export type AuthIdentity = Prisma.AuthIdentityModel
  */
 export type Merchant = Prisma.MerchantModel
 /**
+ * Model MerchantBranch
+ * 
+ */
+export type MerchantBranch = Prisma.MerchantBranchModel
+/**
  * Model Product
  * 
  */

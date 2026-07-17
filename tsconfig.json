@@ -14,13 +14,12 @@
     "sourceMap": true,
     "outDir": "./dist",
     "rootDir": ".",
-    "baseUrl": "./src",
     "paths": {
-      "#app/*": ["*"],
-      "@/*": ["*"],
-      "@config/*": ["config/*"],
-      "@common/*": ["common/*"],
-      "@modules/*": ["modules/*"]
+      "#app/*": ["./src/*"],
+      "@/*": ["./src/*"],
+      "@config/*": ["./src/config/*"],
+      "@common/*": ["./src/common/*"],
+      "@modules/*": ["./src/modules/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

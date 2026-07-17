@@ -16,6 +16,7 @@ gateway        http://localhost
 Start the apps in separate terminals:
 
 ```bash
+cd client
 pnpm merchant:dev
 pnpm pos:dev
 pnpm storefront:dev
@@ -24,7 +25,7 @@ pnpm storefront:dev
 Start the gateway:
 
 ```bash
-docker compose -f docker-compose.gateway.yml up
+docker compose -f client/docker-compose.gateway.yml up
 ```
 
 Then open:
