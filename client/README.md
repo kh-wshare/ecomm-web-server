@@ -49,7 +49,7 @@ pnpm storefront:dev
 Then start the gateway:
 
 ```bash
-docker compose -f docker-compose.yml up
+docker compose -f docker-compose.gateway.yml up
 ```
 
 Open:
@@ -66,5 +66,6 @@ Marketing currently runs directly at `http://localhost:3003`.
 
 - [Architecture](./docs/architecture.md)
 - [Development](./docs/development.md)
+- [Deployment](./docs/deployment.md)
 - [Gateway Routing](./docs/gateway-routing.md)
 - [Marketing App](./docs/marketing.md)

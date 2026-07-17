@@ -46,3 +46,8 @@ NEXT_PUBLIC_API_URL=http://localhost:9001
 ```
 
 Each app owns its own `.env.example` when it needs runtime configuration.
+
+## Deployment
+
+Frontend deployment is documented separately in [Deployment](./deployment.md).
+Backend deployment is documented from the repository root in `docs/backend-deployment.md`.

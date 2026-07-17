@@ -40,6 +40,8 @@ Marketing currently runs directly:
 http://localhost:3003 -> marketing app
 ```
 
+Production frontend deployment is documented in [Deployment](./deployment.md).
+
 ## Static Assets
 
 ```txt

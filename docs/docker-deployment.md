@@ -1,7 +1,15 @@
 # Docker Deployment
 
-Phase 7 packages the three frontend apps as independent standalone Next.js
-containers and exposes them through nginx.
+This document describes the current all-in-one Docker setup. The separated
+deployment runbooks are:
+
+- Backend: `docs/backend-deployment.md`
+- Frontend: `client/docs/deployment.md`
+- Separation checklist: `docs/deployment-separation-todo.md`
+
+Phase 7 packages the deployed commerce frontend apps as independent standalone
+Next.js containers and exposes them through nginx. Marketing has a separate
+client app, but it is not yet part of this production compose stack.
 
 ## Services
 

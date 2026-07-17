@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+**/node_modules/
+.pnp/
+.pnp.*
+
+# Next.js build output
+.next/
+**/.next/
+out/
+**/out/
+
+# Production/build artifacts
+build/
+**/build/
+dist/
+**/dist/
+.turbo/
+**/.turbo/
+*.tsbuildinfo
+
+# Local environment files
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage and reports
+coverage/
+**/coverage/
+.nyc_output/
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Hosting and local tooling
+.vercel/
+**/.vercel/
+.temp/
+.tmp/
+*.pid
+*.pid.lock
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
