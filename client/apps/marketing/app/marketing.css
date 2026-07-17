@@ -1,0 +1,67 @@
+.marketing-grid {
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+.marketing-float {
+  animation: marketing-float 8s ease-in-out infinite;
+}
+
+.marketing-rise {
+  animation: marketing-rise 700ms ease both;
+}
+
+.marketing-rise-delay-1 {
+  animation-delay: 120ms;
+}
+
+.marketing-rise-delay-2 {
+  animation-delay: 220ms;
+}
+
+.marketing-marquee {
+  animation: marketing-marquee 28s linear infinite;
+}
+
+@keyframes marketing-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes marketing-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes marketing-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marketing-float,
+  .marketing-marquee,
+  .marketing-rise {
+    animation: none;
+  }
+}

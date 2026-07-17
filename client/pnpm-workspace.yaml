@@ -1,0 +1,8 @@
+ignoredBuiltDependencies:
+  - '@scarf/scarf'
+  - '@swc/core'
+  - esbuild
+  - unrs-resolver
+packages:
+  - apps/*
+  - packages/*
