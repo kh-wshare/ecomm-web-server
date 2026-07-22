@@ -7,6 +7,7 @@ import {
 } from '#app/generated/prisma/enums';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
 import { CommerceCacheService } from '#app/infrastructure/redis/commerce-cache.service';
+import { CategoriesService } from '#app/modules/catalog/categories/categories.service';
 import { CatalogService } from './catalog.service';
 import { CreateProductDto } from './dto/product-input.dto';
 
@@ -53,9 +54,12 @@ describe('CatalogService', () => {
     const cache = {
       invalidateCatalog,
     } as unknown as CommerceCacheService;
+    const categories = {
+      assertActive: jest.fn().mockResolvedValue(undefined),
+    } as unknown as CategoriesService;
 
     return {
-      service: new CatalogService(prisma, cache),
+      service: new CatalogService(prisma, cache, categories),
       productCreate,
       inventoryStockCreate,
       inventoryMovementCreate,
@@ -388,9 +392,16 @@ describe('CatalogService', () => {
       product: { findFirst: jest.fn().mockResolvedValue(before) },
     } as unknown as PrismaService;
     const invalidateCatalog = jest.fn().mockResolvedValue(undefined);
-    const service = new CatalogService(prisma, {
-      invalidateCatalog,
-    } as unknown as CommerceCacheService);
+    const categories = {
+      assertActive: jest.fn().mockResolvedValue(undefined),
+    } as unknown as CategoriesService;
+    const service = new CatalogService(
+      prisma,
+      {
+        invalidateCatalog,
+      } as unknown as CommerceCacheService,
+      categories,
+    );
 
     await expect(
       service.update(

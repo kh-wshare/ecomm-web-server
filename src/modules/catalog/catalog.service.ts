@@ -10,6 +10,10 @@ import { Prisma } from '#app/generated/prisma/client';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
 import { CommerceCacheService } from '#app/infrastructure/redis/commerce-cache.service';
 import {
+  productCategorySelect,
+  CategoriesService,
+} from '#app/modules/catalog/categories/categories.service';
+import {
   ChannelVisibilityInputDto,
   CreateProductDto,
   CreateProductInventoryInputDto,
@@ -23,6 +27,7 @@ import { ProductQueryDto } from './dto/product-query.dto';
 const productSelect = {
   id: true,
   merchantId: true,
+  categoryId: true,
   name: true,
   slug: true,
   description: true,
@@ -33,9 +38,11 @@ const productSelect = {
   createdAt: true,
   updatedAt: true,
   deletedAt: true,
+  category: { select: productCategorySelect },
 } as const;
 
 const productDetailInclude = {
+  category: { select: productCategorySelect },
   variants: { orderBy: { createdAt: 'asc' as const } },
   media: { orderBy: { sortOrder: 'asc' as const } },
   channelVisibility: { orderBy: { channel: 'asc' as const } },
@@ -51,6 +58,7 @@ export class CatalogService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly cache: CommerceCacheService,
+    private readonly categories: CategoriesService,
   ) {}
 
   async create(
@@ -71,9 +79,15 @@ export class CatalogService {
           : `${baseSlug}-${randomBytes(3).toString('hex')}`;
       try {
         const product = await this.prisma.$transaction(async (tx) => {
+          if (dto.categoryId) {
+            await this.categories.assertActive(tx, merchantId, dto.categoryId);
+          }
           const product = await tx.product.create({
             data: {
               merchant: { connect: { id: merchantId } },
+              ...(dto.categoryId
+                ? { category: { connect: { id: dto.categoryId } } }
+                : {}),
               name: dto.name.trim(),
               slug,
               description: dto.description?.trim(),
@@ -131,6 +145,16 @@ export class CatalogService {
       merchantId,
       deletedAt: null,
       status: query.status,
+      categoryId: query.categoryId,
+      ...(query.categorySlug
+        ? {
+            category: {
+              slug: query.categorySlug,
+              status: 'ACTIVE',
+              deletedAt: null,
+            },
+          }
+        : {}),
       ...(query.search
         ? {
             OR: [
@@ -203,10 +227,16 @@ export class CatalogService {
             });
           }
         }
+        if (dto.categoryId) {
+          await this.categories.assertActive(tx, merchantId, dto.categoryId);
+        }
 
         await tx.product.update({
           where: { id: productId },
           data: {
+            ...(dto.categoryId !== undefined
+              ? { categoryId: dto.categoryId }
+              : {}),
             ...(dto.name !== undefined ? { name: dto.name.trim() } : {}),
             ...(dto.slug !== undefined ? { slug: this.toSlug(dto.slug) } : {}),
             ...(dto.description !== undefined
@@ -555,6 +585,7 @@ export class CatalogService {
   }
 
   private productSnapshot(product: {
+    categoryId?: string | null;
     name: string;
     slug: string;
     sku: string;
@@ -563,6 +594,7 @@ export class CatalogService {
     status: string;
   }): Prisma.InputJsonObject {
     return {
+      categoryId: product.categoryId ?? null,
       name: product.name,
       slug: product.slug,
       sku: product.sku,

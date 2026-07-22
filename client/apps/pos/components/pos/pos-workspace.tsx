@@ -1,82 +1,107 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { Button, Card, Chip, Icon, Input, Separator, TextArea } from "@repo/ui";
+import { Button, Card, Chip, Icon, Input, Separator, TextArea } from '@repo/ui';
 
-import { getErrorMessage } from "@/lib/errors/api-error";
+import { getErrorMessage } from '@/lib/errors/api-error';
 import {
   createPosReceipt,
   getActivePosOrders,
   getPosBranches,
+  getPosCategories,
   getPosSession,
   getPosProducts,
   loginPosStaff,
   logoutPosStaff,
   setActiveBranch,
-} from "@/lib/pos/pos-data";
+} from '@/lib/pos/pos-data';
 import type {
   CartItem,
   PaymentMethod,
   PosBranch,
+  PosCategory,
   PosProduct,
   PosReceipt,
   PosSession,
-} from "@/types/pos";
+} from '@/types/pos';
 
-type SaleMode = "sale" | "orders" | "receipt";
+type SaleMode = 'sale' | 'orders' | 'receipt';
 
-const currency = "USD";
+const currency = 'USD';
+const allCategorySlug = 'all';
 const emptyProducts: PosProduct[] = [];
+const emptyCategories: PosCategory[] = [];
 
 export function PosWorkspace() {
   const queryClient = useQueryClient();
   const [session, setSession] = useState<PosSession | null>(null);
-  const [mode, setMode] = useState<SaleMode>("sale");
-  const [search, setSearch] = useState("");
-  const [barcode, setBarcode] = useState("");
-  const [category, setCategory] = useState("All");
+  const [mode, setMode] = useState<SaleMode>('sale');
+  const [search, setSearch] = useState('');
+  const [barcode, setBarcode] = useState('');
+  const [selectedCategorySlug, setSelectedCategorySlug] =
+    useState(allCategorySlug);
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [customerName, setCustomerName] = useState("");
-  const [discount, setDiscount] = useState("0");
-  const [serviceCharge, setServiceCharge] = useState("0");
-  const [taxRate, setTaxRate] = useState("0");
-  const [cashReceived, setCashReceived] = useState("0");
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("CASH");
+  const [customerName, setCustomerName] = useState('');
+  const [discount, setDiscount] = useState('0');
+  const [serviceCharge, setServiceCharge] = useState('0');
+  const [taxRate, setTaxRate] = useState('0');
+  const [cashReceived, setCashReceived] = useState('0');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('CASH');
   const [receipt, setReceipt] = useState<PosReceipt | null>(null);
 
   const sessionQuery = useQuery({
     queryFn: getPosSession,
-    queryKey: ["pos", "session"],
+    queryKey: ['pos', 'session'],
   });
   const currentSession = session ?? sessionQuery.data ?? null;
   const productsQuery = useQuery({
-    queryFn: () => getPosProducts(currentSession),
-    queryKey: ["pos", "products", currentSession?.merchant.id],
+    enabled: Boolean(currentSession?.activeBranch),
+    queryFn: () =>
+      getPosProducts(currentSession, currentSession?.activeBranch ?? null),
+    queryKey: [
+      'pos',
+      'products',
+      currentSession?.merchant.id,
+      currentSession?.activeBranch?.id,
+    ],
+  });
+  const categoriesQuery = useQuery({
+    enabled: Boolean(currentSession),
+    queryFn: () => getPosCategories(currentSession),
+    queryKey: [
+      'pos',
+      'categories',
+      currentSession?.merchant.id,
+      currentSession?.activeBranch?.id,
+    ],
   });
   const branchesQuery = useQuery({
     enabled: Boolean(currentSession),
     queryFn: () => getPosBranches(currentSession),
-    queryKey: ["pos", "branches", currentSession?.merchant.id],
+    queryKey: ['pos', 'branches', currentSession?.merchant.id],
   });
   const ordersQuery = useQuery({
     queryFn: () => getActivePosOrders(currentSession),
-    queryKey: ["pos", "orders", currentSession?.merchant.id],
+    queryKey: ['pos', 'orders', currentSession?.merchant.id],
   });
   const login = useMutation({
     mutationFn: loginPosStaff,
     onSuccess: (nextSession) => {
       setSession(nextSession);
-      queryClient.setQueryData(["pos", "session"], nextSession);
+      queryClient.setQueryData(['pos', 'session'], nextSession);
     },
   });
   const completeSale = useMutation({
     mutationFn: () => {
       if (!currentSession?.activeBranch) {
-        throw new Error("Select a branch before completing the sale.");
+        throw new Error('Select a branch before completing the sale.');
       }
-      if (!cart.length) throw new Error("Add at least one item to the cart.");
+      if (!cart.length) throw new Error('Add at least one item to the cart.');
+
+      const stockError = validateCartStock(cart);
+      if (stockError) throw new Error(stockError);
 
       return createPosReceipt({
         branch: currentSession.activeBranch,
@@ -92,27 +117,35 @@ export function PosWorkspace() {
     },
     onSuccess: (nextReceipt) => {
       setReceipt(nextReceipt);
+      void queryClient.invalidateQueries({ queryKey: ['pos', 'orders'] });
+      void queryClient.invalidateQueries({ queryKey: ['pos', 'products'] });
       setCart([]);
-      setCustomerName("");
-      setDiscount("0");
-      setServiceCharge("0");
-      setTaxRate("0");
-      setCashReceived("0");
-      setMode("receipt");
+      setCustomerName('');
+      setDiscount('0');
+      setServiceCharge('0');
+      setTaxRate('0');
+      setCashReceived('0');
+      setMode('receipt');
     },
   });
 
   const products = productsQuery.data ?? emptyProducts;
+  const apiCategories = categoriesQuery.data ?? emptyCategories;
   const categories = useMemo(
-    () => ["All", ...Array.from(new Set(products.map((item) => item.category)))],
-    [products],
+    () => mergeCategories(apiCategories, products),
+    [apiCategories, products],
   );
+  const categoryCounts = useMemo(() => productCountsByCategory(products), [
+    products,
+  ]);
   const filteredProducts = useMemo(() => {
     const query = search.trim().toLowerCase();
     const skuQuery = barcode.trim().toLowerCase();
 
     return products.filter((product) => {
-      const matchesCategory = category === "All" || product.category === category;
+      const matchesCategory =
+        selectedCategorySlug === allCategorySlug ||
+        product.categorySlug === selectedCategorySlug;
       const matchesSearch =
         !query ||
         product.name.toLowerCase().includes(query) ||
@@ -126,23 +159,25 @@ export function PosWorkspace() {
 
       return matchesCategory && matchesSearch && matchesBarcode;
     });
-  }, [barcode, category, products, search]);
+  }, [barcode, products, search, selectedCategorySlug]);
 
   const subtotal = cart.reduce(
     (sum, item) => sum + item.unitPrice * item.quantity,
     0,
   );
-  const tax = Math.max(0, subtotal - toMoney(discount)) * (toMoney(taxRate) / 100);
+  const tax =
+    Math.max(0, subtotal - toMoney(discount)) * (toMoney(taxRate) / 100);
   const total = Math.max(
     0,
     subtotal - toMoney(discount) + toMoney(serviceCharge) + tax,
   );
   const changeDue =
-    paymentMethod === "CASH" ? Math.max(0, toMoney(cashReceived) - total) : 0;
+    paymentMethod === 'CASH' ? Math.max(0, toMoney(cashReceived) - total) : 0;
   const canComplete =
     Boolean(currentSession?.activeBranch) &&
     cart.length > 0 &&
-    (paymentMethod === "KHQR" || toMoney(cashReceived) >= total);
+    !validateCartStock(cart) &&
+    (paymentMethod === 'KHQR' || toMoney(cashReceived) >= total);
 
   useEffect(() => {
     const branch = branchesQuery.data?.[0];
@@ -150,9 +185,20 @@ export function PosWorkspace() {
 
     void setActiveBranch(branch).then((nextSession) => {
       setSession(nextSession);
-      queryClient.setQueryData(["pos", "session"], nextSession);
+      queryClient.setQueryData(['pos', 'session'], nextSession);
     });
   }, [branchesQuery.data, currentSession, queryClient]);
+
+  useEffect(() => {
+    if (
+      selectedCategorySlug === allCategorySlug ||
+      categories.some((item) => item.slug === selectedCategorySlug)
+    ) {
+      return;
+    }
+
+    setSelectedCategorySlug(allCategorySlug);
+  }, [categories, selectedCategorySlug]);
 
   if (sessionQuery.isPending) {
     return <PosLoading />;
@@ -181,25 +227,28 @@ export function PosWorkspace() {
                 {currentSession.merchant.name}
               </p>
               <p className="text-xs text-slate-500">
-                {currentSession.user.fullName} ·{" "}
-                {currentSession.activeBranch?.register ?? "No register"}
+                {currentSession.user.fullName} ·{' '}
+                {currentSession.activeBranch?.register ?? 'No register'}
               </p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <ModeButton active={mode === "sale"} onPress={() => setMode("sale")}>
+            <ModeButton
+              active={mode === 'sale'}
+              onPress={() => setMode('sale')}
+            >
               Sale
             </ModeButton>
             <ModeButton
-              active={mode === "orders"}
-              onPress={() => setMode("orders")}
+              active={mode === 'orders'}
+              onPress={() => setMode('orders')}
             >
               Orders
             </ModeButton>
             <ModeButton
-              active={mode === "receipt"}
+              active={mode === 'receipt'}
               isDisabled={!receipt}
-              onPress={() => setMode("receipt")}
+              onPress={() => setMode('receipt')}
             >
               Receipt
             </ModeButton>
@@ -209,7 +258,7 @@ export function PosWorkspace() {
               variant="secondary"
               onPress={() => {
                 void logoutPosStaff().then(() => {
-                  queryClient.setQueryData(["pos", "session"], null);
+                  queryClient.setQueryData(['pos', 'session'], null);
                 });
                 setSession(null);
               }}
@@ -223,45 +272,61 @@ export function PosWorkspace() {
         <BranchSelector
           activeBranch={currentSession.activeBranch}
           branches={branchesQuery.data ?? []}
+          error={branchesQuery.isError ? getErrorMessage(branchesQuery.error) : null}
           isLoading={branchesQuery.isPending}
           onSelect={(branch) =>
             void setActiveBranch(branch).then((nextSession) => {
+              setCart([]);
+              setSearch('');
+              setBarcode('');
+              setSelectedCategorySlug(allCategorySlug);
               setSession(nextSession);
-              queryClient.setQueryData(["pos", "session"], nextSession);
+              queryClient.setQueryData(['pos', 'session'], nextSession);
             })
           }
         />
 
-        {mode === "orders" ? (
-          <ActiveOrders orders={ordersQuery.data ?? []} />
-        ) : mode === "receipt" && receipt ? (
-          <ReceiptView receipt={receipt} onNewSale={() => setMode("sale")} />
+        {mode === 'orders' ? (
+          <ActiveOrders
+            error={ordersQuery.isError ? getErrorMessage(ordersQuery.error) : null}
+            orders={ordersQuery.data ?? []}
+          />
+        ) : mode === 'receipt' && receipt ? (
+          <ReceiptView receipt={receipt} onNewSale={() => setMode('sale')} />
         ) : (
-          <div className="grid gap-4 xl:grid-cols-[220px_minmax(0,1fr)_390px]">
+          <div className="grid gap-4 xl:grid-cols-[250px_minmax(0,1fr)_390px]">
             <section className="rounded-lg border border-slate-200 bg-white p-3">
-              <h2 className="px-1 text-sm font-semibold">Categories</h2>
-              <div className="mt-3 grid gap-2">
-                {categories.map((item) => (
-                  <button
-                    className={`flex h-10 items-center justify-between rounded-md px-3 text-left text-sm font-medium ${
-                      category === item
-                        ? "bg-primary text-white"
-                        : "bg-slate-50 text-slate-700 hover:bg-slate-100"
-                    }`}
-                    key={item}
-                    type="button"
-                    onClick={() => setCategory(item)}
-                  >
-                    {item}
-                    <span className="text-xs opacity-75">
-                      {item === "All"
-                        ? products.length
-                        : products.filter((product) => product.category === item)
-                            .length}
-                    </span>
-                  </button>
-                ))}
+              <div className="flex items-center justify-between px-1">
+                <h2 className="text-sm font-semibold">Categories</h2>
+                <span className="text-xs font-medium text-slate-400">
+                  {categories.length}
+                </span>
               </div>
+              {categoriesQuery.isError ? (
+                <DataNotice
+                  message={getErrorMessage(categoriesQuery.error)}
+                  title="Unable to load categories"
+                />
+              ) : (
+                <div className="mt-3 grid gap-2">
+                  {categories.map((item) => {
+                    const count =
+                      item.slug === allCategorySlug
+                        ? products.length
+                        : categoryCounts.get(item.slug) ?? 0;
+
+                    return (
+                      <CategoryButton
+                        category={item}
+                        count={count}
+                        isSelected={selectedCategorySlug === item.slug}
+                        key={item.slug}
+                        onClick={() => setSelectedCategorySlug(item.slug)}
+                      />
+                    );
+                  })}
+                </div>
+              )}
             </section>
 
             <section className="rounded-lg border border-slate-200 bg-white p-3">
@@ -279,19 +344,34 @@ export function PosWorkspace() {
                   placeholder="Scan or type"
                   value={barcode}
                   onChange={setBarcode}
-                  onEnter={() => addFirstSkuMatch(filteredProducts, barcode, setCart)}
+                  onEnter={() =>
+                    addFirstSkuMatch(filteredProducts, barcode, setCart)
+                  }
                 />
               </div>
 
-              <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 2xl:grid-cols-3">
-                {filteredProducts.map((product) => (
-                  <ProductTile
-                    key={product.id}
-                    product={product}
-                    onAdd={(item) => addToCart(setCart, item)}
-                  />
-                ))}
-              </div>
+              {productsQuery.isError ? (
+                <DataNotice
+                  message={getErrorMessage(productsQuery.error)}
+                  title="Unable to load POS products"
+                />
+              ) : (
+                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 2xl:grid-cols-3">
+                  {filteredProducts.map((product) => (
+                    <ProductTile
+                      key={product.id}
+                      product={product}
+                      onAdd={(item) => addToCart(setCart, item)}
+                    />
+                  ))}
+                  {!filteredProducts.length && (
+                    <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm text-slate-500 sm:col-span-2 2xl:col-span-3">
+                      No POS products match the current branch, category, or
+                      search.
+                    </div>
+                  )}
+                </div>
+              )}
             </section>
 
             <aside className="rounded-lg border border-slate-200 bg-white">
@@ -299,7 +379,7 @@ export function PosWorkspace() {
                 <div>
                   <h2 className="text-sm font-semibold">Current cart</h2>
                   <p className="text-xs text-slate-500">
-                    {cart.length} line {cart.length === 1 ? "item" : "items"}
+                    {cart.length} line {cart.length === 1 ? 'item' : 'items'}
                   </p>
                 </div>
                 <Button
@@ -320,7 +400,9 @@ export function PosWorkspace() {
                     <CartLine
                       item={item}
                       key={item.id}
-                      onNote={(note) => updateCartItem(setCart, item.id, { note })}
+                      onNote={(note) =>
+                        updateCartItem(setCart, item.id, { note })
+                      }
                       onQuantity={(quantity) =>
                         updateCartItem(setCart, item.id, { quantity })
                       }
@@ -362,8 +444,11 @@ export function PosWorkspace() {
                     onChange={setTaxRate}
                   />
                 </div>
-                <PaymentSelector value={paymentMethod} onChange={setPaymentMethod} />
-                {paymentMethod === "CASH" ? (
+                <PaymentSelector
+                  value={paymentMethod}
+                  onChange={setPaymentMethod}
+                />
+                {paymentMethod === 'CASH' ? (
                   <LabeledInput
                     inputMode="decimal"
                     label="Cash received"
@@ -377,7 +462,8 @@ export function PosWorkspace() {
                       KHQR ready
                     </div>
                     <p className="mt-1 text-xs text-emerald-700">
-                      Show the QR from the provider terminal, then confirm the sale.
+                      Show the QR from the provider terminal, then confirm the
+                      sale.
                     </p>
                   </div>
                 )}
@@ -404,7 +490,7 @@ export function PosWorkspace() {
                   onPress={() => completeSale.mutate()}
                 >
                   <Icon icon="solar:check-circle-bold" width={20} />
-                  {completeSale.isPending ? "Completing..." : "Complete sale"}
+                  {completeSale.isPending ? 'Completing...' : 'Complete sale'}
                 </Button>
               </div>
             </aside>
@@ -424,8 +510,8 @@ function PosLogin({
   isPending: boolean;
   onSubmit: (payload: { email: string; password: string }) => void;
 }) {
-  const [email, setEmail] = useState("staff@example.com");
-  const [password, setPassword] = useState("password");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   return (
     <main className="grid min-h-dvh place-items-center bg-slate-100 px-4 text-slate-950">
@@ -448,11 +534,7 @@ function PosLogin({
               });
             }}
           >
-            <LabeledInput
-              label="Email"
-              value={email}
-              onChange={setEmail}
-            />
+            <LabeledInput label="Email" value={email} onChange={setEmail} />
             <LabeledInput
               label="Password"
               type="password"
@@ -470,7 +552,7 @@ function PosLogin({
               type="submit"
             >
               <Icon icon="solar:login-3-bold" width={20} />
-              {isPending ? "Signing in..." : "Open POS"}
+              {isPending ? 'Signing in...' : 'Open POS'}
             </Button>
           </form>
         </div>
@@ -484,7 +566,11 @@ function PosLoading() {
     <main className="grid min-h-dvh place-items-center bg-slate-100 px-4">
       <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-6">
         <div className="grid size-12 place-items-center rounded-lg bg-slate-100">
-          <Icon className="text-slate-300" icon="solar:cash-register-bold" width={24} />
+          <Icon
+            className="text-slate-300"
+            icon="solar:cash-register-bold"
+            width={24}
+          />
         </div>
         <div className="mt-6 h-7 w-44 animate-pulse rounded bg-slate-200" />
         <div className="mt-6 space-y-3">
@@ -500,11 +586,13 @@ function PosLoading() {
 function BranchSelector({
   activeBranch,
   branches,
+  error,
   isLoading,
   onSelect,
 }: {
   activeBranch: PosBranch | null;
   branches: PosBranch[];
+  error: string | null;
   isLoading: boolean;
   onSelect: (branch: PosBranch) => void;
 }) {
@@ -517,6 +605,14 @@ function BranchSelector({
             key={index}
           />
         ))}
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="rounded-lg border border-red-200 bg-red-50 px-4 py-6 text-center text-sm text-red-700">
+        {error}
       </section>
     );
   }
@@ -535,8 +631,8 @@ function BranchSelector({
         <button
           className={`rounded-lg border px-4 py-3 text-left ${
             activeBranch?.id === branch.id
-              ? "border-primary bg-primary text-white"
-              : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+              ? 'border-primary bg-primary text-white'
+              : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
           }`}
           key={branch.id}
           type="button"
@@ -552,6 +648,112 @@ function BranchSelector({
   );
 }
 
+function DataNotice({
+  message,
+  title,
+}: {
+  message: string;
+  title: string;
+}) {
+  return (
+    <div className="mt-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+      <p className="font-semibold">{title}</p>
+      <p className="mt-1 text-xs">{message}</p>
+    </div>
+  );
+}
+
+function CategoryButton({
+  category,
+  count,
+  isSelected,
+  onClick,
+}: {
+  category: PosCategory;
+  count: number;
+  isSelected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      className={`group flex min-h-16 w-full items-center gap-3 rounded-lg border p-2 text-left transition ${
+        isSelected
+          ? 'border-primary bg-primary text-white shadow-sm'
+          : 'border-slate-200 bg-slate-50 text-slate-800 hover:border-slate-300 hover:bg-white'
+      }`}
+      type="button"
+      onClick={onClick}
+    >
+      <CategoryLogo category={category} isSelected={isSelected} />
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-sm font-semibold">
+          {category.name}
+        </span>
+        <span
+          className={`mt-0.5 block text-xs ${
+            isSelected ? 'text-white/75' : 'text-slate-500'
+          }`}
+        >
+          {count} {count === 1 ? 'item' : 'items'}
+        </span>
+      </span>
+      <span
+        className={`grid size-6 shrink-0 place-items-center rounded-full text-xs font-semibold ${
+          isSelected
+            ? 'bg-white/20 text-white'
+            : 'bg-white text-slate-500 ring-1 ring-slate-200 group-hover:text-slate-700'
+        }`}
+      >
+        {count}
+      </span>
+    </button>
+  );
+}
+
+function CategoryLogo({
+  category,
+  isSelected,
+}: {
+  category: PosCategory;
+  isSelected: boolean;
+}) {
+  if (category.logoUrl) {
+    return (
+      <img
+        alt=""
+        className={`size-12 shrink-0 rounded-lg object-cover ${
+          isSelected ? 'ring-2 ring-white/70' : 'ring-1 ring-slate-200'
+        }`}
+        src={category.logoUrl}
+      />
+    );
+  }
+
+  if (category.slug === allCategorySlug) {
+    return (
+      <span
+        className={`grid size-12 shrink-0 place-items-center rounded-lg ${
+          isSelected ? 'bg-white/20 text-white' : 'bg-white text-primary'
+        }`}
+      >
+        <Icon icon="solar:widget-5-bold" width={22} />
+      </span>
+    );
+  }
+
+  return (
+    <span
+      className={`grid size-12 shrink-0 place-items-center rounded-lg text-base font-semibold ${
+        isSelected
+          ? 'bg-white/20 text-white'
+          : 'bg-white text-primary ring-1 ring-slate-200'
+      }`}
+    >
+      {category.name.trim().charAt(0).toUpperCase() || 'C'}
+    </span>
+  );
+}
+
 function ProductTile({
   onAdd,
   product,
@@ -560,7 +762,7 @@ function ProductTile({
   product: PosProduct;
 }) {
   const [selectedVariantId, setSelectedVariantId] = useState(
-    product.variants[0]?.id ?? "",
+    product.variants[0]?.id ?? '',
   );
   const variant =
     product.variants.find((item) => item.id === selectedVariantId) ??
@@ -571,6 +773,8 @@ function ProductTile({
   const stock = product.stocks.find(
     (item) => item.variantId === (variant?.id ?? null),
   );
+  const availableStock = stock?.availableStock ?? 0;
+  const isOutOfStock = availableStock <= 0;
 
   return (
     <article className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
@@ -597,8 +801,12 @@ function ProductTile({
               {formatMoney(price)}
             </Chip>
           </div>
-          <p className="mt-2 text-xs text-slate-500">
-            Stock {stock?.availableStock ?? 0}
+          <p
+            className={`mt-2 text-xs ${
+              isOutOfStock ? 'font-semibold text-red-600' : 'text-slate-500'
+            }`}
+          >
+            {isOutOfStock ? 'Out of stock' : `Stock ${availableStock}`}
           </p>
         </div>
       </div>
@@ -620,15 +828,19 @@ function ProductTile({
       )}
       <div className="border-t border-slate-200 p-3">
         <Button
-          className="w-full bg-primary text-white"
+          className="w-full bg-primary text-white disabled:bg-slate-200 disabled:text-slate-500"
+          isDisabled={isOutOfStock}
           size="sm"
           type="button"
           onPress={() =>
             onAdd({
+              availableStock,
               category: product.category,
-              id: `${product.id}:${variant?.id ?? "base"}`,
-              name: variant ? `${product.name} · ${variant.name}` : product.name,
-              note: "",
+              id: `${product.id}:${variant?.id ?? 'base'}`,
+              name: variant
+                ? `${product.name} · ${variant.name}`
+                : product.name,
+              note: '',
               productId: product.id,
               quantity: 1,
               sku,
@@ -638,7 +850,7 @@ function ProductTile({
           }
         >
           <Icon icon="solar:add-circle-bold" width={18} />
-          Add
+          {isOutOfStock ? 'Unavailable' : 'Add'}
         </Button>
       </div>
     </article>
@@ -665,7 +877,13 @@ function CartLine({
             {item.sku} · {formatMoney(item.unitPrice)}
           </p>
         </div>
-        <Button isIconOnly size="sm" type="button" variant="secondary" onPress={onRemove}>
+        <Button
+          isIconOnly
+          size="sm"
+          type="button"
+          variant="secondary"
+          onPress={onRemove}
+        >
           <Icon icon="solar:trash-bin-trash-linear" width={17} />
         </Button>
       </div>
@@ -685,6 +903,7 @@ function CartLine({
         </div>
         <Button
           isIconOnly
+          isDisabled={item.quantity >= item.availableStock}
           size="sm"
           type="button"
           variant="secondary"
@@ -693,13 +912,24 @@ function CartLine({
           <Icon icon="solar:add-circle-linear" width={16} />
         </Button>
       </div>
+      <p
+        className={`mt-2 text-xs ${
+          item.quantity >= item.availableStock
+            ? 'font-medium text-amber-700'
+            : 'text-slate-500'
+        }`}
+      >
+        {item.quantity >= item.availableStock
+          ? `Max stock reached (${item.availableStock})`
+          : `${item.availableStock} in stock`}
+      </p>
       <div className="mt-3 flex flex-wrap gap-2">
-        {["To go", "No sugar", "Extra hot"].map((choice) => (
+        {['To go', 'No sugar', 'Extra hot'].map((choice) => (
           <button
             className={`h-8 rounded-md border px-2 text-xs font-medium ${
               item.note.includes(choice)
-                ? "border-primary bg-primary text-white"
-                : "border-slate-200 bg-white text-slate-600"
+                ? 'border-primary bg-primary text-white'
+                : 'border-slate-200 bg-white text-slate-600'
             }`}
             key={choice}
             type="button"
@@ -730,18 +960,18 @@ function PaymentSelector({
     <div>
       <p className="mb-2 text-xs font-semibold text-slate-600">Payment</p>
       <div className="grid grid-cols-2 gap-2">
-        {(["CASH", "KHQR"] as PaymentMethod[]).map((method) => (
+        {(['CASH', 'KHQR'] as PaymentMethod[]).map((method) => (
           <button
             className={`h-10 rounded-md border text-sm font-semibold ${
               value === method
-                ? "border-primary bg-primary text-white"
-                : "border-slate-200 bg-slate-50 text-slate-700"
+                ? 'border-primary bg-primary text-white'
+                : 'border-slate-200 bg-slate-50 text-slate-700'
             }`}
             key={method}
             type="button"
             onClick={() => onChange(method)}
           >
-            {method === "CASH" ? "Cash" : "KHQR"}
+            {method === 'CASH' ? 'Cash' : 'KHQR'}
           </button>
         ))}
       </div>
@@ -788,7 +1018,13 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-function ActiveOrders({ orders }: { orders: unknown[] }) {
+function ActiveOrders({
+  error,
+  orders,
+}: {
+  error: string | null;
+  orders: unknown[];
+}) {
   return (
     <section className="rounded-lg border border-slate-200 bg-white">
       <div className="flex items-center justify-between px-4 py-3">
@@ -798,22 +1034,30 @@ function ActiveOrders({ orders }: { orders: unknown[] }) {
         </Chip>
       </div>
       <Separator />
+      {error ? (
+        <DataNotice message={error} title="Unable to load POS orders" />
+      ) : null}
       <div className="divide-y divide-slate-100">
-        {orders.length ? (
+        {!error && orders.length ? (
           orders.map((order, index) => (
-            <div className="flex items-center justify-between px-4 py-3" key={index}>
+            <div
+              className="flex items-center justify-between px-4 py-3"
+              key={index}
+            >
               <div>
                 <p className="text-sm font-semibold">Order {index + 1}</p>
-                <p className="text-xs text-slate-500">Synced from commerce API</p>
+                <p className="text-xs text-slate-500">
+                  Synced from commerce API
+                </p>
               </div>
               <Chip variant="soft">In progress</Chip>
             </div>
           ))
-        ) : (
+        ) : !error ? (
           <div className="p-8 text-center text-sm text-slate-500">
             No active POS orders yet.
           </div>
-        )}
+        ) : null}
       </div>
     </section>
   );
@@ -838,14 +1082,21 @@ function ReceiptView({
             {receipt.branchName} · {receipt.cashierName}
           </p>
         </div>
-        <Button className="bg-primary text-white" type="button" onPress={onNewSale}>
+        <Button
+          className="bg-primary text-white"
+          type="button"
+          onPress={onNewSale}
+        >
           <Icon icon="solar:add-circle-bold" width={19} />
           New sale
         </Button>
       </div>
       <div className="mt-6 divide-y divide-slate-100">
         {receipt.items.map((item) => (
-          <div className="flex justify-between gap-4 py-3 text-sm" key={item.id}>
+          <div
+            className="flex justify-between gap-4 py-3 text-sm"
+            key={item.id}
+          >
             <div>
               <p className="font-medium">{item.name}</p>
               <p className="text-xs text-slate-500">Qty {item.quantity}</p>
@@ -883,11 +1134,11 @@ function ModeButton({
 }) {
   return (
     <Button
-      className={active ? "bg-primary text-white" : undefined}
+      className={active ? 'bg-primary text-white' : undefined}
       isDisabled={isDisabled}
       size="sm"
       type="button"
-      variant={active ? undefined : "secondary"}
+      variant={active ? undefined : 'secondary'}
       onPress={onPress}
     >
       {children}
@@ -902,11 +1153,11 @@ function LabeledInput({
   onChange,
   onEnter,
   placeholder,
-  type = "text",
+  type = 'text',
   value,
 }: {
   icon?: string;
-  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  inputMode?: React.HTMLAttributes<HTMLInputElement>['inputMode'];
   label: string;
   onChange: (value: string) => void;
   onEnter?: () => void;
@@ -929,7 +1180,7 @@ function LabeledInput({
         )}
         <Input
           className={`h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm outline-none focus:border-primary ${
-            icon ? "pl-9" : ""
+            icon ? 'pl-9' : ''
           }`}
           inputMode={inputMode}
           placeholder={placeholder}
@@ -937,7 +1188,7 @@ function LabeledInput({
           value={value}
           onChange={(event) => onChange(event.target.value)}
           onKeyDown={(event) => {
-            if (event.key === "Enter") onEnter?.();
+            if (event.key === 'Enter') onEnter?.();
           }}
         />
       </span>
@@ -949,13 +1200,22 @@ function addToCart(
   setCart: React.Dispatch<React.SetStateAction<CartItem[]>>,
   item: CartItem,
 ) {
+  if (item.availableStock <= 0) return;
+
   setCart((current) => {
     const existing = current.find((cartItem) => cartItem.id === item.id);
     if (!existing) return [...current, item];
+    if (existing.quantity >= existing.availableStock) return current;
 
     return current.map((cartItem) =>
       cartItem.id === item.id
-        ? { ...cartItem, quantity: cartItem.quantity + 1 }
+        ? {
+            ...cartItem,
+            quantity: Math.min(
+              cartItem.quantity + 1,
+              cartItem.availableStock,
+            ),
+          }
         : cartItem,
     );
   });
@@ -974,11 +1234,13 @@ function addFirstSkuMatch(
       item.sku.toLowerCase().includes(sku),
     );
     if (variant) {
+      const stock = stockForProduct(product, variant.id);
       addToCart(setCart, {
+        availableStock: stock,
         category: product.category,
         id: `${product.id}:${variant.id}`,
         name: `${product.name} · ${variant.name}`,
-        note: "",
+        note: '',
         productId: product.id,
         quantity: 1,
         sku: variant.sku,
@@ -989,11 +1251,13 @@ function addFirstSkuMatch(
     }
 
     if (product.sku.toLowerCase().includes(sku)) {
+      const stock = stockForProduct(product, null);
       addToCart(setCart, {
+        availableStock: stock,
         category: product.category,
         id: `${product.id}:base`,
         name: product.name,
-        note: "",
+        note: '',
         productId: product.id,
         quantity: 1,
         sku: product.sku,
@@ -1008,15 +1272,43 @@ function addFirstSkuMatch(
 function updateCartItem(
   setCart: React.Dispatch<React.SetStateAction<CartItem[]>>,
   itemId: string,
-  patch: Partial<Pick<CartItem, "note" | "quantity">>,
+  patch: Partial<Pick<CartItem, 'note' | 'quantity'>>,
 ) {
   setCart((current) =>
     current.map((item) =>
       item.id === itemId
-        ? { ...item, ...patch, quantity: Math.max(1, patch.quantity ?? item.quantity) }
+        ? {
+            ...item,
+            ...patch,
+            quantity: clampQuantity(
+              patch.quantity ?? item.quantity,
+              item.availableStock,
+            ),
+          }
         : item,
     ),
   );
+}
+
+function stockForProduct(product: PosProduct, variantId: string | null) {
+  return (
+    product.stocks.find((stock) => stock.variantId === variantId)
+      ?.availableStock ?? 0
+  );
+}
+
+function clampQuantity(quantity: number, availableStock: number) {
+  return Math.max(1, Math.min(quantity, Math.max(availableStock, 1)));
+}
+
+function validateCartStock(cart: CartItem[]) {
+  const invalidItem = cart.find(
+    (item) => item.availableStock <= 0 || item.quantity > item.availableStock,
+  );
+
+  if (!invalidItem) return null;
+
+  return `${invalidItem.name} only has ${invalidItem.availableStock} in stock.`;
 }
 
 function removeFromCart(
@@ -1026,15 +1318,64 @@ function removeFromCart(
   setCart((current) => current.filter((item) => item.id !== itemId));
 }
 
+function mergeCategories(categories: PosCategory[], products: PosProduct[]) {
+  const merged = new Map<string, PosCategory>();
+
+  merged.set(allCategorySlug, {
+    id: allCategorySlug,
+    name: 'All',
+    slug: allCategorySlug,
+    sortOrder: -1,
+  });
+
+  for (const category of categories) {
+    merged.set(category.slug, category);
+  }
+
+  for (const product of products) {
+    if (!merged.has(product.categorySlug)) {
+      merged.set(product.categorySlug, {
+        id: product.categorySlug,
+        name: product.category,
+        slug: product.categorySlug,
+        sortOrder: merged.size,
+      });
+    }
+  }
+
+  return Array.from(merged.values()).sort((first, second) => {
+    if (first.slug === allCategorySlug) return -1;
+    if (second.slug === allCategorySlug) return 1;
+
+    return (
+      first.sortOrder - second.sortOrder ||
+      first.name.localeCompare(second.name)
+    );
+  });
+}
+
+function productCountsByCategory(products: PosProduct[]) {
+  const counts = new Map<string, number>();
+
+  for (const product of products) {
+    counts.set(
+      product.categorySlug,
+      (counts.get(product.categorySlug) ?? 0) + 1,
+    );
+  }
+
+  return counts;
+}
+
 function toggleChoice(note: string, choice: string) {
   const choices = note
-    .split(",")
+    .split(',')
     .map((item) => item.trim())
     .filter(Boolean);
 
   return choices.includes(choice)
-    ? choices.filter((item) => item !== choice).join(", ")
-    : [...choices, choice].join(", ");
+    ? choices.filter((item) => item !== choice).join(', ')
+    : [...choices, choice].join(', ');
 }
 
 function toMoney(value: string) {
@@ -1044,8 +1385,8 @@ function toMoney(value: string) {
 }
 
 function formatMoney(value: number) {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat('en-US', {
     currency,
-    style: "currency",
+    style: 'currency',
   }).format(value);
 }

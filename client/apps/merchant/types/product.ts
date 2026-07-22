@@ -2,6 +2,7 @@ import type {
   ProductStatus as SharedProductStatus,
   SalesChannel as SharedSalesChannel,
 } from "@repo/types";
+import type { ProductCategory } from "@/types/category";
 
 export const PRODUCT_STATUSES = ["DRAFT", "ACTIVE", "INACTIVE"] as const;
 export const VARIANT_STATUSES = ["ACTIVE", "INACTIVE"] as const;
@@ -50,6 +51,8 @@ export type Product = {
   price: string;
   currency: string;
   status: ProductStatus;
+  categoryId: string | null;
+  category?: ProductCategory | null;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
@@ -159,6 +162,7 @@ export type ProductFormValues = {
   price: string;
   currency: string;
   status: ProductStatus;
+  categoryId: string;
   variants: ProductFormVariant[];
   media: ProductFormMedia[];
   channels: ProductFormChannel[];
@@ -175,6 +179,7 @@ export type ProductPayload = {
   price: string;
   currency: string;
   status: ProductStatus;
+  categoryId?: string | null;
   variants: Array<{
     sku: string;
     name: string;

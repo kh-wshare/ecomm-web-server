@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { createServerApiClient } from "@repo/api-client";
+import { ApiError, createServerApiClient } from "@repo/api-client";
 
 import { getDashboardHomeData } from "@/lib/dashboard/home-data";
+import { clearMerchantSessionCookies } from "@/lib/auth/cookies";
 import { env } from "@/lib/env";
 
 export async function GET(request: Request) {
@@ -26,6 +27,15 @@ export async function GET(request: Request) {
 
     return NextResponse.json(data);
   } catch (error) {
+    if (error instanceof ApiError && error.statusCode === 401) {
+      const response = NextResponse.json(
+        { message: "Merchant session has expired", statusCode: 401 },
+        { status: 401 },
+      );
+      clearMerchantSessionCookies(response);
+      return response;
+    }
+
     return NextResponse.json(
       {
         message:

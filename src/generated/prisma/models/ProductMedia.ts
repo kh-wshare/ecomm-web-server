@@ -429,14 +429,6 @@ export type EnumProductMediaTypeFieldUpdateOperationsInput = {
   set?: $Enums.ProductMediaType
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type ProductMediaCreateWithoutProductInput = {
   id?: string
   url: string

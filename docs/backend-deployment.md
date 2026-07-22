@@ -79,7 +79,10 @@ PUBLIC_STOREFRONT_URL=http://localhost
 ```bash
 docker compose ps postgres redis app
 curl -I http://localhost:3000
-curl -I http://localhost:3000/docs
+curl -I http://localhost:3000/docs/user
+curl -I http://localhost:3000/docs/merchant
+curl -I http://localhost:3000/docs/pos
+curl -I http://localhost:3000/docs/storefront
 ```
 
 ## Backend Ownership Rules

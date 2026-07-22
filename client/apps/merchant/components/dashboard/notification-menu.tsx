@@ -1,12 +1,14 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRef } from "react";
 
 import { Button } from "@repo/ui";
 import { queryKeys } from "@repo/query-client";
 
 import { DashboardIcon } from "./dashboard-icon";
 
+import { useCloseDetailsOnOutsideClick } from "@/hooks/use-close-details-on-outside-click";
 import {
   getNotifications,
   getUnreadNotificationCount,
@@ -25,7 +27,9 @@ type NotificationMutationContext = {
 };
 
 export function NotificationMenu() {
+  const menuRef = useRef<HTMLDetailsElement>(null);
   const queryClient = useQueryClient();
+  useCloseDetailsOnOutsideClick(menuRef);
   const notificationsQuery = useQuery({
     queryFn: () => getNotifications(6),
     queryKey: notificationListKey,
@@ -122,8 +126,8 @@ export function NotificationMenu() {
   const unreadCount = unreadQuery.data ?? 0;
 
   return (
-    <details className="group relative">
-      <summary className="relative grid size-10 cursor-pointer list-none place-items-center rounded-lg text-muted transition hover:bg-surface hover:text-foreground [&::-webkit-details-marker]:hidden">
+    <details className="group relative" ref={menuRef}>
+      <summary className="relative grid size-10 cursor-pointer list-none place-items-center rounded-lg text-muted transition hover:bg-primary/20 hover:text-primary group-open:bg-primary/20 group-open:text-primary [&::-webkit-details-marker]:hidden">
         <span className="sr-only">Notifications</span>
         <DashboardIcon name="bell" />
         {unreadCount > 0 && (

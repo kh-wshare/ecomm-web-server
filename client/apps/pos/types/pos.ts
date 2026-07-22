@@ -1,4 +1,9 @@
-import type { AuthUser, Order, PaymentProviderCode, Product } from "@repo/types";
+import type {
+  AuthUser,
+  Order,
+  PaymentProviderCode,
+  Product,
+} from '@repo/types';
 
 export type PosBranch = {
   id: string;
@@ -18,14 +23,23 @@ export type PosSession = {
   user: AuthUser;
 };
 
-export type PosProduct = Product & {
+export type PosProduct = Omit<Product, 'category'> & {
   category: string;
+  categorySlug: string;
   imageUrl?: string;
   stocks: Array<{
     productId: string;
     variantId: string | null;
     availableStock: number;
   }>;
+};
+
+export type PosCategory = {
+  id: string;
+  logoUrl?: string | null;
+  name: string;
+  slug: string;
+  sortOrder: number;
 };
 
 export type CartItem = {
@@ -36,11 +50,12 @@ export type CartItem = {
   name: string;
   sku: string;
   quantity: number;
+  availableStock: number;
   unitPrice: number;
   note: string;
 };
 
-export type PaymentMethod = "CASH" | Extract<PaymentProviderCode, "KHQR">;
+export type PaymentMethod = 'CASH' | Extract<PaymentProviderCode, 'KHQR'>;
 
 export type PosReceipt = {
   id: string;

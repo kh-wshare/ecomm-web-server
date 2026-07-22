@@ -1,8 +1,9 @@
 "use client";
 
-import { useDeferredValue, useState } from "react";
+import { type ReactNode, useDeferredValue, useState } from "react";
 import {
   Button,
+  EmptyState as HeroEmptyState,
   Input,
   Label,
   ListBox,
@@ -11,6 +12,7 @@ import {
   Select,
   Table,
 } from "@heroui/react";
+import { Icon } from "@iconify/react";
 import Link from "next/link";
 
 import { OrderStatusBadge } from "@/components/orders/order-status-badge";
@@ -42,6 +44,8 @@ export function PaymentTransactionList() {
   const deferredSearch = useDeferredValue(filters.search.trim());
   const queryFilters = { ...filters, search: deferredSearch };
   const paymentsQuery = usePayments(queryFilters, canRead);
+  const paymentMeta = paymentsQuery.data?.meta;
+  const payments = paymentsQuery.data?.items ?? [];
   const update = <Key extends keyof PaymentFilters>(
     key: Key,
     value: PaymentFilters[Key],
@@ -122,148 +126,156 @@ export function PaymentTransactionList() {
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-separator bg-surface shadow-sm">
-        {paymentsQuery.isPending ? (
-          <div className="h-[440px] animate-pulse bg-surface-secondary/50" />
-        ) : paymentsQuery.isError ? (
-          <ErrorState
-            message={paymentsQuery.error.message}
-            onRetry={() => paymentsQuery.refetch()}
-          />
-        ) : paymentsQuery.data.items.length ? (
-          <>
-            <Table variant="secondary">
-              <Table.ScrollContainer>
-                <Table.Content
-                  aria-label="Payment transactions"
-                  className="min-w-[900px] text-left text-sm"
-                  selectionMode="none"
+        <Table
+          className="min-h-80 md:min-h-[calc(100dvh-24rem)]"
+          variant="secondary"
+        >
+          <Table.ScrollContainer className="max-h-[calc(100dvh-22rem)]">
+            <Table.Content
+              aria-label="Payment transactions"
+              className="h-full min-w-[960px] table-fixed text-left text-sm"
+              selectionMode="none"
+            >
+              <Table.Header className="text-xs font-semibold text-muted">
+                <Table.Column
+                  className="w-[260px] px-4 py-3 font-medium"
+                  id="transaction"
+                  isRowHeader
                 >
-                  <Table.Header className="text-xs font-semibold text-muted">
-                    <Table.Column
-                      className="px-4 py-3 font-medium"
-                      id="transaction"
-                      isRowHeader
-                    >
-                      Transaction
-                    </Table.Column>
-                    <Table.Column className="px-4 py-3 font-medium" id="order">
-                      Order
-                    </Table.Column>
-                    <Table.Column
-                      className="px-4 py-3 font-medium"
-                      id="provider"
-                    >
-                      Provider
-                    </Table.Column>
-                    <Table.Column className="px-4 py-3 font-medium" id="status">
-                      Status
-                    </Table.Column>
-                    <Table.Column
-                      className="px-4 py-3 font-medium"
-                      id="created"
-                    >
-                      Created
-                    </Table.Column>
-                    <Table.Column
-                      className="px-4 py-3 text-right font-medium"
-                      id="amount"
-                    >
-                      Amount
-                    </Table.Column>
-                  </Table.Header>
-                  <Table.Body>
-                    {paymentsQuery.data.items.map((payment) => (
-                      <Table.Row
-                        className="border-t border-separator hover:bg-surface-secondary/60"
-                        id={payment.id}
-                        key={payment.id}
+                  Transaction
+                </Table.Column>
+                <Table.Column
+                  className="w-[160px] px-4 py-3 font-medium"
+                  id="order"
+                >
+                  Order
+                </Table.Column>
+                <Table.Column
+                  className="w-[130px] px-4 py-3 font-medium"
+                  id="provider"
+                >
+                  Provider
+                </Table.Column>
+                <Table.Column
+                  className="w-[130px] px-4 py-3 font-medium"
+                  id="status"
+                >
+                  Status
+                </Table.Column>
+                <Table.Column
+                  className="w-[140px] px-4 py-3 font-medium"
+                  id="created"
+                >
+                  Created
+                </Table.Column>
+                <Table.Column
+                  className="w-[140px] px-4 py-3 text-right font-medium"
+                  id="amount"
+                >
+                  Amount
+                </Table.Column>
+              </Table.Header>
+              <Table.Body
+                renderEmptyState={() => {
+                  if (paymentsQuery.isPending) {
+                    return <Loading label="Loading transactions" />;
+                  }
+                  if (paymentsQuery.isError) {
+                    return (
+                      <ErrorState
+                        message={paymentsQuery.error.message}
+                        onRetry={() => paymentsQuery.refetch()}
+                      />
+                    );
+                  }
+                  return <PaymentEmptyState />;
+                }}
+              >
+                {payments.map((payment) => (
+                  <Table.Row
+                    className="border-t border-separator hover:bg-surface-secondary/60"
+                    id={payment.id}
+                    key={payment.id}
+                  >
+                    <Table.Cell className="px-4 py-4">
+                      <Link
+                        className="font-mono text-xs font-semibold hover:text-accent"
+                        href={`/dashboard/payments/transactions/${payment.id}`}
                       >
-                        <Table.Cell className="px-4 py-4">
-                          <Link
-                            className="font-mono text-xs font-semibold hover:text-accent"
-                            href={`/dashboard/payments/transactions/${payment.id}`}
-                          >
-                            {payment.providerTransactionId}
-                          </Link>
-                        </Table.Cell>
-                        <Table.Cell className="px-4 py-4">
-                          <Link
-                            className="font-semibold hover:text-accent"
-                            href={`/dashboard/orders/${payment.order.id}`}
-                          >
-                            {payment.order.orderNumber}
-                          </Link>
-                        </Table.Cell>
-                        <Table.Cell className="px-4 py-4 text-xs font-semibold">
-                          {payment.provider}
-                        </Table.Cell>
-                        <Table.Cell className="px-4 py-4">
-                          <OrderStatusBadge status={payment.status} />
-                        </Table.Cell>
-                        <Table.Cell className="px-4 py-4 text-xs text-muted">
-                          {formatDate(payment.createdAt)}
-                        </Table.Cell>
-                        <Table.Cell className="px-4 py-4 text-right font-semibold">
-                          {formatCurrency(payment.amount, payment.currency)}
-                        </Table.Cell>
-                      </Table.Row>
-                    ))}
-                  </Table.Body>
-                </Table.Content>
-              </Table.ScrollContainer>
-              <Table.Footer>
-                <Pagination size="sm">
-                  <Pagination.Summary className="text-xs text-muted">
-                    {paymentsQuery.data.meta.total} total transactions
-                  </Pagination.Summary>
-                  <Pagination.Content>
-                    <Pagination.Item>
-                      <Pagination.Previous
-                        isDisabled={!paymentsQuery.data.meta.hasPrev}
-                        onPress={() =>
-                          setFilters((current) => ({
-                            ...current,
-                            page: current.page - 1,
-                          }))
-                        }
+                        {payment.providerTransactionId}
+                      </Link>
+                    </Table.Cell>
+                    <Table.Cell className="px-4 py-4">
+                      <Link
+                        className="font-semibold hover:text-accent"
+                        href={`/dashboard/orders/${payment.order.id}`}
                       >
-                        <Pagination.PreviousIcon />
-                        Prev
-                      </Pagination.Previous>
-                    </Pagination.Item>
-                    <Pagination.Item>
-                      <span className="px-2 text-xs text-muted">
-                        Page {paymentsQuery.data.meta.page} of{" "}
-                        {Math.max(paymentsQuery.data.meta.totalPages, 1)}
-                      </span>
-                    </Pagination.Item>
-                    <Pagination.Item>
-                      <Pagination.Next
-                        isDisabled={!paymentsQuery.data.meta.hasNext}
-                        onPress={() =>
-                          setFilters((current) => ({
-                            ...current,
-                            page: current.page + 1,
-                          }))
-                        }
-                      >
-                        Next
-                        <Pagination.NextIcon />
-                      </Pagination.Next>
-                    </Pagination.Item>
-                  </Pagination.Content>
-                </Pagination>
-              </Table.Footer>
-            </Table>
-          </>
-        ) : (
-          <div className="px-6 py-16 text-center">
-            <p className="font-semibold">No transactions found</p>
-            <p className="mt-1 text-sm text-muted">
-              Payment attempts will appear here after checkout.
-            </p>
-          </div>
-        )}
+                        {payment.order.orderNumber}
+                      </Link>
+                    </Table.Cell>
+                    <Table.Cell className="px-4 py-4 text-xs font-semibold">
+                      {payment.provider}
+                    </Table.Cell>
+                    <Table.Cell className="px-4 py-4">
+                      <OrderStatusBadge status={payment.status} />
+                    </Table.Cell>
+                    <Table.Cell className="px-4 py-4 text-xs text-muted">
+                      {formatDate(payment.createdAt)}
+                    </Table.Cell>
+                    <Table.Cell className="px-4 py-4 text-right font-semibold">
+                      {formatCurrency(payment.amount, payment.currency)}
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table.Content>
+          </Table.ScrollContainer>
+          {paymentMeta && payments.length ? (
+            <Table.Footer>
+              <Pagination size="sm">
+                <Pagination.Summary className="text-xs text-muted">
+                  {paymentMeta.total} total transactions
+                </Pagination.Summary>
+                <Pagination.Content>
+                  <Pagination.Item>
+                    <Pagination.Previous
+                      isDisabled={!paymentMeta.hasPrev}
+                      onPress={() =>
+                        setFilters((current) => ({
+                          ...current,
+                          page: current.page - 1,
+                        }))
+                      }
+                    >
+                      <Pagination.PreviousIcon />
+                      Prev
+                    </Pagination.Previous>
+                  </Pagination.Item>
+                  <Pagination.Item>
+                    <span className="px-2 text-xs text-muted">
+                      Page {paymentMeta.page} of{" "}
+                      {Math.max(paymentMeta.totalPages, 1)}
+                    </span>
+                  </Pagination.Item>
+                  <Pagination.Item>
+                    <Pagination.Next
+                      isDisabled={!paymentMeta.hasNext}
+                      onPress={() =>
+                        setFilters((current) => ({
+                          ...current,
+                          page: current.page + 1,
+                        }))
+                      }
+                    >
+                      Next
+                      <Pagination.NextIcon />
+                    </Pagination.Next>
+                  </Pagination.Item>
+                </Pagination.Content>
+              </Pagination>
+            </Table.Footer>
+          ) : null}
+        </Table>
       </div>
     </section>
   );
@@ -335,6 +347,38 @@ function DateField({
   );
 }
 
+function TableStateContent({ children }: { children: ReactNode }) {
+  return (
+    <HeroEmptyState className="flex h-full min-h-64 w-full flex-col items-center justify-center gap-4 text-center md:min-h-[calc(100dvh-30rem)]">
+      {children}
+    </HeroEmptyState>
+  );
+}
+
+function Loading({ label }: { label: string }) {
+  return (
+    <TableStateContent>
+      <Icon
+        className="size-6 animate-spin text-muted"
+        icon="gravity-ui:arrows-rotate-right"
+      />
+      <span className="text-sm text-muted">{label}</span>
+    </TableStateContent>
+  );
+}
+
+function PaymentEmptyState() {
+  return (
+    <TableStateContent>
+      <Icon className="size-6 text-muted" icon="gravity-ui:tray" />
+      <span className="text-sm font-semibold">No transactions found</span>
+      <span className="max-w-sm text-xs text-muted">
+        Payment attempts will appear here after checkout.
+      </span>
+    </TableStateContent>
+  );
+}
+
 function ErrorState({
   message,
   onRetry,
@@ -343,17 +387,15 @@ function ErrorState({
   onRetry: () => void;
 }) {
   return (
-    <div className="px-6 py-16 text-center">
-      <p className="font-semibold">Transactions are unavailable</p>
-      <p className="mt-1 text-sm text-muted">{message}</p>
-      <Button
-        className="mt-4"
-        type="button"
-        variant="primary"
-        onPress={onRetry}
-      >
+    <TableStateContent>
+      <Icon className="size-6 text-danger" icon="gravity-ui:circle-xmark" />
+      <span className="text-sm font-semibold">
+        Transactions are unavailable
+      </span>
+      <span className="max-w-sm text-xs text-muted">{message}</span>
+      <Button type="button" variant="primary" onPress={onRetry}>
         Try again
       </Button>
-    </div>
+    </TableStateContent>
   );
 }

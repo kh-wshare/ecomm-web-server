@@ -45,6 +45,7 @@ export function useAuthSession() {
 
   return {
     activeMerchant,
+    isAuthenticated: Boolean(profileQuery.data),
     isChecking: profileQuery.isPending,
     profile: profileQuery.data ?? null,
   };

@@ -113,7 +113,7 @@ export function Select({
           } as unknown as ChangeEvent<HTMLSelectElement>);
         }}
       >
-        <HeroSelect.Trigger>
+        <HeroSelect.Trigger className="bg-surface-secondary text-muted">
           <HeroSelect.Value />
           <HeroSelect.Indicator />
         </HeroSelect.Trigger>

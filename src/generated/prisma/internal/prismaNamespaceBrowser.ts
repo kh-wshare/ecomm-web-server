@@ -56,6 +56,7 @@ export const ModelName = {
   Merchant: 'Merchant',
   MerchantBranch: 'MerchantBranch',
   Product: 'Product',
+  ProductCategory: 'ProductCategory',
   MerchantTheme: 'MerchantTheme',
   ProductVariant: 'ProductVariant',
   ProductMedia: 'ProductMedia',
@@ -176,6 +177,7 @@ export type MerchantBranchScalarFieldEnum = (typeof MerchantBranchScalarFieldEnu
 export const ProductScalarFieldEnum = {
   id: 'id',
   merchantId: 'merchantId',
+  categoryId: 'categoryId',
   name: 'name',
   slug: 'slug',
   description: 'description',
@@ -189,6 +191,23 @@ export const ProductScalarFieldEnum = {
 } as const
 
 export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
+
+
+export const ProductCategoryScalarFieldEnum = {
+  id: 'id',
+  merchantId: 'merchantId',
+  name: 'name',
+  slug: 'slug',
+  description: 'description',
+  logoUrl: 'logoUrl',
+  sortOrder: 'sortOrder',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type ProductCategoryScalarFieldEnum = (typeof ProductCategoryScalarFieldEnum)[keyof typeof ProductCategoryScalarFieldEnum]
 
 
 export const MerchantThemeScalarFieldEnum = {

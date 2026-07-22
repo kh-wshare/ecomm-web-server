@@ -47,6 +47,11 @@ enum ProductVariantStatus {
   INACTIVE
 }
 
+enum ProductCategoryStatus {
+  ACTIVE
+  INACTIVE
+}
+
 enum ProductMediaType {
   IMAGE
   VIDEO
@@ -227,6 +232,7 @@ model Merchant {
   socialPosts           SocialPost[]
   websiteArticles       WebsiteArticle[]
   branches              MerchantBranch[]
+  productCategories     ProductCategory[]
 
   @@map("merchants")
 }
@@ -260,6 +266,7 @@ model MerchantBranch {
 model Product {
   id                 String                     @id @default(uuid()) @db.Uuid
   merchantId         String                     @db.Uuid
+  categoryId         String?                    @db.Uuid
   name               String
   slug               String
   description        String?
@@ -271,6 +278,7 @@ model Product {
   updatedAt          DateTime                   @updatedAt
   deletedAt          DateTime?
   merchant           Merchant                   @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  category           ProductCategory?           @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   variants           ProductVariant[]
   media              ProductMedia[]
   channelVisibility  ProductChannelVisibility[]
@@ -284,8 +292,30 @@ model Product {
   @@unique([merchantId, sku])
   @@unique([merchantId, slug])
   @@unique([id, merchantId])
+  @@index([merchantId, categoryId])
   @@index([merchantId, status, deletedAt])
   @@map("products")
+}
+
+model ProductCategory {
+  id          String                @id @default(uuid()) @db.Uuid
+  merchantId  String                @db.Uuid
+  name        String
+  slug        String
+  description String?
+  logoUrl     String?
+  sortOrder   Int                   @default(0)
+  status      ProductCategoryStatus @default(ACTIVE)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  deletedAt   DateTime?
+  merchant    Merchant              @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  products    Product[]
+
+  @@unique([merchantId, slug])
+  @@index([merchantId, status, deletedAt])
+  @@index([merchantId, sortOrder])
+  @@map("product_categories")
 }
 
 model MerchantTheme {

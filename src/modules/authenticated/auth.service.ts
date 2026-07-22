@@ -376,12 +376,19 @@ export class AuthService {
       Awaited<ReturnType<AuthorizationService['findMembership']>>
     >,
   ) {
+    let permissions = membership.role.rolePermissions.map(
+      ({ permission }) => permission.code,
+    );
+    if (['admin', 'manager', 'owner', 'staff'].includes(membership.role.code)) {
+      permissions = [
+        ...new Set([...permissions, 'pos.access', 'pos.sale.create']),
+      ];
+    }
+
     return {
       merchant: membership.merchant,
       role: membership.role.code,
-      permissions: membership.role.rolePermissions.map(
-        ({ permission }) => permission.code,
-      ),
+      permissions,
     };
   }
 

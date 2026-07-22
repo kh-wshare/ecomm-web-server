@@ -105,6 +105,8 @@ export class StorefrontService {
     const channel = query.channel ?? SalesChannel.WEBSITE;
     const signature = JSON.stringify({
       channel,
+      categoryId: query.categoryId ?? '',
+      categorySlug: query.categorySlug?.trim().toLowerCase() ?? '',
       page: query.page ?? 1,
       limit: query.take,
       search: query.search?.trim().toLowerCase() ?? '',
@@ -127,6 +129,8 @@ export class StorefrontService {
   ) {
     const channel = query.channel ?? SalesChannel.WEBSITE;
     const search = query.search?.trim();
+    const categoryId = query.categoryId?.trim();
+    const categorySlug = query.categorySlug?.trim().toLowerCase();
     const searchClause = search
       ? Prisma.sql`AND (
           p."name" ILIKE ${`%${search}%`}
@@ -134,6 +138,27 @@ export class StorefrontService {
           OR p."slug" ILIKE ${`%${search}%`}
         )`
       : Prisma.empty;
+    const categoryClause = categoryId
+      ? Prisma.sql`AND EXISTS (
+          SELECT 1
+          FROM "product_categories" pc
+          WHERE pc."id" = p."categoryId"
+            AND pc."merchantId" = CAST(${merchantId} AS uuid)
+            AND pc."id" = CAST(${categoryId} AS uuid)
+            AND pc."status" = 'ACTIVE'::"ProductCategoryStatus"
+            AND pc."deletedAt" IS NULL
+        )`
+      : categorySlug
+        ? Prisma.sql`AND EXISTS (
+            SELECT 1
+            FROM "product_categories" pc
+            WHERE pc."id" = p."categoryId"
+              AND pc."merchantId" = CAST(${merchantId} AS uuid)
+              AND pc."slug" = ${categorySlug}
+              AND pc."status" = 'ACTIVE'::"ProductCategoryStatus"
+              AND pc."deletedAt" IS NULL
+          )`
+        : Prisma.empty;
     const baseWhere = Prisma.sql`
       p."merchantId" = CAST(${merchantId} AS uuid)
       AND p."status" = 'ACTIVE'::"ProductStatus"
@@ -146,6 +171,7 @@ export class StorefrontService {
           AND pcv."isVisible" = true
       )
       ${searchClause}
+      ${categoryClause}
     `;
     const [idRows, countRows] = await this.prisma.$transaction([
       this.prisma.$queryRaw<ProductIdRow[]>(Prisma.sql`
@@ -187,6 +213,17 @@ export class StorefrontService {
 
   private publicProductInclude(merchantId: string, channel: SalesChannel) {
     return {
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          description: true,
+          sortOrder: true,
+          status: true,
+          deletedAt: true,
+        },
+      },
       media: { orderBy: { sortOrder: 'asc' as const } },
       channelVisibility: { where: { channel } },
       inventoryStocks: { where: { merchantId } },
@@ -207,6 +244,16 @@ export class StorefrontService {
       sku: string;
       price: { toString(): string };
       currency: string;
+      categoryId: string | null;
+      category: {
+        id: string;
+        name: string;
+        slug: string;
+        description: string | null;
+        sortOrder: number;
+        status: string;
+        deletedAt: Date | null;
+      } | null;
       media: Array<{ url: string; type: string; sortOrder: number }>;
       channelVisibility: Array<{ isPurchasable: boolean }>;
       inventoryStocks: Array<{
@@ -258,6 +305,17 @@ export class StorefrontService {
       price: product.price.toString(),
       currency: product.currency,
       channel,
+      categoryId: product.categoryId,
+      category:
+        product.category?.status === 'ACTIVE' && !product.category.deletedAt
+          ? {
+              id: product.category.id,
+              name: product.category.name,
+              slug: product.category.slug,
+              description: product.category.description,
+              sortOrder: product.category.sortOrder,
+            }
+          : null,
       baseIsAvailable,
       isAvailable,
       isPurchasable: isChannelPurchasable && isAvailable,

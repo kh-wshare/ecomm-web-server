@@ -77,6 +77,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       permissions = membership.role.rolePermissions.map(
         ({ permission }) => permission.code,
       );
+      if (
+        ['admin', 'manager', 'owner', 'staff'].includes(membership.role.code)
+      ) {
+        permissions = [
+          ...new Set([...permissions, 'pos.access', 'pos.sale.create']),
+        ];
+      }
     }
 
     return {

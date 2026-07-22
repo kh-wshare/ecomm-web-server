@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
 import { DashboardLoading } from "./dashboard-loading";
 import { DashboardSidebar } from "./dashboard-sidebar";
 import { MobileNavigation } from "./mobile-navigation";
@@ -12,10 +15,18 @@ import { useUiStore } from "@/stores/ui-store";
 export function DashboardShell({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const { activeMerchant, isChecking } = useAuthSession();
+  const router = useRouter();
+  const { activeMerchant, isAuthenticated, isChecking } = useAuthSession();
   const isCollapsed = useUiStore((state) => state.isSidebarCollapsed);
 
-  if (isChecking) return <DashboardLoading />;
+  useEffect(() => {
+    if (isChecking || isAuthenticated) return;
+
+    const next = window.location.pathname + window.location.search;
+    router.replace(`/auth/login?next=${encodeURIComponent(next)}`);
+  }, [isAuthenticated, isChecking, router]);
+
+  if (isChecking || !isAuthenticated) return <DashboardLoading />;
 
   const content = (
     <div className="min-h-dvh bg-background">

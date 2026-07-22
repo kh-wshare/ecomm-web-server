@@ -1,17 +1,23 @@
-import type { ApiResponse, Order, Product } from "@repo/types";
-import { unwrapApiResponseData } from "@repo/api-client";
+import type {
+  ApiResponse,
+  InventoryStock,
+  Order,
+  Product,
+  ProductCategory,
+} from '@repo/types';
+import { unwrapApiResponseData } from '@repo/api-client';
 
-import { demoBranches, demoProducts } from "@/lib/pos/mock-data";
 import type {
   CartItem,
   PaymentMethod,
   PosBranch,
+  PosCategory,
   PosProduct,
   PosReceipt,
   PosSession,
-} from "@/types/pos";
+} from '@/types/pos';
 
-const POS_BASE_PATH = "/pos";
+const POS_BASE_PATH = '/pos';
 
 type LoginPayload = {
   email: string;
@@ -31,16 +37,20 @@ type BackendBranch = {
   isDefault: boolean;
 };
 
+type BackendPosSaleResponse = {
+  receipt: PosReceipt;
+};
+
 export async function loginPosStaff(payload: LoginPayload) {
   const response = await fetch(`${POS_BASE_PATH}/api/session/login`, {
     body: JSON.stringify(payload),
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    method: "POST",
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    method: 'POST',
   });
 
   if (!response.ok) {
-    throw new Error(await responseMessage(response, "Unable to sign in."));
+    throw new Error(await responseMessage(response, 'Unable to sign in.'));
   }
 
   return unwrapApiResponseData<PosSession>(await response.json());
@@ -48,12 +58,14 @@ export async function loginPosStaff(payload: LoginPayload) {
 
 export async function getPosSession() {
   const response = await fetch(`${POS_BASE_PATH}/api/session/me`, {
-    credentials: "include",
+    credentials: 'include',
   });
 
   if (response.status === 401) return null;
   if (!response.ok) {
-    throw new Error(await responseMessage(response, "Unable to restore session."));
+    throw new Error(
+      await responseMessage(response, 'Unable to restore session.'),
+    );
   }
 
   return unwrapApiResponseData<PosSession>(await response.json());
@@ -62,77 +74,90 @@ export async function getPosSession() {
 export async function setActiveBranch(branch: PosBranch) {
   const response = await fetch(`${POS_BASE_PATH}/api/session/branch`, {
     body: JSON.stringify({ branch }),
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    method: "POST",
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    method: 'POST',
   });
 
   if (!response.ok) {
-    throw new Error(await responseMessage(response, "Unable to switch branch."));
+    throw new Error(
+      await responseMessage(response, 'Unable to switch branch.'),
+    );
   }
 
   return unwrapApiResponseData<PosSession>(await response.json());
 }
 
 export async function getPosBranches(session: PosSession | null) {
-  if (!session) return demoBranches;
+  if (!session) return [];
 
-  try {
-    const response = await getPosApi<ApiResponse<BackendBranch[]>>(
-      `${POS_BASE_PATH}/api/commerce/branches?status=ACTIVE`,
-    );
-    const branches = response.data.map(toPosBranch);
+  const response = await getPosApi<ApiResponse<BackendBranch[]>>(
+    `${POS_BASE_PATH}/api/commerce/branches?status=ACTIVE`,
+  );
 
-    return branches.length ? branches : demoBranches;
-  } catch {
-    return demoBranches;
-  }
+  return response.data.map(toPosBranch);
+}
+
+export async function getPosCategories(
+  session: PosSession | null,
+) {
+  if (!session) return [];
+
+  const params = new URLSearchParams({
+    limit: '100',
+    page: '1',
+    status: 'ACTIVE',
+  });
+  const response = await getPosApi<ApiResponse<ProductCategory[]>>(
+    `${POS_BASE_PATH}/api/commerce/categories?${params.toString()}`,
+  );
+
+  return response.data.map(toPosCategory);
 }
 
 export async function logoutPosStaff() {
   await fetch(`${POS_BASE_PATH}/api/session/logout`, {
-    credentials: "include",
-    method: "POST",
+    credentials: 'include',
+    method: 'POST',
   });
 }
 
-export async function getPosProducts(session: PosSession | null) {
-  if (!session) return demoProducts;
+export async function getPosProducts(
+  session: PosSession | null,
+  branch: PosBranch | null,
+) {
+  if (!session) return [];
+  if (!branch) return [];
 
-  try {
-    const response = await getPosApi<ApiResponse<Product[]>>(
-      `${POS_BASE_PATH}/api/commerce/products?page=1&limit=100&status=ACTIVE`,
-    );
+  const params = new URLSearchParams({
+    limit: '100',
+    page: '1',
+    status: 'ACTIVE',
+  });
+  const response = await getPosApi<ApiResponse<Product[]>>(
+    `${POS_BASE_PATH}/api/commerce/products?${params.toString()}`,
+  );
+  const products = await Promise.all(
+    response.data.map((product) => getPosProduct(product.id)),
+  );
 
-    return response.data
-      .filter((product) =>
-        product.channelVisibility.some(
-          (item) => item.channel === "POS" && item.isVisible,
-        ),
-      )
-      .map(toPosProduct);
-  } catch {
-    return demoProducts;
-  }
+  return products
+    .filter(isPosVisible)
+    .map(toPosProduct);
 }
 
 export async function getActivePosOrders(session: PosSession | null) {
   if (!session) return [];
 
-  try {
-    const response = await getPosApi<ApiResponse<Order[]>>(
-      `${POS_BASE_PATH}/api/commerce/orders?page=1&limit=10&sourceChannel=POS`,
-    );
+  const response = await getPosApi<ApiResponse<Order[]>>(
+    `${POS_BASE_PATH}/api/commerce/orders?page=1&limit=10&sourceChannel=POS`,
+  );
 
-    return response.data;
-  } catch {
-    return [];
-  }
+  return response.data;
 }
 
 export async function createPosReceipt({
   branch,
-  cashierName,
   cashReceived,
   customerName,
   discount,
@@ -151,64 +176,90 @@ export async function createPosReceipt({
   serviceCharge: number;
   tax: number;
 }) {
-  const subtotal = items.reduce(
-    (sum, item) => sum + item.unitPrice * item.quantity,
-    0,
+  const response = await postPosApi<ApiResponse<BackendPosSaleResponse>>(
+    `${POS_BASE_PATH}/api/commerce/pos/sales`,
+    {
+      branchId: branch.id,
+      cashReceived,
+      customerName,
+      discountAmount: discount,
+      items: items.map((item) => ({
+        category: item.category,
+        note: item.note,
+        productId: item.productId,
+        quantity: item.quantity,
+        variantId: item.variantId,
+      })),
+      paymentMethod,
+      serviceChargeAmount: serviceCharge,
+      taxAmount: tax,
+    },
   );
-  const total = Math.max(0, subtotal - discount + serviceCharge + tax);
 
-  return {
-    id: crypto.randomUUID(),
-    orderNumber: `POS-${Date.now().toString().slice(-6)}`,
-    branchName: branch.name,
-    cashierName,
-    cashReceived,
-    changeDue: paymentMethod === "CASH" ? Math.max(0, cashReceived - total) : 0,
-    createdAt: new Date().toISOString(),
-    customerName: customerName.trim() || "Walk-in customer",
-    discount,
-    items,
-    paymentMethod,
-    serviceCharge,
-    subtotal,
-    tax,
-    total,
-  } satisfies PosReceipt;
-}
-
-export function createDemoSession(identifier: string): PosSession {
-  return {
-    activeBranch: demoBranches[0],
-    merchant: {
-      id: "demo-merchant",
-      name: "Demo Merchant",
-      slug: "demo-merchant",
-    },
-    user: {
-      id: "demo-staff",
-      fullName: "POS Staff",
-      email: identifier.includes("@") ? identifier : "staff@example.com",
-      phone: identifier.includes("@") ? undefined : identifier,
-      branchIds: demoBranches.map((branch) => branch.id),
-      roles: ["cashier"],
-      permissions: ["pos.access", "pos.sale.create"],
-    },
-  };
+  return response.data.receipt;
 }
 
 function toPosProduct(product: Product): PosProduct {
+  const categoryName = product.category?.name ?? 'Uncategorized';
+  const media = product.media ?? [];
+
   return {
     ...product,
-    category: inferCategory(product.name),
-    imageUrl: product.media.find((item) => item.type === "IMAGE")?.url,
+    category: categoryName,
+    categorySlug: product.category?.slug ?? toSlug(categoryName),
+    channelVisibility: product.channelVisibility ?? [],
+    imageUrl: media.find((item) => item.type === 'IMAGE')?.url,
+    media,
+    variants: product.variants ?? [],
     stocks: [
       {
-        availableStock: product.inventory?.totalStock ?? 0,
+        availableStock: availableFromInventory(product.inventory),
         productId: product.id,
         variantId: null,
       },
+      ...(product.variants ?? []).map((variant) => ({
+        availableStock: availableFromInventory(variant.inventory),
+        productId: product.id,
+        variantId: variant.id,
+      })),
     ],
   };
+}
+
+async function getPosProduct(productId: string) {
+  const response = await getPosApi<ApiResponse<Product>>(
+    `${POS_BASE_PATH}/api/commerce/products/${productId}`,
+  );
+
+  return response.data;
+}
+
+function isPosVisible(product: Product) {
+  return (product.channelVisibility ?? []).some(
+    (item) => item.channel === 'POS' && item.isVisible,
+  );
+}
+
+function toPosCategory(category: ProductCategory): PosCategory {
+  return {
+    id: category.id,
+    logoUrl: category.logoUrl ?? null,
+    name: category.name,
+    slug: category.slug,
+    sortOrder: category.sortOrder,
+  };
+}
+
+function availableFromInventory(inventory?: InventoryStock) {
+  if (!inventory) return 0;
+
+  return Math.max(
+    0,
+    inventory.totalStock -
+      inventory.reservedStock -
+      inventory.soldStock -
+      inventory.safetyBuffer,
+  );
 }
 
 function toPosBranch(branch: BackendBranch): PosBranch {
@@ -224,20 +275,20 @@ function toPosBranch(branch: BackendBranch): PosBranch {
         branch.country,
       ]
         .filter(Boolean)
-        .join(", ") || "No address",
+        .join(', ') || 'No address',
     name: branch.name,
     register: branch.registerName ?? branch.code,
   };
 }
 
-function inferCategory(name: string) {
-  const lower = name.toLowerCase();
-  if (lower.includes("coffee") || lower.includes("espresso")) return "Coffee";
-  if (lower.includes("tea") || lower.includes("matcha")) return "Tea";
-  if (lower.includes("sandwich") || lower.includes("food")) return "Food";
-  if (lower.includes("tote") || lower.includes("bean")) return "Merch";
-
-  return "Featured";
+function toSlug(value: string) {
+  return (
+    value
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '') || 'featured'
+  );
 }
 
 async function responseMessage(response: Response, fallback: string) {
@@ -245,14 +296,33 @@ async function responseMessage(response: Response, fallback: string) {
     message?: unknown;
   } | null;
 
-  return typeof payload?.message === "string" ? payload.message : fallback;
+  return typeof payload?.message === 'string' ? payload.message : fallback;
 }
 
 async function getPosApi<TResponse>(path: string) {
-  const response = await fetch(path, { credentials: "include" });
+  const response = await fetch(path, { credentials: 'include' });
 
   if (!response.ok) {
-    throw new Error(await responseMessage(response, "Unable to load POS data."));
+    throw new Error(
+      await responseMessage(response, 'Unable to load POS data.'),
+    );
+  }
+
+  return (await response.json()) as TResponse;
+}
+
+async function postPosApi<TResponse>(path: string, body: unknown) {
+  const response = await fetch(path, {
+    body: JSON.stringify(body),
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    method: 'POST',
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      await responseMessage(response, 'Unable to save POS sale.'),
+    );
   }
 
   return (await response.json()) as TResponse;

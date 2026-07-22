@@ -5,6 +5,7 @@ import {
   ProductVariantStatus,
   SalesChannel,
 } from '#app/generated/prisma/enums';
+import { ProductCategoryDto } from '#app/modules/catalog/categories/dto/category-response.dto';
 
 export class ProductVariantDto {
   @ApiProperty({ format: 'uuid' })
@@ -81,6 +82,12 @@ export class ProductDto {
 
   @ApiProperty({ enum: ProductStatus })
   status!: ProductStatus;
+
+  @ApiPropertyOptional({ format: 'uuid', nullable: true })
+  categoryId!: string | null;
+
+  @ApiPropertyOptional({ type: ProductCategoryDto, nullable: true })
+  category?: ProductCategoryDto | null;
 
   @ApiProperty({ format: 'date-time' })
   createdAt!: Date;

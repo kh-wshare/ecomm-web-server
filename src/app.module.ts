@@ -28,6 +28,7 @@ import { NotificationModule } from '#app/modules/notification/notification.modul
 import { OrderModule } from '#app/modules/order/order.module';
 import { PaymentModule } from '#app/modules/payment/payment.module';
 import { PermissionsModule } from '#app/modules/permissions/permissions.module';
+import { PosModule } from '#app/modules/pos/pos.module';
 import { RolesModule } from '#app/modules/roles/roles.module';
 import { SessionsModule } from '#app/modules/sessions/sessions.module';
 import { SocialPostModule } from '#app/modules/social-post/social-post.module';
@@ -57,6 +58,7 @@ import { UsersModule } from '#app/modules/users/users.module';
     ThemeModule,
     CheckoutModule,
     PaymentModule,
+    PosModule,
     OrderModule,
     SocialPostModule,
     NotificationModule,

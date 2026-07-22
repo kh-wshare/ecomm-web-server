@@ -9,17 +9,17 @@ const merchantEnvironmentSchema = z.object({
   NEXT_PUBLIC_API_URL: z
     .string()
     .url()
-    .default("http://localhost:3000")
+    .default("http://localhost:9001")
     .transform(stripTrailingSlash),
   NEXT_PUBLIC_DASHBOARD_URL: z
     .string()
     .url()
-    .default("http://localhost:3000")
+    .default("http://localhost:3000/merchant")
     .transform(stripTrailingSlash),
   NEXT_PUBLIC_WEBSOCKET_URL: z
     .string()
     .url()
-    .default("http://localhost:3000")
+    .default("http://localhost:9001")
     .transform(stripTrailingSlash),
   NEXT_PUBLIC_FIREBASE_API_KEY: z.string().optional(),
   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: z.string().optional(),

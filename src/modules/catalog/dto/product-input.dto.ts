@@ -17,6 +17,7 @@ import {
   IsOptional,
   IsString,
   IsUrl,
+  IsUUID,
   Matches,
   MaxLength,
   Min,
@@ -182,6 +183,11 @@ export class CreateProductDto {
   @IsEnum(ProductStatus)
   @IsOptional()
   status?: ProductStatus;
+
+  @ApiPropertyOptional({ format: 'uuid', nullable: true })
+  @IsOptional()
+  @IsUUID()
+  categoryId?: string | null;
 
   @ApiPropertyOptional({ type: [ProductVariantInputDto] })
   @IsArray()

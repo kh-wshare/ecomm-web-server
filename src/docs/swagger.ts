@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AuthModule } from '#app/modules/authenticated/auth.module';
 import { BranchModule } from '#app/modules/branch/branch.module';
+import { CategoriesModule } from '#app/modules/catalog/categories/categories.module';
 import { CatalogModule } from '#app/modules/catalog/catalog.module';
 import { CheckoutModule } from '#app/modules/checkout/checkout.module';
 import { FileStorageModule } from '#app/modules/file-storage/file-storage.module';
@@ -11,6 +12,7 @@ import { MerchantModule } from '#app/modules/merchant/merchant.module';
 import { NotificationModule } from '#app/modules/notification/notification.module';
 import { OrderModule } from '#app/modules/order/order.module';
 import { PaymentModule } from '#app/modules/payment/payment.module';
+import { PosModule } from '#app/modules/pos/pos.module';
 import { SocialPostModule } from '#app/modules/social-post/social-post.module';
 import { StorefrontModule } from '#app/modules/storefront/storefront.module';
 import { ThemeModule } from '#app/modules/theme/theme.module';
@@ -62,6 +64,7 @@ export function setupSwagger(
       include: [
         MerchantModule,
         BranchModule,
+        CategoriesModule,
         CatalogModule,
         FileStorageModule,
         InventoryModule,
@@ -76,6 +79,35 @@ export function setupSwagger(
       jsonDocumentUrl: 'docs/merchant/openapi.json',
     });
     documents.push('/docs/merchant');
+  }
+
+  if (envFlag('SWAGGER_POS_ENABLED', true)) {
+    const config = new DocumentBuilder()
+      .setTitle('Merchant Commerce Hub — POS API')
+      .setDescription(
+        'Authenticated point-of-sale operations for branch selection, POS catalog browsing, inventory visibility, POS sale completion, and POS order lookup',
+      )
+      .setVersion('1.0')
+      .addBearerAuth()
+      .addApiKey(
+        { type: 'apiKey', name: 'X-Merchant-ID', in: 'header' },
+        'merchant-context',
+      )
+      .build();
+    const document = SwaggerModule.createDocument(app, config, {
+      include: [
+        BranchModule,
+        CategoriesModule,
+        CatalogModule,
+        InventoryModule,
+        OrderModule,
+        PosModule,
+      ],
+    });
+    SwaggerModule.setup('docs/pos', app, document, {
+      jsonDocumentUrl: 'docs/pos/openapi.json',
+    });
+    documents.push('/docs/pos');
   }
 
   if (envFlag('SWAGGER_STOREFRONT_ENABLED', true)) {

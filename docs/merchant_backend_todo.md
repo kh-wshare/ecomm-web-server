@@ -141,7 +141,7 @@ This document lists backend implementation tasks for the Merchant Commerce Hub. 
 ### Channel Types
 
 ```ts
-type Channel = 'pos' | 'website' | 'facebook' | 'instagram' | 'tiktok'
+type Channel = 'pos' | 'website' | 'facebook' | 'instagram' | 'tiktok';
 ```
 
 ### APIs
@@ -152,6 +152,20 @@ type Channel = 'pos' | 'website' | 'facebook' | 'instagram' | 'tiktok'
 - [x] `PATCH /products/:id` — update product.
 - [x] `DELETE /products/:id` — soft delete product.
 - [x] `PATCH /products/:id/channel-visibility` — enable or disable product by channel.
+
+### Product Categories Feature
+
+- [x] Review existing backend catalog, POS, and storefront product flow.
+- [x] Move category ownership into the child `catalog/categories` module.
+- [x] Expose category APIs through `/categories`.
+- [x] Add database structure for merchant-scoped product categories.
+- [x] Add category CRUD APIs under the catalog child categories route group.
+- [x] Allow products to be assigned, cleared, listed, and filtered by category.
+- [x] Include category metadata in merchant product responses.
+- [x] Include category metadata in POS product responses so POS no longer infers category from product name.
+- [x] Include category metadata and category filtering in storefront product APIs.
+- [x] Update Swagger and frontend integration docs for category endpoints and related POS/storefront fields.
+- [x] Run backend and related frontend type checks.
 
 ### Rules
 
@@ -208,7 +222,7 @@ type Channel = 'pos' | 'website' | 'facebook' | 'instagram' | 'tiktok'
 ### Reservation Status
 
 ```ts
-type ReservationStatus = 'active' | 'confirmed' | 'released' | 'expired'
+type ReservationStatus = 'active' | 'confirmed' | 'released' | 'expired';
 ```
 
 ### Movement Types
@@ -221,14 +235,14 @@ type InventoryMovementType =
   | 'reservation_released'
   | 'sold'
   | 'refund_return'
-  | 'manual_adjustment'
+  | 'manual_adjustment';
 ```
 
 ### Stock Calculation
 
 ```ts
-availableStock = totalStock - reservedStock - soldStock
-onlineSellableStock = totalStock - reservedStock - soldStock - safetyBuffer
+availableStock = totalStock - reservedStock - soldStock;
+onlineSellableStock = totalStock - reservedStock - soldStock - safetyBuffer;
 ```
 
 ### APIs
@@ -413,7 +427,7 @@ type OrderStatus =
   | 'cancelled'
   | 'payment_failed'
   | 'expired'
-  | 'refunded'
+  | 'refunded';
 ```
 
 ### APIs
@@ -571,7 +585,7 @@ type RealtimeEvent =
   | 'payment.confirmed'
   | 'inventory.low_stock'
   | 'inventory.out_of_stock'
-  | 'social.post_published'
+  | 'social.post_published';
 ```
 
 ---

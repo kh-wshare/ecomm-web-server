@@ -2,12 +2,14 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useRef } from "react";
 
 import { Button } from "@repo/ui";
 
 import { DashboardIcon } from "./dashboard-icon";
 
 import { SESSION_LOGOUT_PATH } from "@/lib/auth/session";
+import { useCloseDetailsOnOutsideClick } from "@/hooks/use-close-details-on-outside-click";
 import { notify } from "@/lib/toast/notify";
 import { useAuthStore } from "@/stores/auth-store";
 import type { MerchantAccess } from "@/types/auth";
@@ -20,8 +22,10 @@ export function UserProfileMenu({
   activeMerchant: MerchantAccess | null;
   user: AuthUser | null;
 }) {
+  const menuRef = useRef<HTMLDetailsElement>(null);
   const queryClient = useQueryClient();
   const router = useRouter();
+  useCloseDetailsOnOutsideClick(menuRef);
   const logout = useMutation({
     mutationFn: async () => {
       const response = await fetch(SESSION_LOGOUT_PATH, {
@@ -43,8 +47,8 @@ export function UserProfileMenu({
   const name = user?.fullName || user?.email || "Merchant";
 
   return (
-    <details className="group relative">
-      <summary className="flex h-10 cursor-pointer list-none items-center gap-2 rounded-lg px-1.5 text-muted transition hover:bg-surface hover:text-foreground [&::-webkit-details-marker]:hidden">
+    <details className="group relative" ref={menuRef}>
+      <summary className="flex h-10 cursor-pointer list-none items-center gap-2 rounded-lg px-1.5 text-muted transition hover:bg-primary/20 hover:text-primary group-open:bg-primary/20 group-open:text-primary [&::-webkit-details-marker]:hidden">
         <span className="grid size-8 place-items-center rounded-full bg-primary text-xs font-bold uppercase text-white">
           {initials(name)}
         </span>

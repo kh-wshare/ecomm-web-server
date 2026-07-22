@@ -2,8 +2,9 @@
 
 ## Purpose
 
-Create separate OpenAPI documents for user, merchant, and platform-admin APIs.
-Each document must expose only the operations intended for its audience.
+Create separate OpenAPI documents for user, merchant, POS, storefront, and
+platform-admin APIs. Each document must expose only the operations intended for
+its audience.
 
 Swagger document separation is not an authorization boundary. Every private API
 must still use JWT, merchant-scope, role, and permission guards as appropriate.
@@ -64,6 +65,10 @@ Examples:
 - [ ] Serve user OpenAPI JSON at `GET /docs/user/openapi.json`.
 - [ ] Serve merchant Swagger UI at `GET /docs/merchant`.
 - [ ] Serve merchant OpenAPI JSON at `GET /docs/merchant/openapi.json`.
+- [ ] Serve POS Swagger UI at `GET /docs/pos`.
+- [ ] Serve POS OpenAPI JSON at `GET /docs/pos/openapi.json`.
+- [ ] Serve storefront Swagger UI at `GET /docs/storefront`.
+- [ ] Serve storefront OpenAPI JSON at `GET /docs/storefront/openapi.json`.
 - [ ] Serve platform-admin Swagger UI at `GET /docs/admin`.
 - [ ] Serve platform-admin OpenAPI JSON at `GET /docs/admin/openapi.json`.
 - [ ] Configure document titles, descriptions, versions, and contact metadata.
@@ -76,6 +81,8 @@ Recommended configuration:
 SWAGGER_ENABLED=true
 SWAGGER_USER_ENABLED=true
 SWAGGER_MERCHANT_ENABLED=true
+SWAGGER_POS_ENABLED=true
+SWAGGER_STOREFRONT_ENABLED=true
 SWAGGER_ADMIN_ENABLED=false
 ```
 
@@ -87,6 +94,10 @@ SWAGGER_ADMIN_ENABLED=false
       call.
 - [ ] Keep account/auth controllers in the user document.
 - [ ] Keep tenant-scoped controllers in the merchant document.
+- [ ] Keep register-safe branch, catalog, inventory, and order operations in the
+      POS document.
+- [ ] Keep public storefront browsing and checkout operations in the storefront
+      document.
 - [ ] Keep platform-operation controllers in the platform-admin document.
 - [ ] Extract shared DTOs and response schemas without exposing unrelated routes.
 - [ ] Prevent `deepScanRoutes` from pulling unintended controllers into a

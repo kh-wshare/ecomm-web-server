@@ -65,6 +65,11 @@ export type MerchantBranch = Prisma.MerchantBranchModel
  */
 export type Product = Prisma.ProductModel
 /**
+ * Model ProductCategory
+ * 
+ */
+export type ProductCategory = Prisma.ProductCategoryModel
+/**
  * Model MerchantTheme
  * 
  */

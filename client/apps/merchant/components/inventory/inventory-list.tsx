@@ -1,41 +1,41 @@
-"use client";
+'use client';
 
 import {
   Button,
   Checkbox,
+  EmptyState as HeroEmptyState,
   Label,
-  ListBox,
   Pagination,
   SearchField,
-  Select,
   Table,
   Tooltip,
   type Selection,
-} from "@heroui/react";
-import { Icon } from "@iconify/react";
-import { useDeferredValue, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
+} from '@heroui/react';
+import { Icon } from '@iconify/react';
+import { type ReactNode, useDeferredValue, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
 
-import { StockAdjustmentModal } from "./stock-adjustment-modal";
+import { StockAdjustmentModal } from './stock-adjustment-modal';
 
-import type { DashboardInventoryStock } from "@/types/dashboard";
-import type { InventoryFilter } from "@/types/inventory";
-import { StockStatusBadge } from "@/components/products/product-editor-fields";
-import { usePermissions } from "@/hooks/use-permissions";
-import { getInventory } from "@/lib/inventory/inventory-data";
-import { formatDate } from "@/lib/formatters/date";
-import { queryKeys } from "@repo/query-client";
+import { Select as FilterControlSelect } from '@/components/products/product-controls';
+import type { DashboardInventoryStock } from '@/types/dashboard';
+import type { InventoryFilter } from '@/types/inventory';
+import { StockStatusBadge } from '@/components/products/product-editor-fields';
+import { usePermissions } from '@/hooks/use-permissions';
+import { getInventory } from '@/lib/inventory/inventory-data';
+import { formatDate } from '@/lib/formatters/date';
+import { queryKeys } from '@repo/query-client';
 
 const pageSize = 12;
 
 export function InventoryTable() {
   const { can } = usePermissions();
-  const canRead = can("inventory.read");
-  const canAdjust = can("inventory.update");
-  const [search, setSearch] = useState("");
+  const canRead = can('inventory.read');
+  const canAdjust = can('inventory.update');
+  const [search, setSearch] = useState('');
   const deferredSearch = useDeferredValue(search.trim());
-  const [filter, setFilter] = useState<InventoryFilter>("ALL");
+  const [filter, setFilter] = useState<InventoryFilter>('ALL');
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<string[]>([]);
   const [adjusting, setAdjusting] = useState<DashboardInventoryStock | null>(
@@ -53,20 +53,9 @@ export function InventoryTable() {
     );
   }
 
-  if (inventoryQuery.isPending) return <InventoryLoading />;
-
-  if (inventoryQuery.isError) {
-    return (
-      <ErrorNotice
-        message={inventoryQuery.error.message}
-        onRetry={() => inventoryQuery.refetch()}
-      />
-    );
-  }
-
-  const stocks = inventoryQuery.data.filter((stock) => {
-    if (filter === "OUT") return stock.onlineSellableStock <= 0;
-    if (filter === "LOW") return isLowStock(stock);
+  const stocks = (inventoryQuery.data ?? []).filter((stock) => {
+    if (filter === 'OUT') return stock.onlineSellableStock <= 0;
+    if (filter === 'LOW') return isLowStock(stock);
 
     return true;
   });
@@ -84,7 +73,7 @@ export function InventoryTable() {
   const updateSelection = (keys: Selection) => {
     const pageStockIds = new Set(pageStocks.map((stock) => stock.id));
     const selectedPageIds =
-      keys === "all"
+      keys === 'all'
         ? pageStockIds
         : new Set(
             Array.from(keys, String).filter((id) => pageStockIds.has(id)),
@@ -176,98 +165,124 @@ export function InventoryTable() {
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-separator bg-surface">
-        {stocks.length ? (
-          <Table variant="secondary">
-            <Table.ScrollContainer>
-              <Table.Content
-                aria-label="Inventory"
-                className="text-left text-sm"
-                selectedKeys={new Set(selected)}
-                selectionMode={canAdjust ? "multiple" : "none"}
-                onSelectionChange={updateSelection}
+        <Table
+          variant="secondary"
+        >
+          <Table.ScrollContainer>
+            <Table.Content
+              aria-label="Inventory"
+              className="h-full min-w-[1180px] table-fixed text-left text-sm"
+              selectedKeys={new Set(selected)}
+              selectionMode={canAdjust ? 'multiple' : 'none'}
+              onSelectionChange={updateSelection}
+            >
+              <Table.Header className="text-xs font-semibold text-muted">
+                {canAdjust && (
+                  <Table.Column
+                    className="w-12 rounded-b-none px-4 py-3"
+                    id="select"
+                  >
+                    <Checkbox
+                      aria-label="Select all inventory on this page"
+                      slot="selection"
+                    >
+                      <Checkbox.Content>
+                        <Checkbox.Control>
+                          <Checkbox.Indicator />
+                        </Checkbox.Control>
+                      </Checkbox.Content>
+                    </Checkbox>
+                  </Table.Column>
+                )}
+                <Table.Column
+                  className="w-[260px] px-4 py-3 font-medium"
+                  id="product"
+                  isRowHeader
+                >
+                  Product
+                </Table.Column>
+                <Table.Column
+                  className="w-[160px] px-4 py-3 font-medium"
+                  id="sku"
+                >
+                  SKU
+                </Table.Column>
+                <Table.Column
+                  className="w-[105px] px-4 py-3 text-right font-medium"
+                  id="total"
+                >
+                  Total
+                </Table.Column>
+                <Table.Column
+                  className="w-[110px] px-4 py-3 text-right font-medium"
+                  id="reserved"
+                >
+                  Reserved
+                </Table.Column>
+                <Table.Column
+                  className="w-[105px] px-4 py-3 text-right font-medium"
+                  id="sold"
+                >
+                  Sold
+                </Table.Column>
+                <Table.Column
+                  className="w-[105px] px-4 py-3 text-right font-medium"
+                  id="buffer"
+                >
+                  Buffer
+                </Table.Column>
+                <Table.Column
+                  className="w-[110px] px-4 py-3 text-right font-medium"
+                  id="sellable"
+                >
+                  Sellable
+                </Table.Column>
+                <Table.Column
+                  className="w-[165px] px-4 py-3 font-medium"
+                  id="health"
+                >
+                  Health
+                </Table.Column>
+                <Table.Column
+                  className="w-[100px] rounded-b-none px-4 py-3 text-right font-medium"
+                  id="actions"
+                >
+                  Actions
+                </Table.Column>
+              </Table.Header>
+              <Table.Body
+                renderEmptyState={() => {
+                  if (inventoryQuery.isPending) {
+                    return <LoadingState label="Loading inventory" />;
+                  }
+                  if (inventoryQuery.isError) {
+                    return (
+                      <ErrorState
+                        message={inventoryQuery.error.message}
+                        onRetry={() => inventoryQuery.refetch()}
+                      />
+                    );
+                  }
+                  return <InventoryEmptyState />;
+                }}
               >
-                <Table.Header className="text-xs font-semibold text-muted">
-                  {canAdjust && (
-                    <Table.Column className="w-12 rounded-b-none px-4 py-3">
-                      <Checkbox
-                        aria-label="Select all inventory on this page"
-                        slot="selection"
-                      >
-                        <Checkbox.Content>
-                          <Checkbox.Control>
-                            <Checkbox.Indicator />
-                          </Checkbox.Control>
-                        </Checkbox.Content>
-                      </Checkbox>
-                    </Table.Column>
-                  )}
-                  <Table.Column
-                    className="px-4 py-3 font-medium"
-                    id="product"
-                    isRowHeader
-                  >
-                    Product
-                  </Table.Column>
-                  <Table.Column className="px-4 py-3 font-medium" id="sku">
-                    SKU
-                  </Table.Column>
-                  <Table.Column
-                    className="px-4 py-3 text-right font-medium"
-                    id="total"
-                  >
-                    Total
-                  </Table.Column>
-                  <Table.Column
-                    className="px-4 py-3 text-right font-medium"
-                    id="reserved"
-                  >
-                    Reserved
-                  </Table.Column>
-                  <Table.Column
-                    className="px-4 py-3 text-right font-medium"
-                    id="sold"
-                  >
-                    Sold
-                  </Table.Column>
-                  <Table.Column
-                    className="px-4 py-3 text-right font-medium"
-                    id="buffer"
-                  >
-                    Buffer
-                  </Table.Column>
-                  <Table.Column
-                    className="px-4 py-3 text-right font-medium"
-                    id="sellable"
-                  >
-                    Sellable
-                  </Table.Column>
-                  <Table.Column className="px-4 py-3 font-medium" id="health">
-                    Health
-                  </Table.Column>
-                  <Table.Column
-                    className="rounded-b-none px-4 py-3 text-right font-medium"
-                    id="actions"
-                  >
-                    Actions
-                  </Table.Column>
-                </Table.Header>
-                <Table.Body>
-                  {pageStocks.map((stock) => (
-                    <InventoryRow
-                      canAdjust={canAdjust}
-                      key={stock.id}
-                      stock={stock}
-                      onAdjust={() => setAdjusting(stock)}
-                    />
-                  ))}
-                </Table.Body>
-              </Table.Content>
-            </Table.ScrollContainer>
+                {pageStocks.map((stock) => (
+                  <InventoryRow
+                    canAdjust={canAdjust}
+                    key={stock.id}
+                    stock={stock}
+                    onAdjust={() => setAdjusting(stock)}
+                  />
+                ))}
+              </Table.Body>
+            </Table.Content>
+          </Table.ScrollContainer>
+          {stocks.length ? (
             <Table.Footer>
               <Pagination size="sm">
                 <Pagination.Summary className="text-xs text-muted">
-                  {(currentPage - 1) * pageSize + 1} to{" "}
-                  {Math.min(currentPage * pageSize, stocks.length)} of{" "}
+                  {(currentPage - 1) * pageSize + 1} to{' '}
+                  {Math.min(currentPage * pageSize, stocks.length)} of{' '}
                   {stocks.length} results
                 </Pagination.Summary>
                 <Pagination.Content>
@@ -306,15 +321,8 @@ export function InventoryTable() {
                 </Pagination.Content>
               </Pagination>
             </Table.Footer>
-          </Table>
-        ) : (
-          <div className="px-6 py-16 text-center">
-            <p className="font-semibold">No inventory found</p>
-            <p className="mt-1 text-sm text-muted">
-              Try changing the search or stock filter.
-            </p>
-          </div>
-        )}
+          ) : null}
+        </Table>
       </div>
 
       {adjusting && (
@@ -391,7 +399,7 @@ function InventoryRow({
           {stock.product.name}
         </Link>
         <p className="mt-1 text-xs text-muted">
-          {stock.variant?.name ?? "Base product"}
+          {stock.variant?.name ?? 'Base product'}
         </p>
       </Table.Cell>
       <Table.Cell className="px-4 py-4 font-mono text-xs">
@@ -407,7 +415,7 @@ function InventoryRow({
       <Table.Cell className="px-4 py-4">
         <StockHealth stock={stock} />
         <p className="mt-1 text-[10px] text-muted">
-          {formatDate(stock.updatedAt, { dateStyle: "medium" }, "en-US")}
+          {formatDate(stock.updatedAt, { dateStyle: 'medium' }, 'en-US')}
         </p>
       </Table.Cell>
       <Table.Cell className="w-24 px-4 py-4">
@@ -444,57 +452,17 @@ function FilterSelect({
   onChange: (value: string) => void;
 }) {
   return (
-    <Select
-      className="w-full"
+    <FilterControlSelect
+      label={label}
       value={value}
-      variant="secondary"
-      onChange={(nextValue) => {
-        if (typeof nextValue === "string") onChange(nextValue);
+      onChange={(event) => {
+        onChange(event.target.value);
       }}
     >
-      <Label className="mb-1.5 block text-sm font-medium">{label}</Label>
-      <Select.Trigger className="h-11 rounded-xl border border-separator bg-background px-3 text-sm shadow-none">
-        <Select.Value />
-        <Select.Indicator />
-      </Select.Trigger>
-      <Select.Popover className="rounded-xl border border-separator bg-surface p-1 shadow-xl">
-        <ListBox>
-          <ListBox.Item
-            className="rounded-lg px-3 py-2 text-sm outline-none transition hover:bg-surface-secondary data-[focused=true]:bg-surface-secondary"
-            id="ALL"
-            textValue="All inventory"
-          >
-            <span>All inventory</span>
-            <ListBox.ItemIndicator className="text-accent" />
-          </ListBox.Item>
-          <ListBox.Item
-            className="rounded-lg px-3 py-2 text-sm outline-none transition hover:bg-surface-secondary data-[focused=true]:bg-surface-secondary"
-            id="LOW"
-            textValue="Low stock"
-          >
-            <span>Low stock</span>
-            <ListBox.ItemIndicator className="text-accent" />
-          </ListBox.Item>
-          <ListBox.Item
-            className="rounded-lg px-3 py-2 text-sm outline-none transition hover:bg-surface-secondary data-[focused=true]:bg-surface-secondary"
-            id="OUT"
-            textValue="Out of stock"
-          >
-            <span>Out of stock</span>
-            <ListBox.ItemIndicator className="text-accent" />
-          </ListBox.Item>
-        </ListBox>
-      </Select.Popover>
-    </Select>
-  );
-}
-
-function InventoryLoading() {
-  return (
-    <div className="space-y-4 animate-pulse">
-      <div className="h-24 rounded-2xl bg-surface-secondary" />
-      <div className="h-[480px] rounded-2xl bg-surface-secondary" />
-    </div>
+      <option value="ALL">All inventory</option>
+      <option value="LOW">Low stock</option>
+      <option value="OUT">Out of stock</option>
+    </FilterControlSelect>
   );
 }
 
@@ -506,7 +474,39 @@ function PermissionNotice({ message }: { message: string }) {
   );
 }
 
-function ErrorNotice({
+function TableStateContent({ children }: { children: ReactNode }) {
+  return (
+    <HeroEmptyState className="flex h-full min-h-64 w-full flex-col items-center justify-center gap-4 text-center md:min-h-[calc(100dvh-30rem)]">
+      {children}
+    </HeroEmptyState>
+  );
+}
+
+function LoadingState({ label }: { label: string }) {
+  return (
+    <TableStateContent>
+      <Icon
+        className="size-6 animate-spin text-muted"
+        icon="gravity-ui:arrows-rotate-right"
+      />
+      <span className="text-sm text-muted">{label}</span>
+    </TableStateContent>
+  );
+}
+
+function InventoryEmptyState() {
+  return (
+    <TableStateContent>
+      <Icon className="size-6 text-muted" icon="gravity-ui:tray" />
+      <span className="text-sm font-semibold">No inventory found</span>
+      <span className="max-w-sm text-xs text-muted">
+        Try changing the search or stock filter.
+      </span>
+    </TableStateContent>
+  );
+}
+
+function ErrorState({
   message,
   onRetry,
 }: {
@@ -514,18 +514,13 @@ function ErrorNotice({
   onRetry: () => void;
 }) {
   return (
-    <div className="grid min-h-[50vh] place-items-center text-center">
-      <div>
-        <h2 className="text-xl font-semibold">Inventory is unavailable</h2>
-        <p className="mt-2 text-sm text-muted">{message}</p>
-        <Button
-          className="mt-5 rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
-          type="button"
-          onPress={onRetry}
-        >
-          Try again
-        </Button>
-      </div>
-    </div>
+    <TableStateContent>
+      <Icon className="size-6 text-danger" icon="gravity-ui:circle-xmark" />
+      <span className="text-sm font-semibold">Inventory is unavailable</span>
+      <span className="max-w-sm text-xs text-muted">{message}</span>
+      <Button type="button" variant="primary" onPress={onRetry}>
+        Try again
+      </Button>
+    </TableStateContent>
   );
 }

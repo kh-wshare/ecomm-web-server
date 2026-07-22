@@ -69,6 +69,14 @@ export const ProductVariantStatus = {
 export type ProductVariantStatus = (typeof ProductVariantStatus)[keyof typeof ProductVariantStatus]
 
 
+export const ProductCategoryStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE'
+} as const
+
+export type ProductCategoryStatus = (typeof ProductCategoryStatus)[keyof typeof ProductCategoryStatus]
+
+
 export const ProductMediaType = {
   IMAGE: 'IMAGE',
   VIDEO: 'VIDEO'

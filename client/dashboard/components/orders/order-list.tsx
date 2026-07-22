@@ -1,8 +1,9 @@
 "use client";
 
-import { useDeferredValue, useState } from "react";
+import { type ReactNode, useDeferredValue, useState } from "react";
 import {
   Button,
+  EmptyState as HeroEmptyState,
   Input,
   Label,
   ListBox,
@@ -11,6 +12,7 @@ import {
   Select,
   Table,
 } from "@heroui/react";
+import { Icon } from "@iconify/react";
 import Link from "next/link";
 
 import { OrderStatusBadge } from "./order-status-badge";
@@ -44,6 +46,8 @@ export function OrderTable() {
   const deferredSearch = useDeferredValue(filters.search.trim());
   const queryFilters = { ...filters, search: deferredSearch };
   const ordersQuery = useOrders(queryFilters, canRead);
+  const orders = ordersQuery.data?.items ?? [];
+  const orderMeta = ordersQuery.data?.meta;
   const update = <Key extends keyof OrderFilters>(
     key: Key,
     value: OrderFilters[Key],
@@ -123,167 +127,172 @@ export function OrderTable() {
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-separator bg-surface shadow-sm">
-        {ordersQuery.isPending ? (
-          <Loading />
-        ) : ordersQuery.isError ? (
-          <ErrorState
-            message={ordersQuery.error.message}
-            onRetry={() => ordersQuery.refetch()}
-          />
-        ) : ordersQuery.data.items.length ? (
-          <>
-            <Table variant="secondary">
-              <Table.ScrollContainer>
-                <Table.Content
-                  aria-label="Orders"
-                  className="min-w-[980px] text-left text-sm"
-                  selectionMode="none"
+        <Table
+          className="min-h-80 md:min-h-[calc(100dvh-24rem)]"
+          variant="secondary"
+        >
+          <Table.ScrollContainer className="max-h-[calc(100dvh-22rem)]">
+            <Table.Content
+              aria-label="Orders"
+              className="h-full min-w-[1080px] table-fixed text-left text-sm"
+              selectionMode="none"
+            >
+              <Table.Header className="text-xs font-semibold text-muted">
+                <Table.Column
+                  className="w-[180px] px-4 py-3 font-medium"
+                  id="order"
+                  isRowHeader
                 >
-                  <Table.Header className="text-xs font-semibold text-muted">
-                    <Table.Column
-                      className="px-4 py-3 font-medium"
-                      id="order"
-                      isRowHeader
-                    >
-                      Order
-                    </Table.Column>
-                    <Table.Column
-                      className="px-4 py-3 font-medium"
-                      id="customer"
-                    >
-                      Customer
-                    </Table.Column>
-                    <Table.Column
-                      className="px-4 py-3 font-medium"
-                      id="channel"
-                    >
-                      Channel
-                    </Table.Column>
-                    <Table.Column className="px-4 py-3 font-medium" id="status">
-                      Order status
-                    </Table.Column>
-                    <Table.Column
-                      className="px-4 py-3 font-medium"
-                      id="payment"
-                    >
-                      Payment
-                    </Table.Column>
-                    <Table.Column
-                      className="px-4 py-3 font-medium"
-                      id="fulfillment"
-                    >
-                      Fulfillment
-                    </Table.Column>
-                    <Table.Column
-                      className="px-4 py-3 text-right font-medium"
-                      id="total"
-                    >
-                      Total
-                    </Table.Column>
-                  </Table.Header>
-                  <Table.Body>
-                    {ordersQuery.data.items.map((order) => (
-                      <Table.Row
-                        className="border-t border-separator hover:bg-surface-secondary/60"
-                        id={order.id}
-                        key={order.id}
+                  Order
+                </Table.Column>
+                <Table.Column
+                  className="w-[220px] px-4 py-3 font-medium"
+                  id="customer"
+                >
+                  Customer
+                </Table.Column>
+                <Table.Column
+                  className="w-[120px] px-4 py-3 font-medium"
+                  id="channel"
+                >
+                  Channel
+                </Table.Column>
+                <Table.Column
+                  className="w-[140px] px-4 py-3 font-medium"
+                  id="status"
+                >
+                  Order status
+                </Table.Column>
+                <Table.Column
+                  className="w-[130px] px-4 py-3 font-medium"
+                  id="payment"
+                >
+                  Payment
+                </Table.Column>
+                <Table.Column
+                  className="w-[150px] px-4 py-3 font-medium"
+                  id="fulfillment"
+                >
+                  Fulfillment
+                </Table.Column>
+                <Table.Column
+                  className="w-[140px] px-4 py-3 text-right font-medium"
+                  id="total"
+                >
+                  Total
+                </Table.Column>
+              </Table.Header>
+              <Table.Body
+                renderEmptyState={() => {
+                  if (ordersQuery.isPending) {
+                    return <Loading label="Loading orders" />;
+                  }
+                  if (ordersQuery.isError) {
+                    return (
+                      <ErrorState
+                        message={ordersQuery.error.message}
+                        onRetry={() => ordersQuery.refetch()}
+                      />
+                    );
+                  }
+                  return <OrderEmptyState />;
+                }}
+              >
+                {orders.map((order) => (
+                  <Table.Row
+                    className="border-t border-separator hover:bg-surface-secondary/60"
+                    id={order.id}
+                    key={order.id}
+                  >
+                    <Table.Cell className="px-4 py-4">
+                      <Link
+                        className="font-semibold hover:text-accent"
+                        href={`/dashboard/orders/${order.id}`}
                       >
-                        <Table.Cell className="px-4 py-4">
-                          <Link
-                            className="font-semibold hover:text-accent"
-                            href={`/dashboard/orders/${order.id}`}
-                          >
-                            {order.orderNumber}
-                          </Link>
-                          <p className="mt-1 text-xs text-muted">
-                            {formatDate(
-                              order.createdAt,
-                              { dateStyle: "medium", timeStyle: "short" },
-                              "en-US",
-                            )}
-                          </p>
-                        </Table.Cell>
-                        <Table.Cell className="px-4 py-4">
-                          <p className="font-medium">
-                            {order.customerName || "Guest customer"}
-                          </p>
-                          <p className="mt-1 text-xs text-muted">
-                            {order.customerEmail || "No email"}
-                          </p>
-                        </Table.Cell>
-                        <Table.Cell className="px-4 py-4 text-xs font-semibold">
-                          {order.sourceChannel}
-                        </Table.Cell>
-                        <Table.Cell className="px-4 py-4">
-                          <OrderStatusBadge status={order.status} />
-                        </Table.Cell>
-                        <Table.Cell className="px-4 py-4">
-                          <OrderStatusBadge status={order.paymentStatus} />
-                        </Table.Cell>
-                        <Table.Cell className="px-4 py-4">
-                          <OrderStatusBadge status={order.fulfillmentStatus} />
-                        </Table.Cell>
-                        <Table.Cell className="px-4 py-4 text-right font-semibold">
-                          {formatCurrency(order.totalAmount, order.currency)}
-                        </Table.Cell>
-                      </Table.Row>
-                    ))}
-                  </Table.Body>
-                </Table.Content>
-              </Table.ScrollContainer>
-              <Table.Footer>
-                <Pagination size="sm">
-                  <Pagination.Summary className="text-xs text-muted">
-                    {ordersQuery.data.meta.total} total orders
-                  </Pagination.Summary>
-                  <Pagination.Content>
-                    <Pagination.Item>
-                      <Pagination.Previous
-                        isDisabled={!ordersQuery.data.meta.hasPrev}
-                        onPress={() =>
-                          setFilters((current) => ({
-                            ...current,
-                            page: current.page - 1,
-                          }))
-                        }
-                      >
-                        <Pagination.PreviousIcon />
-                        Prev
-                      </Pagination.Previous>
-                    </Pagination.Item>
-                    <Pagination.Item>
-                      <span className="px-2 text-xs text-muted">
-                        Page {ordersQuery.data.meta.page} of{" "}
-                        {Math.max(ordersQuery.data.meta.totalPages, 1)}
-                      </span>
-                    </Pagination.Item>
-                    <Pagination.Item>
-                      <Pagination.Next
-                        isDisabled={!ordersQuery.data.meta.hasNext}
-                        onPress={() =>
-                          setFilters((current) => ({
-                            ...current,
-                            page: current.page + 1,
-                          }))
-                        }
-                      >
-                        Next
-                        <Pagination.NextIcon />
-                      </Pagination.Next>
-                    </Pagination.Item>
-                  </Pagination.Content>
-                </Pagination>
-              </Table.Footer>
-            </Table>
-          </>
-        ) : (
-          <div className="px-6 py-16 text-center">
-            <p className="font-semibold">No orders found</p>
-            <p className="mt-1 text-sm text-muted">
-              Try changing one of the filters.
-            </p>
-          </div>
-        )}
+                        {order.orderNumber}
+                      </Link>
+                      <p className="mt-1 text-xs text-muted">
+                        {formatDate(
+                          order.createdAt,
+                          { dateStyle: "medium", timeStyle: "short" },
+                          "en-US",
+                        )}
+                      </p>
+                    </Table.Cell>
+                    <Table.Cell className="px-4 py-4">
+                      <p className="font-medium">
+                        {order.customerName || "Guest customer"}
+                      </p>
+                      <p className="mt-1 text-xs text-muted">
+                        {order.customerEmail || "No email"}
+                      </p>
+                    </Table.Cell>
+                    <Table.Cell className="px-4 py-4 text-xs font-semibold">
+                      {order.sourceChannel}
+                    </Table.Cell>
+                    <Table.Cell className="px-4 py-4">
+                      <OrderStatusBadge status={order.status} />
+                    </Table.Cell>
+                    <Table.Cell className="px-4 py-4">
+                      <OrderStatusBadge status={order.paymentStatus} />
+                    </Table.Cell>
+                    <Table.Cell className="px-4 py-4">
+                      <OrderStatusBadge status={order.fulfillmentStatus} />
+                    </Table.Cell>
+                    <Table.Cell className="px-4 py-4 text-right font-semibold">
+                      {formatCurrency(order.totalAmount, order.currency)}
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table.Content>
+          </Table.ScrollContainer>
+          {orderMeta && orders.length ? (
+            <Table.Footer>
+              <Pagination size="sm">
+                <Pagination.Summary className="text-xs text-muted">
+                  {orderMeta.total} total orders
+                </Pagination.Summary>
+                <Pagination.Content>
+                  <Pagination.Item>
+                    <Pagination.Previous
+                      isDisabled={!orderMeta.hasPrev}
+                      onPress={() =>
+                        setFilters((current) => ({
+                          ...current,
+                          page: current.page - 1,
+                        }))
+                      }
+                    >
+                      <Pagination.PreviousIcon />
+                      Prev
+                    </Pagination.Previous>
+                  </Pagination.Item>
+                  <Pagination.Item>
+                    <span className="px-2 text-xs text-muted">
+                      Page {orderMeta.page} of{" "}
+                      {Math.max(orderMeta.totalPages, 1)}
+                    </span>
+                  </Pagination.Item>
+                  <Pagination.Item>
+                    <Pagination.Next
+                      isDisabled={!orderMeta.hasNext}
+                      onPress={() =>
+                        setFilters((current) => ({
+                          ...current,
+                          page: current.page + 1,
+                        }))
+                      }
+                    >
+                      Next
+                      <Pagination.NextIcon />
+                    </Pagination.Next>
+                  </Pagination.Item>
+                </Pagination.Content>
+              </Pagination>
+            </Table.Footer>
+          ) : null}
+        </Table>
       </div>
     </section>
   );
@@ -357,8 +366,36 @@ function DateField({
   );
 }
 
-function Loading() {
-  return <div className="h-[460px] animate-pulse bg-surface-secondary/50" />;
+function TableStateContent({ children }: { children: ReactNode }) {
+  return (
+    <HeroEmptyState className="flex h-full min-h-64 w-full flex-col items-center justify-center gap-4 text-center md:min-h-[calc(100dvh-30rem)]">
+      {children}
+    </HeroEmptyState>
+  );
+}
+
+function Loading({ label }: { label: string }) {
+  return (
+    <TableStateContent>
+      <Icon
+        className="size-6 animate-spin text-muted"
+        icon="gravity-ui:arrows-rotate-right"
+      />
+      <span className="text-sm text-muted">{label}</span>
+    </TableStateContent>
+  );
+}
+
+function OrderEmptyState() {
+  return (
+    <TableStateContent>
+      <Icon className="size-6 text-muted" icon="gravity-ui:tray" />
+      <span className="text-sm font-semibold">No orders found</span>
+      <span className="max-w-sm text-xs text-muted">
+        Try changing one of the filters.
+      </span>
+    </TableStateContent>
+  );
 }
 
 function Notice({ message }: { message: string }) {
@@ -377,17 +414,13 @@ function ErrorState({
   onRetry: () => void;
 }) {
   return (
-    <div className="px-6 py-16 text-center">
-      <p className="font-semibold">Orders are unavailable</p>
-      <p className="mt-1 text-sm text-muted">{message}</p>
-      <Button
-        className="mt-4"
-        type="button"
-        variant="primary"
-        onPress={onRetry}
-      >
+    <TableStateContent>
+      <Icon className="size-6 text-danger" icon="gravity-ui:circle-xmark" />
+      <span className="text-sm font-semibold">Orders are unavailable</span>
+      <span className="max-w-sm text-xs text-muted">{message}</span>
+      <Button type="button" variant="primary" onPress={onRetry}>
         Try again
       </Button>
-    </div>
+    </TableStateContent>
   );
 }

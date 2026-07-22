@@ -66,6 +66,7 @@ export const productFormSchema = z
       .trim()
       .regex(/^[A-Za-z]{3}$/, "Enter a three-letter currency code"),
     status: z.enum(PRODUCT_STATUSES),
+    categoryId: z.string().trim(),
     variants: z.array(variantSchema).max(100),
     media: z.array(mediaSchema).max(50),
     channels: z.array(

@@ -3,6 +3,7 @@
 import {
   Button,
   Checkbox,
+  EmptyState as HeroEmptyState,
   Label,
   ListBox,
   Pagination,
@@ -13,7 +14,7 @@ import {
   type Selection,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
-import { useDeferredValue, useState } from "react";
+import { type ReactNode, useDeferredValue, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 
@@ -53,18 +54,7 @@ export function InventoryTable() {
     );
   }
 
-  if (inventoryQuery.isPending) return <InventoryLoading />;
-
-  if (inventoryQuery.isError) {
-    return (
-      <ErrorNotice
-        message={inventoryQuery.error.message}
-        onRetry={() => inventoryQuery.refetch()}
-      />
-    );
-  }
-
-  const stocks = inventoryQuery.data.filter((stock) => {
+  const stocks = (inventoryQuery.data ?? []).filter((stock) => {
     if (filter === "OUT") return stock.onlineSellableStock <= 0;
     if (filter === "LOW") return isLowStock(stock);
 
@@ -176,93 +166,120 @@ export function InventoryTable() {
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-separator bg-surface">
-        {stocks.length ? (
-          <Table variant="secondary">
-            <Table.ScrollContainer>
-              <Table.Content
-                aria-label="Inventory"
-                className="text-left text-sm"
-                selectedKeys={new Set(selected)}
-                selectionMode={canAdjust ? "multiple" : "none"}
-                onSelectionChange={updateSelection}
+        <Table
+          className="min-h-80 md:min-h-[calc(100dvh-24rem)]"
+          variant="secondary"
+        >
+          <Table.ScrollContainer className="max-h-[calc(100dvh-22rem)]">
+            <Table.Content
+              aria-label="Inventory"
+              className="h-full min-w-[1180px] table-fixed text-left text-sm"
+              selectedKeys={new Set(selected)}
+              selectionMode={canAdjust ? "multiple" : "none"}
+              onSelectionChange={updateSelection}
+            >
+              <Table.Header className="text-xs font-semibold text-muted">
+                {canAdjust && (
+                  <Table.Column
+                    className="w-12 rounded-b-none px-4 py-3"
+                    id="select"
+                  >
+                    <Checkbox
+                      aria-label="Select all inventory on this page"
+                      slot="selection"
+                    >
+                      <Checkbox.Content>
+                        <Checkbox.Control>
+                          <Checkbox.Indicator />
+                        </Checkbox.Control>
+                      </Checkbox.Content>
+                    </Checkbox>
+                  </Table.Column>
+                )}
+                <Table.Column
+                  className="w-[260px] px-4 py-3 font-medium"
+                  id="product"
+                  isRowHeader
+                >
+                  Product
+                </Table.Column>
+                <Table.Column
+                  className="w-[160px] px-4 py-3 font-medium"
+                  id="sku"
+                >
+                  SKU
+                </Table.Column>
+                <Table.Column
+                  className="w-[105px] px-4 py-3 text-right font-medium"
+                  id="total"
+                >
+                  Total
+                </Table.Column>
+                <Table.Column
+                  className="w-[110px] px-4 py-3 text-right font-medium"
+                  id="reserved"
+                >
+                  Reserved
+                </Table.Column>
+                <Table.Column
+                  className="w-[105px] px-4 py-3 text-right font-medium"
+                  id="sold"
+                >
+                  Sold
+                </Table.Column>
+                <Table.Column
+                  className="w-[105px] px-4 py-3 text-right font-medium"
+                  id="buffer"
+                >
+                  Buffer
+                </Table.Column>
+                <Table.Column
+                  className="w-[110px] px-4 py-3 text-right font-medium"
+                  id="sellable"
+                >
+                  Sellable
+                </Table.Column>
+                <Table.Column
+                  className="w-[165px] px-4 py-3 font-medium"
+                  id="health"
+                >
+                  Health
+                </Table.Column>
+                <Table.Column
+                  className="w-[100px] rounded-b-none px-4 py-3 text-right font-medium"
+                  id="actions"
+                >
+                  Actions
+                </Table.Column>
+              </Table.Header>
+              <Table.Body
+                renderEmptyState={() => {
+                  if (inventoryQuery.isPending) {
+                    return <LoadingState label="Loading inventory" />;
+                  }
+                  if (inventoryQuery.isError) {
+                    return (
+                      <ErrorState
+                        message={inventoryQuery.error.message}
+                        onRetry={() => inventoryQuery.refetch()}
+                      />
+                    );
+                  }
+                  return <InventoryEmptyState />;
+                }}
               >
-                <Table.Header className="text-xs font-semibold text-muted">
-                  {canAdjust && (
-                    <Table.Column className="w-12 rounded-b-none px-4 py-3">
-                      <Checkbox
-                        aria-label="Select all inventory on this page"
-                        slot="selection"
-                      >
-                        <Checkbox.Content>
-                          <Checkbox.Control>
-                            <Checkbox.Indicator />
-                          </Checkbox.Control>
-                        </Checkbox.Content>
-                      </Checkbox>
-                    </Table.Column>
-                  )}
-                  <Table.Column
-                    className="px-4 py-3 font-medium"
-                    id="product"
-                    isRowHeader
-                  >
-                    Product
-                  </Table.Column>
-                  <Table.Column className="px-4 py-3 font-medium" id="sku">
-                    SKU
-                  </Table.Column>
-                  <Table.Column
-                    className="px-4 py-3 text-right font-medium"
-                    id="total"
-                  >
-                    Total
-                  </Table.Column>
-                  <Table.Column
-                    className="px-4 py-3 text-right font-medium"
-                    id="reserved"
-                  >
-                    Reserved
-                  </Table.Column>
-                  <Table.Column
-                    className="px-4 py-3 text-right font-medium"
-                    id="sold"
-                  >
-                    Sold
-                  </Table.Column>
-                  <Table.Column
-                    className="px-4 py-3 text-right font-medium"
-                    id="buffer"
-                  >
-                    Buffer
-                  </Table.Column>
-                  <Table.Column
-                    className="px-4 py-3 text-right font-medium"
-                    id="sellable"
-                  >
-                    Sellable
-                  </Table.Column>
-                  <Table.Column className="px-4 py-3 font-medium" id="health">
-                    Health
-                  </Table.Column>
-                  <Table.Column
-                    className="rounded-b-none px-4 py-3 text-right font-medium"
-                    id="actions"
-                  >
-                    Actions
-                  </Table.Column>
-                </Table.Header>
-                <Table.Body>
-                  {pageStocks.map((stock) => (
-                    <InventoryRow
-                      canAdjust={canAdjust}
-                      key={stock.id}
-                      stock={stock}
-                      onAdjust={() => setAdjusting(stock)}
-                    />
-                  ))}
-                </Table.Body>
-              </Table.Content>
-            </Table.ScrollContainer>
+                {pageStocks.map((stock) => (
+                  <InventoryRow
+                    canAdjust={canAdjust}
+                    key={stock.id}
+                    stock={stock}
+                    onAdjust={() => setAdjusting(stock)}
+                  />
+                ))}
+              </Table.Body>
+            </Table.Content>
+          </Table.ScrollContainer>
+          {stocks.length ? (
             <Table.Footer>
               <Pagination size="sm">
                 <Pagination.Summary className="text-xs text-muted">
@@ -306,15 +323,8 @@ export function InventoryTable() {
                 </Pagination.Content>
               </Pagination>
             </Table.Footer>
-          </Table>
-        ) : (
-          <div className="px-6 py-16 text-center">
-            <p className="font-semibold">No inventory found</p>
-            <p className="mt-1 text-sm text-muted">
-              Try changing the search or stock filter.
-            </p>
-          </div>
-        )}
+          ) : null}
+        </Table>
       </div>
 
       {adjusting && (
@@ -489,15 +499,6 @@ function FilterSelect({
   );
 }
 
-function InventoryLoading() {
-  return (
-    <div className="space-y-4 animate-pulse">
-      <div className="h-24 rounded-2xl bg-surface-secondary" />
-      <div className="h-[480px] rounded-2xl bg-surface-secondary" />
-    </div>
-  );
-}
-
 function PermissionNotice({ message }: { message: string }) {
   return (
     <div className="rounded-2xl border border-warning/30 bg-warning/10 p-6 text-sm">
@@ -506,7 +507,39 @@ function PermissionNotice({ message }: { message: string }) {
   );
 }
 
-function ErrorNotice({
+function TableStateContent({ children }: { children: ReactNode }) {
+  return (
+    <HeroEmptyState className="flex h-full min-h-64 w-full flex-col items-center justify-center gap-4 text-center md:min-h-[calc(100dvh-30rem)]">
+      {children}
+    </HeroEmptyState>
+  );
+}
+
+function LoadingState({ label }: { label: string }) {
+  return (
+    <TableStateContent>
+      <Icon
+        className="size-6 animate-spin text-muted"
+        icon="gravity-ui:arrows-rotate-right"
+      />
+      <span className="text-sm text-muted">{label}</span>
+    </TableStateContent>
+  );
+}
+
+function InventoryEmptyState() {
+  return (
+    <TableStateContent>
+      <Icon className="size-6 text-muted" icon="gravity-ui:tray" />
+      <span className="text-sm font-semibold">No inventory found</span>
+      <span className="max-w-sm text-xs text-muted">
+        Try changing the search or stock filter.
+      </span>
+    </TableStateContent>
+  );
+}
+
+function ErrorState({
   message,
   onRetry,
 }: {
@@ -514,18 +547,13 @@ function ErrorNotice({
   onRetry: () => void;
 }) {
   return (
-    <div className="grid min-h-[50vh] place-items-center text-center">
-      <div>
-        <h2 className="text-xl font-semibold">Inventory is unavailable</h2>
-        <p className="mt-2 text-sm text-muted">{message}</p>
-        <Button
-          className="mt-5 rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
-          type="button"
-          onPress={onRetry}
-        >
-          Try again
-        </Button>
-      </div>
-    </div>
+    <TableStateContent>
+      <Icon className="size-6 text-danger" icon="gravity-ui:circle-xmark" />
+      <span className="text-sm font-semibold">Inventory is unavailable</span>
+      <span className="max-w-sm text-xs text-muted">{message}</span>
+      <Button type="button" variant="primary" onPress={onRetry}>
+        Try again
+      </Button>
+    </TableStateContent>
   );
 }

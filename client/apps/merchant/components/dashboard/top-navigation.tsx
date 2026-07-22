@@ -48,6 +48,7 @@ export function TopNavigation() {
 
 function pageTitle(pathname: string) {
   if (pathname.startsWith("/products")) return "Products";
+  if (pathname.startsWith("/categories")) return "Categories";
   if (pathname.startsWith("/inventory")) return "Inventory";
   if (pathname.startsWith("/orders")) return "Orders";
   if (pathname.startsWith("/payments")) return "Payments";

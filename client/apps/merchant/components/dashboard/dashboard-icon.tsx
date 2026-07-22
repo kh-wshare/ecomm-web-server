@@ -15,6 +15,7 @@ const icons = {
   orders: "solar:bag-4-bold-duotone",
   settings: "solar:settings-bold-duotone",
   share: "solar:share-bold-duotone",
+  tag: "solar:tag-bold-duotone",
   user: "solar:user-rounded-bold-duotone",
 };
 

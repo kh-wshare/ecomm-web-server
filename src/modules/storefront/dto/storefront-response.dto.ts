@@ -29,6 +29,23 @@ export class PublicProductMediaDto {
   sortOrder!: number;
 }
 
+export class PublicProductCategoryDto {
+  @ApiProperty({ format: 'uuid' })
+  id!: string;
+
+  @ApiProperty()
+  name!: string;
+
+  @ApiProperty()
+  slug!: string;
+
+  @ApiPropertyOptional({ nullable: true })
+  description!: string | null;
+
+  @ApiProperty()
+  sortOrder!: number;
+}
+
 export class PublicProductVariantDto {
   @ApiProperty({ format: 'uuid' })
   id!: string;
@@ -73,6 +90,12 @@ export class PublicProductDto {
 
   @ApiProperty({ enum: SalesChannel })
   channel!: SalesChannel;
+
+  @ApiPropertyOptional({ format: 'uuid', nullable: true })
+  categoryId!: string | null;
+
+  @ApiPropertyOptional({ type: PublicProductCategoryDto, nullable: true })
+  category!: PublicProductCategoryDto | null;
 
   @ApiProperty()
   baseIsAvailable!: boolean;

@@ -1,7 +1,13 @@
 "use client";
 
-import { useDeferredValue, useState } from "react";
-import { Button } from "@heroui/react";
+import { type ReactNode, useDeferredValue, useState } from "react";
+import {
+  Button,
+  EmptyState as HeroEmptyState,
+  Pagination,
+  Table,
+} from "@heroui/react";
+import { Icon } from "@iconify/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -13,9 +19,7 @@ import type {
   SocialPostStatus,
 } from "@/types/social";
 import { DateTimeText } from "@/components/ui/display";
-import { EmptyState, ErrorState } from "@/components/ui/feedback";
 import { FilterDropdown, SearchInput } from "@/components/ui/form-controls";
-import { Pagination as SharedPagination } from "@/components/ui/pagination";
 import { useSocialPosts } from "@/hooks/api/use-social-posts";
 import { usePermissions } from "@/hooks/use-permissions";
 import { SOCIAL_PLATFORMS, SOCIAL_POST_STATUSES } from "@/types/social";
@@ -29,6 +33,7 @@ const initialFilters: SocialPostFilters = {
 };
 
 export function SocialPostList() {
+  const router = useRouter();
   const { can } = usePermissions();
   const canRead = can("social_post.read");
   const canCreate = can("social_post.create");
@@ -36,6 +41,8 @@ export function SocialPostList() {
   const deferredSearch = useDeferredValue(filters.search.trim());
   const queryFilters = { ...filters, search: deferredSearch };
   const postsQuery = useSocialPosts(queryFilters, canRead);
+  const posts = postsQuery.data?.items ?? [];
+  const postMeta = postsQuery.data?.meta;
   const update = <Key extends keyof SocialPostFilters>(
     key: Key,
     value: SocialPostFilters[Key],
@@ -48,8 +55,6 @@ export function SocialPostList() {
       </div>
     );
   }
-
-  const router = useRouter();
 
   return (
     <section className="space-y-5">
@@ -111,115 +116,260 @@ export function SocialPostList() {
         </FilterDropdown>
       </div>
 
-      {postsQuery.isPending ? (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {Array.from({ length: 6 }, (_, index) => (
-            <div
-              className="h-72 animate-pulse rounded-2xl bg-surface-secondary"
-              key={index}
-            />
-          ))}
-        </div>
-      ) : postsQuery.isError ? (
-        <ErrorState
-          description={postsQuery.error.message}
-          title="Social posts are unavailable"
-          onRetry={() => postsQuery.refetch()}
-        />
-      ) : postsQuery.data.items.length ? (
-        <>
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {postsQuery.data.items.map((post) => (
-              <Link
-                className="group overflow-hidden rounded-2xl border border-separator bg-surface shadow-sm transition hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-md"
-                href={`/dashboard/social-posts/${post.id}`}
-                key={post.id}
-              >
-                <div
-                  className="flex h-32 items-end bg-surface-secondary bg-cover bg-center p-4"
-                  style={
-                    post.mediaUrls[0]
-                      ? {
-                          backgroundImage: `linear-gradient(180deg, transparent, rgb(0 0 0 / 55%)), url("${post.mediaUrls[0]}")`,
-                        }
-                      : undefined
+      <div className="overflow-hidden rounded-2xl border border-separator bg-surface">
+        <Table
+          className="min-h-80 md:min-h-[calc(100dvh-24rem)]"
+          variant="secondary"
+        >
+          <Table.ScrollContainer className="max-h-[calc(100dvh-22rem)]">
+            <Table.Content
+              aria-label="Social posts"
+              className="h-full min-w-[1040px] table-fixed text-left text-sm"
+              selectionMode="none"
+            >
+              <Table.Header className="text-xs font-semibold text-muted">
+                <Table.Column
+                  className="w-[340px] px-4 py-3 font-medium"
+                  id="post"
+                  isRowHeader
+                >
+                  Post
+                </Table.Column>
+                <Table.Column
+                  className="w-[190px] px-4 py-3 font-medium"
+                  id="platforms"
+                >
+                  Platforms
+                </Table.Column>
+                <Table.Column
+                  className="w-[150px] px-4 py-3 font-medium"
+                  id="status"
+                >
+                  Status
+                </Table.Column>
+                <Table.Column
+                  className="w-[110px] px-4 py-3 text-right font-medium"
+                  id="products"
+                >
+                  Products
+                </Table.Column>
+                <Table.Column
+                  className="w-[150px] px-4 py-3 font-medium"
+                  id="updated"
+                >
+                  Updated
+                </Table.Column>
+                <Table.Column
+                  className="w-[100px] rounded-b-none px-4 py-3 text-right font-medium"
+                  id="actions"
+                >
+                  Actions
+                </Table.Column>
+              </Table.Header>
+              <Table.Body
+                renderEmptyState={() => {
+                  if (postsQuery.isPending) {
+                    return <LoadingState label="Loading social posts" />;
                   }
-                >
-                  <SocialPostStatusBadge status={post.status} />
-                </div>
-                <div className="p-4">
-                  <h3 className="line-clamp-1 font-semibold group-hover:text-accent">
-                    {post.title}
-                  </h3>
-                  <p className="mt-2 line-clamp-2 min-h-10 text-sm leading-5 text-muted">
-                    {post.content}
-                  </p>
-                  <div className="mt-4 flex min-h-6 flex-wrap gap-1.5">
-                    {post.targetPlatforms.length ? (
-                      post.targetPlatforms.map((platform) => (
-                        <span
-                          className="rounded-md bg-accent/8 px-2 py-1 text-[10px] font-semibold text-accent"
-                          key={platform}
-                        >
-                          {toLabel(platform)}
+                  if (postsQuery.isError) {
+                    return (
+                      <TableErrorState
+                        message={postsQuery.error.message}
+                        onRetry={() => postsQuery.refetch()}
+                      />
+                    );
+                  }
+                  return (
+                    <SocialPostEmptyState
+                      canCreate={canCreate}
+                      platform={filters.platform}
+                      search={deferredSearch}
+                      status={filters.status}
+                      onCreate={() =>
+                        router.push("/dashboard/social-posts/new")
+                      }
+                    />
+                  );
+                }}
+              >
+                {posts.map((post) => (
+                  <Table.Row
+                    className="border-t border-separator hover:bg-surface-secondary/60"
+                    id={post.id}
+                    key={post.id}
+                  >
+                    <Table.Cell className="px-4 py-4">
+                      <Link
+                        className="font-semibold hover:text-accent"
+                        href={`/dashboard/social-posts/${post.id}`}
+                      >
+                        {post.title}
+                      </Link>
+                      <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted">
+                        {post.content}
+                      </p>
+                    </Table.Cell>
+                    <Table.Cell className="px-4 py-4">
+                      {post.targetPlatforms.length ? (
+                        <div className="flex flex-wrap gap-1.5">
+                          {post.targetPlatforms.map((platform) => (
+                            <span
+                              className="rounded-md bg-accent/8 px-2 py-1 text-[10px] font-semibold text-accent"
+                              key={platform}
+                            >
+                              {toLabel(platform)}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-xs text-muted">
+                          No platforms selected
                         </span>
-                      ))
-                    ) : (
-                      <span className="text-xs text-muted">
-                        No platforms selected
-                      </span>
-                    )}
-                  </div>
-                  <div className="mt-4 flex items-center justify-between border-t border-separator pt-3 text-xs text-muted">
-                    <span>
-                      {post.hotspots.length} product
-                      {post.hotspots.length === 1 ? "" : "s"}
+                      )}
+                    </Table.Cell>
+                    <Table.Cell className="px-4 py-4">
+                      <SocialPostStatusBadge status={post.status} />
+                    </Table.Cell>
+                    <Table.Cell className="px-4 py-4 text-right font-semibold">
+                      {post.hotspots.length}
+                    </Table.Cell>
+                    <Table.Cell className="px-4 py-4 text-xs text-muted">
+                      <DateTimeText value={post.updatedAt} />
+                    </Table.Cell>
+                    <Table.Cell className="px-4 py-4 text-right">
+                      <Link
+                        className="text-sm font-semibold text-accent hover:underline"
+                        href={`/dashboard/social-posts/${post.id}`}
+                      >
+                        View
+                      </Link>
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table.Content>
+          </Table.ScrollContainer>
+          {postMeta && posts.length ? (
+            <Table.Footer>
+              <Pagination size="sm">
+                <Pagination.Summary className="text-xs text-muted">
+                  {postMeta.total} total posts
+                </Pagination.Summary>
+                <Pagination.Content>
+                  <Pagination.Item>
+                    <Pagination.Previous
+                      isDisabled={!postMeta.hasPrev}
+                      onPress={() =>
+                        setFilters((current) => ({
+                          ...current,
+                          page: current.page - 1,
+                        }))
+                      }
+                    >
+                      <Pagination.PreviousIcon />
+                      Prev
+                    </Pagination.Previous>
+                  </Pagination.Item>
+                  <Pagination.Item>
+                    <span className="px-2 text-xs text-muted">
+                      Page {postMeta.page} of {Math.max(postMeta.totalPages, 1)}
                     </span>
-                    <DateTimeText value={post.updatedAt} />
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-          <div className="overflow-hidden rounded-xl border border-separator bg-surface">
-            <SharedPagination
-              itemLabel="posts"
-              meta={postsQuery.data.meta}
-              onPageChange={(page) =>
-                setFilters((current) => ({ ...current, page }))
-              }
-            />
-          </div>
-        </>
-      ) : (
-        <div className="rounded-2xl border border-separator bg-surface">
-          <EmptyState
-            title="No social posts found"
-            description={
-              deferredSearch ||
-              filters.status !== "ALL" ||
-              filters.platform !== "ALL"
-                ? "Try changing your search or filters."
-                : "Create a shoppable post to start sharing your catalog."
-            }
-            action={
-              canCreate &&
-              !deferredSearch &&
-              filters.status === "ALL" &&
-              filters.platform === "ALL" ? (
-                <Button
-                  type="button"
-                  variant="primary"
-                  onPress={() => router.push("/dashboard/social-posts/new")}
-                >
-                  Create social post
-                </Button>
-              ) : undefined
-            }
-          />
-        </div>
-      )}
+                  </Pagination.Item>
+                  <Pagination.Item>
+                    <Pagination.Next
+                      isDisabled={!postMeta.hasNext}
+                      onPress={() =>
+                        setFilters((current) => ({
+                          ...current,
+                          page: current.page + 1,
+                        }))
+                      }
+                    >
+                      Next
+                      <Pagination.NextIcon />
+                    </Pagination.Next>
+                  </Pagination.Item>
+                </Pagination.Content>
+              </Pagination>
+            </Table.Footer>
+          ) : null}
+        </Table>
+      </div>
     </section>
+  );
+}
+
+function TableStateContent({ children }: { children: ReactNode }) {
+  return (
+    <HeroEmptyState className="flex h-full min-h-64 w-full flex-col items-center justify-center gap-4 text-center md:min-h-[calc(100dvh-30rem)]">
+      {children}
+    </HeroEmptyState>
+  );
+}
+
+function LoadingState({ label }: { label: string }) {
+  return (
+    <TableStateContent>
+      <Icon
+        className="size-6 animate-spin text-muted"
+        icon="gravity-ui:arrows-rotate-right"
+      />
+      <span className="text-sm text-muted">{label}</span>
+    </TableStateContent>
+  );
+}
+
+function SocialPostEmptyState({
+  canCreate,
+  onCreate,
+  platform,
+  search,
+  status,
+}: {
+  canCreate: boolean;
+  onCreate: () => void;
+  platform: SocialPlatform | "ALL";
+  search: string;
+  status: SocialPostStatus | "ALL";
+}) {
+  const hasFilters = Boolean(search || status !== "ALL" || platform !== "ALL");
+
+  return (
+    <TableStateContent>
+      <Icon className="size-6 text-muted" icon="gravity-ui:tray" />
+      <span className="text-sm font-semibold">No social posts found</span>
+      <span className="max-w-sm text-xs text-muted">
+        {hasFilters
+          ? "Try changing your search or filters."
+          : "Create a shoppable post to start sharing your catalog."}
+      </span>
+      {canCreate && !hasFilters && (
+        <Button type="button" variant="primary" onPress={onCreate}>
+          Create social post
+        </Button>
+      )}
+    </TableStateContent>
+  );
+}
+
+function TableErrorState({
+  message,
+  onRetry,
+}: {
+  message: string;
+  onRetry: () => void;
+}) {
+  return (
+    <TableStateContent>
+      <Icon className="size-6 text-danger" icon="gravity-ui:circle-xmark" />
+      <span className="text-sm font-semibold">
+        Social posts are unavailable
+      </span>
+      <span className="max-w-sm text-xs text-muted">{message}</span>
+      <Button type="button" variant="primary" onPress={onRetry}>
+        Try again
+      </Button>
+    </TableStateContent>
   );
 }
 

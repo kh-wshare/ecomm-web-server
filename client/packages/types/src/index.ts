@@ -28,20 +28,20 @@ export type ApiErrorBody = {
 };
 
 export type PermissionCode =
-  | "merchant.dashboard.read"
-  | "products.read"
-  | "products.create"
-  | "products.update"
-  | "products.delete"
-  | "inventory.read"
-  | "inventory.update"
-  | "orders.read"
-  | "orders.update"
-  | "payments.manage"
-  | "storefront.manage"
-  | "social.manage"
-  | "pos.access"
-  | "pos.sale.create";
+  | 'merchant.dashboard.read'
+  | 'products.read'
+  | 'products.create'
+  | 'products.update'
+  | 'products.delete'
+  | 'inventory.read'
+  | 'inventory.update'
+  | 'orders.read'
+  | 'orders.update'
+  | 'payments.manage'
+  | 'storefront.manage'
+  | 'social.manage'
+  | 'pos.access'
+  | 'pos.sale.create';
 
 export type AuthUser = {
   id: ID;
@@ -54,15 +54,15 @@ export type AuthUser = {
   permissions: PermissionCode[];
 };
 
-export type ProductStatus = "DRAFT" | "ACTIVE" | "INACTIVE";
+export type ProductStatus = 'DRAFT' | 'ACTIVE' | 'INACTIVE';
 export type SalesChannel =
-  | "WEBSITE"
-  | "POS"
-  | "FACEBOOK"
-  | "INSTAGRAM"
-  | "TIKTOK";
-export type OrderType = "DINE_IN" | "TAKEAWAY" | "DELIVERY";
-export type PaymentMethodCode = "CASH" | "KHQR" | "COD" | "HMAC";
+  | 'WEBSITE'
+  | 'POS'
+  | 'FACEBOOK'
+  | 'INSTAGRAM'
+  | 'TIKTOK';
+export type OrderType = 'DINE_IN' | 'TAKEAWAY' | 'DELIVERY';
+export type PaymentMethodCode = 'CASH' | 'KHQR' | 'COD' | 'HMAC';
 
 export type InventoryStock = {
   totalStock: number;
@@ -84,7 +84,7 @@ export type ProductVariant = {
 
 export type ProductMedia = {
   url: string;
-  type: "IMAGE" | "VIDEO";
+  type: 'IMAGE' | 'VIDEO';
   sortOrder: number;
 };
 
@@ -94,9 +94,24 @@ export type ProductChannelVisibility = {
   isPurchasable: boolean;
 };
 
+export type ProductCategoryStatus = 'ACTIVE' | 'INACTIVE';
+
+export type ProductCategory = {
+  id: ID;
+  merchantId: ID;
+  name: string;
+  slug: string;
+  description?: string | null;
+  logoUrl?: string | null;
+  sortOrder: number;
+  status: ProductCategoryStatus;
+};
+
 export type Product = {
   id: ID;
   merchantId: ID;
+  categoryId?: ID | null;
+  category?: ProductCategory | null;
   name: string;
   slug: string;
   description?: string;
@@ -111,25 +126,25 @@ export type Product = {
 };
 
 export type OrderStatus =
-  | "DRAFT"
-  | "PENDING_PAYMENT"
-  | "RESERVED"
-  | "PAID"
-  | "PROCESSING"
-  | "FULFILLED"
-  | "COMPLETED"
-  | "CANCELLED"
-  | "PAYMENT_FAILED"
-  | "EXPIRED"
-  | "REFUNDED";
+  | 'DRAFT'
+  | 'PENDING_PAYMENT'
+  | 'RESERVED'
+  | 'PAID'
+  | 'PROCESSING'
+  | 'FULFILLED'
+  | 'COMPLETED'
+  | 'CANCELLED'
+  | 'PAYMENT_FAILED'
+  | 'EXPIRED'
+  | 'REFUNDED';
 
-export type PaymentStatus = "PENDING" | "PAID" | "FAILED" | "REFUNDED";
+export type PaymentStatus = 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED';
 
 export type FulfillmentStatus =
-  | "UNFULFILLED"
-  | "PROCESSING"
-  | "FULFILLED"
-  | "CANCELLED";
+  | 'UNFULFILLED'
+  | 'PROCESSING'
+  | 'FULFILLED'
+  | 'CANCELLED';
 
 export type OrderItem = {
   id: ID;
@@ -189,9 +204,9 @@ export type Order = {
 
 export type OrderFilters = {
   search: string;
-  paymentStatus: PaymentStatus | "ALL";
-  fulfillmentStatus: FulfillmentStatus | "ALL";
-  sourceChannel: SalesChannel | "ALL";
+  paymentStatus: PaymentStatus | 'ALL';
+  fulfillmentStatus: FulfillmentStatus | 'ALL';
+  sourceChannel: SalesChannel | 'ALL';
   dateFrom: string;
   dateTo: string;
   page: number;
@@ -203,14 +218,14 @@ export type OrderPage = {
   meta: PaginationMeta;
 };
 
-export type PaymentProviderCode = "HMAC" | "KHQR" | "ABA_PAYWAY";
-export type PaymentProviderStatus = "ACTIVE" | "INACTIVE";
+export type PaymentProviderCode = 'HMAC' | 'KHQR' | 'ABA_PAYWAY';
+export type PaymentProviderStatus = 'ACTIVE' | 'INACTIVE';
 
 export type PaymentTransactionStatus =
-  | "PENDING"
-  | "CONFIRMED"
-  | "FAILED"
-  | "REFUNDED";
+  | 'PENDING'
+  | 'CONFIRMED'
+  | 'FAILED'
+  | 'REFUNDED';
 
 export type PaymentProvider = {
   id: ID;
@@ -226,7 +241,7 @@ export type PaymentProvider = {
 export type PaymentWebhookEvent = {
   id: ID;
   eventId: string;
-  status: "RECEIVED" | "PROCESSED" | "FAILED";
+  status: 'RECEIVED' | 'PROCESSED' | 'FAILED';
   error: string | null;
   processedAt: string | null;
   createdAt: string;
@@ -253,8 +268,8 @@ export type Payment = {
 
 export type PaymentFilters = {
   search: string;
-  provider: PaymentProviderCode | "ALL";
-  status: PaymentTransactionStatus | "ALL";
+  provider: PaymentProviderCode | 'ALL';
+  status: PaymentTransactionStatus | 'ALL';
   dateFrom: string;
   dateTo: string;
   page: number;
@@ -267,10 +282,10 @@ export type PaymentPage = {
 };
 
 export type CheckoutSessionStatus =
-  | "ACTIVE"
-  | "CONFIRMED"
-  | "CANCELLED"
-  | "EXPIRED";
+  | 'ACTIVE'
+  | 'CONFIRMED'
+  | 'CANCELLED'
+  | 'EXPIRED';
 
 export type CheckoutItem = {
   id: ID;
@@ -295,7 +310,7 @@ export type CheckoutSession = {
   customerName: string | null;
   customerEmail: string | null;
   customerPhone: string | null;
-  sourceChannel: "WEBSITE";
+  sourceChannel: 'WEBSITE';
   status: CheckoutSessionStatus;
   subtotalAmount: string;
   discountAmount: string;
@@ -320,7 +335,7 @@ export type CreateCheckoutPayload = {
   customerName?: string;
   customerEmail?: string;
   customerPhone?: string;
-  sourceChannel: "WEBSITE";
+  sourceChannel: 'WEBSITE';
   items: Array<{
     productId: ID;
     variantId?: ID;
@@ -334,14 +349,14 @@ export type CheckoutContext = {
   productSlug: string;
   payment?: Pick<
     Payment,
-    | "id"
-    | "orderId"
-    | "provider"
-    | "providerTransactionId"
-    | "amount"
-    | "currency"
-    | "status"
-    | "createdAt"
+    | 'id'
+    | 'orderId'
+    | 'provider'
+    | 'providerTransactionId'
+    | 'amount'
+    | 'currency'
+    | 'status'
+    | 'createdAt'
   >;
 };
 
@@ -355,7 +370,7 @@ export type PublicMerchant = {
 
 export type PublicProductMedia = {
   url: string;
-  type: "IMAGE" | "VIDEO";
+  type: 'IMAGE' | 'VIDEO';
   sortOrder: number;
 };
 
@@ -376,7 +391,7 @@ export type PublicProduct = {
   sku: string;
   price: string;
   currency: string;
-  channel: "WEBSITE";
+  channel: 'WEBSITE';
   baseIsAvailable: boolean;
   isAvailable: boolean;
   isPurchasable: boolean;

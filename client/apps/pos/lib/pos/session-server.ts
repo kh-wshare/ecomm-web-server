@@ -55,9 +55,9 @@ export function normalizePosSession(auth: PosAuthPayload): PosSession {
   return {
     activeBranch: null,
     merchant: {
-      id: merchantAccess?.merchant?.id ?? "demo-merchant",
-      name: merchantAccess?.merchant?.name ?? "Demo Merchant",
-      slug: merchantAccess?.merchant?.slug ?? "demo-merchant",
+      id: merchantAccess?.merchant?.id ?? "",
+      name: merchantAccess?.merchant?.name ?? "Merchant",
+      slug: merchantAccess?.merchant?.slug ?? "merchant",
     },
     user: {
       branchIds: [],

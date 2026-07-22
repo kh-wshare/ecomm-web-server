@@ -1,30 +1,38 @@
-"use client";
+'use client';
 
-import { Checkbox, Label, Pagination, SearchField, Table, Tooltip, type Selection } from "@heroui/react";
-import { useDeferredValue, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Link from "next/link";
-import { Icon } from "@iconify/react";
+import {
+  Checkbox,
+  EmptyState as HeroEmptyState,
+  Label,
+  Pagination,
+  SearchField,
+  Table,
+  Tooltip,
+  type Selection,
+} from '@heroui/react';
+import { type ReactNode, useDeferredValue, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Link from 'next/link';
+import { Icon } from '@iconify/react';
 
-import { ProductListLoading } from "./product-list-loading";
-import { ProductStatusBadge } from "./product-status-badge";
+import { ProductStatusBadge } from './product-status-badge';
 
-import { Button, Input, Select } from "./product-controls";
+import { Button, Select } from './product-controls';
 import type {
   ProductListFilters,
   ProductListItem,
   ProductStatus,
   SalesChannel,
-} from "@/types/product";
-import { ConfirmDialog } from "@repo/ui";
-import { useProducts } from "@/hooks/api/use-products";
-import { usePermissions } from "@/hooks/use-permissions";
-import { deleteProduct } from "@/lib/products/product-data";
-import { formatCurrency } from "@/lib/formatters/currency";
-import { queryKeys } from "@repo/query-client";
-import { notify } from "@/lib/toast/notify";
-import { PRODUCT_STATUSES, SALES_CHANNELS } from "@/types/product";
+} from '@/types/product';
+import { ConfirmDialog } from '@repo/ui';
+import { useProducts } from '@/hooks/api/use-products';
+import { usePermissions } from '@/hooks/use-permissions';
+import { deleteProduct } from '@/lib/products/product-data';
+import { formatCurrency } from '@/lib/formatters/currency';
+import { queryKeys } from '@repo/query-client';
+import { notify } from '@/lib/toast/notify';
+import { PRODUCT_STATUSES, SALES_CHANNELS } from '@/types/product';
 
 const pageSize = 10;
 
@@ -32,15 +40,15 @@ export function ProductList() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { can } = usePermissions();
-  const canRead = can("products.read");
-  const canCreate = can("products.create");
-  const canUpdate = can("products.update");
-  const canDelete = can("products.delete");
-  const canReadInventory = can("inventory.read");
-  const [search, setSearch] = useState("");
+  const canRead = can('products.read');
+  const canCreate = can('products.create');
+  const canUpdate = can('products.update');
+  const canDelete = can('products.delete');
+  const canReadInventory = can('inventory.read');
+  const [search, setSearch] = useState('');
   const deferredSearch = useDeferredValue(search.trim());
-  const [status, setStatus] = useState<ProductStatus | "ALL">("ALL");
-  const [channel, setChannel] = useState<SalesChannel | "ALL">("ALL");
+  const [status, setStatus] = useState<ProductStatus | 'ALL'>('ALL');
+  const [channel, setChannel] = useState<SalesChannel | 'ALL'>('ALL');
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<string[]>([]);
   const [pendingDelete, setPendingDelete] = useState<string[] | null>(null);
@@ -60,11 +68,11 @@ export function ProductList() {
       setSelected([]);
       setPendingDelete(null);
       notify.success(
-        `${productIds.length} product${productIds.length === 1 ? "" : "s"} deleted`,
+        `${productIds.length} product${productIds.length === 1 ? '' : 's'} deleted`,
       );
       await queryClient.invalidateQueries({ queryKey: queryKeys.products.all });
     },
-    onError: (error) => notify.error(error, "Unable to delete products"),
+    onError: (error) => notify.error(error, 'Unable to delete products'),
   });
   const products = productsQuery.data ?? [];
   const totalPages = Math.max(1, Math.ceil(products.length / pageSize));
@@ -81,23 +89,10 @@ export function ProductList() {
     );
   }
 
-  if (productsQuery.isPending) return <ProductListLoading />;
-
-  if (productsQuery.isError) {
-    return (
-      <StateNotice
-        action="Try again"
-        message={productsQuery.error.message}
-        title="Products are unavailable"
-        onAction={() => productsQuery.refetch()}
-      />
-    );
-  }
-
   const updateSelection = (keys: Selection) => {
     const pageProductIds = new Set(pageProducts.map((product) => product.id));
     const selectedPageIds =
-      keys === "all"
+      keys === 'all'
         ? pageProductIds
         : new Set(
           Array.from(keys, String).filter((id) => pageProductIds.has(id)),
@@ -130,19 +125,21 @@ export function ProductList() {
                 type="button"
                 onClick={() => setPendingDelete(selected)}
               >
-                {deleteMutation.isPending ? "Deleting…" : `Delete selected (${selected.length})`}
+                {deleteMutation.isPending
+                  ? 'Deleting…'
+                  : `Delete selected (${selected.length})`}
               </Button>
             </div>
           )}
           {canCreate && (
-              <Button
-                type="button"
-                variant="primary"
-                size="md"
-                onPress={() => router.push("/products/new")}
-              >
-                Create product
-              </Button>
+            <Button
+              type="button"
+              variant="primary"
+              size="md"
+              onPress={() => router.push('/products/new')}
+            >
+              Create product
+            </Button>
           )}
         </div>
       </header>
@@ -153,11 +150,15 @@ export function ProductList() {
             <Label>Search</Label>
             <SearchField.Group className="bg-surface-secondary shadow-none">
               <SearchField.SearchIcon />
-              <SearchField.Input value={search} onChange={(event) => {
-                setSearch(event.target.value),
-                setPage(1);
-                setSelected([]);
-              }} placeholder="Search products..." />
+              <SearchField.Input
+                value={search}
+                onChange={(event) => {
+                  setSearch(event.target.value);
+                  setPage(1);
+                  setSelected([]);
+                }}
+                placeholder="Search products..."
+              />
               <SearchField.ClearButton />
             </SearchField.Group>
           </SearchField>
@@ -166,7 +167,7 @@ export function ProductList() {
           label="Status"
           value={status}
           onChange={(value) => {
-            setStatus(value as ProductStatus | "ALL");
+            setStatus(value as ProductStatus | 'ALL');
             setPage(1);
             setSelected([]);
           }}
@@ -182,7 +183,7 @@ export function ProductList() {
           label="Channel"
           value={channel}
           onChange={(value) => {
-            setChannel(value as SalesChannel | "ALL");
+            setChannel(value as SalesChannel | 'ALL');
             setPage(1);
             setSelected([]);
           }}
@@ -196,82 +197,123 @@ export function ProductList() {
         </FilterSelect>
       </div>
       <div className="overflow-hidden rounded-2xl border border-separator bg-surface">
-        {products.length ? (
-          <Table variant="secondary">
-            <Table.ScrollContainer>
-              <Table.Content
-                aria-label="Products"
-                className="text-left text-sm"
-                selectedKeys={new Set(selected)}
-                selectionMode={canDelete ? "multiple" : "none"}
-                onSelectionChange={updateSelection}
+        <Table
+          variant="secondary"
+        >
+          <Table.ScrollContainer className="max-h-[calc(100dvh-22rem)]">
+            <Table.Content
+              aria-label="Products"
+              className="h-full min-w-[1120px] table-fixed text-left text-sm"
+              selectedKeys={new Set(selected)}
+              selectionMode={canDelete ? 'multiple' : 'none'}
+              onSelectionChange={updateSelection}
+            >
+              <Table.Header className="text-muted text-xs font-semibold">
+                {canDelete && (
+                  <Table.Column
+                    className="w-12 rounded-b-none px-4 py-3"
+                    id="select"
+                  >
+                    <Checkbox
+                      aria-label="Select all products on this page"
+                      slot="selection"
+                    >
+                      <Checkbox.Content>
+                        <Checkbox.Control>
+                          <Checkbox.Indicator />
+                        </Checkbox.Control>
+                      </Checkbox.Content>
+                    </Checkbox>
+                  </Table.Column>
+                )}
+                <Table.Column
+                  className="w-[280px] px-4 py-3 font-medium"
+                  id="product"
+                  isRowHeader
+                >
+                  Product
+                </Table.Column>
+                <Table.Column
+                  className="w-[190px] px-4 py-3 font-medium"
+                  id="channels"
+                >
+                  Channels
+                </Table.Column>
+                <Table.Column
+                  className="w-[140px] px-4 py-3 font-medium"
+                  id="stock"
+                >
+                  Stock
+                </Table.Column>
+                <Table.Column
+                  className="w-[120px] px-4 py-3 font-medium"
+                  id="price"
+                >
+                  Price
+                </Table.Column>
+                <Table.Column
+                  className="w-[120px] px-4 py-3 font-medium"
+                  id="status"
+                >
+                  Status
+                </Table.Column>
+                <Table.Column
+                  className="w-[130px] px-4 py-3 font-medium"
+                  id="createdAt"
+                >
+                  Created At
+                </Table.Column>
+                <Table.Column
+                  className="w-[110px] rounded-b-none px-4 py-3 text-right font-medium"
+                  id="actions"
+                >
+                  Actions
+                </Table.Column>
+              </Table.Header>
+              <Table.Body
+                renderEmptyState={() => {
+                  if (productsQuery.isPending) {
+                    return <LoadingState label="Loading products" />;
+                  }
+                  if (productsQuery.isError) {
+                    return (
+                      <ErrorState
+                        message={productsQuery.error.message}
+                        onRetry={() => productsQuery.refetch()}
+                      />
+                    );
+                  }
+                  return (
+                    <div className="min-h-80 md:min-h-[calc(100dvh-24rem)]">
+                      <ProductEmptyState
+                        canCreate={canCreate}
+                        channel={channel}
+                        search={deferredSearch}
+                        status={status}
+                      />
+                    </div>
+                  );
+                }}
               >
-                <Table.Header className="text-muted text-xs font-semibold">
-                  {canDelete && (
-                    <Table.Column className="w-12 px-4 py-3 rounded-b-none">
-                      <Checkbox
-                        aria-label="Select all products on this page"
-                        slot="selection"
-                      >
-                        <Checkbox.Content>
-                          <Checkbox.Control>
-                            <Checkbox.Indicator />
-                          </Checkbox.Control>
-                        </Checkbox.Content>
-                      </Checkbox>
-                    </Table.Column>
-                  )}
-                  <Table.Column
-                    className="px-4 py-3 font-medium"
-                    id="product"
-                    isRowHeader
-                  >
-                    Product
-                  </Table.Column>
-                  <Table.Column className="px-4 py-3 font-medium" id="channels">
-                    Channels
-                  </Table.Column>
-                  <Table.Column className="px-4 py-3 font-medium" id="stock">
-                    Stock
-                  </Table.Column>
-                  <Table.Column
-                    className="px-4 py-3 font-medium"
-                    id="price"
-                  >
-                    Price
-                  </Table.Column>
-                  <Table.Column className="px-4 py-3 font-medium" id="status">
-                    Status
-                  </Table.Column>
-                  <Table.Column className="px-4 py-3 font-medium" id="createdAt">
-                    Created At
-                  </Table.Column>
-                  <Table.Column
-                    className="px-4 py-3 text-right font-medium rounded-b-none"
-                    id="actions"
-                  >
-                    Actions
-                  </Table.Column>
-                </Table.Header>
-                <Table.Body>
-                  {pageProducts.map((product) => (
-                    <ProductRow
-                      canDelete={canDelete}
-                      canUpdate={canUpdate}
-                      key={product.id}
-                      product={product}
-                      showStock={canReadInventory}
-                      onDelete={() => setPendingDelete([product.id])}
-                    />
-                  ))}
-                </Table.Body>
-              </Table.Content>
-            </Table.ScrollContainer>
+                {pageProducts.map((product) => (
+                  <ProductRow
+                    canDelete={canDelete}
+                    canUpdate={canUpdate}
+                    key={product.id}
+                    product={product}
+                    showStock={canReadInventory}
+                    onDelete={() => setPendingDelete([product.id])}
+                  />
+                ))}
+              </Table.Body>
+            </Table.Content>
+          </Table.ScrollContainer>
+          {products.length ? (
             <Table.Footer>
               <Pagination size="sm">
                 <Pagination.Summary className="text-xs text-muted">
-                  {(currentPage - 1) * pageSize + 1} to{" "}
-                  {Math.min(currentPage * pageSize, products.length)} of{" "}
+                  {(currentPage - 1) * pageSize + 1} to{' '}
+                  {Math.min(currentPage * pageSize, products.length)} of{' '}
                   {products.length} results
                 </Pagination.Summary>
                 <Pagination.Content>
@@ -310,35 +352,15 @@ export function ProductList() {
                 </Pagination.Content>
               </Pagination>
             </Table.Footer>
-          </Table>
-        ) : (
-          <div className="px-6 py-16 text-center">
-            <p className="font-semibold">No products found</p>
-            <p className="mt-1 text-sm text-muted">
-              {deferredSearch || status !== "ALL" || channel !== "ALL"
-                ? "Try changing your search or filters."
-                : "Create your first product to start building the catalog."}
-            </p>
-            {canCreate &&
-              !deferredSearch &&
-              status === "ALL" &&
-              channel === "ALL" && (
-                <Link
-                  className="mt-5 inline-flex rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground"
-                  href="/products/new"
-                >
-                  Create product
-                </Link>
-              )}
-          </div>
-        )}
+          ) : null}
+        </Table>
       </div>
       <ConfirmDialog
         confirmLabel={
-          pendingDelete?.length === 1 ? "Delete product" : "Delete products"
+          pendingDelete?.length === 1 ? 'Delete product' : 'Delete products'
         }
         description={`This permanently deletes ${pendingDelete?.length ?? 0
-          } product${pendingDelete?.length === 1 ? "" : "s"
+          } product${pendingDelete?.length === 1 ? '' : 's'
           } and removes them from every sales channel.`}
         isPending={deleteMutation.isPending}
         open={Boolean(pendingDelete)}
@@ -412,6 +434,9 @@ function ProductRow({
           {product.name}
         </Link>
         <p className="mt-1 text-xs text-muted">{product.sku}</p>
+        <p className="mt-1 text-xs text-muted">
+          {product.category?.name ?? 'Uncategorized'}
+        </p>
       </Table.Cell>
       <Table.Cell className="px-4 py-4">
         {channels.length ? (
@@ -435,7 +460,7 @@ function ProductRow({
             <div>
               <p
                 className={
-                  lowStock ? "font-semibold text-danger" : "font-semibold"
+                  lowStock ? 'font-semibold text-danger' : 'font-semibold'
                 }
               >
                 {sellableStock} sellable
@@ -459,9 +484,9 @@ function ProductRow({
       </Table.Cell>
       <Table.Cell className="px-4 py-4">
         {new Date(product.createdAt).toLocaleDateString(undefined, {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
         })}
       </Table.Cell>
       <Table.Cell className="px-4 py-4 w-34">
@@ -481,30 +506,36 @@ function ProductRow({
             </Tooltip.Content>
           </Tooltip>
           {canUpdate && (
-              <Tooltip delay={0}>
-                <Button
-                  type="button"
-                  isIconOnly
-                  size="sm"
-                  variant="tertiary"
-                  onPress={() => router.push(`/products/${product.id}/edit`)}
-                >
-                  <Icon className="size-4" icon="gravity-ui:pencil" />
-                </Button>
-                <Tooltip.Content>
-                  <p>Edit</p>
-                </Tooltip.Content>
-              </Tooltip>
+            <Tooltip delay={0}>
+              <Button
+                type="button"
+                isIconOnly
+                size="sm"
+                variant="tertiary"
+                onPress={() => router.push(`/products/${product.id}/edit`)}
+              >
+                <Icon className="size-4" icon="gravity-ui:pencil" />
+              </Button>
+              <Tooltip.Content>
+                <p>Edit</p>
+              </Tooltip.Content>
+            </Tooltip>
           )}
           {canDelete && (
-              <Tooltip delay={0}>
-                <Button type="button" isIconOnly size="sm" variant="danger-soft" onPress={onDelete}>
-                  <Icon className="size-4" icon="gravity-ui:trash-bin" />
-                </Button>
-                <Tooltip.Content>
-                  <p>Delete</p>
-                </Tooltip.Content>
-              </Tooltip>
+            <Tooltip delay={0}>
+              <Button
+                type="button"
+                isIconOnly
+                size="sm"
+                variant="danger-soft"
+                onPress={onDelete}
+              >
+                <Icon className="size-4" icon="gravity-ui:trash-bin" />
+              </Button>
+              <Tooltip.Content>
+                <p>Delete</p>
+              </Tooltip.Content>
+            </Tooltip>
           )}
         </div>
       </Table.Cell>
@@ -518,7 +549,7 @@ function FilterSelect({
   value,
   onChange,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   label: string;
   value: string;
   onChange: (value: string) => void;
@@ -534,31 +565,76 @@ function FilterSelect({
   );
 }
 
-function StateNotice({
-  action,
-  message,
-  title,
-  onAction,
+function TableStateContent({ children }: { children: ReactNode }) {
+  return (
+    <HeroEmptyState className="flex h-full min-h-64 w-full flex-col items-center justify-center gap-4 text-center md:min-h-[calc(100dvh-30rem)]">
+      {children}
+    </HeroEmptyState>
+  );
+}
+
+function LoadingState({ label }: { label: string }) {
+  return (
+    <TableStateContent>
+      <Icon
+        className="size-6 animate-spin text-muted"
+        icon="gravity-ui:arrows-rotate-right"
+      />
+      <span className="text-sm text-muted">{label}</span>
+    </TableStateContent>
+  );
+}
+
+function ProductEmptyState({
+  canCreate,
+  channel,
+  search,
+  status,
 }: {
-  action: string;
+  canCreate: boolean;
+  channel: SalesChannel | 'ALL';
+  search: string;
+  status: ProductStatus | 'ALL';
+}) {
+  const hasFilters = Boolean(search || status !== 'ALL' || channel !== 'ALL');
+
+  return (
+    <TableStateContent>
+      <Icon className="size-6 text-muted" icon="gravity-ui:tray" />
+      <span className="text-sm font-semibold">No products found</span>
+      <span className="max-w-sm text-xs text-muted">
+        {hasFilters
+          ? 'Try changing your search or filters.'
+          : 'Create your first product to start building the catalog.'}
+      </span>
+      {canCreate && !hasFilters && (
+        <Link
+          className="inline-flex rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground"
+          href="/products/new"
+        >
+          Create product
+        </Link>
+      )}
+    </TableStateContent>
+  );
+}
+
+function ErrorState({
+  message,
+  onRetry,
+}: {
   message: string;
-  title: string;
-  onAction: () => void;
+  onRetry: () => void;
 }) {
   return (
-    <div className="grid min-h-[55vh] place-items-center text-center">
-      <div>
-        <h2 className="text-xl font-semibold">{title}</h2>
-        <p className="mt-2 max-w-md text-sm text-muted">{message}</p>
-        <Button
-          className="mt-5 rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
-          type="button"
-          onClick={onAction}
-        >
-          {action}
-        </Button>
-      </div>
-    </div>
+    <TableStateContent>
+      <Icon className="size-6 text-danger" icon="gravity-ui:circle-xmark" />
+      <span className="text-sm font-semibold">Products are unavailable</span>
+      <span className="max-w-sm text-xs text-muted">{message}</span>
+      <Button type="button" variant="primary" onPress={onRetry}>
+        Try again
+      </Button>
+    </TableStateContent>
   );
 }
 
@@ -571,5 +647,5 @@ function PermissionNotice({ message }: { message: string }) {
 }
 
 function toLabel(value: string) {
-  return value.charAt(0) + value.slice(1).toLowerCase().replaceAll("_", " ");
+  return value.charAt(0) + value.slice(1).toLowerCase().replaceAll('_', ' ');
 }

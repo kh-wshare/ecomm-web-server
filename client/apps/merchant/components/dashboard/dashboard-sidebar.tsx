@@ -37,6 +37,7 @@ export const merchantNavigation: NavigationGroup[] = [
     label: "Catalog",
     items: [
       { href: "/products", icon: "box", label: "Products" },
+      { href: "/categories", icon: "tag", label: "Categories" },
       { href: "/inventory", icon: "inventory", label: "Inventory" },
     ],
   },
@@ -65,21 +66,25 @@ export function DashboardSidebar() {
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-30 hidden border-r border-separator bg-surface transition-[width] duration-200 lg:flex lg:flex-col ${
-        isCollapsed ? "w-20" : "w-64"
-      }`}
+      className={`fixed inset-y-0 left-0 z-30 hidden border-r border-separator bg-surface transition-[width] duration-200 lg:flex lg:flex-col ${isCollapsed ? "w-20" : "w-64"
+        }`}
     >
       <SidebarContent collapsed={isCollapsed} />
       <Button
+        isIconOnly
         aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-        className="m-4 grid size-10 place-items-center self-end rounded-lg text-muted transition hover:bg-surface-secondary hover:text-foreground"
+        className="
+          m-4 grid size-10 place-items-center self-end
+          bg-primary/10 text-primary
+          transition-colors
+          hover:bg-primary/20 hover:text-primary
+        "
         type="button"
         onPress={() => setCollapsed(!isCollapsed)}
       >
         <DashboardIcon
-          className={`size-5 transition-transform ${
-            isCollapsed ? "rotate-180" : ""
-          }`}
+          className={`size-5 text-current transition-transform duration-200 ${isCollapsed ? "rotate-180" : ""
+            }`}
           name="collapse"
         />
       </Button>
@@ -99,9 +104,8 @@ export function SidebarContent({
   return (
     <>
       <div
-        className={`flex h-16 items-center border-b border-separator ${
-          collapsed ? "justify-center px-3" : "gap-3 px-5"
-        }`}
+        className={`flex h-16 items-center border-b border-separator ${collapsed ? "justify-center px-3" : "gap-3 px-5"
+          }`}
       >
         <div className="grid size-9 shrink-0 place-items-center rounded-lg bg-primary text-sm font-black text-white">
           M
@@ -117,24 +121,21 @@ export function SidebarContent({
       </div>
       <nav
         aria-label="Merchant navigation"
-        className={`flex-1 overflow-y-auto py-4 ${
-          collapsed ? "px-2" : "px-3"
-        }`}
+        className={`flex-1 overflow-y-auto py-4 ${collapsed ? "px-2" : "px-3"
+          }`}
       >
         <div className="space-y-5">
           {merchantNavigation.map((group, groupIndex) => (
             <div
-              className={`space-y-1 ${
-                collapsed && groupIndex > 0
+              className={`space-y-1 ${collapsed && groupIndex > 0
                   ? "border-t border-separator pt-3"
                   : ""
-              }`}
+                }`}
               key={group.label}
             >
               <p
-                className={`px-3 text-[11px] font-bold uppercase text-muted ${
-                  collapsed ? "sr-only" : ""
-                }`}
+                className={`px-3 text-[11px] font-bold uppercase text-muted ${collapsed ? "sr-only" : ""
+                  }`}
               >
                 {group.label}
               </p>
@@ -148,13 +149,11 @@ export function SidebarContent({
                   return (
                     <Link
                       aria-current={isActive ? "page" : undefined}
-                      className={`group relative flex h-11 items-center rounded-lg text-sm font-medium transition ${
-                        collapsed ? "justify-center px-3" : "gap-3 px-3"
-                      } ${
-                        isActive
+                      className={`group relative flex h-11 items-center rounded-lg text-sm font-medium transition ${collapsed ? "justify-center px-3" : "gap-3 px-3"
+                        } ${isActive
                           ? "bg-primary/10 text-primary"
                           : "text-muted hover:bg-surface-secondary hover:text-foreground"
-                      }`}
+                        }`}
                       href={item.href}
                       key={item.href}
                       title={collapsed ? item.label : undefined}
@@ -163,11 +162,10 @@ export function SidebarContent({
                       {isActive && (
                         <span
                           aria-hidden="true"
-                          className={`absolute rounded-full bg-primary ${
-                            collapsed
+                          className={`absolute rounded-full bg-primary ${collapsed
                               ? "left-1 top-1/2 size-1.5 -translate-y-1/2"
                               : "left-0 top-2 bottom-2 w-1"
-                          }`}
+                            }`}
                         />
                       )}
                       <DashboardIcon

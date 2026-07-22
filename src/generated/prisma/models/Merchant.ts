@@ -241,6 +241,7 @@ export type MerchantWhereInput = {
   socialPosts?: Prisma.SocialPostListRelationFilter
   websiteArticles?: Prisma.WebsiteArticleListRelationFilter
   branches?: Prisma.MerchantBranchListRelationFilter
+  productCategories?: Prisma.ProductCategoryListRelationFilter
 }
 
 export type MerchantOrderByWithRelationInput = {
@@ -273,6 +274,7 @@ export type MerchantOrderByWithRelationInput = {
   socialPosts?: Prisma.SocialPostOrderByRelationAggregateInput
   websiteArticles?: Prisma.WebsiteArticleOrderByRelationAggregateInput
   branches?: Prisma.MerchantBranchOrderByRelationAggregateInput
+  productCategories?: Prisma.ProductCategoryOrderByRelationAggregateInput
 }
 
 export type MerchantWhereUniqueInput = Prisma.AtLeast<{
@@ -308,6 +310,7 @@ export type MerchantWhereUniqueInput = Prisma.AtLeast<{
   socialPosts?: Prisma.SocialPostListRelationFilter
   websiteArticles?: Prisma.WebsiteArticleListRelationFilter
   branches?: Prisma.MerchantBranchListRelationFilter
+  productCategories?: Prisma.ProductCategoryListRelationFilter
 }, "id" | "slug">
 
 export type MerchantOrderByWithAggregationInput = {
@@ -372,6 +375,7 @@ export type MerchantCreateInput = {
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateInput = {
@@ -404,6 +408,7 @@ export type MerchantUncheckedCreateInput = {
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUpdateInput = {
@@ -436,6 +441,7 @@ export type MerchantUpdateInput = {
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateInput = {
@@ -468,6 +474,7 @@ export type MerchantUncheckedUpdateInput = {
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateManyInput = {
@@ -588,6 +595,20 @@ export type MerchantUpdateOneRequiredWithoutProductsNestedInput = {
   upsert?: Prisma.MerchantUpsertWithoutProductsInput
   connect?: Prisma.MerchantWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.MerchantUpdateToOneWithWhereWithoutProductsInput, Prisma.MerchantUpdateWithoutProductsInput>, Prisma.MerchantUncheckedUpdateWithoutProductsInput>
+}
+
+export type MerchantCreateNestedOneWithoutProductCategoriesInput = {
+  create?: Prisma.XOR<Prisma.MerchantCreateWithoutProductCategoriesInput, Prisma.MerchantUncheckedCreateWithoutProductCategoriesInput>
+  connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutProductCategoriesInput
+  connect?: Prisma.MerchantWhereUniqueInput
+}
+
+export type MerchantUpdateOneRequiredWithoutProductCategoriesNestedInput = {
+  create?: Prisma.XOR<Prisma.MerchantCreateWithoutProductCategoriesInput, Prisma.MerchantUncheckedCreateWithoutProductCategoriesInput>
+  connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutProductCategoriesInput
+  upsert?: Prisma.MerchantUpsertWithoutProductCategoriesInput
+  connect?: Prisma.MerchantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MerchantUpdateToOneWithWhereWithoutProductCategoriesInput, Prisma.MerchantUpdateWithoutProductCategoriesInput>, Prisma.MerchantUncheckedUpdateWithoutProductCategoriesInput>
 }
 
 export type MerchantCreateNestedOneWithoutThemeInput = {
@@ -861,6 +882,7 @@ export type MerchantCreateWithoutBranchesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutMerchantInput
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutBranchesInput = {
@@ -892,6 +914,7 @@ export type MerchantUncheckedCreateWithoutBranchesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMerchantInput
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutBranchesInput = {
@@ -939,6 +962,7 @@ export type MerchantUpdateWithoutBranchesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutMerchantNestedInput
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutBranchesInput = {
@@ -970,6 +994,7 @@ export type MerchantUncheckedUpdateWithoutBranchesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMerchantNestedInput
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutProductsInput = {
@@ -1001,6 +1026,7 @@ export type MerchantCreateWithoutProductsInput = {
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutProductsInput = {
@@ -1032,6 +1058,7 @@ export type MerchantUncheckedCreateWithoutProductsInput = {
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutProductsInput = {
@@ -1079,6 +1106,7 @@ export type MerchantUpdateWithoutProductsInput = {
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutProductsInput = {
@@ -1097,6 +1125,151 @@ export type MerchantUncheckedUpdateWithoutProductsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
   invitations?: Prisma.MerchantInvitationUncheckedUpdateManyWithoutMerchantNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryStocks?: Prisma.InventoryStockUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryReservations?: Prisma.InventoryReservationUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryMovements?: Prisma.InventoryMovementUncheckedUpdateManyWithoutMerchantNestedInput
+  theme?: Prisma.MerchantThemeUncheckedUpdateOneWithoutMerchantNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutMerchantNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentProviders?: Prisma.PaymentProviderUncheckedUpdateManyWithoutMerchantNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUncheckedUpdateManyWithoutMerchantNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMerchantNestedInput
+  socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
+  websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
+  branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
+}
+
+export type MerchantCreateWithoutProductCategoriesInput = {
+  id?: string
+  name: string
+  slug: string
+  email?: string | null
+  phone?: string | null
+  status?: $Enums.MerchantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  returnStockOnRefund?: boolean
+  memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
+  roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
+  invitations?: Prisma.MerchantInvitationCreateNestedManyWithoutMerchantInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutMerchantInput
+  products?: Prisma.ProductCreateNestedManyWithoutMerchantInput
+  inventoryStocks?: Prisma.InventoryStockCreateNestedManyWithoutMerchantInput
+  inventoryReservations?: Prisma.InventoryReservationCreateNestedManyWithoutMerchantInput
+  inventoryMovements?: Prisma.InventoryMovementCreateNestedManyWithoutMerchantInput
+  theme?: Prisma.MerchantThemeCreateNestedOneWithoutMerchantInput
+  checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutMerchantInput
+  orders?: Prisma.OrderCreateNestedManyWithoutMerchantInput
+  paymentProviders?: Prisma.PaymentProviderCreateNestedManyWithoutMerchantInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutMerchantInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventCreateNestedManyWithoutMerchantInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutMerchantInput
+  socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
+  websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
+  branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+}
+
+export type MerchantUncheckedCreateWithoutProductCategoriesInput = {
+  id?: string
+  name: string
+  slug: string
+  email?: string | null
+  phone?: string | null
+  status?: $Enums.MerchantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  returnStockOnRefund?: boolean
+  memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
+  invitations?: Prisma.MerchantInvitationUncheckedCreateNestedManyWithoutMerchantInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutMerchantInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryStocks?: Prisma.InventoryStockUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryReservations?: Prisma.InventoryReservationUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryMovements?: Prisma.InventoryMovementUncheckedCreateNestedManyWithoutMerchantInput
+  theme?: Prisma.MerchantThemeUncheckedCreateNestedOneWithoutMerchantInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutMerchantInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutMerchantInput
+  paymentProviders?: Prisma.PaymentProviderUncheckedCreateNestedManyWithoutMerchantInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutMerchantInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUncheckedCreateNestedManyWithoutMerchantInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMerchantInput
+  socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
+  websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
+  branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+}
+
+export type MerchantCreateOrConnectWithoutProductCategoriesInput = {
+  where: Prisma.MerchantWhereUniqueInput
+  create: Prisma.XOR<Prisma.MerchantCreateWithoutProductCategoriesInput, Prisma.MerchantUncheckedCreateWithoutProductCategoriesInput>
+}
+
+export type MerchantUpsertWithoutProductCategoriesInput = {
+  update: Prisma.XOR<Prisma.MerchantUpdateWithoutProductCategoriesInput, Prisma.MerchantUncheckedUpdateWithoutProductCategoriesInput>
+  create: Prisma.XOR<Prisma.MerchantCreateWithoutProductCategoriesInput, Prisma.MerchantUncheckedCreateWithoutProductCategoriesInput>
+  where?: Prisma.MerchantWhereInput
+}
+
+export type MerchantUpdateToOneWithWhereWithoutProductCategoriesInput = {
+  where?: Prisma.MerchantWhereInput
+  data: Prisma.XOR<Prisma.MerchantUpdateWithoutProductCategoriesInput, Prisma.MerchantUncheckedUpdateWithoutProductCategoriesInput>
+}
+
+export type MerchantUpdateWithoutProductCategoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMerchantStatusFieldUpdateOperationsInput | $Enums.MerchantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
+  invitations?: Prisma.MerchantInvitationUpdateManyWithoutMerchantNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutMerchantNestedInput
+  products?: Prisma.ProductUpdateManyWithoutMerchantNestedInput
+  inventoryStocks?: Prisma.InventoryStockUpdateManyWithoutMerchantNestedInput
+  inventoryReservations?: Prisma.InventoryReservationUpdateManyWithoutMerchantNestedInput
+  inventoryMovements?: Prisma.InventoryMovementUpdateManyWithoutMerchantNestedInput
+  theme?: Prisma.MerchantThemeUpdateOneWithoutMerchantNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutMerchantNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutMerchantNestedInput
+  paymentProviders?: Prisma.PaymentProviderUpdateManyWithoutMerchantNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutMerchantNestedInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUpdateManyWithoutMerchantNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutMerchantNestedInput
+  socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
+  websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
+  branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+}
+
+export type MerchantUncheckedUpdateWithoutProductCategoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMerchantStatusFieldUpdateOperationsInput | $Enums.MerchantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
+  invitations?: Prisma.MerchantInvitationUncheckedUpdateManyWithoutMerchantNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutMerchantNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutMerchantNestedInput
   inventoryStocks?: Prisma.InventoryStockUncheckedUpdateManyWithoutMerchantNestedInput
   inventoryReservations?: Prisma.InventoryReservationUncheckedUpdateManyWithoutMerchantNestedInput
   inventoryMovements?: Prisma.InventoryMovementUncheckedUpdateManyWithoutMerchantNestedInput
@@ -1141,6 +1314,7 @@ export type MerchantCreateWithoutThemeInput = {
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutThemeInput = {
@@ -1172,6 +1346,7 @@ export type MerchantUncheckedCreateWithoutThemeInput = {
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutThemeInput = {
@@ -1219,6 +1394,7 @@ export type MerchantUpdateWithoutThemeInput = {
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutThemeInput = {
@@ -1250,6 +1426,7 @@ export type MerchantUncheckedUpdateWithoutThemeInput = {
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutInventoryStocksInput = {
@@ -1281,6 +1458,7 @@ export type MerchantCreateWithoutInventoryStocksInput = {
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutInventoryStocksInput = {
@@ -1312,6 +1490,7 @@ export type MerchantUncheckedCreateWithoutInventoryStocksInput = {
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutInventoryStocksInput = {
@@ -1359,6 +1538,7 @@ export type MerchantUpdateWithoutInventoryStocksInput = {
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutInventoryStocksInput = {
@@ -1390,6 +1570,7 @@ export type MerchantUncheckedUpdateWithoutInventoryStocksInput = {
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutInventoryReservationsInput = {
@@ -1421,6 +1602,7 @@ export type MerchantCreateWithoutInventoryReservationsInput = {
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutInventoryReservationsInput = {
@@ -1452,6 +1634,7 @@ export type MerchantUncheckedCreateWithoutInventoryReservationsInput = {
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutInventoryReservationsInput = {
@@ -1499,6 +1682,7 @@ export type MerchantUpdateWithoutInventoryReservationsInput = {
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutInventoryReservationsInput = {
@@ -1530,6 +1714,7 @@ export type MerchantUncheckedUpdateWithoutInventoryReservationsInput = {
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutCheckoutSessionsInput = {
@@ -1561,6 +1746,7 @@ export type MerchantCreateWithoutCheckoutSessionsInput = {
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutCheckoutSessionsInput = {
@@ -1592,6 +1778,7 @@ export type MerchantUncheckedCreateWithoutCheckoutSessionsInput = {
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutCheckoutSessionsInput = {
@@ -1639,6 +1826,7 @@ export type MerchantUpdateWithoutCheckoutSessionsInput = {
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutCheckoutSessionsInput = {
@@ -1670,6 +1858,7 @@ export type MerchantUncheckedUpdateWithoutCheckoutSessionsInput = {
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutOrdersInput = {
@@ -1701,6 +1890,7 @@ export type MerchantCreateWithoutOrdersInput = {
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutOrdersInput = {
@@ -1732,6 +1922,7 @@ export type MerchantUncheckedCreateWithoutOrdersInput = {
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutOrdersInput = {
@@ -1779,6 +1970,7 @@ export type MerchantUpdateWithoutOrdersInput = {
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutOrdersInput = {
@@ -1810,6 +2002,7 @@ export type MerchantUncheckedUpdateWithoutOrdersInput = {
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutPaymentProvidersInput = {
@@ -1841,6 +2034,7 @@ export type MerchantCreateWithoutPaymentProvidersInput = {
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutPaymentProvidersInput = {
@@ -1872,6 +2066,7 @@ export type MerchantUncheckedCreateWithoutPaymentProvidersInput = {
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutPaymentProvidersInput = {
@@ -1919,6 +2114,7 @@ export type MerchantUpdateWithoutPaymentProvidersInput = {
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutPaymentProvidersInput = {
@@ -1950,6 +2146,7 @@ export type MerchantUncheckedUpdateWithoutPaymentProvidersInput = {
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutPaymentsInput = {
@@ -1981,6 +2178,7 @@ export type MerchantCreateWithoutPaymentsInput = {
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutPaymentsInput = {
@@ -2012,6 +2210,7 @@ export type MerchantUncheckedCreateWithoutPaymentsInput = {
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutPaymentsInput = {
@@ -2059,6 +2258,7 @@ export type MerchantUpdateWithoutPaymentsInput = {
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutPaymentsInput = {
@@ -2090,6 +2290,7 @@ export type MerchantUncheckedUpdateWithoutPaymentsInput = {
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutPaymentWebhookEventsInput = {
@@ -2121,6 +2322,7 @@ export type MerchantCreateWithoutPaymentWebhookEventsInput = {
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutPaymentWebhookEventsInput = {
@@ -2152,6 +2354,7 @@ export type MerchantUncheckedCreateWithoutPaymentWebhookEventsInput = {
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutPaymentWebhookEventsInput = {
@@ -2199,6 +2402,7 @@ export type MerchantUpdateWithoutPaymentWebhookEventsInput = {
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutPaymentWebhookEventsInput = {
@@ -2230,6 +2434,7 @@ export type MerchantUncheckedUpdateWithoutPaymentWebhookEventsInput = {
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutNotificationsInput = {
@@ -2261,6 +2466,7 @@ export type MerchantCreateWithoutNotificationsInput = {
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutNotificationsInput = {
@@ -2292,6 +2498,7 @@ export type MerchantUncheckedCreateWithoutNotificationsInput = {
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutNotificationsInput = {
@@ -2339,6 +2546,7 @@ export type MerchantUpdateWithoutNotificationsInput = {
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutNotificationsInput = {
@@ -2370,6 +2578,7 @@ export type MerchantUncheckedUpdateWithoutNotificationsInput = {
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutSocialPostsInput = {
@@ -2401,6 +2610,7 @@ export type MerchantCreateWithoutSocialPostsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutSocialPostsInput = {
@@ -2432,6 +2642,7 @@ export type MerchantUncheckedCreateWithoutSocialPostsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutSocialPostsInput = {
@@ -2479,6 +2690,7 @@ export type MerchantUpdateWithoutSocialPostsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutSocialPostsInput = {
@@ -2510,6 +2722,7 @@ export type MerchantUncheckedUpdateWithoutSocialPostsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutWebsiteArticlesInput = {
@@ -2541,6 +2754,7 @@ export type MerchantCreateWithoutWebsiteArticlesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutMerchantInput
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutWebsiteArticlesInput = {
@@ -2572,6 +2786,7 @@ export type MerchantUncheckedCreateWithoutWebsiteArticlesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMerchantInput
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutWebsiteArticlesInput = {
@@ -2619,6 +2834,7 @@ export type MerchantUpdateWithoutWebsiteArticlesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutMerchantNestedInput
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutWebsiteArticlesInput = {
@@ -2650,6 +2866,7 @@ export type MerchantUncheckedUpdateWithoutWebsiteArticlesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMerchantNestedInput
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutInventoryMovementsInput = {
@@ -2681,6 +2898,7 @@ export type MerchantCreateWithoutInventoryMovementsInput = {
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutInventoryMovementsInput = {
@@ -2712,6 +2930,7 @@ export type MerchantUncheckedCreateWithoutInventoryMovementsInput = {
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutInventoryMovementsInput = {
@@ -2759,6 +2978,7 @@ export type MerchantUpdateWithoutInventoryMovementsInput = {
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutInventoryMovementsInput = {
@@ -2790,6 +3010,7 @@ export type MerchantUncheckedUpdateWithoutInventoryMovementsInput = {
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutMembershipsInput = {
@@ -2821,6 +3042,7 @@ export type MerchantCreateWithoutMembershipsInput = {
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutMembershipsInput = {
@@ -2852,6 +3074,7 @@ export type MerchantUncheckedCreateWithoutMembershipsInput = {
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutMembershipsInput = {
@@ -2899,6 +3122,7 @@ export type MerchantUpdateWithoutMembershipsInput = {
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutMembershipsInput = {
@@ -2930,6 +3154,7 @@ export type MerchantUncheckedUpdateWithoutMembershipsInput = {
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutRolesInput = {
@@ -2961,6 +3186,7 @@ export type MerchantCreateWithoutRolesInput = {
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutRolesInput = {
@@ -2992,6 +3218,7 @@ export type MerchantUncheckedCreateWithoutRolesInput = {
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutRolesInput = {
@@ -3039,6 +3266,7 @@ export type MerchantUpdateWithoutRolesInput = {
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutRolesInput = {
@@ -3070,6 +3298,7 @@ export type MerchantUncheckedUpdateWithoutRolesInput = {
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutSessionsInput = {
@@ -3101,6 +3330,7 @@ export type MerchantCreateWithoutSessionsInput = {
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutSessionsInput = {
@@ -3132,6 +3362,7 @@ export type MerchantUncheckedCreateWithoutSessionsInput = {
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutSessionsInput = {
@@ -3179,6 +3410,7 @@ export type MerchantUpdateWithoutSessionsInput = {
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutSessionsInput = {
@@ -3210,6 +3442,7 @@ export type MerchantUncheckedUpdateWithoutSessionsInput = {
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutInvitationsInput = {
@@ -3241,6 +3474,7 @@ export type MerchantCreateWithoutInvitationsInput = {
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutInvitationsInput = {
@@ -3272,6 +3506,7 @@ export type MerchantUncheckedCreateWithoutInvitationsInput = {
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutInvitationsInput = {
@@ -3319,6 +3554,7 @@ export type MerchantUpdateWithoutInvitationsInput = {
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutInvitationsInput = {
@@ -3350,6 +3586,7 @@ export type MerchantUncheckedUpdateWithoutInvitationsInput = {
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutAuditLogsInput = {
@@ -3381,6 +3618,7 @@ export type MerchantCreateWithoutAuditLogsInput = {
   socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutAuditLogsInput = {
@@ -3412,6 +3650,7 @@ export type MerchantUncheckedCreateWithoutAuditLogsInput = {
   socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
   branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutAuditLogsInput = {
@@ -3459,6 +3698,7 @@ export type MerchantUpdateWithoutAuditLogsInput = {
   socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutAuditLogsInput = {
@@ -3490,6 +3730,7 @@ export type MerchantUncheckedUpdateWithoutAuditLogsInput = {
   socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
   websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
   branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 
@@ -3516,6 +3757,7 @@ export type MerchantCountOutputType = {
   socialPosts: number
   websiteArticles: number
   branches: number
+  productCategories: number
 }
 
 export type MerchantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3537,6 +3779,7 @@ export type MerchantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   socialPosts?: boolean | MerchantCountOutputTypeCountSocialPostsArgs
   websiteArticles?: boolean | MerchantCountOutputTypeCountWebsiteArticlesArgs
   branches?: boolean | MerchantCountOutputTypeCountBranchesArgs
+  productCategories?: boolean | MerchantCountOutputTypeCountProductCategoriesArgs
 }
 
 /**
@@ -3675,6 +3918,13 @@ export type MerchantCountOutputTypeCountBranchesArgs<ExtArgs extends runtime.Typ
   where?: Prisma.MerchantBranchWhereInput
 }
 
+/**
+ * MerchantCountOutputType without action
+ */
+export type MerchantCountOutputTypeCountProductCategoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProductCategoryWhereInput
+}
+
 
 export type MerchantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3706,6 +3956,7 @@ export type MerchantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   socialPosts?: boolean | Prisma.Merchant$socialPostsArgs<ExtArgs>
   websiteArticles?: boolean | Prisma.Merchant$websiteArticlesArgs<ExtArgs>
   branches?: boolean | Prisma.Merchant$branchesArgs<ExtArgs>
+  productCategories?: boolean | Prisma.Merchant$productCategoriesArgs<ExtArgs>
   _count?: boolean | Prisma.MerchantCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["merchant"]>
 
@@ -3769,6 +4020,7 @@ export type MerchantInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   socialPosts?: boolean | Prisma.Merchant$socialPostsArgs<ExtArgs>
   websiteArticles?: boolean | Prisma.Merchant$websiteArticlesArgs<ExtArgs>
   branches?: boolean | Prisma.Merchant$branchesArgs<ExtArgs>
+  productCategories?: boolean | Prisma.Merchant$productCategoriesArgs<ExtArgs>
   _count?: boolean | Prisma.MerchantCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MerchantIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -3796,6 +4048,7 @@ export type $MerchantPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     socialPosts: Prisma.$SocialPostPayload<ExtArgs>[]
     websiteArticles: Prisma.$WebsiteArticlePayload<ExtArgs>[]
     branches: Prisma.$MerchantBranchPayload<ExtArgs>[]
+    productCategories: Prisma.$ProductCategoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4221,6 +4474,7 @@ export interface Prisma__MerchantClient<T, Null = never, ExtArgs extends runtime
   socialPosts<T extends Prisma.Merchant$socialPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Merchant$socialPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SocialPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   websiteArticles<T extends Prisma.Merchant$websiteArticlesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Merchant$websiteArticlesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WebsiteArticlePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   branches<T extends Prisma.Merchant$branchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Merchant$branchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MerchantBranchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  productCategories<T extends Prisma.Merchant$productCategoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Merchant$productCategoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductCategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5101,6 +5355,30 @@ export type Merchant$branchesArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.MerchantBranchScalarFieldEnum | Prisma.MerchantBranchScalarFieldEnum[]
+}
+
+/**
+ * Merchant.productCategories
+ */
+export type Merchant$productCategoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProductCategory
+   */
+  select?: Prisma.ProductCategorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProductCategory
+   */
+  omit?: Prisma.ProductCategoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductCategoryInclude<ExtArgs> | null
+  where?: Prisma.ProductCategoryWhereInput
+  orderBy?: Prisma.ProductCategoryOrderByWithRelationInput | Prisma.ProductCategoryOrderByWithRelationInput[]
+  cursor?: Prisma.ProductCategoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProductCategoryScalarFieldEnum | Prisma.ProductCategoryScalarFieldEnum[]
 }
 
 /**

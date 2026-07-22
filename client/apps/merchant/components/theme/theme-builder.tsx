@@ -1,64 +1,64 @@
-"use client";
+'use client';
 
-import { Button, Checkbox, Input, Label, ListBox, Select } from "@heroui/react";
-import { useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Link from "next/link";
+import { Button, Checkbox, Input, Label, ListBox, Select } from '@heroui/react';
+import { useEffect, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Link from 'next/link';
 
 import {
   DevicePreviewToggle,
   PublishThemeButton,
-} from "./theme-builder-shared";
+} from './theme-builder-shared';
 
-import type { CurrentTheme, ThemeConfig, ThemeSection } from "@/types/theme";
-import { ConfirmDialog } from "@repo/ui";
-import { useThemeConfig } from "@/hooks/api/use-theme";
-import { usePermissions } from "@/hooks/use-permissions";
+import type { CurrentTheme, ThemeConfig, ThemeSection } from '@/types/theme';
+import { ConfirmDialog } from '@repo/ui';
+import { useThemeConfig } from '@/hooks/api/use-theme';
+import { usePermissions } from '@/hooks/use-permissions';
 import {
   normalizeThemeConfig,
   publishTheme,
   resetThemeDraft,
   saveThemeDraft,
-} from "@/lib/theme/theme-data";
-import { queryKeys } from "@repo/query-client";
-import { notify } from "@/lib/toast/notify";
+} from '@/lib/theme/theme-data';
+import { queryKeys } from '@repo/query-client';
+import { notify } from '@/lib/toast/notify';
 
 const presets: Record<
-  ThemeConfig["preset"],
-  Pick<ThemeConfig, "colors" | "typography">
+  ThemeConfig['preset'],
+  Pick<ThemeConfig, 'colors' | 'typography'>
 > = {
   minimal: {
     colors: {
-      primary: "#111827",
-      accent: "#2563eb",
-      background: "#ffffff",
-      text: "#111827",
+      primary: '#111827',
+      accent: '#2563eb',
+      background: '#ffffff',
+      text: '#111827',
     },
-    typography: { headingFont: "Inter", bodyFont: "Inter" },
+    typography: { headingFont: 'Inter', bodyFont: 'Inter' },
   },
   bold: {
     colors: {
-      primary: "#7c3aed",
-      accent: "#f97316",
-      background: "#fff7ed",
-      text: "#1c1917",
+      primary: '#7c3aed',
+      accent: '#f97316',
+      background: '#fff7ed',
+      text: '#1c1917',
     },
-    typography: { headingFont: "Space Grotesk", bodyFont: "Inter" },
+    typography: { headingFont: 'Space Grotesk', bodyFont: 'Inter' },
   },
   elegant: {
     colors: {
-      primary: "#292524",
-      accent: "#a16207",
-      background: "#fafaf9",
-      text: "#292524",
+      primary: '#292524',
+      accent: '#a16207',
+      background: '#fafaf9',
+      text: '#292524',
     },
-    typography: { headingFont: "Playfair Display", bodyFont: "Lora" },
+    typography: { headingFont: 'Playfair Display', bodyFont: 'Lora' },
   },
 };
 
 export function ThemeBuilder() {
   const { can } = usePermissions();
-  const canRead = can("storefront.manage");
+  const canRead = can('storefront.manage');
   const themeQuery = useThemeConfig(canRead);
 
   if (!canRead)
@@ -76,12 +76,12 @@ export function ThemeBuilder() {
 function ThemeEditor({ theme }: { theme: CurrentTheme }) {
   const queryClient = useQueryClient();
   const { can } = usePermissions();
-  const canUpdate = can("storefront.manage");
-  const canPublish = can("storefront.manage");
+  const canUpdate = can('storefront.manage');
+  const canPublish = can('storefront.manage');
   const initial = normalizeThemeConfig(theme.draftConfig);
   const live = normalizeThemeConfig(theme.liveConfig);
   const [config, setConfig] = useState(initial);
-  const [device, setDevice] = useState<"mobile" | "desktop">("desktop");
+  const [device, setDevice] = useState<'mobile' | 'desktop'>('desktop');
   const [livePreview, setLivePreview] = useState(true);
   const [showPublished, setShowPublished] = useState(false);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -92,10 +92,10 @@ function ThemeEditor({ theme }: { theme: CurrentTheme }) {
   const save = useMutation({
     mutationFn: () => saveThemeDraft(config),
     onSuccess: async () => {
-      notify.success("Theme draft saved");
+      notify.success('Theme draft saved');
       await refresh();
     },
-    onError: (error) => notify.error(error, "Unable to save theme"),
+    onError: (error) => notify.error(error, 'Unable to save theme'),
   });
   const publish = useMutation({
     mutationFn: async () => {
@@ -103,25 +103,25 @@ function ThemeEditor({ theme }: { theme: CurrentTheme }) {
       return publishTheme();
     },
     onSuccess: async () => {
-      notify.success("Theme published");
+      notify.success('Theme published');
       await refresh();
     },
-    onError: (error) => notify.error(error, "Unable to publish theme"),
+    onError: (error) => notify.error(error, 'Unable to publish theme'),
   });
   const reset = useMutation({
     mutationFn: resetThemeDraft,
     onSuccess: async () => {
-      notify.success("Theme draft reset");
+      notify.success('Theme draft reset');
       await refresh();
     },
-    onError: (error) => notify.error(error, "Unable to reset theme"),
+    onError: (error) => notify.error(error, 'Unable to reset theme'),
   });
 
   useEffect(() => {
     if (!dirty) return;
     const warn = (event: BeforeUnloadEvent) => event.preventDefault();
-    window.addEventListener("beforeunload", warn);
-    return () => window.removeEventListener("beforeunload", warn);
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
   }, [dirty]);
 
   const patch = (value: Partial<ThemeConfig>) =>
@@ -163,7 +163,7 @@ function ThemeEditor({ theme }: { theme: CurrentTheme }) {
                   variant="primary"
                   onPress={() => save.mutate()}
                 >
-                  {save.isPending ? "Saving…" : "Save draft"}
+                  {save.isPending ? 'Saving…' : 'Save draft'}
                 </Button>
               </>
             )}
@@ -185,15 +185,16 @@ function ThemeEditor({ theme }: { theme: CurrentTheme }) {
         <div className="grid gap-5 xl:grid-cols-[430px_1fr]">
           <div className="space-y-4">
             <Panel title="Theme preset">
-              <div className="grid grid-cols-3 gap-2">
-                {(Object.keys(presets) as ThemeConfig["preset"][]).map(
+              <div className="grid grid-cols-3 gap-2.5">
+                {(Object.keys(presets) as ThemeConfig['preset'][]).map(
                   (preset) => (
                     <Button
+                      className="h-10 capitalize"
                       key={preset}
                       size="sm"
                       type="button"
                       variant={
-                        config.preset === preset ? "primary" : "secondary"
+                        config.preset === preset ? 'primary' : 'secondary'
                       }
                       onPress={() => patch({ preset, ...presets[preset] })}
                     >
@@ -205,44 +206,34 @@ function ThemeEditor({ theme }: { theme: CurrentTheme }) {
             </Panel>
 
             <Panel title="Design tokens">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 {(
                   Object.keys(config.colors) as Array<
-                    keyof ThemeConfig["colors"]
+                    keyof ThemeConfig['colors']
                   >
                 ).map((token) => (
-                  <label
-                    className="grid gap-1.5 text-sm font-medium capitalize"
+                  <ColorTokenField
                     key={token}
-                  >
-                    <span>{token}</span>
-                    <Input
-                      aria-label={`${token} color`}
-                      type="color"
-                      value={config.colors[token]}
-                      variant="secondary"
-                      onChange={(event) =>
-                        patch({
-                          colors: {
-                            ...config.colors,
-                            [token]: event.target.value,
-                          },
-                        })
-                      }
-                    />
-                    <span className="font-mono text-[10px] text-muted">
-                      {config.colors[token]}
-                    </span>
-                  </label>
+                    label={token}
+                    value={config.colors[token]}
+                    onChange={(value) =>
+                      patch({
+                        colors: {
+                          ...config.colors,
+                          [token]: value,
+                        },
+                      })
+                    }
+                  />
                 ))}
                 <SelectField
                   label="Heading font"
                   value={config.typography.headingFont}
                   values={[
-                    "Inter",
-                    "Space Grotesk",
-                    "Playfair Display",
-                    "Lora",
+                    'Inter',
+                    'Space Grotesk',
+                    'Playfair Display',
+                    'Lora',
                   ]}
                   onChange={(headingFont) =>
                     patch({
@@ -253,7 +244,7 @@ function ThemeEditor({ theme }: { theme: CurrentTheme }) {
                 <SelectField
                   label="Body font"
                   value={config.typography.bodyFont}
-                  values={["Inter", "Lora", "System UI", "Roboto"]}
+                  values={['Inter', 'Lora', 'System UI', 'Roboto']}
                   onChange={(bodyFont) =>
                     patch({ typography: { ...config.typography, bodyFont } })
                   }
@@ -261,13 +252,13 @@ function ThemeEditor({ theme }: { theme: CurrentTheme }) {
                 <SelectField
                   label="Border radius"
                   value={config.layout.borderRadius}
-                  values={["none", "small", "medium", "large"]}
+                  values={['none', 'small', 'medium', 'large']}
                   onChange={(borderRadius) =>
                     patch({
                       layout: {
                         ...config.layout,
                         borderRadius:
-                          borderRadius as ThemeConfig["layout"]["borderRadius"],
+                          borderRadius as ThemeConfig['layout']['borderRadius'],
                       },
                     })
                   }
@@ -275,12 +266,12 @@ function ThemeEditor({ theme }: { theme: CurrentTheme }) {
                 <SelectField
                   label="Spacing"
                   value={config.layout.spacing}
-                  values={["compact", "comfortable", "spacious"]}
+                  values={['compact', 'comfortable', 'spacious']}
                   onChange={(spacing) =>
                     patch({
                       layout: {
                         ...config.layout,
-                        spacing: spacing as ThemeConfig["layout"]["spacing"],
+                        spacing: spacing as ThemeConfig['layout']['spacing'],
                       },
                     })
                   }
@@ -360,7 +351,7 @@ function ThemeEditor({ theme }: { theme: CurrentTheme }) {
                         };
                         patch({
                           sections,
-                          ...(section.type === "hero"
+                          ...(section.type === 'hero'
                             ? {
                                 layout: {
                                   ...config.layout,
@@ -443,15 +434,15 @@ function SectionContent({
   patch: (value: Partial<ThemeConfig>) => void;
 }) {
   const fields: Array<{
-    key: "featuredCollection" | "socialFeed" | "contactForm";
+    key: 'featuredCollection' | 'socialFeed' | 'contactForm';
     label: string;
   }> = [
-    { key: "featuredCollection", label: "Featured collection title" },
-    { key: "socialFeed", label: "Social feed title" },
-    { key: "contactForm", label: "Contact form title" },
+    { key: 'featuredCollection', label: 'Featured collection title' },
+    { key: 'socialFeed', label: 'Social feed title' },
+    { key: 'contactForm', label: 'Contact form title' },
   ];
   return (
-    <div className="mt-4 space-y-3 border-t border-separator pt-4">
+    <div className="mt-4 grid gap-4 border-t border-separator pt-4">
       <TextField
         label="Hero title"
         value={config.hero.title}
@@ -467,30 +458,28 @@ function SectionContent({
         value={config.hero.imageUrl}
         onChange={(imageUrl) => patch({ hero: { ...config.hero, imageUrl } })}
       />
-      <label className="block text-xs font-medium">
-        Product grid columns
-        <Input
-          className="mt-1 w-full"
-          max={6}
-          min={1}
-          type="range"
-          value={config.layout.productGridColumns}
-          onChange={(event) =>
-            patch({
-              layout: {
-                ...config.layout,
-                productGridColumns: Number(event.target.value),
-              },
-            })
-          }
-        />
-      </label>
+      <GridColumnsSelect
+        label="Product grid columns"
+        value={config.layout.productGridColumns}
+        onChange={(productGridColumns) =>
+          patch({
+            layout: {
+              ...config.layout,
+              productGridColumns,
+            },
+          })
+        }
+      />
       {fields.map(({ key, label }) => (
         <TextField
           key={key}
           label={label}
           value={config[key].title}
-          onChange={(title) => patch({ [key]: { title } })}
+          onChange={(title) =>
+            patch({
+              [key]: { title },
+            })
+          }
         />
       ))}
       <TextField
@@ -502,14 +491,88 @@ function SectionContent({
   );
 }
 
+function ColorTokenField({
+  label,
+  value,
+  onChange,
+}: {
+  label: keyof ThemeConfig['colors'];
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="grid gap-1.5 text-xs font-medium capitalize">
+      <span>{label}</span>
+      <span className="relative grid h-11 grid-cols-[44px_minmax(0,1fr)] items-center overflow-hidden rounded-xl border border-separator bg-background transition focus-within:border-accent">
+        <span
+          aria-hidden
+          className="mx-2 size-7 rounded-lg border border-black/10 shadow-inner"
+          style={{ backgroundColor: value }}
+        />
+        <span className="truncate pr-3 font-mono text-xs text-muted">
+          {value}
+        </span>
+        <input
+          aria-label={`${label} color`}
+          className="absolute inset-0 cursor-pointer opacity-0"
+          type="color"
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+        />
+      </span>
+    </label>
+  );
+}
+
+function GridColumnsSelect({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  onChange: (value: number) => void;
+}) {
+  const options = [2, 3, 4, 6];
+  return (
+    <div className="grid gap-2">
+      <div className="flex items-center justify-between gap-3">
+        <Label className="text-xs font-medium">{label}</Label>
+        <span className="rounded-lg bg-surface-secondary px-2 py-1 font-mono text-xs text-muted">
+          {value} grid
+        </span>
+      </div>
+      <div className="grid grid-cols-4 gap-2 rounded-xl border border-separator bg-background p-1">
+        {options.map((columns) => {
+          const isSelected = value === columns;
+
+          return (
+            <Button
+              className={`h-9 rounded-lg px-2 text-xs font-semibold ${
+                isSelected ? '' : 'bg-transparent'
+              }`}
+              key={columns}
+              type="button"
+              variant={isSelected ? 'primary' : 'tertiary'}
+              onPress={() => onChange(columns)}
+            >
+              {columns} grid
+            </Button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function ThemePreview({
   config,
   device,
 }: {
   config: ThemeConfig;
-  device: "mobile" | "desktop";
+  device: 'mobile' | 'desktop';
 }) {
-  const radius = { none: "0", small: "6px", medium: "12px", large: "22px" }[
+  const radius = { none: '0', small: '6px', medium: '12px', large: '22px' }[
     config.layout.borderRadius
   ];
   const gap = { compact: 8, comfortable: 16, spacious: 28 }[
@@ -519,7 +582,7 @@ function ThemePreview({
     <div className="rounded-2xl bg-surface-secondary p-4">
       <div
         className={`mx-auto min-h-[650px] overflow-hidden border border-separator shadow-xl transition-all ${
-          device === "mobile" ? "max-w-[390px]" : "max-w-full"
+          device === 'mobile' ? 'max-w-[390px]' : 'max-w-full'
         }`}
         style={{
           background: config.colors.background,
@@ -561,7 +624,7 @@ function PreviewSection({
   radius: string;
   section: ThemeSection;
 }) {
-  if (section.type === "hero") {
+  if (section.type === 'hero') {
     return (
       <div
         className="bg-cover bg-center px-6 py-16 text-center"
@@ -581,10 +644,10 @@ function PreviewSection({
       </div>
     );
   }
-  if (section.type === "productGrid" || section.type === "featuredCollection") {
+  if (section.type === 'productGrid' || section.type === 'featuredCollection') {
     const title =
-      section.type === "productGrid"
-        ? "Latest products"
+      section.type === 'productGrid'
+        ? 'Latest products'
         : config.featuredCollection.title;
     return (
       <div className="p-6">
@@ -623,7 +686,7 @@ function PreviewSection({
   return (
     <div className="border-t border-black/10 p-6 text-center">
       <h3 className="font-bold">{content}</h3>
-      {section.type === "contactForm" && (
+      {section.type === 'contactForm' && (
         <div className="mx-auto mt-4 h-10 max-w-sm border border-black/15" />
       )}
     </div>
@@ -655,10 +718,10 @@ function TextField({
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="block text-xs font-medium">
-      {label}
+    <label className="grid gap-1.5 text-xs font-medium">
+      <span>{label}</span>
       <Input
-        className="mt-1"
+        className="h-10 rounded-xl border border-separator bg-background px-3 text-sm shadow-none transition focus-within:border-accent"
         value={value}
         variant="secondary"
         onChange={(event) => onChange(event.target.value)}
@@ -684,20 +747,29 @@ function SelectField({
       value={value}
       variant="secondary"
       onChange={(nextValue) => {
-        if (typeof nextValue === "string") onChange(nextValue);
+        if (typeof nextValue === 'string') onChange(nextValue);
       }}
     >
-      <Label className="mb-1.5 block text-sm font-medium">{label}</Label>
-      <Select.Trigger>
-        <Select.Value />
-        <Select.Indicator />
+      <Label className="mb-1.5 block text-xs font-medium">{label}</Label>
+      <Select.Trigger className="h-10 rounded-xl border border-separator bg-background px-3 text-sm shadow-none transition hover:bg-surface-secondary/50 data-[focus-visible=true]:outline data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-offset-2 data-[focus-visible=true]:outline-accent">
+        <Select.Value className="truncate capitalize" />
+        <Select.Indicator className="text-muted" />
       </Select.Trigger>
-      <Select.Popover>
-        <ListBox>
+      <Select.Popover
+        className="mt-1 min-w-[var(--trigger-width)] overflow-hidden rounded-xl border border-separator bg-surface p-1 shadow-lg"
+        offset={6}
+        placement="bottom start"
+      >
+        <ListBox className="max-h-56 overflow-y-auto">
           {values.map((item) => (
-            <ListBox.Item id={item} key={item} textValue={item}>
+            <ListBox.Item
+              className="rounded-lg px-3 py-2 text-sm outline-none transition hover:bg-surface-secondary data-[focused=true]:bg-surface-secondary"
+              id={item}
+              key={item}
+              textValue={item}
+            >
               <span className="capitalize">{item}</span>
-              <ListBox.ItemIndicator />
+              <ListBox.ItemIndicator className="text-accent" />
             </ListBox.Item>
           ))}
         </ListBox>
@@ -707,13 +779,13 @@ function SelectField({
 }
 
 function sectionLabel(section: ThemeSection) {
-  const labels: Record<ThemeSection["type"], string> = {
-    hero: "Hero banner",
-    productGrid: "Product grid",
-    featuredCollection: "Featured collection",
-    socialFeed: "Social feed",
-    contactForm: "Contact form",
-    footer: "Footer",
+  const labels: Record<ThemeSection['type'], string> = {
+    hero: 'Hero banner',
+    productGrid: 'Product grid',
+    featuredCollection: 'Featured collection',
+    socialFeed: 'Social feed',
+    contactForm: 'Contact form',
+    footer: 'Footer',
   };
   return labels[section.type];
 }
