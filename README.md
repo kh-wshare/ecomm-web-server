@@ -4,9 +4,7 @@ A comprehensive multi-tenant e-commerce platform with merchant management, inven
 
 ## 🎯 Overview
 
-This monorepo contains:
-- **Backend API** (root) - NestJS commerce platform with tenant isolation, authentication, and real-time events
-- **Frontend Workspace** (`client/`) - Independently deployable merchant, POS, storefront, and marketing applications
+This is the **backend API** for the e-commerce platform with tenant isolation, authentication, and real-time events. Frontend applications are maintained in separate repositories.
 
 ### Key Features
 
@@ -16,7 +14,6 @@ This monorepo contains:
 - **Inventory Management** - Stock adjustments, concurrent reservations, expiration handling, and movement history
 - **Checkout & Orders** - Session-based checkout with price verification and order lifecycle management
 - **Payments** - Payment provider adapters and webhook handling
-- **Storefront** - Public product browsing, theme customization, and channel-specific availability
 - **Real-Time Features** - WebSocket support via Socket.IO
 - **File Storage** - Local or cloud provider file management
 - **Audit Logging** - Comprehensive action tracking per merchant
@@ -30,23 +27,12 @@ This monorepo contains:
 | **Database** | PostgreSQL 16, Prisma ORM |
 | **Cache/Events** | Redis |
 | **Real-Time** | Socket.IO |
-| **Frontend** | React 19, Next.js 16, HeroUI 3, Tailwind CSS 4 |
 | **Package Manager** | pnpm 10.30.1 |
 | **Runtime** | Node.js ≥ 26.5.0 |
-| **Deployment** | Docker, Docker Compose, nginx gateway |
+| **Deployment** | Docker, Docker Compose |
 | **Testing** | Jest, Supertest |
 
-## 📦 Applications
-
-| App | Port | Location | Purpose |
-|-----|------|----------|---------|
-| **API** | 9001 | `http://localhost:9001` | Commerce platform API |
-| **Merchant** | 3000 | `http://localhost:3000/merchant` | Admin dashboard |
-| **POS** | 3001 | `http://localhost:3001/pos` | Point of sale interface |
-| **Storefront** | 3002 | `http://localhost:3002` | Public store and checkout |
-| **Marketing** | 3003 | `http://localhost:3003` | Marketing website |
-
-## 🚀 Quick Start
+## � Quick Start
 
 ### Prerequisites
 
@@ -62,11 +48,6 @@ cd ecomm-web-server
 
 # Backend dependencies
 pnpm install
-
-# Frontend dependencies
-cd client
-pnpm install
-cd ..
 ```
 
 ### 2. Set Up Environment
@@ -91,23 +72,11 @@ pnpm prisma:generate
 pnpm prisma:seed
 ```
 
-### 5. Run Services
+### 5. Run API
 
-**Backend (in root directory):**
 ```bash
 pnpm start:dev
 # API available at http://localhost:9001
-```
-
-**Frontend (in `client/` directory):**
-```bash
-cd client
-pnpm dev
-# All apps start, or run individually:
-pnpm merchant:dev
-pnpm pos:dev
-pnpm storefront:dev
-pnpm marketing:dev
 ```
 
 ## ⚙️ Environment Configuration
@@ -122,8 +91,6 @@ pnpm marketing:dev
 | `JWT_ACCESS_SECRET` | - | Access token secret |
 | `JWT_REFRESH_SECRET` | - | Refresh token secret |
 | `STORAGE_PROVIDER` | `local` | File storage backend |
-| `DASHBOARD_FRONTEND_URL` | `http://localhost:3000` | Merchant UI CORS origin |
-| `PUBLIC_STOREFRONT_URL` | `http://localhost:3002` | Storefront CORS origin |
 | `SWAGGER_ENABLED` | `true` | Enable API documentation |
 
 Refer to `.env.example` for all available options.
@@ -172,25 +139,7 @@ pnpm prisma:seed        # Seed database
 pnpm prisma:studio      # Open Prisma Studio
 ```
 
-## 📋 Frontend Scripts
-
-Run from `client/` directory:
-
-```bash
-# Development
-pnpm dev                # Run all apps
-pnpm merchant:dev       # Merchant app only
-pnpm pos:dev            # POS app only
-pnpm storefront:dev     # Storefront only
-pnpm marketing:dev      # Marketing only
-
-# Build & Test
-pnpm build              # Build all
-pnpm lint               # Lint all
-pnpm type-check         # Type check all
-```
-
-## 🐳 Docker
+##  Docker
 
 ### Local Development Stack
 
@@ -200,21 +149,13 @@ docker compose -f docker-compose.dev.yml up -d
 
 Includes PostgreSQL and Redis.
 
-### Production-Like Stack
+### Production Build
 
 ```bash
-docker compose up -d --build
+docker compose -f docker-compose.prod.yml up -d --build
 ```
 
-Includes all services plus nginx gateway.
-
-### Gateway Routes (Production)
-
-```
-/merchant/*  → merchant app
-/pos/*       → POS app
-/            → storefront app
-```
+For production deployment guidance, see [docs/docker-deployment.md](docs/docker-deployment.md).
 
 ## 📁 Project Structure
 
@@ -245,10 +186,7 @@ Includes all services plus nginx gateway.
 │   ├── schema.prisma
 │   ├── seed.ts
 │   └── migrations/
-├── client/                   # Frontend workspace
-│   ├── apps/                 # Merchant, POS, Storefront, Marketing
-│   └── packages/             # Shared utilities, types, UI components
-├── docs/                     # Documentation & roadmaps
+├── docs/                     # Documentation & deployment guides
 ├── docker-compose.dev.yml
 ├── docker-compose.prod.yml
 ├── Dockerfile
@@ -347,7 +285,6 @@ Additional docs:
 - [Docker Deployment](docs/docker-deployment.md)
 - [Backend Deployment](docs/backend-deployment.md)
 - [Gateway Routing](docs/gateway-routing.md)
-- [Frontend Integration](docs/frontend-integration.md)
 - [Improvement Notes](docs/improvement.md)
 - [Merchant Roadmap](docs/merchant_master_roadmap.md)
 - [Monolith Removal](docs/monolith-removal.md)
