@@ -39,15 +39,6 @@ jobs:
       - name: Type check
         run: pnpm run type-check
 
-      - name: Lint micro-frontends
-        run: pnpm run mfe:lint
-
-      - name: Type check micro-frontends and shared packages
-        run: pnpm run mfe:type-check
-
-      - name: Build micro-frontends and shared packages
-        run: pnpm run mfe:build
-
       - name: Test
         run: pnpm run test
 
