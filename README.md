@@ -1,71 +1,89 @@
-# Merchant Commerce Platform
+# E-Commerce Web Server
 
-NestJS commerce API with independently deployable merchant, POS, storefront,
-and marketing frontends.
+A comprehensive multi-tenant e-commerce platform with merchant management, inventory control, checkout, payments, and real-time features. Built with NestJS backend, React/Next.js frontends, PostgreSQL, Redis, and Docker.
 
-## Overview
+## 🎯 Overview
 
-This repository contains the backend API at the root and a separate frontend
-workspace in `client/`.
+This monorepo contains:
+- **Backend API** (root) - NestJS commerce platform with tenant isolation, authentication, and real-time events
+- **Frontend Workspace** (`client/`) - Independently deployable merchant, POS, storefront, and marketing applications
 
-The platform covers merchant onboarding, authentication, role and permission
-checks, catalog management, inventory, checkout, orders, payments, file storage,
-theme settings, social posts, notifications, storefront browsing, and audit
-logging.
+### Key Features
 
-## Stack
+- **Multi-Tenant Architecture** - Isolated merchant environments with role-based access control
+- **Authentication & Authorization** - JWT-based with refresh token rotation and merchant switching
+- **Product Catalog** - SKU management, variants, visibility, and status tracking
+- **Inventory Management** - Stock adjustments, concurrent reservations, expiration handling, and movement history
+- **Checkout & Orders** - Session-based checkout with price verification and order lifecycle management
+- **Payments** - Payment provider adapters and webhook handling
+- **Storefront** - Public product browsing, theme customization, and channel-specific availability
+- **Real-Time Features** - WebSocket support via Socket.IO
+- **File Storage** - Local or cloud provider file management
+- **Audit Logging** - Comprehensive action tracking per merchant
+- **Notifications** - Event deduplication and notification management
 
-| Area             | Technology                                        |
-| ---------------- | ------------------------------------------------- |
-| API              | NestJS 11, Prisma 7, PostgreSQL, Redis, Socket.IO |
-| Frontends        | Next.js 16, React 19, HeroUI 3, Tailwind CSS 4    |
-| Backend package  | Root package, pnpm 10.30.1                        |
-| Client workspace | `client/`, pnpm 10.30.1, Turborepo                |
-| Runtime          | Node.js >= 26.5.0                                 |
-| Deployment       | Docker Compose, nginx gateway                     |
+## 🛠️ Tech Stack
 
-## Applications
+| Component | Technology |
+|-----------|-----------|
+| **Backend API** | NestJS 11, TypeScript, Express |
+| **Database** | PostgreSQL 16, Prisma ORM |
+| **Cache/Events** | Redis |
+| **Real-Time** | Socket.IO |
+| **Frontend** | React 19, Next.js 16, HeroUI 3, Tailwind CSS 4 |
+| **Package Manager** | pnpm 10.30.1 |
+| **Runtime** | Node.js ≥ 26.5.0 |
+| **Deployment** | Docker, Docker Compose, nginx gateway |
+| **Testing** | Jest, Supertest |
 
-| App        | Package            | Local URL                        | Purpose                                                 |
-| ---------- | ------------------ | -------------------------------- | ------------------------------------------------------- |
-| API        | root package       | `http://localhost:9001`          | Commerce API, auth, checkout, payments, realtime events |
-| Merchant   | `@repo/merchant`   | `http://localhost:3000/merchant` | Merchant admin dashboard                                |
-| POS        | `@repo/pos`        | `http://localhost:3001/pos`      | Staff point-of-sale                                     |
-| Storefront | `@repo/storefront` | `http://localhost:3002`          | Public storefront and checkout                          |
-| Marketing  | `@repo/marketing`  | `http://localhost:3003`          | Public marketing site                                   |
+## 📦 Applications
 
-In the production Docker gateway, nginx routes `/merchant/*` to the merchant
-app, `/pos/*` to the POS app, and `/` to the storefront app.
+| App | Port | Location | Purpose |
+|-----|------|----------|---------|
+| **API** | 9001 | `http://localhost:9001` | Commerce platform API |
+| **Merchant** | 3000 | `http://localhost:3000/merchant` | Admin dashboard |
+| **POS** | 3001 | `http://localhost:3001/pos` | Point of sale interface |
+| **Storefront** | 3002 | `http://localhost:3002` | Public store and checkout |
+| **Marketing** | 3003 | `http://localhost:3003` | Marketing website |
 
-## Local Setup
+## 🚀 Quick Start
 
-Install backend dependencies:
+### Prerequisites
+
+- Node.js ≥ 26.5.0
+- Docker & Docker Compose
+- pnpm 10.30.1
+
+### 1. Clone & Install
 
 ```bash
+git clone <repo-url>
+cd ecomm-web-server
+
+# Backend dependencies
 pnpm install
-```
 
-Install frontend workspace dependencies:
-
-```bash
+# Frontend dependencies
 cd client
 pnpm install
 cd ..
 ```
 
-Create the backend environment file:
+### 2. Set Up Environment
 
 ```bash
 cp .env.example .env
 ```
 
-Start local infrastructure:
+### 3. Start Infrastructure
 
 ```bash
 docker compose -f docker-compose.dev.yml up -d
 ```
 
-Prepare the database:
+This starts PostgreSQL (port 5448) and Redis (port 6388).
+
+### 4. Initialize Database
 
 ```bash
 pnpm prisma:migrate
@@ -73,148 +91,274 @@ pnpm prisma:generate
 pnpm prisma:seed
 ```
 
-Run the API:
+### 5. Run Services
 
+**Backend (in root directory):**
 ```bash
 pnpm start:dev
+# API available at http://localhost:9001
 ```
 
-Run all active frontend apps:
-
+**Frontend (in `client/` directory):**
 ```bash
 cd client
 pnpm dev
-```
-
-Run one frontend app:
-
-```bash
-cd client
+# All apps start, or run individually:
 pnpm merchant:dev
 pnpm pos:dev
 pnpm storefront:dev
 pnpm marketing:dev
 ```
 
-## Environment
+## ⚙️ Environment Configuration
 
-The backend environment is documented in `.env.example`. The most important
-local settings are:
+### Backend (.env)
 
-| Variable                 | Default                        | Description                   |
-| ------------------------ | ------------------------------ | ----------------------------- |
-| `PORT`                   | `9001`                         | Local API port                |
-| `DATABASE_URL`           | PostgreSQL on `localhost:5448` | Prisma database connection    |
-| `REDIS_URL`              | `redis://localhost:6388`       | Redis connection              |
-| `JWT_ACCESS_SECRET`      | placeholder                    | Access token signing secret   |
-| `JWT_REFRESH_SECRET`     | placeholder                    | Refresh token signing secret  |
-| `STORAGE_PROVIDER`       | `local`                        | File storage driver           |
-| `DASHBOARD_FRONTEND_URL` | `http://localhost:3000`        | CORS origin for merchant UI   |
-| `PUBLIC_STOREFRONT_URL`  | `http://localhost:3002`        | CORS origin for storefront UI |
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | `9001` | API server port |
+| `DATABASE_URL` | `postgresql://...` | PostgreSQL connection |
+| `REDIS_URL` | `redis://localhost:6388` | Redis connection |
+| `JWT_ACCESS_SECRET` | - | Access token secret |
+| `JWT_REFRESH_SECRET` | - | Refresh token secret |
+| `STORAGE_PROVIDER` | `local` | File storage backend |
+| `DASHBOARD_FRONTEND_URL` | `http://localhost:3000` | Merchant UI CORS origin |
+| `PUBLIC_STOREFRONT_URL` | `http://localhost:3002` | Storefront CORS origin |
+| `SWAGGER_ENABLED` | `true` | Enable API documentation |
 
-Frontend apps also include `.env.example` files in their app directories.
+Refer to `.env.example` for all available options.
 
-## API Documentation
+## 📚 API Documentation
 
-Swagger is enabled by default in development:
+Swagger documentation is available at:
 
-| Docs               | URL                                     | Scope                                                                 |
-| ------------------ | --------------------------------------- | --------------------------------------------------------------------- |
-| User API           | `http://localhost:9001/docs/user`       | Authentication, sessions, profiles, merchant access                   |
-| Merchant API       | `http://localhost:9001/docs/merchant`   | Tenant-scoped merchant operations                                     |
-| POS API            | `http://localhost:9001/docs/pos`        | POS branch, catalog, inventory, sale completion, and order operations |
-| Storefront API     | `http://localhost:9001/docs/storefront` | Public storefront, checkout, reservations                             |
-| Platform Admin API | `http://localhost:9001/docs/admin`      | Platform administration, disabled by default in `.env.example`        |
+| Scope | URL |
+|-------|-----|
+| **User API** | `http://localhost:9001/docs/user` |
+| **Merchant API** | `http://localhost:9001/docs/merchant` |
+| **POS API** | `http://localhost:9001/docs/pos` |
+| **Storefront API** | `http://localhost:9001/docs/storefront` |
+| **Admin API** | `http://localhost:9001/docs/admin` |
 
-Use `SWAGGER_ENABLED` and the `SWAGGER_*_ENABLED` flags in `.env` to control
-which documents are exposed.
+Control visibility with `SWAGGER_*_ENABLED` environment variables.
 
-## Backend Scripts
+## 📋 Backend Scripts
 
-| Command                    | Description                  |
-| -------------------------- | ---------------------------- |
-| `pnpm build`               | Build the NestJS API         |
-| `pnpm start:dev`           | Run the API in watch mode    |
-| `pnpm lint:check`          | Check backend linting        |
-| `pnpm type-check`          | Type-check the backend       |
-| `pnpm test`                | Run backend unit tests       |
-| `pnpm test:e2e`            | Run backend end-to-end tests |
-| `pnpm prisma:generate`     | Generate Prisma Client       |
-| `pnpm prisma:migrate`      | Run development migrations   |
-| `pnpm prisma:migrate:prod` | Run production migrations    |
-| `pnpm prisma:seed`         | Seed the database            |
-| `pnpm prisma:studio`       | Open Prisma Studio           |
+```bash
+# Development
+pnpm start:dev          # Run with hot reload
+pnpm start:debug        # Debug mode
+pnpm test               # Unit tests
+pnpm test:watch         # Watch mode
+pnpm test:cov           # Coverage report
+pnpm test:e2e           # End-to-end tests
 
-## Frontend Scripts
+# Code Quality
+pnpm lint               # Lint and auto-fix
+pnpm lint:check         # Check without fixing
+pnpm type-check         # TypeScript type check
+pnpm format             # Format code
 
-Run these from `client/`:
+# Build
+pnpm build              # Production build
+pnpm start:prod         # Run production build
 
-| Command               | Description                                    |
-| --------------------- | ---------------------------------------------- |
-| `pnpm dev`            | Run all active frontend apps                   |
-| `pnpm build`          | Build active frontend apps and shared packages |
-| `pnpm lint`           | Lint active frontend apps                      |
-| `pnpm type-check`     | Type-check frontend apps and shared packages   |
-| `pnpm merchant:dev`   | Run only the merchant app                      |
-| `pnpm pos:dev`        | Run only the POS app                           |
-| `pnpm storefront:dev` | Run only the storefront app                    |
-| `pnpm marketing:dev`  | Run only the marketing app                     |
+# Database
+pnpm prisma:generate    # Generate Prisma Client
+pnpm prisma:migrate     # Run dev migrations
+pnpm prisma:migrate:prod # Run prod migrations
+pnpm prisma:reset       # Reset database (dev only)
+pnpm prisma:seed        # Seed database
+pnpm prisma:studio      # Open Prisma Studio
+```
 
-## Docker
+## 📋 Frontend Scripts
 
-For local development infrastructure only:
+Run from `client/` directory:
+
+```bash
+# Development
+pnpm dev                # Run all apps
+pnpm merchant:dev       # Merchant app only
+pnpm pos:dev            # POS app only
+pnpm storefront:dev     # Storefront only
+pnpm marketing:dev      # Marketing only
+
+# Build & Test
+pnpm build              # Build all
+pnpm lint               # Lint all
+pnpm type-check         # Type check all
+```
+
+## 🐳 Docker
+
+### Local Development Stack
 
 ```bash
 docker compose -f docker-compose.dev.yml up -d
 ```
 
-For the full production-like stack:
+Includes PostgreSQL and Redis.
+
+### Production-Like Stack
 
 ```bash
 docker compose up -d --build
 ```
 
-Gateway routes:
+Includes all services plus nginx gateway.
 
-```txt
-/merchant/* -> merchant app
-/pos/*      -> POS app
-/*          -> storefront app
+### Gateway Routes (Production)
+
+```
+/merchant/*  → merchant app
+/pos/*       → POS app
+/            → storefront app
 ```
 
-See [docs/docker-deployment.md](docs/docker-deployment.md) and
-[docs/gateway-routing.md](docs/gateway-routing.md) for deployment and routing
-details.
+## 📁 Project Structure
 
-## Project Structure
-
-```txt
-client/
-  apps/
-    marketing/    Public marketing app
-    merchant/     Merchant admin app
-    pos/          POS app
-    storefront/   Public storefront app
-  packages/
-    api-client/   Shared API helpers
-    auth-client/  Shared auth/session helpers
-    query-client/ Shared query keys/client helpers
-    types/        Shared domain types
-    ui/           Shared HeroUI-based primitives
-  dashboard/      Archived legacy dashboard
-deploy/nginx/     Docker gateway config
-docs/             Deployment notes, roadmaps, and migration docs
-prisma/           Prisma schema, migrations, and seed data
-src/              NestJS API modules and shared infrastructure
-test/             Backend end-to-end tests
+```
+.
+├── src/                      # Backend API
+│   ├── app.controller.ts
+│   ├── app.module.ts
+│   ├── main.ts
+│   ├── common/               # Shared utilities, filters, interceptors
+│   ├── config/               # Configuration modules
+│   ├── docs/                 # Swagger documentation
+│   ├── infrastructure/       # Database, cache, storage
+│   └── modules/              # Feature modules
+│       ├── auth/             # Authentication & sessions
+│       ├── merchants/        # Merchant management
+│       ├── users/            # User management
+│       ├── products/         # Product catalog
+│       ├── inventory/        # Stock management
+│       ├── checkout/         # Checkout sessions
+│       ├── orders/           # Order management
+│       ├── payments/         # Payment processing
+│       ├── storefront/       # Public storefront
+│       ├── theme/            # Theme builder
+│       └── notifications/    # Notifications
+├── test/                     # End-to-end tests
+├── prisma/                   # Database schema & migrations
+│   ├── schema.prisma
+│   ├── seed.ts
+│   └── migrations/
+├── client/                   # Frontend workspace
+│   ├── apps/                 # Merchant, POS, Storefront, Marketing
+│   └── packages/             # Shared utilities, types, UI components
+├── docs/                     # Documentation & roadmaps
+├── docker-compose.dev.yml
+├── docker-compose.prod.yml
+├── Dockerfile
+├── package.json
+└── README.md
 ```
 
-## Documentation
+## 🔐 Authentication & Authorization
 
-- [Backend deployment](docs/backend-deployment.md)
-- [Docker deployment](docs/docker-deployment.md)
-- [Frontend integration](docs/frontend-integration.md)
-- [Gateway routing](docs/gateway-routing.md)
-- [Improvement notes](docs/improvement.md)
-- [Merchant roadmap](docs/merchant_master_roadmap.md)
-- [Monolith removal](docs/monolith-removal.md)
+### Merchant Onboarding
+
+1. Register via `/auth/register-merchant` - Creates merchant, owner user, and initial session
+2. Receive access & refresh tokens
+3. Switch between owned merchants via `/auth/switch-merchant`
+
+### Role-Based Access Control (RBAC)
+
+- **Owner** - Full merchant access, can invite users and manage permissions
+- **Manager** - Merchant operations, no user management
+- **Viewer** - Read-only access
+- Custom roles per merchant
+
+### Session Handling
+
+- Access tokens are short-lived (default 15 minutes)
+- Refresh tokens rotate on each refresh
+- Logout revokes session immediately
+- Merchant context via `X-Merchant-ID` header or JWT claim
+
+## 💾 Database Schema
+
+Key entities:
+
+- **User** - Individual accounts
+- **Merchant** - Tenant with isolated data
+- **MerchantUser** - User-merchant relationship and role assignment
+- **Product** - Catalog items with variants
+- **InventoryStock** - Stock levels per product/channel
+- **CheckoutSession** - Shopping cart state
+- **Order** - Confirmed purchase with fulfillment tracking
+- **Payment** - Payment records and provider adapters
+- **AuditLog** - Action history per merchant
+- **Theme** - Storefront customization
+
+See `prisma/schema.prisma` for full schema.
+
+## 📊 Testing
+
+### Unit & Integration Tests
+
+```bash
+pnpm test               # Run all tests
+pnpm test:watch        # Watch mode
+pnpm test:cov          # Coverage report
+```
+
+### End-to-End Tests
+
+```bash
+pnpm test:e2e           # Run E2E suite
+```
+
+Tests cover:
+- Authentication flows
+- Merchant isolation
+- Checkout and order lifecycle
+- Inventory management
+- Storefront operations
+
+## 🚢 Deployment
+
+### Docker Build
+
+```bash
+# Development image
+docker build --target development -t ecomm:dev .
+
+# Production image
+docker build --target production -t ecomm:prod .
+```
+
+### Environment for Production
+
+- Set secure `JWT_*_SECRET` values
+- Configure database on managed service
+- Set up Redis cluster or managed service
+- Configure storage provider (S3, GCS, etc.)
+- Update CORS origins
+- Enable HTTPS
+
+See [docs/docker-deployment.md](docs/docker-deployment.md) for detailed guidance.
+
+## 📖 Documentation
+
+Additional docs:
+- [Docker Deployment](docs/docker-deployment.md)
+- [Backend Deployment](docs/backend-deployment.md)
+- [Gateway Routing](docs/gateway-routing.md)
+- [Frontend Integration](docs/frontend-integration.md)
+- [Improvement Notes](docs/improvement.md)
+- [Merchant Roadmap](docs/merchant_master_roadmap.md)
+- [Monolith Removal](docs/monolith-removal.md)
+
+## 🤝 Contributing
+
+1. Create feature branch
+2. Run `pnpm lint` and `pnpm type-check`
+3. Add tests for new features
+4. Submit pull request
+
+## 📄 License
+
+UNLICENSED
