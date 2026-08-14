@@ -1,7 +1,7 @@
 {
-  "name": "nest-server",
+  "name": "ecomm-web-server",
   "version": "0.0.1",
-  "description": "",
+  "description": "E-commerce platform backend API",
   "author": "",
   "private": true,
   "packageManager": "pnpm@10.30.1",
