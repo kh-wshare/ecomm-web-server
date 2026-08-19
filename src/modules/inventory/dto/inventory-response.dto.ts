@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   InventoryMovementType,
   InventoryReservationStatus,
+  ProductType,
 } from '#app/generated/prisma/enums';
 
 export class InventoryStockDto {
@@ -87,6 +88,9 @@ export class InventoryOperationDto {
 export class ProductInventoryDetailDto {
   @ApiProperty({ format: 'uuid' })
   productId!: string;
+
+  @ApiProperty({ enum: ProductType })
+  productType!: ProductType;
 
   @ApiProperty({ type: [InventoryStockDto] })
   stocks!: InventoryStockDto[];

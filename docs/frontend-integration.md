@@ -184,8 +184,53 @@ POST /checkout/session/:id/confirm
 POST /checkout/session/:id/cancel
 ```
 
-Payment intent creation and webhook handling are backend-owned. Public frontend
-code must never hold provider secrets or webhook secrets.
+The storefront confirms the checkout before initiating payment. It then selects
+one of the `paymentProviders` returned by the checkout session and calls:
+
+```txt
+POST /payments/create-intent
+GET  /payments/:paymentId/status
+```
+
+Both routes are public but require the checkout token: send it in the request
+body as `checkoutToken` when creating an intent and in `X-Checkout-Token` when
+polling payment status. Poll every 2–5 seconds while the status is `PENDING`;
+stop when it becomes `CONFIRMED` or `FAILED`.
+
+```ts
+const intent = unwrapApiResponseData(
+  await api.post('/payments/create-intent', {
+    orderId: checkout.order.id,
+    checkoutToken: checkout.checkoutToken,
+    provider: 'KHQR', // or 'ABA_PAYWAY' when enabled for this merchant
+  }),
+);
+
+const payment = unwrapApiResponseData(
+  await api.get(`/payments/${intent.id}/status`, {
+    headers: { 'X-Checkout-Token': checkout.checkoutToken },
+  }),
+);
+```
+
+For `ABA_PAYWAY`, `create-intent` returns `action.type = "QR"` with the QR
+payload, QR image, and (when supplied by PayWay) ABA Mobile deep link. Render
+the image or generate a QR from `qrPayload`; never mark the order paid from the
+browser. PayWay posts the result to the merchant's configured `callbackUrl` at
+`POST /payments/webhook/ABA_PAYWAY/callback`. The backend checks the PayWay
+transaction before applying the normalized, atomic confirmation.
+
+`KHQR` returns a dynamic Bakong-compliant QR payload and a verification
+reference. Render `qrPayload` with the storefront QR component. The existing
+status-polling endpoint verifies the reference with Bakong before it confirms
+the order; there is no client-side confirmation path.
+
+When connecting `ABA_PAYWAY`, configure `callbackUrl` as the publicly reachable
+backend URL ending in `/payments/webhook/ABA_PAYWAY/callback`. If ABA has
+provisioned a callback signing secret, store it as `webhookSecret`; the adapter
+validates that HMAC before calling PayWay's transaction-verification API.
+
+Public frontend code must never hold Bakong, ABA, provider, or webhook secrets.
 
 ## Error Handling
 

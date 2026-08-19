@@ -1,12 +1,13 @@
 import { Controller, Get, Param, ParseUUIDPipe, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Public } from '#app/modules/authenticated/decorators/public.decorator';
-import { SocialLinkQueryDto } from './dto/social-post-input.dto';
-import { SocialLinkDto } from './dto/social-post-response.dto';
-import { SocialPostService } from './social-post.service';
+import { SocialPostService } from '@modules/social-post/social-post.service';
+import { SocialLinkDto } from '@modules/social-post/dto/social-post-response.dto';
+import { SocialLinkQueryDto } from '@modules/social-post/dto/social-post-input.dto';
+
 
 @Public()
-@ApiTags('Public Social Commerce')
+@ApiTags('Social Commerce')
 @Controller()
 export class PublicSocialController {
   constructor(private readonly socialPosts: SocialPostService) {}

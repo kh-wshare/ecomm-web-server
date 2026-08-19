@@ -16,7 +16,6 @@ import {
   ConnectPaymentProviderDto,
   CreatePaymentIntentDto,
   PaymentQueryDto,
-  PaymentWebhookDto,
 } from './dto/payment-input.dto';
 import {
   EncryptedSecret,
@@ -26,6 +25,9 @@ import {
   isPaymentConfirmationApplied,
   shouldRetryWebhookEvent,
 } from './payment-webhook-policy';
+import { KhqrAdapter, KhqrConfig } from './adapters/khqr.adapter';
+import { PayWayAdapter, PayWayConfig } from './adapters/payway.adapter';
+import { PaymentWebhookDto } from '../storefront/payment-webhook/dto/payment-webhook-resp.dto';
 
 type RequestMetadata = {
   ipAddress?: string;
@@ -66,7 +68,9 @@ export class PaymentService {
     private readonly security: PaymentSecurityService,
     private readonly events: EventBusService,
     private readonly notifications: NotificationService,
-  ) {}
+    private readonly payway: PayWayAdapter,
+    private readonly khqr: KhqrAdapter,
+  ) { }
 
   async connectProvider(
     merchantId: string,
@@ -309,13 +313,62 @@ export class PaymentService {
       });
       return payment;
     });
-    return this.paymentView(payment);
+    const view = this.paymentView(payment);
+    if (payment.provider === PaymentProviderCode.KHQR) {
+      const provider = await this.prisma.paymentProvider.findUniqueOrThrow({
+        where: { id: payment.paymentProviderId },
+      });
+      const config = this.providerConfig(provider.config);
+      const year = new Date().getFullYear();
+      const billNumber = `INV-${year}-${"00001".toString().padStart(3, '0')}`
+      const action = this.khqr.createQr({
+        config: config.settings as unknown as KhqrConfig,
+        amount: payment.amount.toString(),
+        currency: payment.currency,
+        billNumber,
+      });
+      const updated = await this.prisma.payment.update({
+        where: { id: payment.id },
+        data: { providerTransactionId: action.reference },
+      });
+      return {
+        ...this.paymentView(updated),
+        action: { type: action.type, qrPayload: action.qrPayload },
+      };
+    }
+    if (payment.provider !== PaymentProviderCode.ABA_PAYWAY) return view;
+    const order = await this.prisma.order.findUniqueOrThrow({
+      where: { id: payment.orderId },
+      include: { items: true },
+    });
+    const provider = await this.prisma.paymentProvider.findUniqueOrThrow({
+      where: { id: payment.paymentProviderId },
+    });
+    const config = this.providerConfig(provider.config);
+    const action = await this.payway.createQr({
+      config: config.settings as unknown as PayWayConfig,
+      apiKey: config.secrets.apiKey,
+      paymentReference: payment.providerTransactionId,
+      amount: payment.amount.toString(),
+      currency: payment.currency,
+      customer: this.paywayCustomer(order),
+      items: order.items.map((item) => ({
+        name: item.name,
+        quantity: item.quantity,
+        price: item.unitPrice.toString(),
+      })),
+      returnParams: Buffer.from(
+        JSON.stringify({ paymentId: payment.id }),
+      ).toString('base64'),
+    });
+    return { ...view, action };
   }
 
   async findOne(merchantId: string, paymentId: string) {
     const payment = await this.prisma.payment.findFirst({
       where: { id: paymentId, merchantId },
       include: {
+        paymentProvider: true,
         order: {
           select: {
             id: true,
@@ -343,6 +396,60 @@ export class PaymentService {
       order: payment.order,
       webhookEvents: payment.webhookEvents,
     };
+  }
+
+  async findByToken(
+    paymentId: string,
+    checkoutToken: string | undefined,
+  ) {
+    if (!checkoutToken) {
+      throw new UnauthorizedException('Checkout token is required');
+    }
+    const payment = await this.prisma.payment.findUnique({
+      where: { id: paymentId },
+      include: {
+        paymentProvider: true,
+        order: {
+          include: {
+            checkoutSession: { select: { accessTokenHash: true } },
+          },
+        },
+      },
+    });
+    if (!payment) throw new NotFoundException('Payment not found');
+    this.verifyCheckoutToken(
+      payment.order.checkoutSession.accessTokenHash,
+      checkoutToken,
+    );
+    if (
+      payment.provider === PaymentProviderCode.KHQR &&
+      payment.status === 'PENDING'
+    ) {
+      const config = this.providerConfig(payment.paymentProvider.config);
+      const verified = await this.khqr.checkPayment({
+        config: config.settings as unknown as KhqrConfig,
+        token: config.secrets.bakongToken,
+        md5: payment.providerTransactionId,
+      });
+      if (verified.responseCode === 0) {
+        const dto: PaymentWebhookDto = {
+          eventId: `khqr:${payment.providerTransactionId}`,
+          paymentId: payment.id,
+          providerTransactionId: payment.providerTransactionId,
+          status: 'CONFIRMED',
+          amount: payment.amount.toString(),
+          currency: payment.currency,
+        };
+        const event = await this.createWebhookEvent(payment, dto);
+        if (event.shouldProcess)
+          await this.confirmPayment(payment.id, event.record.id, dto, {});
+        const refreshed = await this.prisma.payment.findUniqueOrThrow({
+          where: { id: payment.id },
+        });
+        return this.paymentView(refreshed);
+      }
+    }
+    return this.paymentView(payment);
   }
 
   private endOfDay(value: string) {
@@ -389,7 +496,7 @@ export class PaymentService {
       throw new UnauthorizedException('Invalid webhook signature');
     }
 
-    const event = await this.recordWebhookEvent(payment, dto);
+    const event = await this.createWebhookEvent(payment, dto);
     if (!event.shouldProcess) {
       return {
         duplicate: true,
@@ -403,11 +510,11 @@ export class PaymentService {
       const result =
         dto.status === 'CONFIRMED'
           ? await this.confirmPayment(
-              payment.id,
-              event.record.id,
-              dto,
-              metadata,
-            )
+            payment.id,
+            event.record.id,
+            dto,
+            metadata,
+          )
           : await this.failPayment(payment.id, event.record.id, dto, metadata);
       await this.notifications.syncOrderStockAlerts(
         result.payment.merchantId,
@@ -421,6 +528,82 @@ export class PaymentService {
           orderId: result.payment.orderId,
         },
       );
+      return {
+        duplicate: result.duplicate,
+        eventId: dto.eventId,
+        eventStatus: 'PROCESSED',
+        payment: this.paymentView(result.payment),
+      };
+    } catch (error) {
+      await this.logProcessingFailure(
+        payment,
+        event.record.id,
+        error,
+        metadata,
+      );
+      throw error;
+    }
+  }
+
+  async handlePayWayCallback(
+    payload: Record<string, unknown>,
+    rawPayload: Buffer,
+    signature: string | undefined,
+    metadata: RequestMetadata,
+  ) {
+    const paymentId = this.paywayCallbackPaymentId(payload);
+    const payment = await this.prisma.payment.findUnique({
+      where: { id: paymentId },
+      include: { paymentProvider: true },
+    });
+    if (!payment || payment.provider !== PaymentProviderCode.ABA_PAYWAY) {
+      throw new NotFoundException('Payment not found');
+    }
+    const config = this.providerConfig(payment.paymentProvider.config);
+    if (
+      config.webhookSecret &&
+      (!signature ||
+        !this.security.verifySignature(
+          rawPayload,
+          signature,
+          config.webhookSecret,
+        ))
+    ) {
+      await this.logRejectedWebhook(
+        payment,
+        this.paywayWebhookDto(payment, payload, 'FAILED'),
+        rawPayload,
+        'Invalid PayWay callback signature',
+        metadata,
+      );
+      throw new UnauthorizedException('Invalid PayWay callback signature');
+    }
+    const paywayTransactionId = this.requiredPaywayString(payload, 'tran_id');
+    const verified = await this.payway.verifyTransaction({
+      config: config.settings as unknown as PayWayConfig,
+      apiKey: config.secrets.apiKey,
+      transactionId: paywayTransactionId,
+    });
+    const approved =
+      this.paywayScalar(verified.description)?.toLowerCase() === 'approved';
+    const dto = this.paywayWebhookDto(
+      payment,
+      payload,
+      approved ? 'CONFIRMED' : 'FAILED',
+      verified,
+    );
+    const event = await this.createWebhookEvent(payment, dto);
+    if (!event.shouldProcess)
+      return {
+        duplicate: true,
+        eventId: dto.eventId,
+        eventStatus: event.record.status,
+        payment: this.paymentView(payment),
+      };
+    try {
+      const result = approved
+        ? await this.confirmPayment(payment.id, event.record.id, dto, metadata)
+        : await this.failPayment(payment.id, event.record.id, dto, metadata);
       return {
         duplicate: result.duplicate,
         eventId: dto.eventId,
@@ -685,7 +868,7 @@ export class PaymentService {
     });
   }
 
-  private async recordWebhookEvent(
+  private async createWebhookEvent(
     payment: {
       id: string;
       merchantId: string;
@@ -954,7 +1137,7 @@ export class PaymentService {
         ) ?? 'abapay_khqr',
       returnUrl: this.optionalUrl(settings, 'returnUrl'),
       cancelUrl: this.optionalUrl(settings, 'cancelUrl'),
-      callbackUrl: this.optionalUrl(settings, 'callbackUrl'),
+      callbackUrl: this.requiredUrl(settings, 'callbackUrl'),
       qrImageTemplate:
         this.optionalString(settings, 'qrImageTemplate', 80) ??
         'template3_color',
@@ -1009,6 +1192,12 @@ export class PaymentService {
     }
   }
 
+  private requiredUrl(settings: Record<string, unknown>, key: string) {
+    const value = this.optionalUrl(settings, key);
+    if (!value) throw new BadRequestException(`${key} is required`);
+    return value;
+  }
+
   private optionalEnumSetting<const Values extends readonly string[]>(
     settings: Record<string, unknown>,
     key: string,
@@ -1052,15 +1241,15 @@ export class PaymentService {
     return {
       settings:
         config.settings &&
-        typeof config.settings === 'object' &&
-        !Array.isArray(config.settings)
+          typeof config.settings === 'object' &&
+          !Array.isArray(config.settings)
           ? (config.settings as Record<string, unknown>)
           : {},
       webhookSecret: secret as EncryptedSecret | undefined,
       secrets:
         config.secrets &&
-        typeof config.secrets === 'object' &&
-        !Array.isArray(config.secrets)
+          typeof config.secrets === 'object' &&
+          !Array.isArray(config.secrets)
           ? (config.secrets as Record<string, EncryptedSecret>)
           : {},
     };
@@ -1089,6 +1278,63 @@ export class PaymentService {
     };
   }
 
+  private paywayCallbackPaymentId(payload: Record<string, unknown>) {
+    const value = payload.return_params ?? payload.return_param;
+    if (typeof value !== 'string')
+      throw new BadRequestException('PayWay callback is missing return_params');
+    try {
+      const parsed = JSON.parse(
+        Buffer.from(value, 'base64').toString('utf8'),
+      ) as { paymentId?: unknown };
+      if (typeof parsed.paymentId !== 'string')
+        throw new Error('missing payment ID');
+      return parsed.paymentId;
+    } catch {
+      throw new BadRequestException('PayWay callback return_params is invalid');
+    }
+  }
+
+  private requiredPaywayString(payload: Record<string, unknown>, key: string) {
+    const value = payload[key];
+    if (typeof value !== 'string' || !value.trim()) {
+      throw new BadRequestException(`PayWay callback is missing ${key}`);
+    }
+    return value;
+  }
+
+  private paywayWebhookDto(
+    payment: {
+      id: string;
+      providerTransactionId: string;
+      amount: { toString(): string };
+      currency: string;
+    },
+    payload: Record<string, unknown>,
+    status: 'CONFIRMED' | 'FAILED',
+    verified?: Record<string, unknown>,
+  ): PaymentWebhookDto {
+    const providerTransactionId = this.requiredPaywayString(payload, 'tran_id');
+    const amount =
+      verified?.payment_amount ??
+      verified?.original_amount ??
+      payment.amount.toString();
+    const currency = verified?.original_currency ?? payment.currency;
+    return {
+      eventId: `payway:${providerTransactionId}`,
+      paymentId: payment.id,
+      providerTransactionId: payment.providerTransactionId,
+      status,
+      amount: this.paywayScalar(amount) ?? payment.amount.toString(),
+      currency: (this.paywayScalar(currency) ?? payment.currency).toUpperCase(),
+    };
+  }
+
+  private paywayScalar(value: unknown): string | undefined {
+    return typeof value === 'string' || typeof value === 'number'
+      ? String(value)
+      : undefined;
+  }
+
   private paymentView<
     T extends {
       id: string;
@@ -1112,6 +1358,22 @@ export class PaymentService {
       status: payment.status,
       paidAt: payment.paidAt,
       createdAt: payment.createdAt,
+    };
+  }
+
+  private paywayCustomer(order: {
+    customerName: string | null;
+    customerEmail: string | null;
+    customerPhone: string | null;
+  }) {
+    const [firstName = 'Customer', ...rest] = (order.customerName ?? 'Customer')
+      .trim()
+      .split(/\s+/);
+    return {
+      firstName,
+      lastName: rest.join(' ') || 'Customer',
+      email: order.customerEmail ?? undefined,
+      phone: order.customerPhone ?? undefined,
     };
   }
 

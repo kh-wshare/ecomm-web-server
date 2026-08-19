@@ -155,6 +155,22 @@ describe('Payments (e2e)', () => {
     const repeatedIntent = await createIntent(order.id, checkout.checkoutToken);
     expect(repeatedIntent.id).toBe(payment.id);
 
+    await request(app.getHttpServer())
+      .get(`/payments/${payment.id}/status`)
+      .set('X-Checkout-Token', checkout.checkoutToken)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.data).toMatchObject({
+          id: payment.id,
+          status: 'PENDING',
+          provider: 'HMAC',
+        });
+      });
+    await request(app.getHttpServer())
+      .get(`/payments/${payment.id}/status`)
+      .set('X-Checkout-Token', 'x'.repeat(32))
+      .expect(401);
+
     const otherMerchant = await register();
     await request(app.getHttpServer())
       .get(`/payments/${payment.id}`)

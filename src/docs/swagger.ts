@@ -17,6 +17,9 @@ import { SocialPostModule } from '#app/modules/social-post/social-post.module';
 import { StorefrontModule } from '#app/modules/storefront/storefront.module';
 import { ThemeModule } from '#app/modules/theme/theme.module';
 import { UsersModule } from '#app/modules/users/users.module';
+import { StorefrontPaymentModule } from '@modules/storefront/payment/payment.module';
+import { StorefrontPaymentWebhookModule } from '@modules/storefront/payment-webhook/payment-webhook.module';
+import { StorefrontSocialPostModule } from '@modules/storefront/social-post/public-social.module';
 
 function envFlag(name: string, fallback: boolean): boolean {
   const value = process.env[name];
@@ -35,7 +38,7 @@ export function setupSwagger(
 
   if (envFlag('SWAGGER_USER_ENABLED', true)) {
     const config = new DocumentBuilder()
-      .setTitle('Merchant Commerce Hub — User API')
+      .setTitle('User API')
       .setDescription('Authentication, sessions, profiles, and merchant access')
       .setVersion('1.0')
       .addBearerAuth()
@@ -51,7 +54,7 @@ export function setupSwagger(
 
   if (envFlag('SWAGGER_MERCHANT_ENABLED', true)) {
     const config = new DocumentBuilder()
-      .setTitle('Merchant Commerce Hub — Merchant API')
+      .setTitle('Merchant API')
       .setDescription('Tenant-scoped merchant dashboard operations')
       .setVersion('1.0')
       .addBearerAuth()
@@ -83,7 +86,7 @@ export function setupSwagger(
 
   if (envFlag('SWAGGER_POS_ENABLED', true)) {
     const config = new DocumentBuilder()
-      .setTitle('Merchant Commerce Hub — POS API')
+      .setTitle('POS API')
       .setDescription(
         'Authenticated point-of-sale operations for branch selection, POS catalog browsing, inventory visibility, POS sale completion, and POS order lookup',
       )
@@ -112,9 +115,9 @@ export function setupSwagger(
 
   if (envFlag('SWAGGER_STOREFRONT_ENABLED', true)) {
     const config = new DocumentBuilder()
-      .setTitle('Merchant Commerce Hub — Storefront API')
+      .setTitle('Storefront API')
       .setDescription(
-        'Public storefront browsing, checkout sessions, and stock reservations',
+        'Public storefront browsing, checkout sessions, payment initiation, and payment status polling',
       )
       .setVersion('1.0')
       .addApiKey(
@@ -123,7 +126,7 @@ export function setupSwagger(
       )
       .build();
     const document = SwaggerModule.createDocument(app, config, {
-      include: [StorefrontModule, CheckoutModule],
+      include: [StorefrontModule, CheckoutModule, StorefrontSocialPostModule, StorefrontPaymentModule, StorefrontPaymentWebhookModule],
     });
     SwaggerModule.setup('docs/storefront', app, document, {
       jsonDocumentUrl: 'docs/storefront/openapi.json',
@@ -133,7 +136,7 @@ export function setupSwagger(
 
   if (envFlag('SWAGGER_ADMIN_ENABLED', !isProduction)) {
     const config = new DocumentBuilder()
-      .setTitle('Merchant Commerce Hub — Platform Admin API')
+      .setTitle('Admin API')
       .setDescription(
         'Internal platform administration; separate from merchant admin roles',
       )

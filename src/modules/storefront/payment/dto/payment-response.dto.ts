@@ -79,3 +79,17 @@ export class PaymentDto {
   @ApiPropertyOptional({ type: PaymentActionDto })
   action?: PaymentActionDto;
 }
+
+export class PaymentWebhookResultDto {
+  @ApiProperty()
+  duplicate!: boolean;
+
+  @ApiProperty()
+  eventId!: string;
+
+  @ApiProperty({ enum: ['RECEIVED', 'PROCESSED', 'FAILED'] })
+  eventStatus!: string;
+
+  @ApiProperty({ type: PaymentDto })
+  payment!: PaymentDto;
+}

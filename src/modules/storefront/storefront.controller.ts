@@ -10,7 +10,7 @@ import {
 import { StorefrontService } from './storefront.service';
 
 @Public()
-@ApiTags('Public Storefront')
+@ApiTags('Storefront')
 @Controller('storefront/:merchantSlug')
 export class StorefrontController {
   constructor(private readonly storefrontService: StorefrontService) {}

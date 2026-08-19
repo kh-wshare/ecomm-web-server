@@ -3,8 +3,6 @@ import {
   Controller,
   Get,
   Headers,
-  HttpCode,
-  HttpStatus,
   Param,
   ParseEnumPipe,
   ParseUUIDPipe,
@@ -13,7 +11,6 @@ import {
   Query,
   Req,
 } from '@nestjs/common';
-import type { RawBodyRequest } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -26,21 +23,14 @@ import type { Request } from 'express';
 import { PaymentProviderCode } from '#app/generated/prisma/enums';
 import { CurrentMerchant } from '#app/modules/authenticated/decorators/current-merchant.decorator';
 import { CurrentUser } from '#app/modules/authenticated/decorators/current-user.decorator';
-import { Public } from '#app/modules/authenticated/decorators/public.decorator';
 import type { AuthenticatedUser } from '#app/modules/authenticated/interfaces/authenticated-user.interface';
 import { RequireMerchant } from '#app/modules/authorization/decorators/require-merchant.decorator';
 import { RequirePermission } from '#app/modules/authorization/decorators/require-permission.decorator';
 import {
   ConnectPaymentProviderDto,
-  CreatePaymentIntentDto,
   PaymentQueryDto,
-  PaymentWebhookDto,
 } from './dto/payment-input.dto';
-import {
-  PaymentDto,
-  PaymentProviderDto,
-  PaymentWebhookResultDto,
-} from './dto/payment-response.dto';
+import { PaymentDto, PaymentProviderDto } from './dto/payment-response.dto';
 import { PaymentService } from './payment.service';
 
 type CurrentMerchantContext = { id: string };
@@ -116,38 +106,6 @@ export class PaymentController {
     @Query() query: PaymentQueryDto,
   ) {
     return this.payments.findAll(merchant.id, query);
-  }
-
-  @Public()
-  @Post('create-intent')
-  @ApiOperation({ summary: 'Create an intent for a token-authorized checkout' })
-  @ApiCreatedResponse({ type: PaymentDto })
-  createIntent(@Body() dto: CreatePaymentIntentDto, @Req() request: Request) {
-    return this.payments.createIntent(dto, this.metadata(request));
-  }
-
-  @Public()
-  @Post('webhook/:provider')
-  @HttpCode(HttpStatus.OK)
-  @ApiHeader({ name: 'X-Payment-Signature', required: true })
-  @ApiOperation({ summary: 'Process a signed provider webhook' })
-  @ApiOkResponse({ type: PaymentWebhookResultDto })
-  webhook(
-    @Param('provider', new ParseEnumPipe(PaymentProviderCode))
-    provider: PaymentProviderCode,
-    @Body() dto: PaymentWebhookDto,
-    @Headers('x-payment-signature') signature: string | undefined,
-    @Req() request: RawBodyRequest<Request>,
-  ) {
-    const rawPayload =
-      request.rawBody ?? Buffer.from(JSON.stringify(dto), 'utf8');
-    return this.payments.handleWebhook(
-      provider,
-      dto,
-      rawPayload,
-      signature,
-      this.metadata(request),
-    );
   }
 
   @Get(':id')

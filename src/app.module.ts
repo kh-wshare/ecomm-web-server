@@ -11,30 +11,33 @@ import { DatabaseModule } from '#app/infrastructure/database/database.module';
 import { EventsModule } from '#app/infrastructure/events/events.module';
 import { LoggerModule } from '#app/infrastructure/logger/logger.module';
 import { RedisModule } from '#app/infrastructure/redis/redis.module';
-import { AuditLogModule } from '#app/modules/audit-log/audit-log.module';
-import { AuthModule } from '#app/modules/authenticated/auth.module';
-import { JwtAuthGuard } from '#app/modules/authenticated/guards/jwt-auth.guard';
-import { AuthorizationModule } from '#app/modules/authorization/authorization.module';
-import { MerchantScopeGuard } from '#app/modules/authorization/guards/merchant-scope.guard';
-import { PermissionGuard } from '#app/modules/authorization/guards/permission.guard';
-import { PlatformRolesGuard } from '#app/modules/authorization/guards/platform-roles.guard';
-import { BranchModule } from '#app/modules/branch/branch.module';
-import { CatalogModule } from '#app/modules/catalog/catalog.module';
-import { CheckoutModule } from '#app/modules/checkout/checkout.module';
-import { FileStorageModule } from '#app/modules/file-storage/file-storage.module';
-import { InventoryModule } from '#app/modules/inventory/inventory.module';
-import { MerchantModule } from '#app/modules/merchant/merchant.module';
-import { NotificationModule } from '#app/modules/notification/notification.module';
-import { OrderModule } from '#app/modules/order/order.module';
-import { PaymentModule } from '#app/modules/payment/payment.module';
-import { PermissionsModule } from '#app/modules/permissions/permissions.module';
-import { PosModule } from '#app/modules/pos/pos.module';
-import { RolesModule } from '#app/modules/roles/roles.module';
-import { SessionsModule } from '#app/modules/sessions/sessions.module';
-import { SocialPostModule } from '#app/modules/social-post/social-post.module';
-import { StorefrontModule } from '#app/modules/storefront/storefront.module';
-import { ThemeModule } from '#app/modules/theme/theme.module';
-import { UsersModule } from '#app/modules/users/users.module';
+import { AuditLogModule } from '@modules/audit-log/audit-log.module';
+import { AuthModule } from '@modules/authenticated/auth.module';
+import { JwtAuthGuard } from '@modules/authenticated/guards/jwt-auth.guard';
+import { AuthorizationModule } from '@modules/authorization/authorization.module';
+import { MerchantScopeGuard } from '@modules/authorization/guards/merchant-scope.guard';
+import { PermissionGuard } from '@modules/authorization/guards/permission.guard';
+import { PlatformRolesGuard } from '@modules/authorization/guards/platform-roles.guard';
+import { BranchModule } from '@modules/branch/branch.module';
+import { CatalogModule } from '@modules/catalog/catalog.module';
+import { CheckoutModule } from '@modules/checkout/checkout.module';
+import { FileStorageModule } from '@modules/file-storage/file-storage.module';
+import { InventoryModule } from '@modules/inventory/inventory.module';
+import { MerchantModule } from '@modules/merchant/merchant.module';
+import { NotificationModule } from '@modules/notification/notification.module';
+import { OrderModule } from '@modules/order/order.module';
+import { PaymentModule } from '@modules/payment/payment.module';
+import { PermissionsModule } from '@modules/permissions/permissions.module';
+import { PosModule } from '@modules/pos/pos.module';
+import { RolesModule } from '@modules/roles/roles.module';
+import { SessionsModule } from '@modules/sessions/sessions.module';
+import { SocialPostModule } from '@modules/social-post/social-post.module';
+import { StorefrontModule } from '@modules/storefront/storefront.module';
+import { ThemeModule } from '@modules/theme/theme.module';
+import { UsersModule } from '@modules/users/users.module';
+import { StorefrontPaymentModule } from '@/modules/storefront/payment/payment.module';
+import { StorefrontPaymentWebhookModule } from '@/modules/storefront/payment-webhook/payment-webhook.module';
+import { StorefrontSocialPostModule } from '@/modules/storefront/social-post/public-social.module';
 
 @Module({
   imports: [
@@ -63,6 +66,9 @@ import { UsersModule } from '#app/modules/users/users.module';
     SocialPostModule,
     NotificationModule,
     StorefrontModule,
+    StorefrontPaymentModule,
+    StorefrontPaymentWebhookModule,
+    StorefrontSocialPostModule,
     AuditLogModule,
   ],
   controllers: [AppController],

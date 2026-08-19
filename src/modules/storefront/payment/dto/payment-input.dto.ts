@@ -14,7 +14,6 @@ import { IsEnum, IsIn } from 'class-validator';
 import { BaseQueryDto } from '#app/common/dto/base-query.dto';
 import {
   PaymentProviderCode,
-  PaymentProviderStatus,
   PaymentTransactionStatus,
 } from '#app/generated/prisma/enums';
 
@@ -40,49 +39,6 @@ export class PaymentQueryDto extends BaseQueryDto {
   dateTo?: string;
 }
 
-export class ConnectPaymentProviderDto {
-  @ApiProperty({ enum: PaymentProviderCode })
-  @IsEnum(PaymentProviderCode)
-  provider!: PaymentProviderCode;
-
-  @ApiPropertyOptional({
-    minLength: 16,
-    maxLength: 200,
-    description: 'Webhook signing secret. Required for the HMAC provider.',
-  })
-  @IsOptional()
-  @IsString()
-  @MinLength(16)
-  @MaxLength(200)
-  webhookSecret?: string;
-
-  @ApiPropertyOptional({
-    minLength: 8,
-    maxLength: 1000,
-    description:
-      'Primary provider secret, such as a Bakong token or PayWay API key.',
-  })
-  @IsOptional()
-  @IsString()
-  @MinLength(8)
-  @MaxLength(1000)
-  providerSecret?: string;
-
-  @ApiPropertyOptional({
-    type: 'object',
-    additionalProperties: true,
-    description: 'Non-secret provider metadata such as an account identifier',
-  })
-  @IsOptional()
-  @IsObject()
-  config?: Record<string, unknown>;
-
-  @ApiPropertyOptional({ enum: PaymentProviderStatus, default: 'ACTIVE' })
-  @IsOptional()
-  @IsEnum(PaymentProviderStatus)
-  status: PaymentProviderStatus = PaymentProviderStatus.ACTIVE;
-}
-
 export class CreatePaymentIntentDto {
   @ApiProperty({ format: 'uuid' })
   @IsUUID()
@@ -99,4 +55,37 @@ export class CreatePaymentIntentDto {
   @ApiProperty({ enum: PaymentProviderCode })
   @IsEnum(PaymentProviderCode)
   provider!: PaymentProviderCode;
+}
+
+export class PaymentWebhookDto {
+  @ApiProperty({ maxLength: 160 })
+  @IsString()
+  @MinLength(1)
+  @MaxLength(160)
+  eventId!: string;
+
+  @ApiProperty({ format: 'uuid' })
+  @IsUUID()
+  paymentId!: string;
+
+  @ApiProperty({ maxLength: 160 })
+  @IsString()
+  @MinLength(1)
+  @MaxLength(160)
+  providerTransactionId!: string;
+
+  @ApiProperty({ enum: ['CONFIRMED', 'FAILED'] })
+  @IsIn(['CONFIRMED', 'FAILED'])
+  status!: 'CONFIRMED' | 'FAILED';
+
+  @ApiProperty({ example: '39.98' })
+  @IsString()
+  @Matches(/^(0|[1-9]\d*)(\.\d{1,2})?$/)
+  amount!: string;
+
+  @ApiProperty({ example: 'USD' })
+  @IsString()
+  @Length(3, 3)
+  @Matches(/^[A-Z]{3}$/)
+  currency!: string;
 }

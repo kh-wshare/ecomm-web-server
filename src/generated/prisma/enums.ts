@@ -85,6 +85,14 @@ export const ProductMediaType = {
 export type ProductMediaType = (typeof ProductMediaType)[keyof typeof ProductMediaType]
 
 
+export const ProductType = {
+  SIMPLE: 'SIMPLE',
+  VARIABLE: 'VARIABLE'
+} as const
+
+export type ProductType = (typeof ProductType)[keyof typeof ProductType]
+
+
 export const SalesChannel = {
   POS: 'POS',
   WEBSITE: 'WEBSITE',
