@@ -90,11 +90,13 @@ export class KhqrAdapter {
       throw new BadGatewayException('Bakong transaction verification failed');
     return this.record(json) ?? {};
   }
+
   private record(value: unknown): Record<string, unknown> | undefined {
     return value && typeof value === 'object' && !Array.isArray(value)
       ? (value as Record<string, unknown>)
       : undefined;
   }
+  
   private string(value: unknown): string | undefined {
     return typeof value === 'string' ? value : undefined;
   }

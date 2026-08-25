@@ -114,6 +114,7 @@ export class PayWayAdapter {
       .update(value)
       .digest('base64');
   }
+  
   private requestTime() {
     return new Date()
       .toISOString()
