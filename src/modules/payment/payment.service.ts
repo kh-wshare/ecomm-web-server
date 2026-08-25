@@ -398,10 +398,7 @@ export class PaymentService {
     };
   }
 
-  async findByToken(
-    paymentId: string,
-    checkoutToken: string | undefined,
-  ) {
+  async findByToken(paymentId: string, checkoutToken?: string) {
     if (!checkoutToken) {
       throw new UnauthorizedException('Checkout token is required');
     }
@@ -421,10 +418,7 @@ export class PaymentService {
       payment.order.checkoutSession.accessTokenHash,
       checkoutToken,
     );
-    if (
-      payment.provider === PaymentProviderCode.KHQR &&
-      payment.status === 'PENDING'
-    ) {
+    if (payment.provider === PaymentProviderCode.KHQR && payment.status === 'PENDING') {
       const config = this.providerConfig(payment.paymentProvider.config);
       const verified = await this.khqr.checkPayment({
         config: config.settings as unknown as KhqrConfig,
