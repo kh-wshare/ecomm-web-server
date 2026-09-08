@@ -44,8 +44,8 @@ export type ProductMinAggregateOutputType = {
   sku: string | null
   price: runtime.Decimal | null
   currency: string | null
-  type: $Enums.ProductType | null
   status: $Enums.ProductStatus | null
+  type: $Enums.ProductType | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -61,8 +61,8 @@ export type ProductMaxAggregateOutputType = {
   sku: string | null
   price: runtime.Decimal | null
   currency: string | null
-  type: $Enums.ProductType | null
   status: $Enums.ProductStatus | null
+  type: $Enums.ProductType | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -78,8 +78,8 @@ export type ProductCountAggregateOutputType = {
   sku: number
   price: number
   currency: number
-  type: number
   status: number
+  type: number
   createdAt: number
   updatedAt: number
   deletedAt: number
@@ -105,8 +105,8 @@ export type ProductMinAggregateInputType = {
   sku?: true
   price?: true
   currency?: true
-  type?: true
   status?: true
+  type?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -122,8 +122,8 @@ export type ProductMaxAggregateInputType = {
   sku?: true
   price?: true
   currency?: true
-  type?: true
   status?: true
+  type?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -139,8 +139,8 @@ export type ProductCountAggregateInputType = {
   sku?: true
   price?: true
   currency?: true
-  type?: true
   status?: true
+  type?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -243,8 +243,8 @@ export type ProductGroupByOutputType = {
   sku: string
   price: runtime.Decimal
   currency: string
-  type: $Enums.ProductType
   status: $Enums.ProductStatus
+  type: $Enums.ProductType
   createdAt: Date
   updatedAt: Date
   deletedAt: Date | null
@@ -283,8 +283,8 @@ export type ProductWhereInput = {
   sku?: Prisma.StringFilter<"Product"> | string
   price?: Prisma.DecimalFilter<"Product"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFilter<"Product"> | string
-  type?: Prisma.EnumProductTypeFilter<"Product"> | $Enums.ProductType
   status?: Prisma.EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFilter<"Product"> | $Enums.ProductType
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Product"> | Date | string | null
@@ -311,8 +311,8 @@ export type ProductOrderByWithRelationInput = {
   sku?: Prisma.SortOrder
   price?: Prisma.SortOrder
   currency?: Prisma.SortOrder
-  type?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -345,8 +345,8 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   sku?: Prisma.StringFilter<"Product"> | string
   price?: Prisma.DecimalFilter<"Product"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFilter<"Product"> | string
-  type?: Prisma.EnumProductTypeFilter<"Product"> | $Enums.ProductType
   status?: Prisma.EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFilter<"Product"> | $Enums.ProductType
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Product"> | Date | string | null
@@ -373,8 +373,8 @@ export type ProductOrderByWithAggregationInput = {
   sku?: Prisma.SortOrder
   price?: Prisma.SortOrder
   currency?: Prisma.SortOrder
-  type?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -398,8 +398,8 @@ export type ProductScalarWhereWithAggregatesInput = {
   sku?: Prisma.StringWithAggregatesFilter<"Product"> | string
   price?: Prisma.DecimalWithAggregatesFilter<"Product"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringWithAggregatesFilter<"Product"> | string
-  type?: Prisma.EnumProductTypeWithAggregatesFilter<"Product"> | $Enums.ProductType
   status?: Prisma.EnumProductStatusWithAggregatesFilter<"Product"> | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeWithAggregatesFilter<"Product"> | $Enums.ProductType
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Product"> | Date | string | null
@@ -413,8 +413,8 @@ export type ProductCreateInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -441,8 +441,8 @@ export type ProductUncheckedCreateInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -465,8 +465,8 @@ export type ProductUpdateInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -493,8 +493,8 @@ export type ProductUncheckedUpdateInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -519,8 +519,8 @@ export type ProductCreateManyInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -534,8 +534,8 @@ export type ProductUpdateManyMutationInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -551,8 +551,8 @@ export type ProductUncheckedUpdateManyInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -593,8 +593,8 @@ export type ProductCountOrderByAggregateInput = {
   sku?: Prisma.SortOrder
   price?: Prisma.SortOrder
   currency?: Prisma.SortOrder
-  type?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -614,8 +614,8 @@ export type ProductMaxOrderByAggregateInput = {
   sku?: Prisma.SortOrder
   price?: Prisma.SortOrder
   currency?: Prisma.SortOrder
-  type?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -631,8 +631,8 @@ export type ProductMinOrderByAggregateInput = {
   sku?: Prisma.SortOrder
   price?: Prisma.SortOrder
   currency?: Prisma.SortOrder
-  type?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -697,12 +697,12 @@ export type DecimalFieldUpdateOperationsInput = {
   divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
-export type EnumProductTypeFieldUpdateOperationsInput = {
-  set?: $Enums.ProductType
-}
-
 export type EnumProductStatusFieldUpdateOperationsInput = {
   set?: $Enums.ProductStatus
+}
+
+export type EnumProductTypeFieldUpdateOperationsInput = {
+  set?: $Enums.ProductType
 }
 
 export type ProductCreateNestedManyWithoutCategoryInput = {
@@ -881,8 +881,8 @@ export type ProductCreateWithoutMerchantInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -907,8 +907,8 @@ export type ProductUncheckedCreateWithoutMerchantInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -962,8 +962,8 @@ export type ProductScalarWhereInput = {
   sku?: Prisma.StringFilter<"Product"> | string
   price?: Prisma.DecimalFilter<"Product"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFilter<"Product"> | string
-  type?: Prisma.EnumProductTypeFilter<"Product"> | $Enums.ProductType
   status?: Prisma.EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFilter<"Product"> | $Enums.ProductType
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Product"> | Date | string | null
@@ -977,8 +977,8 @@ export type ProductCreateWithoutCategoryInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1003,8 +1003,8 @@ export type ProductUncheckedCreateWithoutCategoryInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1053,8 +1053,8 @@ export type ProductCreateWithoutVariantsInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1080,8 +1080,8 @@ export type ProductUncheckedCreateWithoutVariantsInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1119,8 +1119,8 @@ export type ProductUpdateWithoutVariantsInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1146,8 +1146,8 @@ export type ProductUncheckedUpdateWithoutVariantsInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1169,8 +1169,8 @@ export type ProductCreateWithoutMediaInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1196,8 +1196,8 @@ export type ProductUncheckedCreateWithoutMediaInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1235,8 +1235,8 @@ export type ProductUpdateWithoutMediaInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1262,8 +1262,8 @@ export type ProductUncheckedUpdateWithoutMediaInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1285,8 +1285,8 @@ export type ProductCreateWithoutChannelVisibilityInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1312,8 +1312,8 @@ export type ProductUncheckedCreateWithoutChannelVisibilityInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1351,8 +1351,8 @@ export type ProductUpdateWithoutChannelVisibilityInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1378,8 +1378,8 @@ export type ProductUncheckedUpdateWithoutChannelVisibilityInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1401,8 +1401,8 @@ export type ProductCreateWithoutInventoryStocksInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1428,8 +1428,8 @@ export type ProductUncheckedCreateWithoutInventoryStocksInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1467,8 +1467,8 @@ export type ProductUpdateWithoutInventoryStocksInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1494,8 +1494,8 @@ export type ProductUncheckedUpdateWithoutInventoryStocksInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1517,8 +1517,8 @@ export type ProductCreateWithoutReservationsInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1544,8 +1544,8 @@ export type ProductUncheckedCreateWithoutReservationsInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1583,8 +1583,8 @@ export type ProductUpdateWithoutReservationsInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1610,8 +1610,8 @@ export type ProductUncheckedUpdateWithoutReservationsInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1633,8 +1633,8 @@ export type ProductCreateWithoutCheckoutItemsInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1660,8 +1660,8 @@ export type ProductUncheckedCreateWithoutCheckoutItemsInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1699,8 +1699,8 @@ export type ProductUpdateWithoutCheckoutItemsInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1726,8 +1726,8 @@ export type ProductUncheckedUpdateWithoutCheckoutItemsInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1749,8 +1749,8 @@ export type ProductCreateWithoutOrderItemsInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1776,8 +1776,8 @@ export type ProductUncheckedCreateWithoutOrderItemsInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1815,8 +1815,8 @@ export type ProductUpdateWithoutOrderItemsInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1842,8 +1842,8 @@ export type ProductUncheckedUpdateWithoutOrderItemsInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1865,8 +1865,8 @@ export type ProductCreateWithoutShoppableHotspotsInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1892,8 +1892,8 @@ export type ProductUncheckedCreateWithoutShoppableHotspotsInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1931,8 +1931,8 @@ export type ProductUpdateWithoutShoppableHotspotsInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1958,8 +1958,8 @@ export type ProductUncheckedUpdateWithoutShoppableHotspotsInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1981,8 +1981,8 @@ export type ProductCreateWithoutInventoryMovementsInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -2008,8 +2008,8 @@ export type ProductUncheckedCreateWithoutInventoryMovementsInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -2047,8 +2047,8 @@ export type ProductUpdateWithoutInventoryMovementsInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2074,8 +2074,8 @@ export type ProductUncheckedUpdateWithoutInventoryMovementsInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2098,8 +2098,8 @@ export type ProductCreateManyMerchantInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -2113,8 +2113,8 @@ export type ProductUpdateWithoutMerchantInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2139,8 +2139,8 @@ export type ProductUncheckedUpdateWithoutMerchantInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2164,8 +2164,8 @@ export type ProductUncheckedUpdateManyWithoutMerchantInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2180,8 +2180,8 @@ export type ProductCreateManyCategoryInput = {
   sku: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
-  type?: $Enums.ProductType
   status?: $Enums.ProductStatus
+  type?: $Enums.ProductType
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -2195,8 +2195,8 @@ export type ProductUpdateWithoutCategoryInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2221,8 +2221,8 @@ export type ProductUncheckedUpdateWithoutCategoryInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2246,8 +2246,8 @@ export type ProductUncheckedUpdateManyWithoutCategoryInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+  type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2366,8 +2366,8 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   sku?: boolean
   price?: boolean
   currency?: boolean
-  type?: boolean
   status?: boolean
+  type?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -2395,8 +2395,8 @@ export type ProductSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   sku?: boolean
   price?: boolean
   currency?: boolean
-  type?: boolean
   status?: boolean
+  type?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -2414,8 +2414,8 @@ export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   sku?: boolean
   price?: boolean
   currency?: boolean
-  type?: boolean
   status?: boolean
+  type?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -2433,14 +2433,14 @@ export type ProductSelectScalar = {
   sku?: boolean
   price?: boolean
   currency?: boolean
-  type?: boolean
   status?: boolean
+  type?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
 }
 
-export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "merchantId" | "categoryId" | "name" | "slug" | "description" | "sku" | "price" | "currency" | "type" | "status" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["product"]>
+export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "merchantId" | "categoryId" | "name" | "slug" | "description" | "sku" | "price" | "currency" | "status" | "type" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["product"]>
 export type ProductInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
   category?: boolean | Prisma.Product$categoryArgs<ExtArgs>
@@ -2489,8 +2489,8 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     sku: string
     price: runtime.Decimal
     currency: string
-    type: $Enums.ProductType
     status: $Enums.ProductStatus
+    type: $Enums.ProductType
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
@@ -2937,8 +2937,8 @@ export interface ProductFieldRefs {
   readonly sku: Prisma.FieldRef<"Product", 'String'>
   readonly price: Prisma.FieldRef<"Product", 'Decimal'>
   readonly currency: Prisma.FieldRef<"Product", 'String'>
-  readonly type: Prisma.FieldRef<"Product", 'ProductType'>
   readonly status: Prisma.FieldRef<"Product", 'ProductStatus'>
+  readonly type: Prisma.FieldRef<"Product", 'ProductType'>
   readonly createdAt: Prisma.FieldRef<"Product", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Product", 'DateTime'>
   readonly deletedAt: Prisma.FieldRef<"Product", 'DateTime'>

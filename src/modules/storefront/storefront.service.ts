@@ -7,6 +7,7 @@ import { ProductStatus, SalesChannel } from '#app/generated/prisma/enums';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
 import { CommerceCacheService } from '#app/infrastructure/redis/commerce-cache.service';
 import { ThemeService } from '#app/modules/theme/theme.service';
+import { StorefrontOrderQueryDto } from './dto/storefront-order-query.dto';
 import { StorefrontProductQueryDto } from './dto/storefront-query.dto';
 
 type ProductIdRow = { id: string };
@@ -77,6 +78,47 @@ export class StorefrontService {
   async getTheme(merchantSlug: string) {
     const merchant = await this.getMerchant(merchantSlug);
     return this.getThemeForMerchant(merchant.id);
+  }
+
+  async listOrders(merchantSlug: string, query: StorefrontOrderQueryDto) {
+    const merchant = await this.getMerchant(merchantSlug);
+    const where: Prisma.OrderWhereInput = {
+      merchantId: merchant.id,
+      customerEmail: {
+        equals: query.customerEmail.trim(),
+        mode: 'insensitive',
+      },
+      status: query.status,
+    };
+    const [orders, total] = await this.prisma.$transaction([
+      this.prisma.order.findMany({
+        where,
+        include: { items: true },
+        orderBy: { createdAt: 'desc' },
+        skip: query.skip,
+        take: query.take,
+      }),
+      this.prisma.order.count({ where }),
+    ]);
+    return new PaginatedResult(orders, query.take, query.page ?? 1, total);
+  }
+
+  async getOrder(
+    merchantSlug: string,
+    orderNumber: string,
+    customerEmail: string,
+  ) {
+    const merchant = await this.getMerchant(merchantSlug);
+    const order = await this.prisma.order.findFirst({
+      where: {
+        merchantId: merchant.id,
+        orderNumber: orderNumber.trim(),
+        customerEmail: { equals: customerEmail.trim(), mode: 'insensitive' },
+      },
+      include: { items: true },
+    });
+    if (!order) throw new NotFoundException('Order not found');
+    return order;
   }
 
   private async getMerchant(slug: string) {

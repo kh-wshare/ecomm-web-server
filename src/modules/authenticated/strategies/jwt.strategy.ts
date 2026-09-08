@@ -7,7 +7,7 @@ import { AuthenticatedUser } from '../interfaces/authenticated-user.interface';
 
 export interface JwtPayload {
   sub: string;
-  email: string;
+  email: string | null;
   sessionId: string;
   merchantId: string | null;
 }

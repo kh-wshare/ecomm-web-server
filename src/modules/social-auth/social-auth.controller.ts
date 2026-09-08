@@ -9,12 +9,15 @@ import {
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { AuthService } from '#app/modules/authenticated/auth.service';
+import { CurrentUser } from '#app/modules/authenticated/decorators/current-user.decorator';
 import { Public } from '#app/modules/authenticated/decorators/public.decorator';
+import type { AuthenticatedUser } from '#app/modules/authenticated/interfaces/authenticated-user.interface';
 import {
   FirebaseGoogleLoginDto,
   TelegramLoginDto,
   TelegramTokenExchangeDto,
 } from './dto/social-login.dto';
+import { TelegramMiniAppLoginDto } from './dto/telegram-mini-app-login.dto';
 import { SocialAuthService } from './social-auth.service';
 
 @ApiTags('Auth')
@@ -85,6 +88,52 @@ export class SocialAuthController {
       dto,
       this.metadata(request),
     );
+  }
+
+  @Public()
+  @Post('telegram/mini-app')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Login with a Telegram Mini App (verified initData)',
+  })
+  loginWithTelegramMiniApp(
+    @Body() dto: TelegramMiniAppLoginDto,
+    @Req() request: Request,
+  ) {
+    return this.authService.loginWithTelegramMiniApp(
+      dto,
+      this.metadata(request),
+    );
+  }
+
+  @Public()
+  @Post('customer/telegram/mini-app')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary:
+      'Login as a storefront customer with a Telegram Mini App (verified initData)',
+  })
+  loginCustomerWithTelegramMiniApp(
+    @Body() dto: TelegramMiniAppLoginDto,
+    @Req() request: Request,
+  ) {
+    return this.authService.loginCustomerWithTelegramMiniApp(
+      dto,
+      this.metadata(request),
+    );
+  }
+
+  @Post(['telegram/mini-app/link', 'customer/telegram/mini-app/link'])
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary:
+      'Link a Telegram Mini App identity to the current authenticated user',
+  })
+  linkTelegramMiniApp(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: TelegramMiniAppLoginDto,
+  ) {
+    return this.authService.linkTelegramMiniApp(user.id, dto);
   }
 
   private metadata(request: Request) {

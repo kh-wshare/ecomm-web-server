@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createPublicKey, verify } from 'node:crypto';
+import { assertValidTelegramInitData } from './telegram-init-data';
 
 type JwtHeader = {
   alg?: string;
@@ -25,6 +26,7 @@ type JwtPayload = {
   preferred_username?: string;
   sub?: string;
   user_id?: string;
+  id?: string;
 };
 
 export type VerifiedFirebaseGoogleUser = {
@@ -35,6 +37,17 @@ export type VerifiedFirebaseGoogleUser = {
 };
 
 export type VerifiedTelegramUser = {
+  id: string | null;
+  email: string | null;
+  fullName: string;
+  metadata: Record<string, unknown>;
+  phone: string | null;
+  providerUserId: string;
+  username: string | null;
+};
+
+export type VerifiedTelegramMiniAppUser = {
+  id: string;
   email: string | null;
   fullName: string;
   metadata: Record<string, unknown>;
@@ -117,6 +130,7 @@ export class SocialTokenVerifierService {
     }
 
     return {
+      id: payload.id ?? null,
       email: null,
       fullName:
         payload.name?.trim() ||
@@ -127,6 +141,45 @@ export class SocialTokenVerifierService {
       providerUserId: payload.sub,
       username: payload.preferred_username ?? null,
     };
+  }
+
+  verifyTelegramMiniAppInitData(
+    initData: string,
+  ): Promise<VerifiedTelegramMiniAppUser> {
+    const botToken = this.config.get<string>('socialAuth.telegramBotToken');
+    if (!botToken) {
+      throw new ServiceUnavailableException(
+        'Telegram Mini App login is not configured',
+      );
+    }
+    const maxAgeSeconds = this.config.get<number>(
+      'socialAuth.telegramInitDataMaxAgeSeconds',
+      86400,
+    );
+
+    const user = assertValidTelegramInitData(initData, botToken, maxAgeSeconds);
+    const fullName = [user.firstName, user.lastName]
+      .filter((part): part is string => Boolean(part?.trim()))
+      .join(' ')
+      .trim();
+
+    return Promise.resolve({
+      id: String(user.id),
+      email: null,
+      fullName: fullName || user.username || `Telegram user ${user.id}`,
+      metadata: {
+        firstName: user.firstName,
+        lastName: user.lastName ?? null,
+        username: user.username ?? null,
+        languageCode: user.languageCode ?? null,
+        allowsWriteToPm: user.allowsWriteToPm ?? null,
+        photoUrl: user.photoUrl ?? null,
+        source: 'mini_app',
+      },
+      phone: null,
+      providerUserId: String(user.id),
+      username: user.username ?? null,
+    });
   }
 
   async exchangeTelegramCode(options: {

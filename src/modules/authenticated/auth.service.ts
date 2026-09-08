@@ -21,6 +21,7 @@ import {
   FirebaseGoogleLoginDto,
   TelegramLoginDto,
 } from '#app/modules/social-auth/dto/social-login.dto';
+import { TelegramMiniAppLoginDto } from '#app/modules/social-auth/dto/telegram-mini-app-login.dto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { JwtPayload } from './strategies/jwt.strategy';
@@ -177,6 +178,30 @@ export class AuthService {
     });
   }
 
+  async loginWithTelegramMiniApp(
+    dto: TelegramMiniAppLoginDto,
+    metadata: SessionMetadata,
+  ) {
+    const profile = await this.socialAuth.telegramMiniAppProfile(dto.initData);
+    return this.loginWithSocialProfile(profile, metadata, {
+      scope: 'merchant',
+    });
+  }
+
+  async loginCustomerWithTelegramMiniApp(
+    dto: TelegramMiniAppLoginDto,
+    metadata: SessionMetadata,
+  ) {
+    const profile = await this.socialAuth.telegramMiniAppProfile(dto.initData);
+    return this.loginWithSocialProfile(profile, metadata, {
+      scope: 'customer',
+    });
+  }
+
+  async linkTelegramMiniApp(userId: string, dto: TelegramMiniAppLoginDto) {
+    return this.socialAuth.linkTelegramMiniApp(userId, dto.initData);
+  }
+
   async refresh(refreshToken: string) {
     const rotated = await this.sessions.rotate(refreshToken);
     const user = await this.prisma.user.findUnique({
@@ -267,7 +292,7 @@ export class AuthService {
   private async authResponse(
     user: {
       id: string;
-      email: string;
+      email: string | null;
       fullName: string;
       phone: string | null;
       status: string;
@@ -358,7 +383,7 @@ export class AuthService {
 
   private signAccessToken(
     userId: string,
-    email: string,
+    email: string | null,
     sessionId: string,
     merchantId: string | null,
   ) {

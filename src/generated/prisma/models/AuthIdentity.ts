@@ -29,6 +29,7 @@ export type AuthIdentityMinAggregateOutputType = {
   userId: string | null
   provider: string | null
   providerUserId: string | null
+  telegramId: string | null
   email: string | null
   phone: string | null
   createdAt: Date | null
@@ -40,6 +41,7 @@ export type AuthIdentityMaxAggregateOutputType = {
   userId: string | null
   provider: string | null
   providerUserId: string | null
+  telegramId: string | null
   email: string | null
   phone: string | null
   createdAt: Date | null
@@ -51,6 +53,7 @@ export type AuthIdentityCountAggregateOutputType = {
   userId: number
   provider: number
   providerUserId: number
+  telegramId: number
   email: number
   phone: number
   metadata: number
@@ -65,6 +68,7 @@ export type AuthIdentityMinAggregateInputType = {
   userId?: true
   provider?: true
   providerUserId?: true
+  telegramId?: true
   email?: true
   phone?: true
   createdAt?: true
@@ -76,6 +80,7 @@ export type AuthIdentityMaxAggregateInputType = {
   userId?: true
   provider?: true
   providerUserId?: true
+  telegramId?: true
   email?: true
   phone?: true
   createdAt?: true
@@ -87,6 +92,7 @@ export type AuthIdentityCountAggregateInputType = {
   userId?: true
   provider?: true
   providerUserId?: true
+  telegramId?: true
   email?: true
   phone?: true
   metadata?: true
@@ -172,6 +178,7 @@ export type AuthIdentityGroupByOutputType = {
   userId: string
   provider: string
   providerUserId: string
+  telegramId: string | null
   email: string | null
   phone: string | null
   metadata: runtime.JsonValue | null
@@ -205,6 +212,7 @@ export type AuthIdentityWhereInput = {
   userId?: Prisma.UuidFilter<"AuthIdentity"> | string
   provider?: Prisma.StringFilter<"AuthIdentity"> | string
   providerUserId?: Prisma.StringFilter<"AuthIdentity"> | string
+  telegramId?: Prisma.StringNullableFilter<"AuthIdentity"> | string | null
   email?: Prisma.StringNullableFilter<"AuthIdentity"> | string | null
   phone?: Prisma.StringNullableFilter<"AuthIdentity"> | string | null
   metadata?: Prisma.JsonNullableFilter<"AuthIdentity">
@@ -218,6 +226,7 @@ export type AuthIdentityOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerUserId?: Prisma.SortOrder
+  telegramId?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -228,6 +237,7 @@ export type AuthIdentityOrderByWithRelationInput = {
 
 export type AuthIdentityWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  telegramId?: string
   provider_providerUserId?: Prisma.AuthIdentityProviderProviderUserIdCompoundUniqueInput
   AND?: Prisma.AuthIdentityWhereInput | Prisma.AuthIdentityWhereInput[]
   OR?: Prisma.AuthIdentityWhereInput[]
@@ -241,13 +251,14 @@ export type AuthIdentityWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"AuthIdentity"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AuthIdentity"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id" | "provider_providerUserId">
+}, "id" | "telegramId" | "provider_providerUserId">
 
 export type AuthIdentityOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerUserId?: Prisma.SortOrder
+  telegramId?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -266,6 +277,7 @@ export type AuthIdentityScalarWhereWithAggregatesInput = {
   userId?: Prisma.UuidWithAggregatesFilter<"AuthIdentity"> | string
   provider?: Prisma.StringWithAggregatesFilter<"AuthIdentity"> | string
   providerUserId?: Prisma.StringWithAggregatesFilter<"AuthIdentity"> | string
+  telegramId?: Prisma.StringNullableWithAggregatesFilter<"AuthIdentity"> | string | null
   email?: Prisma.StringNullableWithAggregatesFilter<"AuthIdentity"> | string | null
   phone?: Prisma.StringNullableWithAggregatesFilter<"AuthIdentity"> | string | null
   metadata?: Prisma.JsonNullableWithAggregatesFilter<"AuthIdentity">
@@ -277,6 +289,7 @@ export type AuthIdentityCreateInput = {
   id?: string
   provider: string
   providerUserId: string
+  telegramId?: string | null
   email?: string | null
   phone?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -290,6 +303,7 @@ export type AuthIdentityUncheckedCreateInput = {
   userId: string
   provider: string
   providerUserId: string
+  telegramId?: string | null
   email?: string | null
   phone?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -301,6 +315,7 @@ export type AuthIdentityUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   providerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  telegramId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -314,6 +329,7 @@ export type AuthIdentityUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   providerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  telegramId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -326,6 +342,7 @@ export type AuthIdentityCreateManyInput = {
   userId: string
   provider: string
   providerUserId: string
+  telegramId?: string | null
   email?: string | null
   phone?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -337,6 +354,7 @@ export type AuthIdentityUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   providerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  telegramId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -349,6 +367,7 @@ export type AuthIdentityUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   providerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  telegramId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -376,6 +395,7 @@ export type AuthIdentityCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerUserId?: Prisma.SortOrder
+  telegramId?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   metadata?: Prisma.SortOrder
@@ -388,6 +408,7 @@ export type AuthIdentityMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerUserId?: Prisma.SortOrder
+  telegramId?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -399,6 +420,7 @@ export type AuthIdentityMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerUserId?: Prisma.SortOrder
+  telegramId?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -451,6 +473,7 @@ export type AuthIdentityCreateWithoutUserInput = {
   id?: string
   provider: string
   providerUserId: string
+  telegramId?: string | null
   email?: string | null
   phone?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -462,6 +485,7 @@ export type AuthIdentityUncheckedCreateWithoutUserInput = {
   id?: string
   provider: string
   providerUserId: string
+  telegramId?: string | null
   email?: string | null
   phone?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -503,6 +527,7 @@ export type AuthIdentityScalarWhereInput = {
   userId?: Prisma.UuidFilter<"AuthIdentity"> | string
   provider?: Prisma.StringFilter<"AuthIdentity"> | string
   providerUserId?: Prisma.StringFilter<"AuthIdentity"> | string
+  telegramId?: Prisma.StringNullableFilter<"AuthIdentity"> | string | null
   email?: Prisma.StringNullableFilter<"AuthIdentity"> | string | null
   phone?: Prisma.StringNullableFilter<"AuthIdentity"> | string | null
   metadata?: Prisma.JsonNullableFilter<"AuthIdentity">
@@ -514,6 +539,7 @@ export type AuthIdentityCreateManyUserInput = {
   id?: string
   provider: string
   providerUserId: string
+  telegramId?: string | null
   email?: string | null
   phone?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -525,6 +551,7 @@ export type AuthIdentityUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   providerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  telegramId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -536,6 +563,7 @@ export type AuthIdentityUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   providerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  telegramId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -547,6 +575,7 @@ export type AuthIdentityUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   providerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  telegramId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -561,6 +590,7 @@ export type AuthIdentitySelect<ExtArgs extends runtime.Types.Extensions.Internal
   userId?: boolean
   provider?: boolean
   providerUserId?: boolean
+  telegramId?: boolean
   email?: boolean
   phone?: boolean
   metadata?: boolean
@@ -574,6 +604,7 @@ export type AuthIdentitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   userId?: boolean
   provider?: boolean
   providerUserId?: boolean
+  telegramId?: boolean
   email?: boolean
   phone?: boolean
   metadata?: boolean
@@ -587,6 +618,7 @@ export type AuthIdentitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   userId?: boolean
   provider?: boolean
   providerUserId?: boolean
+  telegramId?: boolean
   email?: boolean
   phone?: boolean
   metadata?: boolean
@@ -600,6 +632,7 @@ export type AuthIdentitySelectScalar = {
   userId?: boolean
   provider?: boolean
   providerUserId?: boolean
+  telegramId?: boolean
   email?: boolean
   phone?: boolean
   metadata?: boolean
@@ -607,7 +640,7 @@ export type AuthIdentitySelectScalar = {
   updatedAt?: boolean
 }
 
-export type AuthIdentityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "provider" | "providerUserId" | "email" | "phone" | "metadata" | "createdAt" | "updatedAt", ExtArgs["result"]["authIdentity"]>
+export type AuthIdentityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "provider" | "providerUserId" | "telegramId" | "email" | "phone" | "metadata" | "createdAt" | "updatedAt", ExtArgs["result"]["authIdentity"]>
 export type AuthIdentityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -628,6 +661,7 @@ export type $AuthIdentityPayload<ExtArgs extends runtime.Types.Extensions.Intern
     userId: string
     provider: string
     providerUserId: string
+    telegramId: string | null
     email: string | null
     phone: string | null
     metadata: runtime.JsonValue | null
@@ -1061,6 +1095,7 @@ export interface AuthIdentityFieldRefs {
   readonly userId: Prisma.FieldRef<"AuthIdentity", 'String'>
   readonly provider: Prisma.FieldRef<"AuthIdentity", 'String'>
   readonly providerUserId: Prisma.FieldRef<"AuthIdentity", 'String'>
+  readonly telegramId: Prisma.FieldRef<"AuthIdentity", 'String'>
   readonly email: Prisma.FieldRef<"AuthIdentity", 'String'>
   readonly phone: Prisma.FieldRef<"AuthIdentity", 'String'>
   readonly metadata: Prisma.FieldRef<"AuthIdentity", 'Json'>

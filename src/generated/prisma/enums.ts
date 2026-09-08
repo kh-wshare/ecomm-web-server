@@ -61,6 +61,14 @@ export const ProductStatus = {
 export type ProductStatus = (typeof ProductStatus)[keyof typeof ProductStatus]
 
 
+export const ProductType = {
+  SIMPLE: 'SIMPLE',
+  VARIABLE: 'VARIABLE'
+} as const
+
+export type ProductType = (typeof ProductType)[keyof typeof ProductType]
+
+
 export const ProductVariantStatus = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE'
@@ -83,14 +91,6 @@ export const ProductMediaType = {
 } as const
 
 export type ProductMediaType = (typeof ProductMediaType)[keyof typeof ProductMediaType]
-
-
-export const ProductType = {
-  SIMPLE: 'SIMPLE',
-  VARIABLE: 'VARIABLE'
-} as const
-
-export type ProductType = (typeof ProductType)[keyof typeof ProductType]
 
 
 export const SalesChannel = {

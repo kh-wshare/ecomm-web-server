@@ -2922,6 +2922,7 @@ export const UserScalarFieldEnum = {
   fullName: 'fullName',
   email: 'email',
   phone: 'phone',
+  telegramId: 'telegramId',
   passwordHash: 'passwordHash',
   status: 'status',
   platformRole: 'platformRole',
@@ -2940,6 +2941,7 @@ export const AuthIdentityScalarFieldEnum = {
   userId: 'userId',
   provider: 'provider',
   providerUserId: 'providerUserId',
+  telegramId: 'telegramId',
   email: 'email',
   phone: 'phone',
   metadata: 'metadata',
@@ -2999,8 +3001,8 @@ export const ProductScalarFieldEnum = {
   sku: 'sku',
   price: 'price',
   currency: 'currency',
-  type: 'type',
   status: 'status',
+  type: 'type',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
@@ -3622,20 +3624,6 @@ export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMo
 
 
 /**
- * Reference to a field of type 'ProductType'
- */
-export type EnumProductTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductType'>
-    
-
-
-/**
- * Reference to a field of type 'ProductType[]'
- */
-export type ListEnumProductTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductType[]'>
-    
-
-
-/**
  * Reference to a field of type 'ProductStatus'
  */
 export type EnumProductStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductStatus'>
@@ -3646,6 +3634,20 @@ export type EnumProductStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'ProductStatus[]'
  */
 export type ListEnumProductStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ProductType'
+ */
+export type EnumProductTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductType'>
+    
+
+
+/**
+ * Reference to a field of type 'ProductType[]'
+ */
+export type ListEnumProductTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductType[]'>
     
 
 

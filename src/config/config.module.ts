@@ -54,6 +54,8 @@ import storageConfig from './storage.config';
         TELEGRAM_CLIENT_ID: Joi.string().optional(),
         TELEGRAM_CLIENT_SECRET: Joi.string().optional(),
         TELEGRAM_ISSUER: Joi.string().uri().optional(),
+        TELEGRAM_BOT_TOKEN: Joi.string().optional(),
+        TELEGRAM_INIT_DATA_MAX_AGE: Joi.number().integer().min(1).optional(),
         PAYMENT_WEBHOOK_SECRET: Joi.string().min(16).optional(),
         PAYMENT_PROVIDER: Joi.string().optional(),
         PAYMENT_PROVIDER_API_KEY: Joi.string().optional(),
