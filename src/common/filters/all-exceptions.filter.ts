@@ -18,7 +18,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    const status =
+    const status: number =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
@@ -37,10 +37,16 @@ export class AllExceptionsFilter implements ExceptionFilter {
       ...(typeof message === 'string' ? { message } : message),
     };
 
-    this.logger.error(
-      `Unhandled Exception: ${request.method} ${request.url}`,
-      exception instanceof Error ? exception.stack : JSON.stringify(exception),
-    );
+    if (status >= 500) {
+      this.logger.error(
+        `Unhandled Exception: ${request.method} ${request.url}`,
+        exception instanceof Error
+          ? exception.stack
+          : JSON.stringify(exception),
+      );
+    } else {
+      this.logger.warn(`${request.method} ${request.url} ${status.toString()}`);
+    }
 
     response.status(status).json(body);
   }

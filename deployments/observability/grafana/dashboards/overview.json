@@ -2,19 +2,243 @@
   "title": "Ecomm Web Server — Overview",
   "uid": "ecomm-overview",
   "schemaVersion": 39,
-  "version": 1,
+  "version": 2,
   "editable": true,
   "timezone": "browser",
   "time": { "from": "now-1h", "to": "now" },
   "refresh": "10s",
   "panels": [
+    { "id": 100, "title": "Health", "type": "row", "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 } },
+
     {
       "id": 1,
-      "title": "App up",
-      "type": "timeseries",
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+      "title": "App status",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "DOWN", "color": "red" },
+                "1": { "text": "UP", "color": "green" }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "value": null, "color": "red" },
+              { "value": 1, "color": "green" }
+            ]
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value",
+        "justifyMode": "auto"
+      },
+      "targets": [{ "expr": "up{job=\"app\"}", "refId": "A" }]
+    },
+    {
+      "id": 2,
+      "title": "CPU",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "value": null, "color": "green" },
+              { "value": 70, "color": "yellow" },
+              { "value": 90, "color": "red" }
+            ]
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "value",
+        "justifyMode": "auto"
+      },
       "targets": [
-        { "expr": "up{job=\"app\"}", "legendFormat": "app", "refId": "A" }
+        { "expr": "rate(process_cpu_seconds_total{job=\"app\"}[1m]) * 100", "refId": "A" }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Memory (RSS)",
+      "type": "stat",
+      "description": "Thresholds are placeholders — tune to the container's actual memory limit.",
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "value": null, "color": "green" },
+              { "value": 300000000, "color": "yellow" },
+              { "value": 450000000, "color": "red" }
+            ]
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "value",
+        "justifyMode": "auto"
+      },
+      "targets": [
+        { "expr": "process_resident_memory_bytes{job=\"app\"}", "refId": "A" }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Event loop lag (p99)",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 1 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "value": null, "color": "green" },
+              { "value": 50, "color": "yellow" },
+              { "value": 200, "color": "red" }
+            ]
+          }
+        }
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "value",
+        "justifyMode": "auto"
+      },
+      "targets": [
+        { "expr": "nodejs_eventloop_lag_p99_seconds{job=\"app\"} * 1000", "refId": "A" }
+      ]
+    },
+
+    { "id": 101, "title": "Resource trends", "type": "row", "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 } },
+
+    {
+      "id": 5,
+      "title": "CPU usage",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "color": { "mode": "fixed", "fixedColor": "#2a78d6" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        }
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "calcs": ["lastNotNull", "max"] },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        { "expr": "rate(process_cpu_seconds_total{job=\"app\"}[1m]) * 100", "legendFormat": "cpu", "refId": "A" }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Memory breakdown",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "min": 0,
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "rss" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#2a78d6" } }] },
+          { "matcher": { "id": "byName", "options": "heap used" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#eb6834" } }] },
+          { "matcher": { "id": "byName", "options": "heap total" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#1baf7a" } }] }
+        ]
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "calcs": ["lastNotNull"] },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        { "expr": "process_resident_memory_bytes{job=\"app\"}", "legendFormat": "rss", "refId": "A" },
+        { "expr": "nodejs_heap_size_used_bytes{job=\"app\"}", "legendFormat": "heap used", "refId": "B" },
+        { "expr": "nodejs_heap_size_total_bytes{job=\"app\"}", "legendFormat": "heap total", "refId": "C" }
+      ]
+    },
+
+    { "id": 102, "title": "Node.js runtime", "type": "row", "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 } },
+
+    {
+      "id": 7,
+      "title": "Event loop lag",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "min": 0,
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "p50" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#2a78d6" } }] },
+          { "matcher": { "id": "byName", "options": "p99" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#eb6834" } }] }
+        ]
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "calcs": ["lastNotNull", "max"] },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        { "expr": "nodejs_eventloop_lag_p50_seconds{job=\"app\"} * 1000", "legendFormat": "p50", "refId": "A" },
+        { "expr": "nodejs_eventloop_lag_p99_seconds{job=\"app\"} * 1000", "legendFormat": "p99", "refId": "B" }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Handles & requests",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0,
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "handles" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#2a78d6" } }] },
+          { "matcher": { "id": "byName", "options": "requests" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "#eb6834" } }] }
+        ]
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "calcs": ["lastNotNull"] },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        { "expr": "nodejs_active_handles_total{job=\"app\"}", "legendFormat": "handles", "refId": "A" },
+        { "expr": "nodejs_active_requests_total{job=\"app\"}", "legendFormat": "requests", "refId": "B" }
       ]
     }
   ]

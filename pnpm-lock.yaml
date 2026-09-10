@@ -92,6 +92,9 @@ importers:
       prisma:
         specifier: ^7.8.0
         version: 7.8.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3)
+      prom-client:
+        specifier: ^15.1.3
+        version: 15.1.3
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -1184,6 +1187,10 @@ packages:
     engines: {node: ^14.18.0 || >=16.10.0, npm: '>=5.10.0'}
     hasBin: true
 
+  '@opentelemetry/api@1.9.1':
+    resolution: {integrity: sha512-gLyJlPHPZYdAk1JENA9LeHejZe1Ti77/pTeFm/nMXmQH/HFZlcS/O2XJB+L8fkbrNSqhdtlvjBVjxwUYanNH5Q==}
+    engines: {node: '>=8.0.0'}
+
   '@paralleldrive/cuid2@2.3.1':
     resolution: {integrity: sha512-XO7cAxhnTZl0Yggq6jOgjiOHhbgcO4NqFqwSmQpjK3b6TEE6Uj/jfSk6wzYyemh3+I0sHirKSetjQwn5cZktFw==}
 
@@ -2088,6 +2095,9 @@ packages:
   binary-version@7.1.0:
     resolution: {integrity: sha512-Iy//vPc3ANPNlIWd242Npqc8MK0a/i4kVcHDlDA6HNMv5zMxz4ulIFhOSYJVKw/8AbHdHy0CnGYEt1QqSXxPsw==}
     engines: {node: '>=18'}
+
+  bintrees@1.0.2:
+    resolution: {integrity: sha512-VOMgTMwjAaUG580SXn3LacVgjurrbMme7ZZNYGSSV7mmtY6QQRh0Eg3pwIcntQ77DErK1L0NxkbetjcoXzVwKw==}
 
   bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
@@ -3827,6 +3837,11 @@ packages:
       typescript:
         optional: true
 
+  prom-client@15.1.3:
+    resolution: {integrity: sha512-6ZiOBfCywsD4k1BN9IX0uZhF+tJkV8q8llP64G5Hajs4JOeVLPCwpPVcpXy3BwYiUGgyJzsJJQeOIv7+hDSq8g==}
+    engines: {node: ^16 || ^18 || >=20}
+    deprecated: prom-client has been replaced by @prometheus-io/client
+
   proper-lockfile@4.1.2:
     resolution: {integrity: sha512-TjNPblN4BwAWMXU8s9AEz4JmQxnD1NNL7bNOY/AKUzyamc379FWASUhc/K1pL2noVb+XmZKLL68cjzLsiOAMaA==}
 
@@ -4204,6 +4219,9 @@ packages:
 
   tar-stream@3.1.7:
     resolution: {integrity: sha512-qJj60CXt7IU1Ffyc3NJMjh6EkuCFej46zUqJ4J7pqYlThyd9bO0XBTmcOIhSzZJVWfsLks0+nle/j538YAW9RQ==}
+
+  tdigest@0.1.3:
+    resolution: {integrity: sha512-zbRt+lT+/H4fRItHshczHErVCQnitJk8MfMT24MqFJf3YL7SJJPqGIGeuOdvxXxM/AHFzKBl7WoyaYwqO9s3Kw==}
 
   terser-webpack-plugin@5.6.0:
     resolution: {integrity: sha512-Eum+5ajkaOhf5KbM26osvv21kLD7BaGqQ1UA4Ami4arYwylmGUQTgHFpHDdmJod1q4QXa66p0to/FBKID+J1vA==}
@@ -5636,6 +5654,8 @@ snapshots:
     dependencies:
       consola: 3.4.2
 
+  '@opentelemetry/api@1.9.1': {}
+
   '@paralleldrive/cuid2@2.3.1':
     dependencies:
       '@noble/hashes': 1.8.0
@@ -6633,6 +6653,8 @@ snapshots:
     dependencies:
       execa: 8.0.1
       find-versions: 6.0.0
+
+  bintrees@1.0.2: {}
 
   bl@4.1.0:
     dependencies:
@@ -8541,6 +8563,11 @@ snapshots:
       - react
       - react-dom
 
+  prom-client@15.1.3:
+    dependencies:
+      '@opentelemetry/api': 1.9.1
+      tdigest: 0.1.3
+
   proper-lockfile@4.1.2:
     dependencies:
       graceful-fs: 4.2.11
@@ -8954,6 +8981,10 @@ snapshots:
     transitivePeerDependencies:
       - bare-abort-controller
       - react-native-b4a
+
+  tdigest@0.1.3:
+    dependencies:
+      bintrees: 1.0.2
 
   terser-webpack-plugin@5.6.0(@swc/core@1.15.40(@swc/helpers@0.5.23))(webpack@5.106.0(@swc/core@1.15.40(@swc/helpers@0.5.23))):
     dependencies:

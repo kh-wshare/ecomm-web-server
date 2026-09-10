@@ -32,7 +32,7 @@ import storageConfig from './storage.config';
         APP_NAME: Joi.string().default('Merchant Commerce Hub'),
         APP_PREFIX: Joi.string().default('api'),
         DATABASE_URL: Joi.string().required(),
-        REDIS_URL: Joi.string().uri().optional(),
+        REDIS_URL: Joi.string().uri().allow('').optional(),
         REDIS_HOST: Joi.string().default('localhost'),
         REDIS_PORT: Joi.number().default(6379),
         REDIS_PASSWORD: Joi.string().allow('').optional(),
