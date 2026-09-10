@@ -9,9 +9,7 @@ import { PaymentService } from '@modules/payment/payment.service';
 
 @Module({
   imports: [NotificationModule],
-  controllers: [
-    StorefrontPaymentController,
-  ],
+  controllers: [StorefrontPaymentController],
   providers: [
     PaymentService,
     PaymentSecurityService,

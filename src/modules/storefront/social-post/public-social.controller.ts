@@ -5,7 +5,6 @@ import { SocialPostService } from '@modules/social-post/social-post.service';
 import { SocialLinkDto } from '@modules/social-post/dto/social-post-response.dto';
 import { SocialLinkQueryDto } from '@modules/social-post/dto/social-post-input.dto';
 
-
 @Public()
 @ApiTags('Social Commerce')
 @Controller()

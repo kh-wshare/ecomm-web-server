@@ -114,14 +114,14 @@ export class PayWayAdapter {
       .update(value)
       .digest('base64');
   }
-  
+
   private requestTime() {
     return new Date()
       .toISOString()
       .replace(/[-:TZ.]/g, '')
       .slice(0, 14);
   }
-  
+
   private async post(
     url: string,
     body: Record<string, unknown>,

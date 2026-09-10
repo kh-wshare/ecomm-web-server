@@ -5,12 +5,10 @@ import {
   IsOptional,
   IsString,
   IsUUID,
-  Length,
-  Matches,
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { IsEnum, IsIn } from 'class-validator';
+import { IsEnum } from 'class-validator';
 import { BaseQueryDto } from '#app/common/dto/base-query.dto';
 import {
   PaymentProviderCode,

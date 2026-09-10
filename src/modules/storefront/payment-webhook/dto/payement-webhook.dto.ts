@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { PaymentDto } from "@modules/payment/dto/payment-response.dto";
+import { ApiProperty } from '@nestjs/swagger';
+import { PaymentDto } from '@modules/payment/dto/payment-response.dto';
 
 export class PaymentWebhookRespDto {
   @ApiProperty()

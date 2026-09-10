@@ -8,9 +8,7 @@ import { PaymentWebhookController } from './payment-webhook.controller';
 
 @Module({
   imports: [NotificationModule],
-  controllers: [
-    PaymentWebhookController,
-  ],
+  controllers: [PaymentWebhookController],
   providers: [
     PaymentService,
     PaymentSecurityService,

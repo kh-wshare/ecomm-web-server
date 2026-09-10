@@ -8,9 +8,7 @@ import { KhqrAdapter } from './adapters/khqr.adapter';
 
 @Module({
   imports: [NotificationModule],
-  controllers: [
-    PaymentController,
-  ],
+  controllers: [PaymentController],
   providers: [
     PaymentService,
     PaymentSecurityService,

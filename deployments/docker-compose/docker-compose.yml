@@ -1,0 +1,113 @@
+# Production/local stack for the ecomm-web-server backend: Postgres + Redis +
+# the NestJS API, plus Prometheus/Grafana for observability. This is the
+# canonical compose file for both local use and the production server
+# deployed by .github/workflows/deploy.yml.
+#
+# Usage (from the repo root):
+#   cp deployments/docker-compose/.env.example deployments/docker-compose/.env
+#   docker compose -f deployments/docker-compose/docker-compose.yml --env-file deployments/docker-compose/.env up --build
+#
+# See docs/backend-deployment.md and docs/docker-deployment.md for what must
+# change before this goes anywhere near production (every placeholder value
+# below is for local development only).
+
+name: ecomm-web-server
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-dev_db}
+      POSTGRES_USER: ${DB_USER:-dev_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-soklay512}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-dev_user} -d ${DB_NAME:-dev_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: >
+      redis-server
+      --appendonly yes
+      --requirepass ${REDIS_PASSWORD:-}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    # `image:` lets the production server run `docker compose pull app` +
+    # `up -d --no-build` against the tag pushed by .github/workflows/deploy.yml,
+    # while `build:` still lets `docker compose up --build` work for local use.
+    image: ${DOCKERHUB_USERNAME:-ecomm}/ecomm-web-server:${IMAGE_TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      target: production
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    # Loads the app's full configuration surface (JWT, payment, storage,
+    # swagger, social-auth — see src/config/config.module.ts) from this
+    # deployment's .env, so this file doesn't need to be kept in sync by
+    # hand every time a new env var is added. Only the values that must
+    # differ for the containerized network topology are overridden below.
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://${DB_USER:-dev_user}:${DB_PASSWORD:-soklay512}@postgres:5432/${DB_NAME:-dev_db}?schema=public
+      REDIS_URL: ""
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+    ports:
+      - "${PORT:-3000}:3000"
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    restart: unless-stopped
+    volumes:
+      - ../observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+
+  grafana:
+    image: grafana/grafana:11.2.2
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+    volumes:
+      - ../observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ../observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "${GRAFANA_PORT:-3001}:3000"
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:

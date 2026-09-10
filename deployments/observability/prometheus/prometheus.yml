@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # NestJS API. The app does not expose a /metrics endpoint yet — this scrape
+  # target only reports the standard Prometheus "up" metric until a metrics
+  # module (e.g. prom-client) is added to the app.
+  - job_name: app
+    static_configs:
+      - targets: ["app:3000"]
+    metrics_path: /metrics

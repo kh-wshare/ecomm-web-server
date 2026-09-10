@@ -67,8 +67,8 @@ jobs:
           push: true
           target: production
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/nest-server:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/nest-server:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/ecomm-web-server:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/ecomm-web-server:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

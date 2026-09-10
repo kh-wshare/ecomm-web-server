@@ -70,7 +70,7 @@ export class PaymentService {
     private readonly notifications: NotificationService,
     private readonly payway: PayWayAdapter,
     private readonly khqr: KhqrAdapter,
-  ) { }
+  ) {}
 
   async connectProvider(
     merchantId: string,
@@ -320,7 +320,7 @@ export class PaymentService {
       });
       const config = this.providerConfig(provider.config);
       const year = new Date().getFullYear();
-      const billNumber = `INV-${year}-${"00001".toString().padStart(3, '0')}`
+      const billNumber = `INV-${year}-${'00001'.toString().padStart(3, '0')}`;
       const action = this.khqr.createQr({
         config: config.settings as unknown as KhqrConfig,
         amount: payment.amount.toString(),
@@ -418,7 +418,10 @@ export class PaymentService {
       payment.order.checkoutSession.accessTokenHash,
       checkoutToken,
     );
-    if (payment.provider === PaymentProviderCode.KHQR && payment.status === 'PENDING') {
+    if (
+      payment.provider === PaymentProviderCode.KHQR &&
+      payment.status === 'PENDING'
+    ) {
       const config = this.providerConfig(payment.paymentProvider.config);
       const verified = await this.khqr.checkPayment({
         config: config.settings as unknown as KhqrConfig,
@@ -504,11 +507,11 @@ export class PaymentService {
       const result =
         dto.status === 'CONFIRMED'
           ? await this.confirmPayment(
-            payment.id,
-            event.record.id,
-            dto,
-            metadata,
-          )
+              payment.id,
+              event.record.id,
+              dto,
+              metadata,
+            )
           : await this.failPayment(payment.id, event.record.id, dto, metadata);
       await this.notifications.syncOrderStockAlerts(
         result.payment.merchantId,
@@ -1235,15 +1238,15 @@ export class PaymentService {
     return {
       settings:
         config.settings &&
-          typeof config.settings === 'object' &&
-          !Array.isArray(config.settings)
+        typeof config.settings === 'object' &&
+        !Array.isArray(config.settings)
           ? (config.settings as Record<string, unknown>)
           : {},
       webhookSecret: secret as EncryptedSecret | undefined,
       secrets:
         config.secrets &&
-          typeof config.secrets === 'object' &&
-          !Array.isArray(config.secrets)
+        typeof config.secrets === 'object' &&
+        !Array.isArray(config.secrets)
           ? (config.secrets as Record<string, EncryptedSecret>)
           : {},
     };

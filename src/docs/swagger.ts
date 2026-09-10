@@ -127,7 +127,13 @@ export function setupSwagger(
       )
       .build();
     const document = SwaggerModule.createDocument(app, config, {
-      include: [StorefrontModule, CheckoutModule, StorefrontSocialPostModule, StorefrontPaymentModule, StorefrontPaymentWebhookModule],
+      include: [
+        StorefrontModule,
+        CheckoutModule,
+        StorefrontSocialPostModule,
+        StorefrontPaymentModule,
+        StorefrontPaymentWebhookModule,
+      ],
     });
     SwaggerModule.setup('docs/storefront', app, document, {
       jsonDocumentUrl: 'docs/storefront/openapi.json',

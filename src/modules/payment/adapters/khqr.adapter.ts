@@ -96,7 +96,7 @@ export class KhqrAdapter {
       ? (value as Record<string, unknown>)
       : undefined;
   }
-  
+
   private string(value: unknown): string | undefined {
     return typeof value === 'string' ? value : undefined;
   }
