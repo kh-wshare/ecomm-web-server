@@ -36,10 +36,18 @@ services:
     restart: unless-stopped
     ports:
       - "${REDIS_PORT:-6379}:6379"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+    # `--requirepass ""` is rejected by Redis outright, so only pass it when
+    # a password is actually set (REDIS_PASSWORD is blank by default).
     command: >
-      redis-server
-      --appendonly yes
-      --requirepass ${REDIS_PASSWORD:-}
+      sh -c '
+      if [ -n "$$REDIS_PASSWORD" ]; then
+        exec redis-server --appendonly yes --requirepass "$$REDIS_PASSWORD";
+      else
+        exec redis-server --appendonly yes;
+      fi
+      '
     volumes:
       - redis_data:/data
     healthcheck:
