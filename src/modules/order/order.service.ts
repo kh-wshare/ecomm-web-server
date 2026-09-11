@@ -96,7 +96,7 @@ export class OrderService {
     const [order, timeline] = await this.prisma.$transaction([
       this.prisma.order.findFirst({
         where: { id: orderId, merchantId },
-        include: { items: true, payment: true },
+        include: { items: true, payments: true },
       }),
       this.prisma.auditLog.findMany({
         where: {

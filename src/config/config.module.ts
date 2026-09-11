@@ -5,6 +5,7 @@ import appConfig from './app.config';
 import databaseConfig from './database.config';
 import jwtConfig from './jwt.config';
 import paymentConfig from './payment.config';
+import rabbitmqConfig from './rabbitmq.config';
 import redisConfig from './redis.config';
 import socialAuthConfig from './social-auth.config';
 import storageConfig from './storage.config';
@@ -23,6 +24,7 @@ import storageConfig from './storage.config';
         paymentConfig,
         storageConfig,
         socialAuthConfig,
+        rabbitmqConfig,
       ],
       validationSchema: Joi.object({
         NODE_ENV: Joi.string()
@@ -86,6 +88,15 @@ import storageConfig from './storage.config';
         PUBLIC_STOREFRONT_URL: Joi.string()
           .uri()
           .default('http://localhost:3001'),
+        RABBITMQ_URL: Joi.string().default('amqp://localhost:5682'),
+        RABBITMQ_EXCHANGE: Joi.string().default('pos.events'),
+        POS_OUTBOX_RELAY_ENABLED: Joi.boolean().optional(),
+        POS_OUTBOX_RELAY_INTERVAL_MS: Joi.number()
+          .integer()
+          .min(100)
+          .optional(),
+        POS_OUTBOX_RELAY_BATCH_SIZE: Joi.number().integer().min(1).optional(),
+        POS_OUTBOX_RELAY_MAX_ATTEMPTS: Joi.number().integer().min(1).optional(),
       })
         .or('JWT_ACCESS_SECRET', 'JWT_SECRET')
         .or('REDIS_URL', 'REDIS_HOST'),

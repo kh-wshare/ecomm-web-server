@@ -9,6 +9,7 @@ import { SalesChannel } from '#app/generated/prisma/enums';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
 import { InventoryService } from '#app/modules/inventory/inventory.service';
 import { OrderService } from '#app/modules/order/order.service';
+import { CartPricingService } from '#app/modules/pricing/cart-pricing.service';
 import { CreatePosSaleDto } from './dto/pos-sale-input.dto';
 
 type AuditMetadata = {
@@ -30,6 +31,7 @@ export class PosService {
     private readonly prisma: PrismaService,
     private readonly inventory: InventoryService,
     private readonly orders: OrderService,
+    private readonly pricing: CartPricingService,
   ) {}
 
   async createSale(
@@ -49,8 +51,13 @@ export class PosService {
     });
     if (!branch) throw new NotFoundException('POS branch not found');
 
-    const { checkoutItems, currency, subtotal } = await this.buildCheckoutItems(
+    const {
+      items: checkoutItems,
+      currency,
+      subtotal,
+    } = await this.pricing.buildPricedItems(
       merchantId,
+      SalesChannel.POS,
       dto.items,
     );
     const discountAmount = this.money(dto.discountAmount);
@@ -194,79 +201,6 @@ export class PosService {
         totalAmount,
       }),
     };
-  }
-
-  private async buildCheckoutItems(merchantId: string, items: PosSaleItem[]) {
-    const productIds = [...new Set(items.map(({ productId }) => productId))];
-    const products = await this.prisma.product.findMany({
-      where: {
-        id: { in: productIds },
-        merchantId,
-        status: 'ACTIVE',
-        deletedAt: null,
-      },
-      include: {
-        variants: true,
-        channelVisibility: { where: { channel: SalesChannel.POS } },
-      },
-    });
-    if (products.length !== productIds.length) {
-      throw new ConflictException('One or more products are unavailable');
-    }
-
-    const productById = new Map(
-      products.map((product) => [product.id, product]),
-    );
-    const targetKeys = new Set<string>();
-    let currency: string | undefined;
-    let subtotal = new Prisma.Decimal(0);
-    const checkoutItems = items.map((item) => {
-      const product = productById.get(item.productId);
-      if (!product) {
-        throw new ConflictException('One or more products are unavailable');
-      }
-      const visibility = product.channelVisibility[0];
-      if (!visibility?.isVisible || !visibility.isPurchasable) {
-        throw new ConflictException(
-          'Product is not purchasable on the POS channel',
-        );
-      }
-      const variantId = item.variantId ?? undefined;
-      const variant = variantId
-        ? product.variants.find(({ id }) => id === variantId)
-        : undefined;
-      if (variantId && (!variant || variant.status !== 'ACTIVE')) {
-        throw new ConflictException('Product variant is unavailable');
-      }
-      const targetKey = variantId
-        ? `variant:${variantId}`
-        : `product:${item.productId}`;
-      if (targetKeys.has(targetKey)) {
-        throw new ConflictException('Duplicate POS sale stock item');
-      }
-      targetKeys.add(targetKey);
-      if (currency && currency !== product.currency) {
-        throw new ConflictException(
-          'All POS sale items must use the same currency',
-        );
-      }
-
-      currency = product.currency;
-      const unitPrice = variant?.price ?? product.price;
-      const totalPrice = unitPrice.mul(item.quantity);
-      subtotal = subtotal.add(totalPrice);
-      return {
-        productId: product.id,
-        variantId,
-        sku: variant?.sku ?? product.sku,
-        name: variant ? `${product.name} - ${variant.name}` : product.name,
-        quantity: item.quantity,
-        unitPrice,
-        totalPrice,
-      };
-    });
-
-    return { checkoutItems, currency: currency ?? 'USD', subtotal };
   }
 
   private toReceipt({

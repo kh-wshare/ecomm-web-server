@@ -70,6 +70,15 @@ export const ModelName = {
   PaymentProvider: 'PaymentProvider',
   Payment: 'Payment',
   PaymentWebhookEvent: 'PaymentWebhookEvent',
+  PaymentRefund: 'PaymentRefund',
+  PosDevice: 'PosDevice',
+  PosShift: 'PosShift',
+  PosTable: 'PosTable',
+  Customer: 'Customer',
+  KitchenOrder: 'KitchenOrder',
+  KitchenOrderItem: 'KitchenOrderItem',
+  OutboxEvent: 'OutboxEvent',
+  IdempotencyKey: 'IdempotencyKey',
   Notification: 'Notification',
   SocialPost: 'SocialPost',
   ShoppableHotspot: 'ShoppableHotspot',
@@ -306,6 +315,8 @@ export type InventoryReservationScalarFieldEnum = (typeof InventoryReservationSc
 export const CheckoutSessionScalarFieldEnum = {
   id: 'id',
   merchantId: 'merchantId',
+  branchId: 'branchId',
+  posDeviceId: 'posDeviceId',
   customerId: 'customerId',
   customerName: 'customerName',
   customerEmail: 'customerEmail',
@@ -346,6 +357,11 @@ export const OrderScalarFieldEnum = {
   id: 'id',
   merchantId: 'merchantId',
   checkoutSessionId: 'checkoutSessionId',
+  branchId: 'branchId',
+  posDeviceId: 'posDeviceId',
+  posShiftId: 'posShiftId',
+  tableId: 'tableId',
+  localId: 'localId',
   customerId: 'customerId',
   customerName: 'customerName',
   customerEmail: 'customerEmail',
@@ -381,7 +397,12 @@ export const OrderItemScalarFieldEnum = {
   quantity: 'quantity',
   unitPrice: 'unitPrice',
   totalPrice: 'totalPrice',
-  createdAt: 'createdAt'
+  note: 'note',
+  sentToKitchenQuantity: 'sentToKitchenQuantity',
+  preparedQuantity: 'preparedQuantity',
+  cancelledQuantity: 'cancelledQuantity',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type OrderItemScalarFieldEnum = (typeof OrderItemScalarFieldEnum)[keyof typeof OrderItemScalarFieldEnum]
@@ -404,12 +425,16 @@ export const PaymentScalarFieldEnum = {
   id: 'id',
   merchantId: 'merchantId',
   orderId: 'orderId',
+  posShiftId: 'posShiftId',
   paymentProviderId: 'paymentProviderId',
   provider: 'provider',
   providerTransactionId: 'providerTransactionId',
+  paymentReference: 'paymentReference',
+  idempotencyKey: 'idempotencyKey',
   amount: 'amount',
   currency: 'currency',
   status: 'status',
+  metadata: 'metadata',
   paidAt: 'paidAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -433,6 +458,170 @@ export const PaymentWebhookEventScalarFieldEnum = {
 } as const
 
 export type PaymentWebhookEventScalarFieldEnum = (typeof PaymentWebhookEventScalarFieldEnum)[keyof typeof PaymentWebhookEventScalarFieldEnum]
+
+
+export const PaymentRefundScalarFieldEnum = {
+  id: 'id',
+  merchantId: 'merchantId',
+  paymentId: 'paymentId',
+  orderId: 'orderId',
+  amount: 'amount',
+  reason: 'reason',
+  status: 'status',
+  providerRefundTransactionId: 'providerRefundTransactionId',
+  idempotencyKey: 'idempotencyKey',
+  returnedStock: 'returnedStock',
+  requestedById: 'requestedById',
+  approvedById: 'approvedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentRefundScalarFieldEnum = (typeof PaymentRefundScalarFieldEnum)[keyof typeof PaymentRefundScalarFieldEnum]
+
+
+export const PosDeviceScalarFieldEnum = {
+  id: 'id',
+  merchantId: 'merchantId',
+  branchId: 'branchId',
+  deviceId: 'deviceId',
+  name: 'name',
+  platform: 'platform',
+  appVersion: 'appVersion',
+  status: 'status',
+  lastSeenAt: 'lastSeenAt',
+  registeredById: 'registeredById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type PosDeviceScalarFieldEnum = (typeof PosDeviceScalarFieldEnum)[keyof typeof PosDeviceScalarFieldEnum]
+
+
+export const PosShiftScalarFieldEnum = {
+  id: 'id',
+  merchantId: 'merchantId',
+  branchId: 'branchId',
+  posDeviceId: 'posDeviceId',
+  openedById: 'openedById',
+  closedById: 'closedById',
+  status: 'status',
+  openingCash: 'openingCash',
+  closingCash: 'closingCash',
+  expectedCash: 'expectedCash',
+  cashDifference: 'cashDifference',
+  note: 'note',
+  openedAt: 'openedAt',
+  closedAt: 'closedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PosShiftScalarFieldEnum = (typeof PosShiftScalarFieldEnum)[keyof typeof PosShiftScalarFieldEnum]
+
+
+export const PosTableScalarFieldEnum = {
+  id: 'id',
+  merchantId: 'merchantId',
+  branchId: 'branchId',
+  name: 'name',
+  code: 'code',
+  seats: 'seats',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type PosTableScalarFieldEnum = (typeof PosTableScalarFieldEnum)[keyof typeof PosTableScalarFieldEnum]
+
+
+export const CustomerScalarFieldEnum = {
+  id: 'id',
+  merchantId: 'merchantId',
+  fullName: 'fullName',
+  phone: 'phone',
+  email: 'email',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
+
+
+export const KitchenOrderScalarFieldEnum = {
+  id: 'id',
+  merchantId: 'merchantId',
+  branchId: 'branchId',
+  orderId: 'orderId',
+  posShiftId: 'posShiftId',
+  tableId: 'tableId',
+  status: 'status',
+  sentById: 'sentById',
+  sentAt: 'sentAt',
+  acceptedAt: 'acceptedAt',
+  readyAt: 'readyAt',
+  completedAt: 'completedAt',
+  idempotencyKey: 'idempotencyKey',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KitchenOrderScalarFieldEnum = (typeof KitchenOrderScalarFieldEnum)[keyof typeof KitchenOrderScalarFieldEnum]
+
+
+export const KitchenOrderItemScalarFieldEnum = {
+  id: 'id',
+  kitchenOrderId: 'kitchenOrderId',
+  orderItemId: 'orderItemId',
+  quantity: 'quantity',
+  status: 'status',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KitchenOrderItemScalarFieldEnum = (typeof KitchenOrderItemScalarFieldEnum)[keyof typeof KitchenOrderItemScalarFieldEnum]
+
+
+export const OutboxEventScalarFieldEnum = {
+  id: 'id',
+  aggregateType: 'aggregateType',
+  aggregateId: 'aggregateId',
+  eventType: 'eventType',
+  payload: 'payload',
+  merchantId: 'merchantId',
+  status: 'status',
+  attempts: 'attempts',
+  lastError: 'lastError',
+  availableAt: 'availableAt',
+  publishedAt: 'publishedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type OutboxEventScalarFieldEnum = (typeof OutboxEventScalarFieldEnum)[keyof typeof OutboxEventScalarFieldEnum]
+
+
+export const IdempotencyKeyScalarFieldEnum = {
+  id: 'id',
+  merchantId: 'merchantId',
+  scope: 'scope',
+  key: 'key',
+  requestHash: 'requestHash',
+  status: 'status',
+  responseStatus: 'responseStatus',
+  responseBody: 'responseBody',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  expiresAt: 'expiresAt'
+} as const
+
+export type IdempotencyKeyScalarFieldEnum = (typeof IdempotencyKeyScalarFieldEnum)[keyof typeof IdempotencyKeyScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {

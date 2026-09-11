@@ -156,6 +156,7 @@ export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
 
 export const PaymentStatus = {
   PENDING: 'PENDING',
+  PARTIAL: 'PARTIAL',
   PAID: 'PAID',
   FAILED: 'FAILED',
   REFUNDED: 'REFUNDED'
@@ -177,7 +178,8 @@ export type FulfillmentStatus = (typeof FulfillmentStatus)[keyof typeof Fulfillm
 export const PaymentProviderCode = {
   HMAC: 'HMAC',
   KHQR: 'KHQR',
-  ABA_PAYWAY: 'ABA_PAYWAY'
+  ABA_PAYWAY: 'ABA_PAYWAY',
+  CASH: 'CASH'
 } as const
 
 export type PaymentProviderCode = (typeof PaymentProviderCode)[keyof typeof PaymentProviderCode]
@@ -193,9 +195,12 @@ export type PaymentProviderStatus = (typeof PaymentProviderStatus)[keyof typeof 
 
 export const PaymentTransactionStatus = {
   PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
   CONFIRMED: 'CONFIRMED',
   FAILED: 'FAILED',
-  REFUNDED: 'REFUNDED'
+  CANCELLED: 'CANCELLED',
+  REFUNDED: 'REFUNDED',
+  UNKNOWN: 'UNKNOWN'
 } as const
 
 export type PaymentTransactionStatus = (typeof PaymentTransactionStatus)[keyof typeof PaymentTransactionStatus]
@@ -236,3 +241,68 @@ export const SocialPublishStatus = {
 } as const
 
 export type SocialPublishStatus = (typeof SocialPublishStatus)[keyof typeof SocialPublishStatus]
+
+
+export const PosDeviceStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  REVOKED: 'REVOKED'
+} as const
+
+export type PosDeviceStatus = (typeof PosDeviceStatus)[keyof typeof PosDeviceStatus]
+
+
+export const PosShiftStatus = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED'
+} as const
+
+export type PosShiftStatus = (typeof PosShiftStatus)[keyof typeof PosShiftStatus]
+
+
+export const PosTableStatus = {
+  AVAILABLE: 'AVAILABLE',
+  OCCUPIED: 'OCCUPIED',
+  RESERVED: 'RESERVED'
+} as const
+
+export type PosTableStatus = (typeof PosTableStatus)[keyof typeof PosTableStatus]
+
+
+export const KitchenOrderStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  PREPARING: 'PREPARING',
+  READY: 'READY',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type KitchenOrderStatus = (typeof KitchenOrderStatus)[keyof typeof KitchenOrderStatus]
+
+
+export const PaymentRefundStatus = {
+  PENDING: 'PENDING',
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED'
+} as const
+
+export type PaymentRefundStatus = (typeof PaymentRefundStatus)[keyof typeof PaymentRefundStatus]
+
+
+export const OutboxEventStatus = {
+  PENDING: 'PENDING',
+  PUBLISHED: 'PUBLISHED',
+  FAILED: 'FAILED'
+} as const
+
+export type OutboxEventStatus = (typeof OutboxEventStatus)[keyof typeof OutboxEventStatus]
+
+
+export const IdempotencyKeyStatus = {
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+} as const
+
+export type IdempotencyKeyStatus = (typeof IdempotencyKeyStatus)[keyof typeof IdempotencyKeyStatus]

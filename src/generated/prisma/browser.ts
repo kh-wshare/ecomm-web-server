@@ -113,6 +113,51 @@ export type Payment = Prisma.PaymentModel
  */
 export type PaymentWebhookEvent = Prisma.PaymentWebhookEventModel
 /**
+ * Model PaymentRefund
+ * 
+ */
+export type PaymentRefund = Prisma.PaymentRefundModel
+/**
+ * Model PosDevice
+ * 
+ */
+export type PosDevice = Prisma.PosDeviceModel
+/**
+ * Model PosShift
+ * 
+ */
+export type PosShift = Prisma.PosShiftModel
+/**
+ * Model PosTable
+ * 
+ */
+export type PosTable = Prisma.PosTableModel
+/**
+ * Model Customer
+ * 
+ */
+export type Customer = Prisma.CustomerModel
+/**
+ * Model KitchenOrder
+ * 
+ */
+export type KitchenOrder = Prisma.KitchenOrderModel
+/**
+ * Model KitchenOrderItem
+ * 
+ */
+export type KitchenOrderItem = Prisma.KitchenOrderItemModel
+/**
+ * Model OutboxEvent
+ * 
+ */
+export type OutboxEvent = Prisma.OutboxEventModel
+/**
+ * Model IdempotencyKey
+ * 
+ */
+export type IdempotencyKey = Prisma.IdempotencyKeyModel
+/**
  * Model Notification
  * 
  */

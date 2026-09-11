@@ -13,7 +13,9 @@ import { MerchantModule } from '@modules/merchant/merchant.module';
 import { NotificationModule } from '@modules/notification/notification.module';
 import { OrderModule } from '@modules/order/order.module';
 import { PaymentModule } from '@modules/payment/payment.module';
+import { PosDevicesModule } from '@modules/pos/devices/devices.module';
 import { PosModule } from '@modules/pos/pos.module';
+import { PosShiftsModule } from '@modules/pos/shifts/shifts.module';
 import { SocialPostModule } from '@modules/social-post/social-post.module';
 import { StorefrontModule } from '@modules/storefront/storefront.module';
 import { ThemeModule } from '@modules/theme/theme.module';
@@ -106,6 +108,8 @@ export function setupSwagger(
         InventoryModule,
         OrderModule,
         PosModule,
+        PosDevicesModule,
+        PosShiftsModule,
       ],
     });
     SwaggerModule.setup('docs/pos', app, document, {

@@ -7,7 +7,10 @@ import {
 } from '@nestjs/common';
 import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { Prisma } from '#app/generated/prisma/client';
-import { PaymentProviderCode } from '#app/generated/prisma/enums';
+import {
+  PaymentProviderCode,
+  PaymentTransactionStatus,
+} from '#app/generated/prisma/enums';
 import { PaginatedResult } from '#app/common/responses/pagination.response';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
 import { EventBusService } from '#app/infrastructure/events/event-bus.service';
@@ -233,7 +236,7 @@ export class PaymentService {
       await this.lockOrder(tx, candidate.merchantId, candidate.id);
       const order = await tx.order.findUnique({
         where: { id: candidate.id },
-        include: { payment: true, checkoutSession: true },
+        include: { payments: true, checkoutSession: true },
       });
       if (!order) throw new NotFoundException('Order not found');
       this.verifyCheckoutToken(
@@ -252,13 +255,21 @@ export class PaymentService {
           'Order total does not require a payment intent',
         );
       }
-      if (order.payment) {
-        if (order.payment.provider !== dto.provider) {
+      // An order can now hold multiple Payment rows (split/multi-tender checkout),
+      // but only one intent may be open (unresolved) at a time — reuse it if the
+      // same provider asks again, otherwise reject a concurrent different-provider intent.
+      const openPayment = order.payments.find(
+        (existing) =>
+          existing.status === PaymentTransactionStatus.PENDING ||
+          existing.status === PaymentTransactionStatus.PROCESSING,
+      );
+      if (openPayment) {
+        if (openPayment.provider !== dto.provider) {
           throw new ConflictException(
-            'Order already has an intent with another provider',
+            'Order already has an open intent with another provider',
           );
         }
-        return order.payment;
+        return openPayment;
       }
       const provider = await tx.paymentProvider.findUnique({
         where: {

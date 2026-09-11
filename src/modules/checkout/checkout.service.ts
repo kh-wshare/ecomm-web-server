@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -11,10 +10,10 @@ import {
   randomUUID,
   timingSafeEqual,
 } from 'node:crypto';
-import { Prisma } from '#app/generated/prisma/client';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
 import { InventoryService } from '#app/modules/inventory/inventory.service';
 import { OrderService } from '#app/modules/order/order.service';
+import { CartPricingService } from '#app/modules/pricing/cart-pricing.service';
 import { CreateCheckoutSessionDto } from './dto/checkout-input.dto';
 
 type AuditMetadata = {
@@ -28,6 +27,7 @@ export class CheckoutService {
     private readonly prisma: PrismaService,
     private readonly inventory: InventoryService,
     private readonly orders: OrderService,
+    private readonly pricing: CartPricingService,
   ) {}
 
   async create(dto: CreateCheckoutSessionDto, metadata: AuditMetadata) {
@@ -46,75 +46,15 @@ export class CheckoutService {
     });
     if (!merchant) throw new NotFoundException('Storefront not found');
 
-    const productIds = [
-      ...new Set(dto.items.map(({ productId }) => productId)),
-    ];
-    const products = await this.prisma.product.findMany({
-      where: {
-        id: { in: productIds },
-        merchantId: merchant.id,
-        status: 'ACTIVE',
-        deletedAt: null,
-      },
-      include: {
-        variants: true,
-        channelVisibility: {
-          where: { channel: dto.sourceChannel },
-        },
-      },
-    });
-    if (products.length !== productIds.length) {
-      throw new ConflictException('One or more products are unavailable');
-    }
-    const productById = new Map(
-      products.map((product) => [product.id, product]),
+    const {
+      items: checkoutItems,
+      currency,
+      subtotal,
+    } = await this.pricing.buildPricedItems(
+      merchant.id,
+      dto.sourceChannel,
+      dto.items,
     );
-    const targetKeys = new Set<string>();
-    let currency: string | undefined;
-    let subtotal = new Prisma.Decimal(0);
-    const checkoutItems = dto.items.map((item) => {
-      const product = productById.get(item.productId);
-      if (!product) {
-        throw new ConflictException('One or more products are unavailable');
-      }
-      const visibility = product.channelVisibility[0];
-      if (!visibility?.isVisible || !visibility.isPurchasable) {
-        throw new ConflictException(
-          'Product is not purchasable on the selected channel',
-        );
-      }
-      const variant = item.variantId
-        ? product.variants.find(({ id }) => id === item.variantId)
-        : undefined;
-      if (item.variantId && (!variant || variant.status !== 'ACTIVE')) {
-        throw new ConflictException('Product variant is unavailable');
-      }
-      const targetKey = item.variantId
-        ? `variant:${item.variantId}`
-        : `product:${item.productId}`;
-      if (targetKeys.has(targetKey)) {
-        throw new ConflictException('Duplicate checkout stock item');
-      }
-      targetKeys.add(targetKey);
-      if (currency && currency !== product.currency) {
-        throw new ConflictException(
-          'All checkout items must use the same currency',
-        );
-      }
-      currency = product.currency;
-      const unitPrice = variant?.price ?? product.price;
-      const totalPrice = unitPrice.mul(item.quantity);
-      subtotal = subtotal.add(totalPrice);
-      return {
-        productId: product.id,
-        variantId: variant?.id,
-        sku: variant?.sku ?? product.sku,
-        name: variant ? `${product.name} — ${variant.name}` : product.name,
-        quantity: item.quantity,
-        unitPrice,
-        totalPrice,
-      };
-    });
 
     const sessionId = randomUUID();
     const checkoutToken = randomBytes(32).toString('base64url');
@@ -132,7 +72,7 @@ export class CheckoutService {
           accessTokenHash: this.hashToken(checkoutToken),
           subtotalAmount: subtotal,
           totalAmount: subtotal,
-          currency: currency ?? 'USD',
+          currency,
           expiresAt,
           items: { create: checkoutItems },
         },

@@ -4,12 +4,14 @@ import { AppController } from '#app/app.controller';
 import { AppService } from '#app/app.service';
 import { CommonModule } from '#app/common/common.module';
 import { AllExceptionsFilter } from '#app/common/filters/all-exceptions.filter';
+import { IdempotencyInterceptor } from '#app/common/interceptors/idempotency.interceptor';
 import { LoggingInterceptor } from '#app/common/interceptors/logging.interceptor';
 import { ResponseInterceptor } from '#app/common/interceptors/response.interceptor';
 import { AppConfigModule } from '#app/config/config.module';
 import { DatabaseModule } from '#app/infrastructure/database/database.module';
 import { EventsModule } from '#app/infrastructure/events/events.module';
 import { LoggerModule } from '#app/infrastructure/logger/logger.module';
+import { RabbitMqModule } from '#app/infrastructure/rabbitmq/rabbitmq.module';
 import { RedisModule } from '#app/infrastructure/redis/redis.module';
 import { AuditLogModule } from '@modules/audit-log/audit-log.module';
 import { AuthModule } from '@modules/authenticated/auth.module';
@@ -48,6 +50,7 @@ import { StorefrontSocialPostModule } from '@/modules/storefront/social-post/pub
     RedisModule,
     LoggerModule,
     EventsModule,
+    RabbitMqModule,
     MetricsModule,
     AuthModule,
     UsersModule,
@@ -79,6 +82,7 @@ import { StorefrontSocialPostModule } from '@/modules/storefront/social-post/pub
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
     { provide: APP_INTERCEPTOR, useClass: ResponseInterceptor },
+    { provide: APP_INTERCEPTOR, useClass: IdempotencyInterceptor },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: PlatformRolesGuard },
     { provide: APP_GUARD, useClass: MerchantScopeGuard },

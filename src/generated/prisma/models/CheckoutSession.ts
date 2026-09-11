@@ -43,6 +43,8 @@ export type CheckoutSessionSumAggregateOutputType = {
 export type CheckoutSessionMinAggregateOutputType = {
   id: string | null
   merchantId: string | null
+  branchId: string | null
+  posDeviceId: string | null
   customerId: string | null
   customerName: string | null
   customerEmail: string | null
@@ -63,6 +65,8 @@ export type CheckoutSessionMinAggregateOutputType = {
 export type CheckoutSessionMaxAggregateOutputType = {
   id: string | null
   merchantId: string | null
+  branchId: string | null
+  posDeviceId: string | null
   customerId: string | null
   customerName: string | null
   customerEmail: string | null
@@ -83,6 +87,8 @@ export type CheckoutSessionMaxAggregateOutputType = {
 export type CheckoutSessionCountAggregateOutputType = {
   id: number
   merchantId: number
+  branchId: number
+  posDeviceId: number
   customerId: number
   customerName: number
   customerEmail: number
@@ -119,6 +125,8 @@ export type CheckoutSessionSumAggregateInputType = {
 export type CheckoutSessionMinAggregateInputType = {
   id?: true
   merchantId?: true
+  branchId?: true
+  posDeviceId?: true
   customerId?: true
   customerName?: true
   customerEmail?: true
@@ -139,6 +147,8 @@ export type CheckoutSessionMinAggregateInputType = {
 export type CheckoutSessionMaxAggregateInputType = {
   id?: true
   merchantId?: true
+  branchId?: true
+  posDeviceId?: true
   customerId?: true
   customerName?: true
   customerEmail?: true
@@ -159,6 +169,8 @@ export type CheckoutSessionMaxAggregateInputType = {
 export type CheckoutSessionCountAggregateInputType = {
   id?: true
   merchantId?: true
+  branchId?: true
+  posDeviceId?: true
   customerId?: true
   customerName?: true
   customerEmail?: true
@@ -266,6 +278,8 @@ export type CheckoutSessionGroupByArgs<ExtArgs extends runtime.Types.Extensions.
 export type CheckoutSessionGroupByOutputType = {
   id: string
   merchantId: string
+  branchId: string | null
+  posDeviceId: string | null
   customerId: string | null
   customerName: string | null
   customerEmail: string | null
@@ -309,6 +323,8 @@ export type CheckoutSessionWhereInput = {
   NOT?: Prisma.CheckoutSessionWhereInput | Prisma.CheckoutSessionWhereInput[]
   id?: Prisma.UuidFilter<"CheckoutSession"> | string
   merchantId?: Prisma.UuidFilter<"CheckoutSession"> | string
+  branchId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
+  posDeviceId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
   customerId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
   customerName?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
   customerEmail?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
@@ -325,6 +341,9 @@ export type CheckoutSessionWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"CheckoutSession"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CheckoutSession"> | Date | string
   merchant?: Prisma.XOR<Prisma.MerchantScalarRelationFilter, Prisma.MerchantWhereInput>
+  branch?: Prisma.XOR<Prisma.MerchantBranchNullableScalarRelationFilter, Prisma.MerchantBranchWhereInput> | null
+  posDevice?: Prisma.XOR<Prisma.PosDeviceNullableScalarRelationFilter, Prisma.PosDeviceWhereInput> | null
+  customer?: Prisma.XOR<Prisma.CustomerNullableScalarRelationFilter, Prisma.CustomerWhereInput> | null
   items?: Prisma.CheckoutItemListRelationFilter
   order?: Prisma.XOR<Prisma.OrderNullableScalarRelationFilter, Prisma.OrderWhereInput> | null
 }
@@ -332,6 +351,8 @@ export type CheckoutSessionWhereInput = {
 export type CheckoutSessionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   merchantId?: Prisma.SortOrder
+  branchId?: Prisma.SortOrderInput | Prisma.SortOrder
+  posDeviceId?: Prisma.SortOrderInput | Prisma.SortOrder
   customerId?: Prisma.SortOrderInput | Prisma.SortOrder
   customerName?: Prisma.SortOrderInput | Prisma.SortOrder
   customerEmail?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -348,6 +369,9 @@ export type CheckoutSessionOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   merchant?: Prisma.MerchantOrderByWithRelationInput
+  branch?: Prisma.MerchantBranchOrderByWithRelationInput
+  posDevice?: Prisma.PosDeviceOrderByWithRelationInput
+  customer?: Prisma.CustomerOrderByWithRelationInput
   items?: Prisma.CheckoutItemOrderByRelationAggregateInput
   order?: Prisma.OrderOrderByWithRelationInput
 }
@@ -359,6 +383,8 @@ export type CheckoutSessionWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.CheckoutSessionWhereInput[]
   NOT?: Prisma.CheckoutSessionWhereInput | Prisma.CheckoutSessionWhereInput[]
   merchantId?: Prisma.UuidFilter<"CheckoutSession"> | string
+  branchId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
+  posDeviceId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
   customerId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
   customerName?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
   customerEmail?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
@@ -374,6 +400,9 @@ export type CheckoutSessionWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"CheckoutSession"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CheckoutSession"> | Date | string
   merchant?: Prisma.XOR<Prisma.MerchantScalarRelationFilter, Prisma.MerchantWhereInput>
+  branch?: Prisma.XOR<Prisma.MerchantBranchNullableScalarRelationFilter, Prisma.MerchantBranchWhereInput> | null
+  posDevice?: Prisma.XOR<Prisma.PosDeviceNullableScalarRelationFilter, Prisma.PosDeviceWhereInput> | null
+  customer?: Prisma.XOR<Prisma.CustomerNullableScalarRelationFilter, Prisma.CustomerWhereInput> | null
   items?: Prisma.CheckoutItemListRelationFilter
   order?: Prisma.XOR<Prisma.OrderNullableScalarRelationFilter, Prisma.OrderWhereInput> | null
 }, "id" | "accessTokenHash">
@@ -381,6 +410,8 @@ export type CheckoutSessionWhereUniqueInput = Prisma.AtLeast<{
 export type CheckoutSessionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   merchantId?: Prisma.SortOrder
+  branchId?: Prisma.SortOrderInput | Prisma.SortOrder
+  posDeviceId?: Prisma.SortOrderInput | Prisma.SortOrder
   customerId?: Prisma.SortOrderInput | Prisma.SortOrder
   customerName?: Prisma.SortOrderInput | Prisma.SortOrder
   customerEmail?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -409,6 +440,8 @@ export type CheckoutSessionScalarWhereWithAggregatesInput = {
   NOT?: Prisma.CheckoutSessionScalarWhereWithAggregatesInput | Prisma.CheckoutSessionScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"CheckoutSession"> | string
   merchantId?: Prisma.UuidWithAggregatesFilter<"CheckoutSession"> | string
+  branchId?: Prisma.UuidNullableWithAggregatesFilter<"CheckoutSession"> | string | null
+  posDeviceId?: Prisma.UuidNullableWithAggregatesFilter<"CheckoutSession"> | string | null
   customerId?: Prisma.UuidNullableWithAggregatesFilter<"CheckoutSession"> | string | null
   customerName?: Prisma.StringNullableWithAggregatesFilter<"CheckoutSession"> | string | null
   customerEmail?: Prisma.StringNullableWithAggregatesFilter<"CheckoutSession"> | string | null
@@ -428,7 +461,6 @@ export type CheckoutSessionScalarWhereWithAggregatesInput = {
 
 export type CheckoutSessionCreateInput = {
   id?: string
-  customerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -444,6 +476,9 @@ export type CheckoutSessionCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   merchant: Prisma.MerchantCreateNestedOneWithoutCheckoutSessionsInput
+  branch?: Prisma.MerchantBranchCreateNestedOneWithoutCheckoutSessionsInput
+  posDevice?: Prisma.PosDeviceCreateNestedOneWithoutCheckoutSessionsInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutCheckoutSessionsInput
   items?: Prisma.CheckoutItemCreateNestedManyWithoutCheckoutSessionInput
   order?: Prisma.OrderCreateNestedOneWithoutCheckoutSessionInput
 }
@@ -451,6 +486,8 @@ export type CheckoutSessionCreateInput = {
 export type CheckoutSessionUncheckedCreateInput = {
   id?: string
   merchantId: string
+  branchId?: string | null
+  posDeviceId?: string | null
   customerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
@@ -472,7 +509,6 @@ export type CheckoutSessionUncheckedCreateInput = {
 
 export type CheckoutSessionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -488,6 +524,9 @@ export type CheckoutSessionUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   merchant?: Prisma.MerchantUpdateOneRequiredWithoutCheckoutSessionsNestedInput
+  branch?: Prisma.MerchantBranchUpdateOneWithoutCheckoutSessionsNestedInput
+  posDevice?: Prisma.PosDeviceUpdateOneWithoutCheckoutSessionsNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutCheckoutSessionsNestedInput
   items?: Prisma.CheckoutItemUpdateManyWithoutCheckoutSessionNestedInput
   order?: Prisma.OrderUpdateOneWithoutCheckoutSessionNestedInput
 }
@@ -495,6 +534,8 @@ export type CheckoutSessionUpdateInput = {
 export type CheckoutSessionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -517,6 +558,8 @@ export type CheckoutSessionUncheckedUpdateInput = {
 export type CheckoutSessionCreateManyInput = {
   id?: string
   merchantId: string
+  branchId?: string | null
+  posDeviceId?: string | null
   customerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
@@ -536,7 +579,6 @@ export type CheckoutSessionCreateManyInput = {
 
 export type CheckoutSessionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -556,6 +598,8 @@ export type CheckoutSessionUpdateManyMutationInput = {
 export type CheckoutSessionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -586,6 +630,8 @@ export type CheckoutSessionOrderByRelationAggregateInput = {
 export type CheckoutSessionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   merchantId?: Prisma.SortOrder
+  branchId?: Prisma.SortOrder
+  posDeviceId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
   customerEmail?: Prisma.SortOrder
@@ -613,6 +659,8 @@ export type CheckoutSessionAvgOrderByAggregateInput = {
 export type CheckoutSessionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   merchantId?: Prisma.SortOrder
+  branchId?: Prisma.SortOrder
+  posDeviceId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
   customerEmail?: Prisma.SortOrder
@@ -633,6 +681,8 @@ export type CheckoutSessionMaxOrderByAggregateInput = {
 export type CheckoutSessionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   merchantId?: Prisma.SortOrder
+  branchId?: Prisma.SortOrder
+  posDeviceId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
   customerEmail?: Prisma.SortOrder
@@ -704,6 +754,48 @@ export type CheckoutSessionUncheckedUpdateManyWithoutMerchantNestedInput = {
   deleteMany?: Prisma.CheckoutSessionScalarWhereInput | Prisma.CheckoutSessionScalarWhereInput[]
 }
 
+export type CheckoutSessionCreateNestedManyWithoutBranchInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutBranchInput, Prisma.CheckoutSessionUncheckedCreateWithoutBranchInput> | Prisma.CheckoutSessionCreateWithoutBranchInput[] | Prisma.CheckoutSessionUncheckedCreateWithoutBranchInput[]
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutBranchInput | Prisma.CheckoutSessionCreateOrConnectWithoutBranchInput[]
+  createMany?: Prisma.CheckoutSessionCreateManyBranchInputEnvelope
+  connect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+}
+
+export type CheckoutSessionUncheckedCreateNestedManyWithoutBranchInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutBranchInput, Prisma.CheckoutSessionUncheckedCreateWithoutBranchInput> | Prisma.CheckoutSessionCreateWithoutBranchInput[] | Prisma.CheckoutSessionUncheckedCreateWithoutBranchInput[]
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutBranchInput | Prisma.CheckoutSessionCreateOrConnectWithoutBranchInput[]
+  createMany?: Prisma.CheckoutSessionCreateManyBranchInputEnvelope
+  connect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+}
+
+export type CheckoutSessionUpdateManyWithoutBranchNestedInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutBranchInput, Prisma.CheckoutSessionUncheckedCreateWithoutBranchInput> | Prisma.CheckoutSessionCreateWithoutBranchInput[] | Prisma.CheckoutSessionUncheckedCreateWithoutBranchInput[]
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutBranchInput | Prisma.CheckoutSessionCreateOrConnectWithoutBranchInput[]
+  upsert?: Prisma.CheckoutSessionUpsertWithWhereUniqueWithoutBranchInput | Prisma.CheckoutSessionUpsertWithWhereUniqueWithoutBranchInput[]
+  createMany?: Prisma.CheckoutSessionCreateManyBranchInputEnvelope
+  set?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  disconnect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  delete?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  connect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  update?: Prisma.CheckoutSessionUpdateWithWhereUniqueWithoutBranchInput | Prisma.CheckoutSessionUpdateWithWhereUniqueWithoutBranchInput[]
+  updateMany?: Prisma.CheckoutSessionUpdateManyWithWhereWithoutBranchInput | Prisma.CheckoutSessionUpdateManyWithWhereWithoutBranchInput[]
+  deleteMany?: Prisma.CheckoutSessionScalarWhereInput | Prisma.CheckoutSessionScalarWhereInput[]
+}
+
+export type CheckoutSessionUncheckedUpdateManyWithoutBranchNestedInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutBranchInput, Prisma.CheckoutSessionUncheckedCreateWithoutBranchInput> | Prisma.CheckoutSessionCreateWithoutBranchInput[] | Prisma.CheckoutSessionUncheckedCreateWithoutBranchInput[]
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutBranchInput | Prisma.CheckoutSessionCreateOrConnectWithoutBranchInput[]
+  upsert?: Prisma.CheckoutSessionUpsertWithWhereUniqueWithoutBranchInput | Prisma.CheckoutSessionUpsertWithWhereUniqueWithoutBranchInput[]
+  createMany?: Prisma.CheckoutSessionCreateManyBranchInputEnvelope
+  set?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  disconnect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  delete?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  connect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  update?: Prisma.CheckoutSessionUpdateWithWhereUniqueWithoutBranchInput | Prisma.CheckoutSessionUpdateWithWhereUniqueWithoutBranchInput[]
+  updateMany?: Prisma.CheckoutSessionUpdateManyWithWhereWithoutBranchInput | Prisma.CheckoutSessionUpdateManyWithWhereWithoutBranchInput[]
+  deleteMany?: Prisma.CheckoutSessionScalarWhereInput | Prisma.CheckoutSessionScalarWhereInput[]
+}
+
 export type EnumCheckoutSessionStatusFieldUpdateOperationsInput = {
   set?: $Enums.CheckoutSessionStatus
 }
@@ -736,9 +828,92 @@ export type CheckoutSessionUpdateOneRequiredWithoutOrderNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CheckoutSessionUpdateToOneWithWhereWithoutOrderInput, Prisma.CheckoutSessionUpdateWithoutOrderInput>, Prisma.CheckoutSessionUncheckedUpdateWithoutOrderInput>
 }
 
+export type CheckoutSessionCreateNestedManyWithoutPosDeviceInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutPosDeviceInput, Prisma.CheckoutSessionUncheckedCreateWithoutPosDeviceInput> | Prisma.CheckoutSessionCreateWithoutPosDeviceInput[] | Prisma.CheckoutSessionUncheckedCreateWithoutPosDeviceInput[]
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutPosDeviceInput | Prisma.CheckoutSessionCreateOrConnectWithoutPosDeviceInput[]
+  createMany?: Prisma.CheckoutSessionCreateManyPosDeviceInputEnvelope
+  connect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+}
+
+export type CheckoutSessionUncheckedCreateNestedManyWithoutPosDeviceInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutPosDeviceInput, Prisma.CheckoutSessionUncheckedCreateWithoutPosDeviceInput> | Prisma.CheckoutSessionCreateWithoutPosDeviceInput[] | Prisma.CheckoutSessionUncheckedCreateWithoutPosDeviceInput[]
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutPosDeviceInput | Prisma.CheckoutSessionCreateOrConnectWithoutPosDeviceInput[]
+  createMany?: Prisma.CheckoutSessionCreateManyPosDeviceInputEnvelope
+  connect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+}
+
+export type CheckoutSessionUpdateManyWithoutPosDeviceNestedInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutPosDeviceInput, Prisma.CheckoutSessionUncheckedCreateWithoutPosDeviceInput> | Prisma.CheckoutSessionCreateWithoutPosDeviceInput[] | Prisma.CheckoutSessionUncheckedCreateWithoutPosDeviceInput[]
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutPosDeviceInput | Prisma.CheckoutSessionCreateOrConnectWithoutPosDeviceInput[]
+  upsert?: Prisma.CheckoutSessionUpsertWithWhereUniqueWithoutPosDeviceInput | Prisma.CheckoutSessionUpsertWithWhereUniqueWithoutPosDeviceInput[]
+  createMany?: Prisma.CheckoutSessionCreateManyPosDeviceInputEnvelope
+  set?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  disconnect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  delete?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  connect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  update?: Prisma.CheckoutSessionUpdateWithWhereUniqueWithoutPosDeviceInput | Prisma.CheckoutSessionUpdateWithWhereUniqueWithoutPosDeviceInput[]
+  updateMany?: Prisma.CheckoutSessionUpdateManyWithWhereWithoutPosDeviceInput | Prisma.CheckoutSessionUpdateManyWithWhereWithoutPosDeviceInput[]
+  deleteMany?: Prisma.CheckoutSessionScalarWhereInput | Prisma.CheckoutSessionScalarWhereInput[]
+}
+
+export type CheckoutSessionUncheckedUpdateManyWithoutPosDeviceNestedInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutPosDeviceInput, Prisma.CheckoutSessionUncheckedCreateWithoutPosDeviceInput> | Prisma.CheckoutSessionCreateWithoutPosDeviceInput[] | Prisma.CheckoutSessionUncheckedCreateWithoutPosDeviceInput[]
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutPosDeviceInput | Prisma.CheckoutSessionCreateOrConnectWithoutPosDeviceInput[]
+  upsert?: Prisma.CheckoutSessionUpsertWithWhereUniqueWithoutPosDeviceInput | Prisma.CheckoutSessionUpsertWithWhereUniqueWithoutPosDeviceInput[]
+  createMany?: Prisma.CheckoutSessionCreateManyPosDeviceInputEnvelope
+  set?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  disconnect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  delete?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  connect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  update?: Prisma.CheckoutSessionUpdateWithWhereUniqueWithoutPosDeviceInput | Prisma.CheckoutSessionUpdateWithWhereUniqueWithoutPosDeviceInput[]
+  updateMany?: Prisma.CheckoutSessionUpdateManyWithWhereWithoutPosDeviceInput | Prisma.CheckoutSessionUpdateManyWithWhereWithoutPosDeviceInput[]
+  deleteMany?: Prisma.CheckoutSessionScalarWhereInput | Prisma.CheckoutSessionScalarWhereInput[]
+}
+
+export type CheckoutSessionCreateNestedManyWithoutCustomerInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutCustomerInput, Prisma.CheckoutSessionUncheckedCreateWithoutCustomerInput> | Prisma.CheckoutSessionCreateWithoutCustomerInput[] | Prisma.CheckoutSessionUncheckedCreateWithoutCustomerInput[]
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutCustomerInput | Prisma.CheckoutSessionCreateOrConnectWithoutCustomerInput[]
+  createMany?: Prisma.CheckoutSessionCreateManyCustomerInputEnvelope
+  connect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+}
+
+export type CheckoutSessionUncheckedCreateNestedManyWithoutCustomerInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutCustomerInput, Prisma.CheckoutSessionUncheckedCreateWithoutCustomerInput> | Prisma.CheckoutSessionCreateWithoutCustomerInput[] | Prisma.CheckoutSessionUncheckedCreateWithoutCustomerInput[]
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutCustomerInput | Prisma.CheckoutSessionCreateOrConnectWithoutCustomerInput[]
+  createMany?: Prisma.CheckoutSessionCreateManyCustomerInputEnvelope
+  connect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+}
+
+export type CheckoutSessionUpdateManyWithoutCustomerNestedInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutCustomerInput, Prisma.CheckoutSessionUncheckedCreateWithoutCustomerInput> | Prisma.CheckoutSessionCreateWithoutCustomerInput[] | Prisma.CheckoutSessionUncheckedCreateWithoutCustomerInput[]
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutCustomerInput | Prisma.CheckoutSessionCreateOrConnectWithoutCustomerInput[]
+  upsert?: Prisma.CheckoutSessionUpsertWithWhereUniqueWithoutCustomerInput | Prisma.CheckoutSessionUpsertWithWhereUniqueWithoutCustomerInput[]
+  createMany?: Prisma.CheckoutSessionCreateManyCustomerInputEnvelope
+  set?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  disconnect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  delete?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  connect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  update?: Prisma.CheckoutSessionUpdateWithWhereUniqueWithoutCustomerInput | Prisma.CheckoutSessionUpdateWithWhereUniqueWithoutCustomerInput[]
+  updateMany?: Prisma.CheckoutSessionUpdateManyWithWhereWithoutCustomerInput | Prisma.CheckoutSessionUpdateManyWithWhereWithoutCustomerInput[]
+  deleteMany?: Prisma.CheckoutSessionScalarWhereInput | Prisma.CheckoutSessionScalarWhereInput[]
+}
+
+export type CheckoutSessionUncheckedUpdateManyWithoutCustomerNestedInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutCustomerInput, Prisma.CheckoutSessionUncheckedCreateWithoutCustomerInput> | Prisma.CheckoutSessionCreateWithoutCustomerInput[] | Prisma.CheckoutSessionUncheckedCreateWithoutCustomerInput[]
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutCustomerInput | Prisma.CheckoutSessionCreateOrConnectWithoutCustomerInput[]
+  upsert?: Prisma.CheckoutSessionUpsertWithWhereUniqueWithoutCustomerInput | Prisma.CheckoutSessionUpsertWithWhereUniqueWithoutCustomerInput[]
+  createMany?: Prisma.CheckoutSessionCreateManyCustomerInputEnvelope
+  set?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  disconnect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  delete?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  connect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  update?: Prisma.CheckoutSessionUpdateWithWhereUniqueWithoutCustomerInput | Prisma.CheckoutSessionUpdateWithWhereUniqueWithoutCustomerInput[]
+  updateMany?: Prisma.CheckoutSessionUpdateManyWithWhereWithoutCustomerInput | Prisma.CheckoutSessionUpdateManyWithWhereWithoutCustomerInput[]
+  deleteMany?: Prisma.CheckoutSessionScalarWhereInput | Prisma.CheckoutSessionScalarWhereInput[]
+}
+
 export type CheckoutSessionCreateWithoutMerchantInput = {
   id?: string
-  customerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -753,12 +928,17 @@ export type CheckoutSessionCreateWithoutMerchantInput = {
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  branch?: Prisma.MerchantBranchCreateNestedOneWithoutCheckoutSessionsInput
+  posDevice?: Prisma.PosDeviceCreateNestedOneWithoutCheckoutSessionsInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutCheckoutSessionsInput
   items?: Prisma.CheckoutItemCreateNestedManyWithoutCheckoutSessionInput
   order?: Prisma.OrderCreateNestedOneWithoutCheckoutSessionInput
 }
 
 export type CheckoutSessionUncheckedCreateWithoutMerchantInput = {
   id?: string
+  branchId?: string | null
+  posDeviceId?: string | null
   customerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
@@ -810,6 +990,8 @@ export type CheckoutSessionScalarWhereInput = {
   NOT?: Prisma.CheckoutSessionScalarWhereInput | Prisma.CheckoutSessionScalarWhereInput[]
   id?: Prisma.UuidFilter<"CheckoutSession"> | string
   merchantId?: Prisma.UuidFilter<"CheckoutSession"> | string
+  branchId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
+  posDeviceId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
   customerId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
   customerName?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
   customerEmail?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
@@ -827,9 +1009,8 @@ export type CheckoutSessionScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"CheckoutSession"> | Date | string
 }
 
-export type CheckoutSessionCreateWithoutItemsInput = {
+export type CheckoutSessionCreateWithoutBranchInput = {
   id?: string
-  customerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -845,12 +1026,89 @@ export type CheckoutSessionCreateWithoutItemsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   merchant: Prisma.MerchantCreateNestedOneWithoutCheckoutSessionsInput
+  posDevice?: Prisma.PosDeviceCreateNestedOneWithoutCheckoutSessionsInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutCheckoutSessionsInput
+  items?: Prisma.CheckoutItemCreateNestedManyWithoutCheckoutSessionInput
+  order?: Prisma.OrderCreateNestedOneWithoutCheckoutSessionInput
+}
+
+export type CheckoutSessionUncheckedCreateWithoutBranchInput = {
+  id?: string
+  merchantId: string
+  posDeviceId?: string | null
+  customerId?: string | null
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  sourceChannel: $Enums.SalesChannel
+  status?: $Enums.CheckoutSessionStatus
+  accessTokenHash: string
+  subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  items?: Prisma.CheckoutItemUncheckedCreateNestedManyWithoutCheckoutSessionInput
+  order?: Prisma.OrderUncheckedCreateNestedOneWithoutCheckoutSessionInput
+}
+
+export type CheckoutSessionCreateOrConnectWithoutBranchInput = {
+  where: Prisma.CheckoutSessionWhereUniqueInput
+  create: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutBranchInput, Prisma.CheckoutSessionUncheckedCreateWithoutBranchInput>
+}
+
+export type CheckoutSessionCreateManyBranchInputEnvelope = {
+  data: Prisma.CheckoutSessionCreateManyBranchInput | Prisma.CheckoutSessionCreateManyBranchInput[]
+  skipDuplicates?: boolean
+}
+
+export type CheckoutSessionUpsertWithWhereUniqueWithoutBranchInput = {
+  where: Prisma.CheckoutSessionWhereUniqueInput
+  update: Prisma.XOR<Prisma.CheckoutSessionUpdateWithoutBranchInput, Prisma.CheckoutSessionUncheckedUpdateWithoutBranchInput>
+  create: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutBranchInput, Prisma.CheckoutSessionUncheckedCreateWithoutBranchInput>
+}
+
+export type CheckoutSessionUpdateWithWhereUniqueWithoutBranchInput = {
+  where: Prisma.CheckoutSessionWhereUniqueInput
+  data: Prisma.XOR<Prisma.CheckoutSessionUpdateWithoutBranchInput, Prisma.CheckoutSessionUncheckedUpdateWithoutBranchInput>
+}
+
+export type CheckoutSessionUpdateManyWithWhereWithoutBranchInput = {
+  where: Prisma.CheckoutSessionScalarWhereInput
+  data: Prisma.XOR<Prisma.CheckoutSessionUpdateManyMutationInput, Prisma.CheckoutSessionUncheckedUpdateManyWithoutBranchInput>
+}
+
+export type CheckoutSessionCreateWithoutItemsInput = {
+  id?: string
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  sourceChannel: $Enums.SalesChannel
+  status?: $Enums.CheckoutSessionStatus
+  accessTokenHash: string
+  subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  merchant: Prisma.MerchantCreateNestedOneWithoutCheckoutSessionsInput
+  branch?: Prisma.MerchantBranchCreateNestedOneWithoutCheckoutSessionsInput
+  posDevice?: Prisma.PosDeviceCreateNestedOneWithoutCheckoutSessionsInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutCheckoutSessionsInput
   order?: Prisma.OrderCreateNestedOneWithoutCheckoutSessionInput
 }
 
 export type CheckoutSessionUncheckedCreateWithoutItemsInput = {
   id?: string
   merchantId: string
+  branchId?: string | null
+  posDeviceId?: string | null
   customerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
@@ -887,7 +1145,6 @@ export type CheckoutSessionUpdateToOneWithWhereWithoutItemsInput = {
 
 export type CheckoutSessionUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -903,12 +1160,17 @@ export type CheckoutSessionUpdateWithoutItemsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   merchant?: Prisma.MerchantUpdateOneRequiredWithoutCheckoutSessionsNestedInput
+  branch?: Prisma.MerchantBranchUpdateOneWithoutCheckoutSessionsNestedInput
+  posDevice?: Prisma.PosDeviceUpdateOneWithoutCheckoutSessionsNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutCheckoutSessionsNestedInput
   order?: Prisma.OrderUpdateOneWithoutCheckoutSessionNestedInput
 }
 
 export type CheckoutSessionUncheckedUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -929,7 +1191,6 @@ export type CheckoutSessionUncheckedUpdateWithoutItemsInput = {
 
 export type CheckoutSessionCreateWithoutOrderInput = {
   id?: string
-  customerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -945,12 +1206,17 @@ export type CheckoutSessionCreateWithoutOrderInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   merchant: Prisma.MerchantCreateNestedOneWithoutCheckoutSessionsInput
+  branch?: Prisma.MerchantBranchCreateNestedOneWithoutCheckoutSessionsInput
+  posDevice?: Prisma.PosDeviceCreateNestedOneWithoutCheckoutSessionsInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutCheckoutSessionsInput
   items?: Prisma.CheckoutItemCreateNestedManyWithoutCheckoutSessionInput
 }
 
 export type CheckoutSessionUncheckedCreateWithoutOrderInput = {
   id?: string
   merchantId: string
+  branchId?: string | null
+  posDeviceId?: string | null
   customerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
@@ -987,7 +1253,6 @@ export type CheckoutSessionUpdateToOneWithWhereWithoutOrderInput = {
 
 export type CheckoutSessionUpdateWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1003,12 +1268,17 @@ export type CheckoutSessionUpdateWithoutOrderInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   merchant?: Prisma.MerchantUpdateOneRequiredWithoutCheckoutSessionsNestedInput
+  branch?: Prisma.MerchantBranchUpdateOneWithoutCheckoutSessionsNestedInput
+  posDevice?: Prisma.PosDeviceUpdateOneWithoutCheckoutSessionsNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutCheckoutSessionsNestedInput
   items?: Prisma.CheckoutItemUpdateManyWithoutCheckoutSessionNestedInput
 }
 
 export type CheckoutSessionUncheckedUpdateWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1027,8 +1297,154 @@ export type CheckoutSessionUncheckedUpdateWithoutOrderInput = {
   items?: Prisma.CheckoutItemUncheckedUpdateManyWithoutCheckoutSessionNestedInput
 }
 
+export type CheckoutSessionCreateWithoutPosDeviceInput = {
+  id?: string
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  sourceChannel: $Enums.SalesChannel
+  status?: $Enums.CheckoutSessionStatus
+  accessTokenHash: string
+  subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  merchant: Prisma.MerchantCreateNestedOneWithoutCheckoutSessionsInput
+  branch?: Prisma.MerchantBranchCreateNestedOneWithoutCheckoutSessionsInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutCheckoutSessionsInput
+  items?: Prisma.CheckoutItemCreateNestedManyWithoutCheckoutSessionInput
+  order?: Prisma.OrderCreateNestedOneWithoutCheckoutSessionInput
+}
+
+export type CheckoutSessionUncheckedCreateWithoutPosDeviceInput = {
+  id?: string
+  merchantId: string
+  branchId?: string | null
+  customerId?: string | null
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  sourceChannel: $Enums.SalesChannel
+  status?: $Enums.CheckoutSessionStatus
+  accessTokenHash: string
+  subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  items?: Prisma.CheckoutItemUncheckedCreateNestedManyWithoutCheckoutSessionInput
+  order?: Prisma.OrderUncheckedCreateNestedOneWithoutCheckoutSessionInput
+}
+
+export type CheckoutSessionCreateOrConnectWithoutPosDeviceInput = {
+  where: Prisma.CheckoutSessionWhereUniqueInput
+  create: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutPosDeviceInput, Prisma.CheckoutSessionUncheckedCreateWithoutPosDeviceInput>
+}
+
+export type CheckoutSessionCreateManyPosDeviceInputEnvelope = {
+  data: Prisma.CheckoutSessionCreateManyPosDeviceInput | Prisma.CheckoutSessionCreateManyPosDeviceInput[]
+  skipDuplicates?: boolean
+}
+
+export type CheckoutSessionUpsertWithWhereUniqueWithoutPosDeviceInput = {
+  where: Prisma.CheckoutSessionWhereUniqueInput
+  update: Prisma.XOR<Prisma.CheckoutSessionUpdateWithoutPosDeviceInput, Prisma.CheckoutSessionUncheckedUpdateWithoutPosDeviceInput>
+  create: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutPosDeviceInput, Prisma.CheckoutSessionUncheckedCreateWithoutPosDeviceInput>
+}
+
+export type CheckoutSessionUpdateWithWhereUniqueWithoutPosDeviceInput = {
+  where: Prisma.CheckoutSessionWhereUniqueInput
+  data: Prisma.XOR<Prisma.CheckoutSessionUpdateWithoutPosDeviceInput, Prisma.CheckoutSessionUncheckedUpdateWithoutPosDeviceInput>
+}
+
+export type CheckoutSessionUpdateManyWithWhereWithoutPosDeviceInput = {
+  where: Prisma.CheckoutSessionScalarWhereInput
+  data: Prisma.XOR<Prisma.CheckoutSessionUpdateManyMutationInput, Prisma.CheckoutSessionUncheckedUpdateManyWithoutPosDeviceInput>
+}
+
+export type CheckoutSessionCreateWithoutCustomerInput = {
+  id?: string
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  sourceChannel: $Enums.SalesChannel
+  status?: $Enums.CheckoutSessionStatus
+  accessTokenHash: string
+  subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  merchant: Prisma.MerchantCreateNestedOneWithoutCheckoutSessionsInput
+  branch?: Prisma.MerchantBranchCreateNestedOneWithoutCheckoutSessionsInput
+  posDevice?: Prisma.PosDeviceCreateNestedOneWithoutCheckoutSessionsInput
+  items?: Prisma.CheckoutItemCreateNestedManyWithoutCheckoutSessionInput
+  order?: Prisma.OrderCreateNestedOneWithoutCheckoutSessionInput
+}
+
+export type CheckoutSessionUncheckedCreateWithoutCustomerInput = {
+  id?: string
+  merchantId: string
+  branchId?: string | null
+  posDeviceId?: string | null
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  sourceChannel: $Enums.SalesChannel
+  status?: $Enums.CheckoutSessionStatus
+  accessTokenHash: string
+  subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  items?: Prisma.CheckoutItemUncheckedCreateNestedManyWithoutCheckoutSessionInput
+  order?: Prisma.OrderUncheckedCreateNestedOneWithoutCheckoutSessionInput
+}
+
+export type CheckoutSessionCreateOrConnectWithoutCustomerInput = {
+  where: Prisma.CheckoutSessionWhereUniqueInput
+  create: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutCustomerInput, Prisma.CheckoutSessionUncheckedCreateWithoutCustomerInput>
+}
+
+export type CheckoutSessionCreateManyCustomerInputEnvelope = {
+  data: Prisma.CheckoutSessionCreateManyCustomerInput | Prisma.CheckoutSessionCreateManyCustomerInput[]
+  skipDuplicates?: boolean
+}
+
+export type CheckoutSessionUpsertWithWhereUniqueWithoutCustomerInput = {
+  where: Prisma.CheckoutSessionWhereUniqueInput
+  update: Prisma.XOR<Prisma.CheckoutSessionUpdateWithoutCustomerInput, Prisma.CheckoutSessionUncheckedUpdateWithoutCustomerInput>
+  create: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutCustomerInput, Prisma.CheckoutSessionUncheckedCreateWithoutCustomerInput>
+}
+
+export type CheckoutSessionUpdateWithWhereUniqueWithoutCustomerInput = {
+  where: Prisma.CheckoutSessionWhereUniqueInput
+  data: Prisma.XOR<Prisma.CheckoutSessionUpdateWithoutCustomerInput, Prisma.CheckoutSessionUncheckedUpdateWithoutCustomerInput>
+}
+
+export type CheckoutSessionUpdateManyWithWhereWithoutCustomerInput = {
+  where: Prisma.CheckoutSessionScalarWhereInput
+  data: Prisma.XOR<Prisma.CheckoutSessionUpdateManyMutationInput, Prisma.CheckoutSessionUncheckedUpdateManyWithoutCustomerInput>
+}
+
 export type CheckoutSessionCreateManyMerchantInput = {
   id?: string
+  branchId?: string | null
+  posDeviceId?: string | null
   customerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
@@ -1048,7 +1464,6 @@ export type CheckoutSessionCreateManyMerchantInput = {
 
 export type CheckoutSessionUpdateWithoutMerchantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1063,12 +1478,17 @@ export type CheckoutSessionUpdateWithoutMerchantInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.MerchantBranchUpdateOneWithoutCheckoutSessionsNestedInput
+  posDevice?: Prisma.PosDeviceUpdateOneWithoutCheckoutSessionsNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutCheckoutSessionsNestedInput
   items?: Prisma.CheckoutItemUpdateManyWithoutCheckoutSessionNestedInput
   order?: Prisma.OrderUpdateOneWithoutCheckoutSessionNestedInput
 }
 
 export type CheckoutSessionUncheckedUpdateWithoutMerchantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1090,7 +1510,273 @@ export type CheckoutSessionUncheckedUpdateWithoutMerchantInput = {
 
 export type CheckoutSessionUncheckedUpdateManyWithoutMerchantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  status?: Prisma.EnumCheckoutSessionStatusFieldUpdateOperationsInput | $Enums.CheckoutSessionStatus
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CheckoutSessionCreateManyBranchInput = {
+  id?: string
+  merchantId: string
+  posDeviceId?: string | null
+  customerId?: string | null
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  sourceChannel: $Enums.SalesChannel
+  status?: $Enums.CheckoutSessionStatus
+  accessTokenHash: string
+  subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CheckoutSessionUpdateWithoutBranchInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  status?: Prisma.EnumCheckoutSessionStatusFieldUpdateOperationsInput | $Enums.CheckoutSessionStatus
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  merchant?: Prisma.MerchantUpdateOneRequiredWithoutCheckoutSessionsNestedInput
+  posDevice?: Prisma.PosDeviceUpdateOneWithoutCheckoutSessionsNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutCheckoutSessionsNestedInput
+  items?: Prisma.CheckoutItemUpdateManyWithoutCheckoutSessionNestedInput
+  order?: Prisma.OrderUpdateOneWithoutCheckoutSessionNestedInput
+}
+
+export type CheckoutSessionUncheckedUpdateWithoutBranchInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  status?: Prisma.EnumCheckoutSessionStatusFieldUpdateOperationsInput | $Enums.CheckoutSessionStatus
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.CheckoutItemUncheckedUpdateManyWithoutCheckoutSessionNestedInput
+  order?: Prisma.OrderUncheckedUpdateOneWithoutCheckoutSessionNestedInput
+}
+
+export type CheckoutSessionUncheckedUpdateManyWithoutBranchInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  status?: Prisma.EnumCheckoutSessionStatusFieldUpdateOperationsInput | $Enums.CheckoutSessionStatus
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CheckoutSessionCreateManyPosDeviceInput = {
+  id?: string
+  merchantId: string
+  branchId?: string | null
+  customerId?: string | null
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  sourceChannel: $Enums.SalesChannel
+  status?: $Enums.CheckoutSessionStatus
+  accessTokenHash: string
+  subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CheckoutSessionUpdateWithoutPosDeviceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  status?: Prisma.EnumCheckoutSessionStatusFieldUpdateOperationsInput | $Enums.CheckoutSessionStatus
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  merchant?: Prisma.MerchantUpdateOneRequiredWithoutCheckoutSessionsNestedInput
+  branch?: Prisma.MerchantBranchUpdateOneWithoutCheckoutSessionsNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutCheckoutSessionsNestedInput
+  items?: Prisma.CheckoutItemUpdateManyWithoutCheckoutSessionNestedInput
+  order?: Prisma.OrderUpdateOneWithoutCheckoutSessionNestedInput
+}
+
+export type CheckoutSessionUncheckedUpdateWithoutPosDeviceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  status?: Prisma.EnumCheckoutSessionStatusFieldUpdateOperationsInput | $Enums.CheckoutSessionStatus
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.CheckoutItemUncheckedUpdateManyWithoutCheckoutSessionNestedInput
+  order?: Prisma.OrderUncheckedUpdateOneWithoutCheckoutSessionNestedInput
+}
+
+export type CheckoutSessionUncheckedUpdateManyWithoutPosDeviceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  status?: Prisma.EnumCheckoutSessionStatusFieldUpdateOperationsInput | $Enums.CheckoutSessionStatus
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CheckoutSessionCreateManyCustomerInput = {
+  id?: string
+  merchantId: string
+  branchId?: string | null
+  posDeviceId?: string | null
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  sourceChannel: $Enums.SalesChannel
+  status?: $Enums.CheckoutSessionStatus
+  accessTokenHash: string
+  subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CheckoutSessionUpdateWithoutCustomerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  status?: Prisma.EnumCheckoutSessionStatusFieldUpdateOperationsInput | $Enums.CheckoutSessionStatus
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  merchant?: Prisma.MerchantUpdateOneRequiredWithoutCheckoutSessionsNestedInput
+  branch?: Prisma.MerchantBranchUpdateOneWithoutCheckoutSessionsNestedInput
+  posDevice?: Prisma.PosDeviceUpdateOneWithoutCheckoutSessionsNestedInput
+  items?: Prisma.CheckoutItemUpdateManyWithoutCheckoutSessionNestedInput
+  order?: Prisma.OrderUpdateOneWithoutCheckoutSessionNestedInput
+}
+
+export type CheckoutSessionUncheckedUpdateWithoutCustomerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  status?: Prisma.EnumCheckoutSessionStatusFieldUpdateOperationsInput | $Enums.CheckoutSessionStatus
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.CheckoutItemUncheckedUpdateManyWithoutCheckoutSessionNestedInput
+  order?: Prisma.OrderUncheckedUpdateOneWithoutCheckoutSessionNestedInput
+}
+
+export type CheckoutSessionUncheckedUpdateManyWithoutCustomerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1141,6 +1827,8 @@ export type CheckoutSessionCountOutputTypeCountItemsArgs<ExtArgs extends runtime
 export type CheckoutSessionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   merchantId?: boolean
+  branchId?: boolean
+  posDeviceId?: boolean
   customerId?: boolean
   customerName?: boolean
   customerEmail?: boolean
@@ -1157,6 +1845,9 @@ export type CheckoutSessionSelect<ExtArgs extends runtime.Types.Extensions.Inter
   createdAt?: boolean
   updatedAt?: boolean
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
+  branch?: boolean | Prisma.CheckoutSession$branchArgs<ExtArgs>
+  posDevice?: boolean | Prisma.CheckoutSession$posDeviceArgs<ExtArgs>
+  customer?: boolean | Prisma.CheckoutSession$customerArgs<ExtArgs>
   items?: boolean | Prisma.CheckoutSession$itemsArgs<ExtArgs>
   order?: boolean | Prisma.CheckoutSession$orderArgs<ExtArgs>
   _count?: boolean | Prisma.CheckoutSessionCountOutputTypeDefaultArgs<ExtArgs>
@@ -1165,6 +1856,8 @@ export type CheckoutSessionSelect<ExtArgs extends runtime.Types.Extensions.Inter
 export type CheckoutSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   merchantId?: boolean
+  branchId?: boolean
+  posDeviceId?: boolean
   customerId?: boolean
   customerName?: boolean
   customerEmail?: boolean
@@ -1181,11 +1874,16 @@ export type CheckoutSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   createdAt?: boolean
   updatedAt?: boolean
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
+  branch?: boolean | Prisma.CheckoutSession$branchArgs<ExtArgs>
+  posDevice?: boolean | Prisma.CheckoutSession$posDeviceArgs<ExtArgs>
+  customer?: boolean | Prisma.CheckoutSession$customerArgs<ExtArgs>
 }, ExtArgs["result"]["checkoutSession"]>
 
 export type CheckoutSessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   merchantId?: boolean
+  branchId?: boolean
+  posDeviceId?: boolean
   customerId?: boolean
   customerName?: boolean
   customerEmail?: boolean
@@ -1202,11 +1900,16 @@ export type CheckoutSessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   createdAt?: boolean
   updatedAt?: boolean
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
+  branch?: boolean | Prisma.CheckoutSession$branchArgs<ExtArgs>
+  posDevice?: boolean | Prisma.CheckoutSession$posDeviceArgs<ExtArgs>
+  customer?: boolean | Prisma.CheckoutSession$customerArgs<ExtArgs>
 }, ExtArgs["result"]["checkoutSession"]>
 
 export type CheckoutSessionSelectScalar = {
   id?: boolean
   merchantId?: boolean
+  branchId?: boolean
+  posDeviceId?: boolean
   customerId?: boolean
   customerName?: boolean
   customerEmail?: boolean
@@ -1224,30 +1927,44 @@ export type CheckoutSessionSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CheckoutSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "merchantId" | "customerId" | "customerName" | "customerEmail" | "customerPhone" | "sourceChannel" | "status" | "accessTokenHash" | "subtotalAmount" | "discountAmount" | "feeAmount" | "totalAmount" | "currency" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["checkoutSession"]>
+export type CheckoutSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "merchantId" | "branchId" | "posDeviceId" | "customerId" | "customerName" | "customerEmail" | "customerPhone" | "sourceChannel" | "status" | "accessTokenHash" | "subtotalAmount" | "discountAmount" | "feeAmount" | "totalAmount" | "currency" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["checkoutSession"]>
 export type CheckoutSessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
+  branch?: boolean | Prisma.CheckoutSession$branchArgs<ExtArgs>
+  posDevice?: boolean | Prisma.CheckoutSession$posDeviceArgs<ExtArgs>
+  customer?: boolean | Prisma.CheckoutSession$customerArgs<ExtArgs>
   items?: boolean | Prisma.CheckoutSession$itemsArgs<ExtArgs>
   order?: boolean | Prisma.CheckoutSession$orderArgs<ExtArgs>
   _count?: boolean | Prisma.CheckoutSessionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CheckoutSessionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
+  branch?: boolean | Prisma.CheckoutSession$branchArgs<ExtArgs>
+  posDevice?: boolean | Prisma.CheckoutSession$posDeviceArgs<ExtArgs>
+  customer?: boolean | Prisma.CheckoutSession$customerArgs<ExtArgs>
 }
 export type CheckoutSessionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
+  branch?: boolean | Prisma.CheckoutSession$branchArgs<ExtArgs>
+  posDevice?: boolean | Prisma.CheckoutSession$posDeviceArgs<ExtArgs>
+  customer?: boolean | Prisma.CheckoutSession$customerArgs<ExtArgs>
 }
 
 export type $CheckoutSessionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CheckoutSession"
   objects: {
     merchant: Prisma.$MerchantPayload<ExtArgs>
+    branch: Prisma.$MerchantBranchPayload<ExtArgs> | null
+    posDevice: Prisma.$PosDevicePayload<ExtArgs> | null
+    customer: Prisma.$CustomerPayload<ExtArgs> | null
     items: Prisma.$CheckoutItemPayload<ExtArgs>[]
     order: Prisma.$OrderPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     merchantId: string
+    branchId: string | null
+    posDeviceId: string | null
     customerId: string | null
     customerName: string | null
     customerEmail: string | null
@@ -1658,6 +2375,9 @@ readonly fields: CheckoutSessionFieldRefs;
 export interface Prisma__CheckoutSessionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   merchant<T extends Prisma.MerchantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MerchantDefaultArgs<ExtArgs>>): Prisma.Prisma__MerchantClient<runtime.Types.Result.GetResult<Prisma.$MerchantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  branch<T extends Prisma.CheckoutSession$branchArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutSession$branchArgs<ExtArgs>>): Prisma.Prisma__MerchantBranchClient<runtime.Types.Result.GetResult<Prisma.$MerchantBranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  posDevice<T extends Prisma.CheckoutSession$posDeviceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutSession$posDeviceArgs<ExtArgs>>): Prisma.Prisma__PosDeviceClient<runtime.Types.Result.GetResult<Prisma.$PosDevicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  customer<T extends Prisma.CheckoutSession$customerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutSession$customerArgs<ExtArgs>>): Prisma.Prisma__CustomerClient<runtime.Types.Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   items<T extends Prisma.CheckoutSession$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutSession$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CheckoutItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   order<T extends Prisma.CheckoutSession$orderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutSession$orderArgs<ExtArgs>>): Prisma.Prisma__OrderClient<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1691,6 +2411,8 @@ export interface Prisma__CheckoutSessionClient<T, Null = never, ExtArgs extends 
 export interface CheckoutSessionFieldRefs {
   readonly id: Prisma.FieldRef<"CheckoutSession", 'String'>
   readonly merchantId: Prisma.FieldRef<"CheckoutSession", 'String'>
+  readonly branchId: Prisma.FieldRef<"CheckoutSession", 'String'>
+  readonly posDeviceId: Prisma.FieldRef<"CheckoutSession", 'String'>
   readonly customerId: Prisma.FieldRef<"CheckoutSession", 'String'>
   readonly customerName: Prisma.FieldRef<"CheckoutSession", 'String'>
   readonly customerEmail: Prisma.FieldRef<"CheckoutSession", 'String'>
@@ -2104,6 +2826,63 @@ export type CheckoutSessionDeleteManyArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many CheckoutSessions to delete.
    */
   limit?: number
+}
+
+/**
+ * CheckoutSession.branch
+ */
+export type CheckoutSession$branchArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MerchantBranch
+   */
+  select?: Prisma.MerchantBranchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MerchantBranch
+   */
+  omit?: Prisma.MerchantBranchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MerchantBranchInclude<ExtArgs> | null
+  where?: Prisma.MerchantBranchWhereInput
+}
+
+/**
+ * CheckoutSession.posDevice
+ */
+export type CheckoutSession$posDeviceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PosDevice
+   */
+  select?: Prisma.PosDeviceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PosDevice
+   */
+  omit?: Prisma.PosDeviceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PosDeviceInclude<ExtArgs> | null
+  where?: Prisma.PosDeviceWhereInput
+}
+
+/**
+ * CheckoutSession.customer
+ */
+export type CheckoutSession$customerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Customer
+   */
+  select?: Prisma.CustomerSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Customer
+   */
+  omit?: Prisma.CustomerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerInclude<ExtArgs> | null
+  where?: Prisma.CustomerWhereInput
 }
 
 /**
