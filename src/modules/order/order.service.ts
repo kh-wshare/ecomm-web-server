@@ -21,6 +21,14 @@ type AuditMetadata = {
   userAgent?: string;
 };
 
+export type PosOrderContext = {
+  branchId: string;
+  posDeviceId: string;
+  posShiftId: string;
+  tableId?: string;
+  localId?: string;
+};
+
 type LockedStock = {
   id: string;
   merchantId: string;
@@ -128,7 +136,11 @@ export class OrderService {
     return date;
   }
 
-  async confirmCheckout(checkoutSessionId: string, metadata: AuditMetadata) {
+  async confirmCheckout(
+    checkoutSessionId: string,
+    metadata: AuditMetadata,
+    posContext?: PosOrderContext,
+  ) {
     const outcome = await this.prisma.$transaction(async (tx) => {
       await this.lockCheckout(tx, checkoutSessionId);
       const checkout = await tx.checkoutSession.findUnique({
@@ -203,6 +215,15 @@ export class OrderService {
           feeAmount: checkout.feeAmount,
           totalAmount: checkout.totalAmount,
           currency: checkout.currency,
+          ...(posContext
+            ? {
+                branchId: posContext.branchId,
+                posDeviceId: posContext.posDeviceId,
+                posShiftId: posContext.posShiftId,
+                tableId: posContext.tableId,
+                localId: posContext.localId,
+              }
+            : {}),
           items: {
             create: checkout.items.map((item) => ({
               productId: item.productId,
