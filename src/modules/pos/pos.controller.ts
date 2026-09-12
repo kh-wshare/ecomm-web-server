@@ -1,16 +1,20 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   Req,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiHeader,
+  ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import type { Request } from 'express';
@@ -32,6 +36,21 @@ type CurrentMerchantContext = { id: string };
 @Controller('pos')
 export class PosController {
   constructor(private readonly pos: PosService) {}
+
+  @Get('bootstrap')
+  @RequirePermission('pos.access')
+  @ApiOperation({
+    summary: 'Aggregate payload for the POS app’s initial local sync',
+  })
+  @ApiQuery({ name: 'deviceId', required: false })
+  @ApiOkResponse()
+  bootstrap(
+    @CurrentMerchant() merchant: CurrentMerchantContext,
+    @CurrentUser() user: AuthenticatedUser,
+    @Query('deviceId') deviceId?: string,
+  ) {
+    return this.pos.bootstrap(merchant.id, user, deviceId);
+  }
 
   @Post('sales')
   @HttpCode(HttpStatus.CREATED)

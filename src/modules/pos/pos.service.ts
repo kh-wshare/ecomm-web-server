@@ -34,6 +34,137 @@ export class PosService {
     private readonly pricing: CartPricingService,
   ) {}
 
+  /**
+   * Single aggregate payload for the Flutter POS app's initial local-SQLite
+   * seed, so it doesn't have to make a dozen separate calls on first launch.
+   * `deviceId` (client-generated id) resolves which branch/tables to scope
+   * to; without it, the merchant's default branch is used.
+   */
+  async bootstrap(
+    merchantId: string,
+    user: {
+      id: string;
+      fullName: string;
+      role: string | null;
+      permissions: string[];
+    },
+    deviceId?: string,
+  ) {
+    const merchant = await this.prisma.merchant.findUniqueOrThrow({
+      where: { id: merchantId },
+    });
+    const branch = deviceId
+      ? (
+          await this.prisma.posDevice.findFirst({
+            where: { merchantId, deviceId, status: 'ACTIVE', deletedAt: null },
+            include: { branch: true },
+          })
+        )?.branch
+      : await this.prisma.merchantBranch.findFirst({
+          where: { merchantId, isDefault: true, deletedAt: null },
+        });
+
+    const [categories, products, tables, paymentProviders] = await Promise.all([
+      this.prisma.productCategory.findMany({
+        where: { merchantId, deletedAt: null, status: 'ACTIVE' },
+        orderBy: { sortOrder: 'asc' },
+      }),
+      this.prisma.product.findMany({
+        where: {
+          merchantId,
+          deletedAt: null,
+          status: 'ACTIVE',
+          channelVisibility: {
+            some: {
+              channel: SalesChannel.POS,
+              isVisible: true,
+              isPurchasable: true,
+            },
+          },
+        },
+        include: {
+          variants: true,
+          inventoryStocks: true,
+        },
+      }),
+      branch
+        ? this.prisma.posTable.findMany({
+            where: { merchantId, branchId: branch.id, deletedAt: null },
+          })
+        : Promise.resolve(
+            [] as Awaited<ReturnType<typeof this.prisma.posTable.findMany>>,
+          ),
+      this.prisma.paymentProvider.findMany({
+        where: { merchantId, status: 'ACTIVE' },
+      }),
+    ]);
+
+    return {
+      serverTime: new Date().toISOString(),
+      tenant: { id: merchant.id, name: merchant.name, slug: merchant.slug },
+      branch: branch
+        ? { id: branch.id, name: branch.name, code: branch.code }
+        : null,
+      user: { id: user.id, name: user.fullName, role: user.role },
+      permissions: user.permissions,
+      categories: categories.map((category) => ({
+        id: category.id,
+        name: category.name,
+        sortOrder: category.sortOrder,
+      })),
+      products: products.map((product) => {
+        const stock = product.inventoryStocks.reduce(
+          (totals, row) => ({
+            totalStock: totals.totalStock + row.totalStock,
+            reservedStock: totals.reservedStock + row.reservedStock,
+            safetyBuffer: totals.safetyBuffer + row.safetyBuffer,
+          }),
+          { totalStock: 0, reservedStock: 0, safetyBuffer: 0 },
+        );
+        return {
+          id: product.id,
+          sku: product.sku,
+          name: product.name,
+          price: product.price.toString(),
+          currency: product.currency,
+          stock: stock.totalStock,
+          reservedStock: stock.reservedStock,
+          safetyBuffer: stock.safetyBuffer,
+          variants: product.variants.map((variant) => ({
+            id: variant.id,
+            sku: variant.sku,
+            name: variant.name,
+            price: variant.price.toString(),
+            attributes: variant.attributes,
+          })),
+          updatedAt: product.updatedAt.toISOString(),
+        };
+      }),
+      productVariants: products.flatMap((product) =>
+        product.variants.map((variant) => ({
+          id: variant.id,
+          productId: product.id,
+          sku: variant.sku,
+          name: variant.name,
+          price: variant.price.toString(),
+        })),
+      ),
+      modifiers: [],
+      tables: tables.map((table) => ({
+        id: table.id,
+        name: table.name,
+        status: table.status,
+      })),
+      paymentMethods: paymentProviders.map((provider) => provider.provider),
+      settings: { returnStockOnRefund: merchant.returnStockOnRefund },
+      syncCursor: this.encodeCursor(new Date(0)),
+    };
+  }
+
+  private encodeCursor(value: Date) {
+    return Buffer.from(value.toISOString()).toString('base64url');
+  }
+
   async createSale(
     merchantId: string,
     userId: string,

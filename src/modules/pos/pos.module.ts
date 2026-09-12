@@ -10,6 +10,7 @@ import { PosPaymentsModule } from './payments/pos-payments.module';
 import { PosController } from './pos.controller';
 import { PosService } from './pos.service';
 import { PosShiftsModule } from './shifts/shifts.module';
+import { PosSyncModule } from './sync/sync.module';
 import { PosTablesModule } from './tables/tables.module';
 
 @Module({
@@ -24,6 +25,7 @@ import { PosTablesModule } from './tables/tables.module';
     PosPaymentsModule,
     PosTablesModule,
     PosCustomersModule,
+    PosSyncModule,
   ],
   controllers: [PosController],
   providers: [PosService],
