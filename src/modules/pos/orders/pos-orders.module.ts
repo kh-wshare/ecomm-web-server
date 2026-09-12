@@ -4,6 +4,7 @@ import { OrderModule } from '#app/modules/order/order.module';
 import { PricingModule } from '#app/modules/pricing/pricing.module';
 import { PosDevicesModule } from '../devices/devices.module';
 import { PosShiftsModule } from '../shifts/shifts.module';
+import { PosTablesModule } from '../tables/tables.module';
 import { PosOrdersController } from './pos-orders.controller';
 import { PosOrdersService } from './pos-orders.service';
 
@@ -14,6 +15,7 @@ import { PosOrdersService } from './pos-orders.service';
     PricingModule,
     PosDevicesModule,
     PosShiftsModule,
+    PosTablesModule,
   ],
   controllers: [PosOrdersController],
   providers: [PosOrdersService],

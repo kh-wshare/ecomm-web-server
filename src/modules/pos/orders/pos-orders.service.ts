@@ -15,6 +15,7 @@ import {
 } from '#app/modules/pricing/cart-pricing.service';
 import { PosDevicesService } from '../devices/devices.service';
 import { PosShiftsService } from '../shifts/shifts.service';
+import { PosTablesService } from '../tables/tables.service';
 import {
   CancelPosOrderDto,
   CreatePosOrderDto,
@@ -55,6 +56,7 @@ export class PosOrdersService {
     private readonly orders: OrderService,
     private readonly devices: PosDevicesService,
     private readonly shifts: PosShiftsService,
+    private readonly tables: PosTablesService,
     private readonly outbox: OutboxService,
   ) {}
 
@@ -71,6 +73,7 @@ export class PosOrdersService {
     const shift = await this.shifts.current(merchantId, dto.deviceId);
     if (dto.tableId) {
       await this.requireTable(merchantId, device.branchId, dto.tableId);
+      await this.tables.setStatus(merchantId, dto.tableId, 'OCCUPIED');
     }
 
     const {
@@ -477,6 +480,7 @@ export class PosOrdersService {
       where: { id: orderId },
       data: { tableId },
     });
+    await this.tables.setStatus(merchantId, tableId, 'OCCUPIED');
     await this.prisma.auditLog.create({
       data: {
         merchantId,

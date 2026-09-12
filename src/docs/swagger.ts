@@ -14,11 +14,13 @@ import { NotificationModule } from '@modules/notification/notification.module';
 import { OrderModule } from '@modules/order/order.module';
 import { PaymentModule } from '@modules/payment/payment.module';
 import { PosDevicesModule } from '@modules/pos/devices/devices.module';
+import { PosCustomersModule } from '@modules/pos/customers/customers.module';
 import { KitchenModule } from '@modules/pos/kitchen/kitchen.module';
 import { PosOrdersModule } from '@modules/pos/orders/pos-orders.module';
 import { PosPaymentsModule } from '@modules/pos/payments/pos-payments.module';
 import { PosModule } from '@modules/pos/pos.module';
 import { PosShiftsModule } from '@modules/pos/shifts/shifts.module';
+import { PosTablesModule } from '@modules/pos/tables/tables.module';
 import { SocialPostModule } from '@modules/social-post/social-post.module';
 import { StorefrontModule } from '@modules/storefront/storefront.module';
 import { ThemeModule } from '@modules/theme/theme.module';
@@ -117,6 +119,8 @@ export function setupSwagger(
         KitchenModule,
         PosPaymentsModule,
         PaymentModule,
+        PosTablesModule,
+        PosCustomersModule,
       ],
     });
     SwaggerModule.setup('docs/pos', app, document, {
