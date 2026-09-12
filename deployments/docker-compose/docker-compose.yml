@@ -56,6 +56,20 @@ services:
       timeout: 5s
       retries: 10
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    restart: unless-stopped
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   app:
     # `image:` lets the production server run `docker compose pull app` +
     # `up -d --no-build` against the tag pushed by .github/workflows/deploy.yml,
@@ -70,6 +84,8 @@ services:
       postgres:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     # Loads the app's full configuration surface (JWT, payment, storage,
     # swagger, social-auth — see src/config/config.module.ts) from this
@@ -86,6 +102,10 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      # Must be the in-network service name + AMQP's default port (5672), not
+      # the host-mapped RABBITMQ_PORT above and never localhost — inside this
+      # container, localhost is the app container itself, not a sibling.
+      RABBITMQ_URL: amqp://rabbitmq:5672
     ports:
       - "${PORT:-3000}:3000"
 
@@ -117,5 +137,6 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  rabbitmq_data:
   prometheus_data:
   grafana_data:
