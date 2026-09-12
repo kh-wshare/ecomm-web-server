@@ -165,6 +165,12 @@ export class PosService {
     return Buffer.from(value.toISOString()).toString('base64url');
   }
 
+  /**
+   * @deprecated Kept for existing callers; new integrations should use
+   * `pos/devices` + `pos/shifts` + `pos/orders` + `pos/payments` instead,
+   * which create real Payment records and support split tenders — this
+   * path marks the order paid directly with no Payment row.
+   */
   async createSale(
     merchantId: string,
     userId: string,

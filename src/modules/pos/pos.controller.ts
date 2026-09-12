@@ -55,7 +55,16 @@ export class PosController {
   @Post('sales')
   @HttpCode(HttpStatus.CREATED)
   @RequirePermission('pos.sale.create')
-  @ApiOperation({ summary: 'Complete a POS sale and return a receipt' })
+  @ApiOperation({
+    summary: 'Complete a one-shot POS sale and return a receipt (deprecated)',
+    deprecated: true,
+    description:
+      'Legacy single-call sale endpoint: bypasses device/shift tracking and ' +
+      'marks the order paid directly without creating a Payment record. ' +
+      'Prefer POST /pos/devices + POST /pos/shifts + POST /pos/orders + ' +
+      'POST /pos/orders/:orderId/payments, which support split/multi-tender ' +
+      'payments, kitchen workflow, and proper payment ledger records.',
+  })
   @ApiCreatedResponse({ type: PosSaleResponseDto })
   createSale(
     @CurrentMerchant() merchant: CurrentMerchantContext,
