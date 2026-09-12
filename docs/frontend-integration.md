@@ -149,20 +149,35 @@ Current POS proxy routes:
 | `POST /pos/api/commerce/pos/sales`                               | `POST /pos/sales`   | Complete a POS sale, reserve and confirm stock, mark the order paid, and return a receipt |
 | `GET /pos/api/commerce/orders?page=1&limit=10&sourceChannel=POS` | `GET /orders`       | POS order list                                                                            |
 
+The backend's native `pos/*` module now covers the full register workflow —
+device registration, cashier shifts, order creation/modification, kitchen
+tickets, split cash/KHQR payments and refunds, tables, customers, offline
+bootstrap/sync, an audit log, and a `/ws/pos` realtime channel. See
+[`pos-backend-api.md`](./pos-backend-api.md) for the complete endpoint
+reference; wire new proxy routes to it the same way the table above wires the
+older resources. `POST /pos/api/commerce/pos/sales` still proxies
+`POST /pos/sales`, which still works but is deprecated — prefer the
+device/shift/order/payment flow in that reference for new work.
+
 The POS Swagger document covers the backend resources used by these proxy
 routes. Login and refresh remain documented in the User/Auth document to avoid
 duplicating unrelated account operations in the POS document.
 
-Recommended POS permissions:
+Recommended POS permissions — see `pos-backend-api.md` for the full list now
+that the module covers shifts, kitchen, payments, tables, and customers:
 
 ```txt
 pos.access
-pos.sale.create
-products.read
-inventory.read
-orders.read
-orders.update
-payments.manage
+pos.order.create
+pos.order.update
+pos.order.cancel
+pos.kitchen.send
+pos.kitchen.update
+pos.payment.create
+pos.payment.refund
+pos.shift.manage
+pos.table.manage
+pos.customer.manage
 ```
 
 ## Storefront Integration
@@ -253,8 +268,12 @@ Client pages should handle:
 
 - Swagger separation is audience-based, not a security boundary.
 - POS uses merchant-scoped backend resources through a POS Next.js proxy. The
-  backend-native POS module currently exposes sale creation and receipts; future
-  work can add register shifts and cash drawer events.
+  backend-native POS module now covers devices, shifts (open/close with cash
+  reconciliation), orders, kitchen tickets, split payments/refunds, tables,
+  customers, offline bootstrap/sync, and a `/ws/pos` realtime channel — see
+  `pos-backend-api.md`. Remaining gaps: PayWay isn't wired as a POS payment
+  method (KHQR and CASH only), and offline batch sync only implements the
+  `CREATE_ORDER` operation type.
 - Merchant and POS proxies should keep token refresh and cookie cleanup logic
   server-side.
 - New frontend API calls should be added to the relevant Swagger document and
