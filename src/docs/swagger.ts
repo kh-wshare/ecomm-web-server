@@ -14,6 +14,7 @@ import { NotificationModule } from '@modules/notification/notification.module';
 import { OrderModule } from '@modules/order/order.module';
 import { PaymentModule } from '@modules/payment/payment.module';
 import { PosDevicesModule } from '@modules/pos/devices/devices.module';
+import { PosAuditModule } from '@modules/pos/audit/audit.module';
 import { PosCustomersModule } from '@modules/pos/customers/customers.module';
 import { KitchenModule } from '@modules/pos/kitchen/kitchen.module';
 import { PosOrdersModule } from '@modules/pos/orders/pos-orders.module';
@@ -123,6 +124,7 @@ export function setupSwagger(
         PosTablesModule,
         PosCustomersModule,
         PosSyncModule,
+        PosAuditModule,
       ],
     });
     SwaggerModule.setup('docs/pos', app, document, {
