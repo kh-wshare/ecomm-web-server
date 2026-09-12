@@ -15,6 +15,6 @@ import { KhqrAdapter } from './adapters/khqr.adapter';
     PayWayAdapter,
     KhqrAdapter,
   ],
-  exports: [PaymentService],
+  exports: [PaymentService, KhqrAdapter],
 })
 export class PaymentModule {}

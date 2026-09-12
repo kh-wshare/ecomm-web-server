@@ -16,6 +16,7 @@ import { PaymentModule } from '@modules/payment/payment.module';
 import { PosDevicesModule } from '@modules/pos/devices/devices.module';
 import { KitchenModule } from '@modules/pos/kitchen/kitchen.module';
 import { PosOrdersModule } from '@modules/pos/orders/pos-orders.module';
+import { PosPaymentsModule } from '@modules/pos/payments/pos-payments.module';
 import { PosModule } from '@modules/pos/pos.module';
 import { PosShiftsModule } from '@modules/pos/shifts/shifts.module';
 import { SocialPostModule } from '@modules/social-post/social-post.module';
@@ -114,6 +115,8 @@ export function setupSwagger(
         PosShiftsModule,
         PosOrdersModule,
         KitchenModule,
+        PosPaymentsModule,
+        PaymentModule,
       ],
     });
     SwaggerModule.setup('docs/pos', app, document, {

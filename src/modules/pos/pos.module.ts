@@ -5,6 +5,7 @@ import { PricingModule } from '#app/modules/pricing/pricing.module';
 import { PosDevicesModule } from './devices/devices.module';
 import { KitchenModule } from './kitchen/kitchen.module';
 import { PosOrdersModule } from './orders/pos-orders.module';
+import { PosPaymentsModule } from './payments/pos-payments.module';
 import { PosController } from './pos.controller';
 import { PosService } from './pos.service';
 import { PosShiftsModule } from './shifts/shifts.module';
@@ -18,6 +19,7 @@ import { PosShiftsModule } from './shifts/shifts.module';
     PosShiftsModule,
     PosOrdersModule,
     KitchenModule,
+    PosPaymentsModule,
   ],
   controllers: [PosController],
   providers: [PosService],

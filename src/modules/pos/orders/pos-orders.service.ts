@@ -232,7 +232,7 @@ export class PosOrdersService {
       where: { id: orderId, merchantId },
       include: {
         items: { select: orderItemSelect },
-        payments: true,
+        payments: { include: { refunds: true } },
         kitchenOrders: { include: { items: true } },
       },
     });
@@ -670,12 +670,21 @@ export class PosOrdersService {
         unitPrice: Prisma.Decimal;
         totalPrice: Prisma.Decimal;
       }>;
-      payments?: Array<{ amount: Prisma.Decimal; status: string }>;
+      payments?: Array<{
+        amount: Prisma.Decimal;
+        status: string;
+        refunds?: Array<{ amount: Prisma.Decimal; status: string }>;
+      }>;
     },
   >(order: T) {
-    const paid = (order.payments ?? [])
+    const grossPaid = (order.payments ?? [])
       .filter((payment) => payment.status === 'CONFIRMED')
       .reduce((sum, payment) => sum.add(payment.amount), new Prisma.Decimal(0));
+    const refunded = (order.payments ?? [])
+      .flatMap((payment) => payment.refunds ?? [])
+      .filter((refund) => refund.status === 'SUCCESS')
+      .reduce((sum, refund) => sum.add(refund.amount), new Prisma.Decimal(0));
+    const paid = this.maxZero(grossPaid.sub(refunded));
     const remaining = this.maxZero(order.totalAmount.sub(paid));
 
     return {
