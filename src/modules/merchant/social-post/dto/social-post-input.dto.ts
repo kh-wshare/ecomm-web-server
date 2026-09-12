@@ -50,7 +50,7 @@ export class CreateSocialPostDto {
   @IsArray()
   @ArrayMaxSize(10)
   @ArrayUnique()
-  @IsUrl({ require_protocol: true }, { each: true })
+  @IsUrl({ require_protocol: true, require_tld: false }, { each: true })
   mediaUrls?: string[];
 }
 

@@ -100,7 +100,7 @@ export class CreateProductInventoryInputDto {
 
 export class ProductMediaInputDto {
   @ApiProperty({ example: 'https://cdn.example.com/products/shirt.jpg' })
-  @IsUrl({ require_protocol: true })
+  @IsUrl({ require_protocol: true, require_tld: false })
   url!: string;
 
   @ApiPropertyOptional({
