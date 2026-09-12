@@ -83,10 +83,14 @@ export class PosShiftsService {
       },
     });
     if (!shift) {
+      // 409, not 404: this is reused by PosOrdersService.create to gate order
+      // creation, where "no open shift" is a state precondition, not a
+      // missing resource — a 404 there reads as "route not found" and made
+      // a client's retry loop very hard to diagnose from a bare status code.
       throw new PosDomainException(
         'SESSION_NOT_OPEN',
         `Device '${deviceId}' has no open shift`,
-        HttpStatus.NOT_FOUND,
+        HttpStatus.CONFLICT,
         { deviceId },
       );
     }

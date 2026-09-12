@@ -68,7 +68,7 @@ open attempt returns `SHIFT_ALREADY_OPEN`).
 | Method | Path | Permission | 🔒 | Purpose |
 | --- | --- | --- | --- | --- |
 | POST | `/pos/shifts` | `pos.shift.manage` | 🔒 | Open a shift: `{ deviceId, openingCash }`. |
-| GET | `/pos/shifts/current?deviceId=` | `pos.shift.manage` | | Get the device's current open shift (404/`SESSION_NOT_OPEN` if none). |
+| GET | `/pos/shifts/current?deviceId=` | `pos.shift.manage` | | Get the device's current open shift (409/`SESSION_NOT_OPEN` if none — the client must call `POST /pos/shifts` first). |
 | POST | `/pos/shifts/:shiftId/close` | `pos.shift.manage` | 🔒 | Close: `{ closingCash, note? }`. Backend computes `expectedCash = openingCash + cashPayments - cashRefunds` and `cashDifference = closingCash - expectedCash`. |
 
 ## Orders — `pos/orders`
