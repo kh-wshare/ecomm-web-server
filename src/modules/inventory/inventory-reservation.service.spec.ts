@@ -1,7 +1,7 @@
 import { ConflictException } from '@nestjs/common';
 import { SalesChannel } from '#app/generated/prisma/enums';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
-import { NotificationService } from '#app/modules/notification/notification.service';
+import { NotificationService } from '#app/modules/merchant/notification/notification.service';
 import { InventoryService } from './inventory.service';
 
 describe('InventoryService reservations', () => {

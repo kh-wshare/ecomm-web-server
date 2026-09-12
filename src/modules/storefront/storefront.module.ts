@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ThemeModule } from '#app/modules/theme/theme.module';
+import { ThemeModule } from '#app/modules/merchant/theme/theme.module';
 import { StorefrontController } from './storefront.controller';
 import { StorefrontService } from './storefront.service';
 

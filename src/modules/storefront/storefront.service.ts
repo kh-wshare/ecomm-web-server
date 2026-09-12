@@ -6,7 +6,7 @@ import { Prisma } from '#app/generated/prisma/client';
 import { ProductStatus, SalesChannel } from '#app/generated/prisma/enums';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
 import { CommerceCacheService } from '#app/infrastructure/redis/commerce-cache.service';
-import { ThemeService } from '#app/modules/theme/theme.service';
+import { ThemeService } from '#app/modules/merchant/theme/theme.service';
 import { StorefrontOrderQueryDto } from './dto/storefront-order-query.dto';
 import { StorefrontProductQueryDto } from './dto/storefront-query.dto';
 

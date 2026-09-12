@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { NotificationModule } from '#app/modules/notification/notification.module';
+import { NotificationModule } from '#app/modules/merchant/notification/notification.module';
 import { KhqrAdapter } from '@modules/payment/adapters/khqr.adapter';
 import { PayWayAdapter } from '@modules/payment/adapters/payway.adapter';
 import { PaymentSecurityService } from '@modules/payment/payment-security.service';

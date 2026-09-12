@@ -27,15 +27,25 @@ pos/realtime         /ws/pos WebSocket gateway
 See [`pos-backend-api.md`](./pos-backend-api.md) for the full endpoint
 reference.
 
-## Merchant dashboard-only
+## Merchant dashboard-only — `src/modules/merchant/*`
+
+Mirroring `pos/*`, every module used only by the merchant dashboard is
+nested under `merchant/`:
 
 ```txt
-merchant        merchant profile/settings, dashboard summary
-theme           storefront theme config (draft/publish)
-social-post     social post authoring, hotspots, publish logs
-notification    in-app notifications + /notifications WebSocket gateway
-file-storage    upload/serve merchant files (local/S3/Cloudinary)
+merchant                     merchant profile/settings, dashboard summary
+merchant/theme               storefront theme config (draft/publish)
+merchant/social-post         social post authoring, hotspots, publish logs
+merchant/notification        in-app notifications + /notifications WebSocket gateway
+merchant/file-storage        upload/serve merchant files (local/S3/Cloudinary)
 ```
+
+`merchant.module.ts`/`merchant.controller.ts`/`merchant.service.ts` stay at
+the root of `merchant/` (they were already there); the other four moved in
+from top-level `src/modules/*` folders. This is a pure file-organization
+move — no DI wiring changed, `app.module.ts` still imports all five
+independently (`MerchantModule` does not import the other four as
+children), and `swagger.ts`'s `include[]` arrays still list each by name.
 
 ## Shared between Merchant dashboard and POS
 
@@ -124,10 +134,10 @@ which is why the POS concept is called a "shift," not a "session."
 | `order` | ✅ | ✅ | | | Shared; POS layers on top via `pos/orders` |
 | `payment` | ✅ | ✅ | | | Shared; POS layers on top via `pos/payments` |
 | `pricing` | | | ✅ (via `checkout`) | | Shared with POS too, no doc of its own |
-| `theme` | ✅ | | | | |
-| `social-post` | ✅ | | | | |
-| `notification` | ✅ | | | | Own `/notifications` WS gateway |
-| `file-storage` | ✅ | | | | |
+| `merchant/theme` | ✅ | | | | |
+| `merchant/social-post` | ✅ | | | | |
+| `merchant/notification` | ✅ | | | | Own `/notifications` WS gateway |
+| `merchant/file-storage` | ✅ | | | | |
 | `pos/*` | | ✅ | | | POS-only, see above |
 | `storefront` | | | ✅ | | |
 | `checkout` | | | ✅ | | |

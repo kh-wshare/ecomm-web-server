@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { NotificationModule } from '#app/modules/notification/notification.module';
+import { NotificationModule } from '#app/modules/merchant/notification/notification.module';
 import { InventoryController } from './inventory.controller';
 import { InventoryExpiryWorker } from './inventory-expiry.worker';
 import { InventoryService } from './inventory.service';

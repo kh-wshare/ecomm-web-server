@@ -8,7 +8,7 @@ import { PaginatedResult } from '#app/common/responses/pagination.response';
 import { Prisma } from '#app/generated/prisma/client';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
 import { EventBusService } from '#app/infrastructure/events/event-bus.service';
-import { NotificationService } from '#app/modules/notification/notification.service';
+import { NotificationService } from '#app/modules/merchant/notification/notification.service';
 import {
   OrderQueryDto,
   RefundOrderDto,

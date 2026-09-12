@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { NotificationModule } from '#app/modules/notification/notification.module';
+import { NotificationModule } from '#app/modules/merchant/notification/notification.module';
 import { SocialPostController } from './social-post.controller';
 import { SocialPostService } from './social-post.service';
 
