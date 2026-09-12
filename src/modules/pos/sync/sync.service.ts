@@ -3,6 +3,7 @@ import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { PosDomainException } from '#app/common/exceptions/pos-domain.exception';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
+import { OutboxService } from '#app/infrastructure/rabbitmq/outbox.service';
 import { CreatePosOrderDto } from '../orders/dto/pos-order-input.dto';
 import { PosOrdersService } from '../orders/pos-orders.service';
 import { SyncBatchDto, SyncOperationDto } from './dto/sync-input.dto';
@@ -16,6 +17,7 @@ export class PosSyncService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly posOrders: PosOrdersService,
+    private readonly outbox: OutboxService,
   ) {}
 
   /**
@@ -111,6 +113,13 @@ export class PosSyncService {
       ),
     );
     const cursor = await this.sync(merchantId);
+    await this.outbox.write(this.prisma, {
+      aggregateType: 'sync',
+      aggregateId: dto.deviceId,
+      eventType: 'sync.completed',
+      merchantId,
+      payload: { deviceId: dto.deviceId, operationCount: results.length },
+    });
     return { results, cursor: cursor.cursor };
   }
 

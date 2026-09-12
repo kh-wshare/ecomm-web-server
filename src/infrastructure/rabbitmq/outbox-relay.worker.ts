@@ -103,7 +103,19 @@ export class OutboxRelayWorker implements OnModuleInit, OnModuleDestroy {
             publishedAt: new Date(),
           },
         });
-        this.eventBus.publish(event.eventType, event.payload);
+        // In-process fan-out (e.g. PosGateway) expects `merchantId` on the
+        // payload itself for room routing; the outbox row carries it as a
+        // separate column, so it must be merged back in here.
+        const payload =
+          event.payload &&
+          typeof event.payload === 'object' &&
+          !Array.isArray(event.payload)
+            ? {
+                ...(event.payload as Record<string, unknown>),
+                merchantId: event.merchantId,
+              }
+            : event.payload;
+        this.eventBus.publish(event.eventType, payload);
       } catch (error) {
         const attempts = event.attempts + 1;
         const backoffMs = Math.min(30_000, 1_000 * 2 ** attempts);

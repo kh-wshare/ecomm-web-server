@@ -10,6 +10,7 @@ import { PosOrdersModule } from './orders/pos-orders.module';
 import { PosPaymentsModule } from './payments/pos-payments.module';
 import { PosController } from './pos.controller';
 import { PosService } from './pos.service';
+import { PosRealtimeModule } from './realtime/pos-realtime.module';
 import { PosShiftsModule } from './shifts/shifts.module';
 import { PosSyncModule } from './sync/sync.module';
 import { PosTablesModule } from './tables/tables.module';
@@ -28,6 +29,7 @@ import { PosTablesModule } from './tables/tables.module';
     PosCustomersModule,
     PosSyncModule,
     PosAuditModule,
+    PosRealtimeModule,
   ],
   controllers: [PosController],
   providers: [PosService],

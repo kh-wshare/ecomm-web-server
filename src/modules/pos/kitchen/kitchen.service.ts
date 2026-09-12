@@ -232,6 +232,7 @@ export class KitchenService {
         payload: {
           kitchenOrderId: kitchenOrder.id,
           orderId: kitchenOrder.orderId,
+          branchId: kitchenOrder.branchId,
           status,
         },
       });

@@ -237,7 +237,12 @@ export class PosPaymentsService {
       aggregateId: paymentId,
       eventType: 'payment.refunded',
       merchantId,
-      payload: { paymentId, orderId: order.id, amount: amount.toString() },
+      payload: {
+        paymentId,
+        orderId: order.id,
+        branchId: order.branchId,
+        amount: amount.toString(),
+      },
     });
 
     return refund;
@@ -246,7 +251,12 @@ export class PosPaymentsService {
   private async createCashPayment(
     merchantId: string,
     userId: string,
-    order: { id: string; posShiftId: string | null; orderNumber: string },
+    order: {
+      id: string;
+      posShiftId: string | null;
+      orderNumber: string;
+      branchId: string | null;
+    },
     amount: Prisma.Decimal,
     currency: string,
     dto: CreatePosPaymentDto,
@@ -322,6 +332,7 @@ export class PosPaymentsService {
       payload: {
         orderId: order.id,
         paymentId: payment.id,
+        branchId: order.branchId,
         amount: amount.toString(),
       },
     });
@@ -338,7 +349,12 @@ export class PosPaymentsService {
   private async createKhqrPayment(
     merchantId: string,
     userId: string,
-    order: { id: string; posShiftId: string | null; orderNumber: string },
+    order: {
+      id: string;
+      posShiftId: string | null;
+      orderNumber: string;
+      branchId: string | null;
+    },
     amount: Prisma.Decimal,
     currency: string,
     dto: CreatePosPaymentDto,
