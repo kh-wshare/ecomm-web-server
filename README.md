@@ -103,6 +103,7 @@ Swagger documentation is available at:
 |-------|-----|
 | **User API** | `http://localhost:9001/docs/user` |
 | **Merchant API** | `http://localhost:9001/docs/merchant` |
+| **POS API** | `http://localhost:9001/docs/pos` |
 | **Storefront API** | `http://localhost:9001/docs/storefront` |
 | **Admin API** | `http://localhost:9001/docs/admin` |
 
