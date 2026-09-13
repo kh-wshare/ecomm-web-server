@@ -139,23 +139,54 @@ pnpm prisma:seed        # Seed database
 pnpm prisma:studio      # Open Prisma Studio
 ```
 
-##  Docker
+## 🐳 Docker
 
-### Local Development Stack
+### Local Infrastructure Only
 
 ```bash
 docker compose -f docker-compose.dev.yml up -d
 ```
 
-Includes PostgreSQL and Redis.
+Starts PostgreSQL (port 5448), Redis (port 6388), and RabbitMQ (AMQP on 5682,
+management UI on 15682) for the API running on the host via `pnpm start:dev`.
 
-### Production Build
+### Full Stack (App + Infra + Observability)
+
+`deployments/docker-compose/docker-compose.yml` is the canonical compose
+file for both a local full-stack run and the production server deployed by
+`.github/workflows/deploy.yml` — it builds and runs the API itself alongside
+its infrastructure, not just Postgres/Redis:
 
 ```bash
-docker compose -f docker-compose.prod.yml up -d --build
+cp deployments/docker-compose/.env.example deployments/docker-compose/.env
+# edit deployments/docker-compose/.env — every value in .env.example is a
+# local-dev placeholder and must be replaced before this runs anywhere
+# production-facing (DB/RabbitMQ passwords, JWT secrets, etc.)
+
+docker compose -f deployments/docker-compose/docker-compose.yml \
+  --env-file deployments/docker-compose/.env up -d --build
 ```
 
-For production deployment guidance, see [docs/docker-deployment.md](docs/docker-deployment.md).
+| Service | Purpose | Default host port |
+|---------|---------|--------------------|
+| `app` | The NestJS API | 3000 |
+| `postgres` | Database | 5433 |
+| `redis` | Cache / sessions | 6379 |
+| `rabbitmq` | POS outbox event broker (AMQP) | 5672 |
+| `rabbitmq` | Management UI | 15672 |
+| `prometheus` | Metrics scraping (`app`'s `/metrics`) | 9090 |
+| `grafana` | Metrics dashboards | 3001 |
+
+Rebuilding after a code change (e.g. after pulling new commits):
+
+```bash
+docker compose -f deployments/docker-compose/docker-compose.yml build app
+docker compose -f deployments/docker-compose/docker-compose.yml up -d --no-build app
+```
+
+For production deployment guidance, see
+[docs/backend-deployment.md](docs/backend-deployment.md) and
+[docs/docker-deployment.md](docs/docker-deployment.md).
 
 ## 📁 Project Structure
 
@@ -170,25 +201,32 @@ For production deployment guidance, see [docs/docker-deployment.md](docs/docker-
 │   ├── docs/                 # Swagger documentation
 │   ├── infrastructure/       # Database, cache, storage
 │   └── modules/              # Feature modules
-│       ├── auth/             # Authentication & sessions
-│       ├── merchants/        # Merchant management
-│       ├── users/            # User management
-│       ├── products/         # Product catalog
+│       ├── authenticated/    # Login, JWT, sessions
+│       ├── authorization/    # Roles/permissions
+│       ├── merchant/         # Merchant management + nested
+│       │   ├── theme/, social-post/, notification/, file-storage/
+│       ├── users/            # Platform user administration
+│       ├── catalog/          # Product catalog (+ categories/)
 │       ├── inventory/        # Stock management
-│       ├── checkout/         # Checkout sessions
-│       ├── orders/           # Order management
-│       ├── payments/         # Payment processing
-│       ├── storefront/       # Public storefront
-│       ├── theme/            # Theme builder
-│       └── notifications/    # Notifications
+│       ├── branch/           # Merchant branches
+│       ├── checkout/         # Public checkout sessions
+│       ├── order/            # Order lifecycle
+│       ├── payment/          # Payment providers, KHQR/PayWay adapters
+│       ├── pricing/          # Shared cart-pricing logic
+│       ├── pos/              # POS backend (devices/shifts/orders/kitchen/
+│       │                     # payments/tables/customers/sync/audit/realtime)
+│       └── storefront/       # Public storefront + payment/webhook/social-post
 ├── test/                     # End-to-end tests
 ├── prisma/                   # Database schema & migrations
 │   ├── schema.prisma
 │   ├── seed.ts
 │   └── migrations/
 ├── docs/                     # Documentation & deployment guides
-├── docker-compose.dev.yml
-├── docker-compose.prod.yml
+├── deployments/
+│   ├── docker-compose/       # Full stack: app + postgres/redis/rabbitmq
+│   │                         # + prometheus/grafana (local + production)
+│   └── observability/        # Prometheus/Grafana provisioning
+├── docker-compose.dev.yml    # Local infra only, for `pnpm start:dev`
 ├── Dockerfile
 ├── package.json
 └── README.md
@@ -258,7 +296,24 @@ Tests cover:
 
 ## 🚢 Deployment
 
-### Docker Build
+### Recommended: the full-stack compose file
+
+```bash
+cp deployments/docker-compose/.env.example deployments/docker-compose/.env
+# edit deployments/docker-compose/.env with real secrets first
+
+docker compose -f deployments/docker-compose/docker-compose.yml \
+  --env-file deployments/docker-compose/.env up -d --build
+```
+
+This is the same compose file `.github/workflows/deploy.yml` uses on the
+production server (there, it runs `docker compose pull app` +
+`docker compose up -d --no-build` against the image already built and
+pushed by CI, rather than building locally). See
+[docs/backend-deployment.md](docs/backend-deployment.md) for the full
+runbook.
+
+### Building just the image
 
 ```bash
 # Development image
@@ -268,14 +323,21 @@ docker build --target development -t ecomm:dev .
 docker build --target production -t ecomm:prod .
 ```
 
+Useful for pushing to a registry or testing the build in isolation; on its
+own it doesn't start Postgres/Redis/RabbitMQ, so prefer the compose command
+above for anything you actually want to run.
+
 ### Environment for Production
 
-- Set secure `JWT_*_SECRET` values
-- Configure database on managed service
-- Set up Redis cluster or managed service
-- Configure storage provider (S3, GCS, etc.)
-- Update CORS origins
-- Enable HTTPS
+- Set secure `JWT_*_SECRET`, `DB_PASSWORD`, and `RABBITMQ_PASSWORD` values —
+  every value in `deployments/docker-compose/.env.example` is a local-dev
+  placeholder
+- Configure database on a managed service (or keep the compose-managed
+  Postgres for a single-server deployment)
+- Set up Redis and RabbitMQ similarly (managed service or compose-managed)
+- Configure storage provider (S3, GCS, Cloudinary, etc.)
+- Update CORS origins (`DASHBOARD_FRONTEND_URL`, `PUBLIC_STOREFRONT_URL`)
+- Enable HTTPS (terminate at a reverse proxy in front of `app`)
 
 See [docs/docker-deployment.md](docs/docker-deployment.md) for detailed guidance.
 
