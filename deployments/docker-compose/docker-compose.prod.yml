@@ -5,7 +5,7 @@
 #
 # Usage (from the repo root):
 #   cp deployments/docker-compose/.env.example deployments/docker-compose/.env
-#   docker compose -f deployments/docker-compose/docker-compose.yml --env-file deployments/docker-compose/.env up --build
+#   docker compose -f deployments/docker-compose/docker-compose.prod.yml --env-file deployments/docker-compose/.env up --build
 #
 # See docs/backend-deployment.md and docs/docker-deployment.md for what must
 # change before this goes anywhere near production (every placeholder value

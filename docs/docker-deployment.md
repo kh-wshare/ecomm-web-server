@@ -1,119 +1,35 @@
 # Docker Deployment
 
-This document describes the current all-in-one Docker setup. The separated
-deployment runbooks are:
+> **Superseded.** This document originally described an all-in-one Docker
+> stack — this backend plus `merchant`/`pos`/`storefront` Next.js containers
+> and an `nginx` gateway, all built from a `client/` directory inside this
+> repo. That `client/` monorepo directory no longer exists here: the
+> merchant dashboard, POS app, and storefront are now separate repositories
+> with their own deployment processes, not orchestrated from this repo's
+> Docker Compose.
+>
+> **For this backend's own Docker setup (Postgres/Redis/RabbitMQ/API/
+> Prometheus/Grafana), see [docs/backend-deployment.md](backend-deployment.md)
+> instead** — that is the accurate, current runbook.
+>
+> If you're looking for how the merchant/POS/storefront frontends deploy and
+> how a gateway routes between them, check those apps' own repositories; this
+> backend no longer has visibility into or ownership of that setup.
 
-- Backend: `docs/backend-deployment.md`
-- Frontend: `client/docs/deployment.md`
-- Separation checklist: `docs/deployment-separation-todo.md`
+## What changed and why
 
-Phase 7 packages the deployed commerce frontend apps as independent standalone
-Next.js containers and exposes them through nginx. Marketing has a separate
-client app, but it is not yet part of this production compose stack.
-
-## Services
-
-```txt
-postgres   PostgreSQL database
-redis      Redis cache/session infrastructure
-app        NestJS API on the internal Docker network at app:3000
-merchant   Next.js merchant app on the internal Docker network at merchant:3000
-pos        Next.js POS app on the internal Docker network at pos:3001
-storefront Next.js storefront app on the internal Docker network at storefront:3002
-nginx      Public gateway on http://localhost
-```
-
-The public gateway routes:
-
-```txt
-/merchant/* -> merchant
-/pos/*      -> pos
-/*          -> storefront
-```
-
-## Environment
-
-Each app has a checked-in example file:
-
-```txt
-client/apps/merchant/.env.example
-client/apps/pos/.env.example
-client/apps/storefront/.env.example
-```
-
-The frontend containers validate environment variables with Zod at startup.
-For Docker Compose, the defaults in `docker-compose.yml` are enough for local
-verification. Production deployments should override these values in `.env`.
-
-Important public values:
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:3000
-NEXT_PUBLIC_DASHBOARD_URL=http://localhost/merchant
-NEXT_PUBLIC_STOREFRONT_URL=http://localhost
-NEXT_PUBLIC_WEBSOCKET_URL=http://localhost:3000
-GATEWAY_PORT=80
-```
-
-## Build Images
-
-Build the API:
-
-```bash
-docker compose build app
-```
-
-Build each frontend independently:
-
-```bash
-docker compose build merchant
-docker compose build pos
-docker compose build storefront
-```
-
-Build the complete stack:
-
-```bash
-docker compose build
-```
-
-## Start
-
-```bash
-docker compose up -d
-```
-
-Open:
-
-```txt
-http://localhost/merchant
-http://localhost/pos
-http://localhost
-```
-
-## Verify
-
-```bash
-docker compose ps
-curl -I http://localhost/merchant
-curl -I http://localhost/pos
-curl -I http://localhost
-```
-
-Static assets should be served through nginx with immutable cache headers:
-
-```bash
-curl -I http://localhost/_next/static/<asset>
-```
-
-## Stop
-
-```bash
-docker compose down
-```
-
-To remove database/cache volumes:
-
-```bash
-docker compose down -v
-```
+- [docs/deployment-separation-todo.md](deployment-separation-todo.md) and
+  [docs/monolith-removal.md](monolith-removal.md) documented the plan and
+  route-parity checklist for splitting the combined frontend monorepo out of
+  this repo. That split has since completed: there is no `client/` directory
+  here anymore.
+- This backend's actual Docker Compose files are:
+  - `deployments/docker-compose/docker-compose.dev.yml` — local infra only
+    (Postgres/Redis/RabbitMQ) for running the API on the host via
+    `pnpm start:dev`.
+  - `deployments/docker-compose/docker-compose.prod.yml` — the full containerized
+    stack (adds the API itself, plus Prometheus/Grafana), used both locally
+    and by `.github/workflows/deploy.yml` for production.
+- Neither compose file builds or runs any frontend app or an `nginx` gateway
+  — that responsibility moved with the frontend code to its own
+  repositories.

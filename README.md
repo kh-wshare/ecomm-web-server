@@ -59,7 +59,7 @@ cp .env.example .env
 ### 3. Start Infrastructure
 
 ```bash
-docker compose -f docker-compose.dev.yml up -d
+docker compose -f deployments/docker-compose/docker-compose.dev.yml up -d
 ```
 
 This starts PostgreSQL (port 5448) and Redis (port 6388).
@@ -144,7 +144,7 @@ pnpm prisma:studio      # Open Prisma Studio
 ### Local Infrastructure Only
 
 ```bash
-docker compose -f docker-compose.dev.yml up -d
+docker compose -f deployments/docker-compose/docker-compose.dev.yml up -d
 ```
 
 Starts PostgreSQL (port 5448), Redis (port 6388), and RabbitMQ (AMQP on 5682,
@@ -152,7 +152,7 @@ management UI on 15682) for the API running on the host via `pnpm start:dev`.
 
 ### Full Stack (App + Infra + Observability)
 
-`deployments/docker-compose/docker-compose.yml` is the canonical compose
+`deployments/docker-compose/docker-compose.prod.yml` is the canonical compose
 file for both a local full-stack run and the production server deployed by
 `.github/workflows/deploy.yml` — it builds and runs the API itself alongside
 its infrastructure, not just Postgres/Redis:
@@ -163,7 +163,7 @@ cp deployments/docker-compose/.env.example deployments/docker-compose/.env
 # local-dev placeholder and must be replaced before this runs anywhere
 # production-facing (DB/RabbitMQ passwords, JWT secrets, etc.)
 
-docker compose -f deployments/docker-compose/docker-compose.yml \
+docker compose -f deployments/docker-compose/docker-compose.prod.yml \
   --env-file deployments/docker-compose/.env up -d --build
 ```
 
@@ -180,8 +180,8 @@ docker compose -f deployments/docker-compose/docker-compose.yml \
 Rebuilding after a code change (e.g. after pulling new commits):
 
 ```bash
-docker compose -f deployments/docker-compose/docker-compose.yml build app
-docker compose -f deployments/docker-compose/docker-compose.yml up -d --no-build app
+docker compose -f deployments/docker-compose/docker-compose.prod.yml build app
+docker compose -f deployments/docker-compose/docker-compose.prod.yml up -d --no-build app
 ```
 
 For production deployment guidance, see
@@ -223,10 +223,11 @@ For production deployment guidance, see
 │   └── migrations/
 ├── docs/                     # Documentation & deployment guides
 ├── deployments/
-│   ├── docker-compose/       # Full stack: app + postgres/redis/rabbitmq
-│   │                         # + prometheus/grafana (local + production)
+│   ├── docker-compose/
+│   │   ├── docker-compose.dev.yml   # Local infra only, for `pnpm start:dev`
+│   │   └── docker-compose.prod.yml  # Full stack: app + postgres/redis/
+│   │                                # rabbitmq + prometheus/grafana
 │   └── observability/        # Prometheus/Grafana provisioning
-├── docker-compose.dev.yml    # Local infra only, for `pnpm start:dev`
 ├── Dockerfile
 ├── package.json
 └── README.md
@@ -302,7 +303,7 @@ Tests cover:
 cp deployments/docker-compose/.env.example deployments/docker-compose/.env
 # edit deployments/docker-compose/.env with real secrets first
 
-docker compose -f deployments/docker-compose/docker-compose.yml \
+docker compose -f deployments/docker-compose/docker-compose.prod.yml \
   --env-file deployments/docker-compose/.env up -d --build
 ```
 

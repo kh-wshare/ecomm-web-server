@@ -1,5 +1,7 @@
-# Infra-only compose for local development.
-# Run: docker compose -f docker-compose.dev.yml up -d
+# Infra-only compose for local development (Postgres/Redis/RabbitMQ only,
+# no app container) — for the production/full-stack compose, see
+# docker-compose.prod.yml in this same directory.
+# Run (from the repo root): docker compose -f deployments/docker-compose/docker-compose.dev.yml up -d
 # Then start the app locally: pnpm run start:dev
 services:
   postgres:
