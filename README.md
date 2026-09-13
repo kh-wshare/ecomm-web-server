@@ -350,10 +350,7 @@ See [docs/docker-deployment.md](docs/docker-deployment.md) for detailed guidance
 Additional docs:
 - [Docker Deployment](docs/docker-deployment.md)
 - [Backend Deployment](docs/backend-deployment.md)
-- [Gateway Routing](docs/gateway-routing.md)
-- [Improvement Notes](docs/improvement.md)
 - [Merchant Roadmap](docs/merchant_master_roadmap.md)
-- [Monolith Removal](docs/monolith-removal.md)
 
 ## 🤝 Contributing
 
