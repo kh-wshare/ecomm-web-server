@@ -69,6 +69,14 @@ export const ProductType = {
 export type ProductType = (typeof ProductType)[keyof typeof ProductType]
 
 
+export const ProductInventoryType = {
+  STOCKED: 'STOCKED',
+  NON_STOCKED: 'NON_STOCKED'
+} as const
+
+export type ProductInventoryType = (typeof ProductInventoryType)[keyof typeof ProductInventoryType]
+
+
 export const ProductVariantStatus = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE'

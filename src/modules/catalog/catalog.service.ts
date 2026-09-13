@@ -35,6 +35,8 @@ const productSelect = {
   price: true,
   currency: true,
   status: true,
+  inventoryType: true,
+  trackStock: true,
   createdAt: true,
   updatedAt: true,
   deletedAt: true,
@@ -96,6 +98,8 @@ export class CatalogService {
               price: new Prisma.Decimal(dto.price),
               currency: (dto.currency ?? 'USD').toUpperCase(),
               status: dto.status,
+              trackStock: dto.trackStock ?? false,
+              inventoryType: dto.trackStock ? 'STOCKED' : 'NON_STOCKED',
               variants: dto.variants?.length
                 ? { create: this.variantData(dto.variants) }
                 : undefined,
@@ -253,6 +257,12 @@ export class CatalogService {
               ? { currency: dto.currency.toUpperCase() }
               : {}),
             ...(dto.status !== undefined ? { status: dto.status } : {}),
+            ...(dto.trackStock !== undefined
+              ? {
+                  trackStock: dto.trackStock,
+                  inventoryType: dto.trackStock ? 'STOCKED' : 'NON_STOCKED',
+                }
+              : {}),
           },
         });
         const product = await tx.product.findUniqueOrThrow({

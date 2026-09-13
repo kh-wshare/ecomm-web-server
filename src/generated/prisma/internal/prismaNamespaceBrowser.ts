@@ -197,6 +197,8 @@ export const ProductScalarFieldEnum = {
   currency: 'currency',
   status: 'status',
   type: 'type',
+  inventoryType: 'inventoryType',
+  trackStock: 'trackStock',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'

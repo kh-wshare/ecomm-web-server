@@ -128,6 +128,8 @@ export class PosService {
           name: product.name,
           price: product.price.toString(),
           currency: product.currency,
+          inventoryType: product.inventoryType,
+          trackStock: product.trackStock,
           stock: stock.totalStock,
           reservedStock: stock.reservedStock,
           safetyBuffer: stock.safetyBuffer,

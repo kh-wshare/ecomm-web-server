@@ -189,6 +189,15 @@ export class CreateProductDto {
   @IsUUID()
   categoryId?: string | null;
 
+  @ApiPropertyOptional({
+    description:
+      'Whether this product tracks inventory. When true, sets inventoryType to STOCKED and stock/reservation checks apply; when false (default), the product is always sellable regardless of inventory.',
+    default: false,
+  })
+  @IsBoolean()
+  @IsOptional()
+  trackStock?: boolean;
+
   @ApiPropertyOptional({ type: [ProductVariantInputDto] })
   @IsArray()
   @ArrayMaxSize(100)

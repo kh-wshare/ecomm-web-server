@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  ProductInventoryType,
   ProductMediaType,
   ProductStatus,
   ProductVariantStatus,
@@ -82,6 +83,15 @@ export class ProductDto {
 
   @ApiProperty({ enum: ProductStatus })
   status!: ProductStatus;
+
+  @ApiProperty({ enum: ProductInventoryType })
+  inventoryType!: ProductInventoryType;
+
+  @ApiProperty({
+    description:
+      'Quick boolean mirror of inventoryType === STOCKED, for fast conditional checks',
+  })
+  trackStock!: boolean;
 
   @ApiPropertyOptional({ format: 'uuid', nullable: true })
   categoryId!: string | null;

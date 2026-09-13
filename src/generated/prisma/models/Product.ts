@@ -46,6 +46,8 @@ export type ProductMinAggregateOutputType = {
   currency: string | null
   status: $Enums.ProductStatus | null
   type: $Enums.ProductType | null
+  inventoryType: $Enums.ProductInventoryType | null
+  trackStock: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -63,6 +65,8 @@ export type ProductMaxAggregateOutputType = {
   currency: string | null
   status: $Enums.ProductStatus | null
   type: $Enums.ProductType | null
+  inventoryType: $Enums.ProductInventoryType | null
+  trackStock: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -80,6 +84,8 @@ export type ProductCountAggregateOutputType = {
   currency: number
   status: number
   type: number
+  inventoryType: number
+  trackStock: number
   createdAt: number
   updatedAt: number
   deletedAt: number
@@ -107,6 +113,8 @@ export type ProductMinAggregateInputType = {
   currency?: true
   status?: true
   type?: true
+  inventoryType?: true
+  trackStock?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -124,6 +132,8 @@ export type ProductMaxAggregateInputType = {
   currency?: true
   status?: true
   type?: true
+  inventoryType?: true
+  trackStock?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -141,6 +151,8 @@ export type ProductCountAggregateInputType = {
   currency?: true
   status?: true
   type?: true
+  inventoryType?: true
+  trackStock?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -245,6 +257,8 @@ export type ProductGroupByOutputType = {
   currency: string
   status: $Enums.ProductStatus
   type: $Enums.ProductType
+  inventoryType: $Enums.ProductInventoryType
+  trackStock: boolean
   createdAt: Date
   updatedAt: Date
   deletedAt: Date | null
@@ -285,6 +299,8 @@ export type ProductWhereInput = {
   currency?: Prisma.StringFilter<"Product"> | string
   status?: Prisma.EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFilter<"Product"> | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFilter<"Product"> | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Product"> | Date | string | null
@@ -313,6 +329,8 @@ export type ProductOrderByWithRelationInput = {
   currency?: Prisma.SortOrder
   status?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  inventoryType?: Prisma.SortOrder
+  trackStock?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -347,6 +365,8 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   currency?: Prisma.StringFilter<"Product"> | string
   status?: Prisma.EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFilter<"Product"> | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFilter<"Product"> | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Product"> | Date | string | null
@@ -375,6 +395,8 @@ export type ProductOrderByWithAggregationInput = {
   currency?: Prisma.SortOrder
   status?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  inventoryType?: Prisma.SortOrder
+  trackStock?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -400,6 +422,8 @@ export type ProductScalarWhereWithAggregatesInput = {
   currency?: Prisma.StringWithAggregatesFilter<"Product"> | string
   status?: Prisma.EnumProductStatusWithAggregatesFilter<"Product"> | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeWithAggregatesFilter<"Product"> | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeWithAggregatesFilter<"Product"> | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Product"> | Date | string | null
@@ -415,6 +439,8 @@ export type ProductCreateInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -443,6 +469,8 @@ export type ProductUncheckedCreateInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -467,6 +495,8 @@ export type ProductUpdateInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -495,6 +525,8 @@ export type ProductUncheckedUpdateInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -521,6 +553,8 @@ export type ProductCreateManyInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -536,6 +570,8 @@ export type ProductUpdateManyMutationInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -553,6 +589,8 @@ export type ProductUncheckedUpdateManyInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -595,6 +633,8 @@ export type ProductCountOrderByAggregateInput = {
   currency?: Prisma.SortOrder
   status?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  inventoryType?: Prisma.SortOrder
+  trackStock?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -616,6 +656,8 @@ export type ProductMaxOrderByAggregateInput = {
   currency?: Prisma.SortOrder
   status?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  inventoryType?: Prisma.SortOrder
+  trackStock?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -633,6 +675,8 @@ export type ProductMinOrderByAggregateInput = {
   currency?: Prisma.SortOrder
   status?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  inventoryType?: Prisma.SortOrder
+  trackStock?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -703,6 +747,10 @@ export type EnumProductStatusFieldUpdateOperationsInput = {
 
 export type EnumProductTypeFieldUpdateOperationsInput = {
   set?: $Enums.ProductType
+}
+
+export type EnumProductInventoryTypeFieldUpdateOperationsInput = {
+  set?: $Enums.ProductInventoryType
 }
 
 export type ProductCreateNestedManyWithoutCategoryInput = {
@@ -883,6 +931,8 @@ export type ProductCreateWithoutMerchantInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -909,6 +959,8 @@ export type ProductUncheckedCreateWithoutMerchantInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -964,6 +1016,8 @@ export type ProductScalarWhereInput = {
   currency?: Prisma.StringFilter<"Product"> | string
   status?: Prisma.EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFilter<"Product"> | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFilter<"Product"> | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Product"> | Date | string | null
@@ -979,6 +1033,8 @@ export type ProductCreateWithoutCategoryInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1005,6 +1061,8 @@ export type ProductUncheckedCreateWithoutCategoryInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1055,6 +1113,8 @@ export type ProductCreateWithoutVariantsInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1082,6 +1142,8 @@ export type ProductUncheckedCreateWithoutVariantsInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1121,6 +1183,8 @@ export type ProductUpdateWithoutVariantsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1148,6 +1212,8 @@ export type ProductUncheckedUpdateWithoutVariantsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1171,6 +1237,8 @@ export type ProductCreateWithoutMediaInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1198,6 +1266,8 @@ export type ProductUncheckedCreateWithoutMediaInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1237,6 +1307,8 @@ export type ProductUpdateWithoutMediaInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1264,6 +1336,8 @@ export type ProductUncheckedUpdateWithoutMediaInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1287,6 +1361,8 @@ export type ProductCreateWithoutChannelVisibilityInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1314,6 +1390,8 @@ export type ProductUncheckedCreateWithoutChannelVisibilityInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1353,6 +1431,8 @@ export type ProductUpdateWithoutChannelVisibilityInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1380,6 +1460,8 @@ export type ProductUncheckedUpdateWithoutChannelVisibilityInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1403,6 +1485,8 @@ export type ProductCreateWithoutInventoryStocksInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1430,6 +1514,8 @@ export type ProductUncheckedCreateWithoutInventoryStocksInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1469,6 +1555,8 @@ export type ProductUpdateWithoutInventoryStocksInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1496,6 +1584,8 @@ export type ProductUncheckedUpdateWithoutInventoryStocksInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1519,6 +1609,8 @@ export type ProductCreateWithoutReservationsInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1546,6 +1638,8 @@ export type ProductUncheckedCreateWithoutReservationsInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1585,6 +1679,8 @@ export type ProductUpdateWithoutReservationsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1612,6 +1708,8 @@ export type ProductUncheckedUpdateWithoutReservationsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1635,6 +1733,8 @@ export type ProductCreateWithoutCheckoutItemsInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1662,6 +1762,8 @@ export type ProductUncheckedCreateWithoutCheckoutItemsInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1701,6 +1803,8 @@ export type ProductUpdateWithoutCheckoutItemsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1728,6 +1832,8 @@ export type ProductUncheckedUpdateWithoutCheckoutItemsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1751,6 +1857,8 @@ export type ProductCreateWithoutOrderItemsInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1778,6 +1886,8 @@ export type ProductUncheckedCreateWithoutOrderItemsInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1817,6 +1927,8 @@ export type ProductUpdateWithoutOrderItemsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1844,6 +1956,8 @@ export type ProductUncheckedUpdateWithoutOrderItemsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1867,6 +1981,8 @@ export type ProductCreateWithoutShoppableHotspotsInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1894,6 +2010,8 @@ export type ProductUncheckedCreateWithoutShoppableHotspotsInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1933,6 +2051,8 @@ export type ProductUpdateWithoutShoppableHotspotsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1960,6 +2080,8 @@ export type ProductUncheckedUpdateWithoutShoppableHotspotsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1983,6 +2105,8 @@ export type ProductCreateWithoutInventoryMovementsInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -2010,6 +2134,8 @@ export type ProductUncheckedCreateWithoutInventoryMovementsInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -2049,6 +2175,8 @@ export type ProductUpdateWithoutInventoryMovementsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2076,6 +2204,8 @@ export type ProductUncheckedUpdateWithoutInventoryMovementsInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2100,6 +2230,8 @@ export type ProductCreateManyMerchantInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -2115,6 +2247,8 @@ export type ProductUpdateWithoutMerchantInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2141,6 +2275,8 @@ export type ProductUncheckedUpdateWithoutMerchantInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2166,6 +2302,8 @@ export type ProductUncheckedUpdateManyWithoutMerchantInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2182,6 +2320,8 @@ export type ProductCreateManyCategoryInput = {
   currency?: string
   status?: $Enums.ProductStatus
   type?: $Enums.ProductType
+  inventoryType?: $Enums.ProductInventoryType
+  trackStock?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -2197,6 +2337,8 @@ export type ProductUpdateWithoutCategoryInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2223,6 +2365,8 @@ export type ProductUncheckedUpdateWithoutCategoryInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2248,6 +2392,8 @@ export type ProductUncheckedUpdateManyWithoutCategoryInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   type?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  inventoryType?: Prisma.EnumProductInventoryTypeFieldUpdateOperationsInput | $Enums.ProductInventoryType
+  trackStock?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2368,6 +2514,8 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   currency?: boolean
   status?: boolean
   type?: boolean
+  inventoryType?: boolean
+  trackStock?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -2397,6 +2545,8 @@ export type ProductSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   currency?: boolean
   status?: boolean
   type?: boolean
+  inventoryType?: boolean
+  trackStock?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -2416,6 +2566,8 @@ export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   currency?: boolean
   status?: boolean
   type?: boolean
+  inventoryType?: boolean
+  trackStock?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -2435,12 +2587,14 @@ export type ProductSelectScalar = {
   currency?: boolean
   status?: boolean
   type?: boolean
+  inventoryType?: boolean
+  trackStock?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
 }
 
-export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "merchantId" | "categoryId" | "name" | "slug" | "description" | "sku" | "price" | "currency" | "status" | "type" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["product"]>
+export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "merchantId" | "categoryId" | "name" | "slug" | "description" | "sku" | "price" | "currency" | "status" | "type" | "inventoryType" | "trackStock" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["product"]>
 export type ProductInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
   category?: boolean | Prisma.Product$categoryArgs<ExtArgs>
@@ -2491,6 +2645,8 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     currency: string
     status: $Enums.ProductStatus
     type: $Enums.ProductType
+    inventoryType: $Enums.ProductInventoryType
+    trackStock: boolean
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
@@ -2939,6 +3095,8 @@ export interface ProductFieldRefs {
   readonly currency: Prisma.FieldRef<"Product", 'String'>
   readonly status: Prisma.FieldRef<"Product", 'ProductStatus'>
   readonly type: Prisma.FieldRef<"Product", 'ProductType'>
+  readonly inventoryType: Prisma.FieldRef<"Product", 'ProductInventoryType'>
+  readonly trackStock: Prisma.FieldRef<"Product", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Product", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Product", 'DateTime'>
   readonly deletedAt: Prisma.FieldRef<"Product", 'DateTime'>

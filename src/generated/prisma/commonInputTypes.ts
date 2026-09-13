@@ -331,6 +331,13 @@ export type EnumProductTypeFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumProductTypeFilter<$PrismaModel> | $Enums.ProductType
 }
 
+export type EnumProductInventoryTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ProductInventoryType | Prisma.EnumProductInventoryTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ProductInventoryType[] | Prisma.ListEnumProductInventoryTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ProductInventoryType[] | Prisma.ListEnumProductInventoryTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumProductInventoryTypeFilter<$PrismaModel> | $Enums.ProductInventoryType
+}
+
 export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
@@ -380,6 +387,16 @@ export type EnumProductTypeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumProductTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumProductTypeFilter<$PrismaModel>
+}
+
+export type EnumProductInventoryTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ProductInventoryType | Prisma.EnumProductInventoryTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ProductInventoryType[] | Prisma.ListEnumProductInventoryTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ProductInventoryType[] | Prisma.ListEnumProductInventoryTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumProductInventoryTypeWithAggregatesFilter<$PrismaModel> | $Enums.ProductInventoryType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumProductInventoryTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumProductInventoryTypeFilter<$PrismaModel>
 }
 
 export type IntFilter<$PrismaModel = never> = {
@@ -1239,6 +1256,13 @@ export type NestedEnumProductTypeFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumProductTypeFilter<$PrismaModel> | $Enums.ProductType
 }
 
+export type NestedEnumProductInventoryTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ProductInventoryType | Prisma.EnumProductInventoryTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ProductInventoryType[] | Prisma.ListEnumProductInventoryTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ProductInventoryType[] | Prisma.ListEnumProductInventoryTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumProductInventoryTypeFilter<$PrismaModel> | $Enums.ProductInventoryType
+}
+
 export type NestedUuidNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
@@ -1287,6 +1311,16 @@ export type NestedEnumProductTypeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumProductTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumProductTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumProductInventoryTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ProductInventoryType | Prisma.EnumProductInventoryTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ProductInventoryType[] | Prisma.ListEnumProductInventoryTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ProductInventoryType[] | Prisma.ListEnumProductInventoryTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumProductInventoryTypeWithAggregatesFilter<$PrismaModel> | $Enums.ProductInventoryType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumProductInventoryTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumProductInventoryTypeFilter<$PrismaModel>
 }
 
 export type NestedEnumProductCategoryStatusFilter<$PrismaModel = never> = {

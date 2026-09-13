@@ -3678,6 +3678,8 @@ export const ProductScalarFieldEnum = {
   currency: 'currency',
   status: 'status',
   type: 'type',
+  inventoryType: 'inventoryType',
+  trackStock: 'trackStock',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
@@ -4503,6 +4505,20 @@ export type EnumProductTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
  * Reference to a field of type 'ProductType[]'
  */
 export type ListEnumProductTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ProductInventoryType'
+ */
+export type EnumProductInventoryTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductInventoryType'>
+    
+
+
+/**
+ * Reference to a field of type 'ProductInventoryType[]'
+ */
+export type ListEnumProductInventoryTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductInventoryType[]'>
     
 
 
