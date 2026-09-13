@@ -85,6 +85,7 @@ export class PosService {
         include: {
           variants: true,
           inventoryStocks: true,
+          media: { orderBy: { sortOrder: 'asc' } },
         },
       }),
       branch
@@ -136,6 +137,12 @@ export class PosService {
             name: variant.name,
             price: variant.price.toString(),
             attributes: variant.attributes,
+          })),
+          media: product.media.map((media) => ({
+            id: media.id,
+            url: media.url,
+            type: media.type,
+            sortOrder: media.sortOrder,
           })),
           updatedAt: product.updatedAt.toISOString(),
         };

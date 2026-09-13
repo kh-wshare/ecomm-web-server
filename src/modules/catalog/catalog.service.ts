@@ -39,6 +39,7 @@ const productSelect = {
   updatedAt: true,
   deletedAt: true,
   category: { select: productCategorySelect },
+  media: { orderBy: { sortOrder: 'asc' as const } },
 } as const;
 
 const productDetailInclude = {
