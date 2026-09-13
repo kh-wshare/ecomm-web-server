@@ -15,8 +15,11 @@ RabbitMQ (POS outbox event broker)
 NestJS API
 Prisma migrations
 Swagger/API docs
-Prometheus + Grafana (observability)
 ```
+
+Prometheus + Grafana (observability) are optional add-ons, not part of the
+core backend — see [Observability (optional)](#observability-optional)
+below.
 
 ## Local Backend Setup (API on the host)
 
@@ -64,9 +67,11 @@ docker compose -f deployments/docker-compose/docker-compose.prod.yml \
   --env-file deployments/docker-compose/.env up -d --build
 ```
 
-Services started: `postgres`, `redis`, `rabbitmq`, `app`, `prometheus`,
-`grafana`. `app` waits on `postgres`/`redis`/`rabbitmq` passing their
-healthchecks before starting, and runs `prisma migrate deploy` on boot.
+Services started: `postgres`, `redis`, `rabbitmq`, `app`. `app` waits on
+`postgres`/`redis`/`rabbitmq` passing their healthchecks before starting, and
+runs `prisma migrate deploy` on boot. Prometheus/Grafana are **not** started
+by this command — they sit behind the `observability` Compose profile; see
+[Observability (optional)](#observability-optional).
 
 Rebuild and redeploy just the API after a code change:
 
@@ -137,6 +142,10 @@ curl -I http://localhost:3000/docs/storefront
 curl -I http://localhost:3000/metrics
 ```
 
+`/metrics` is exposed by the API itself (for a Prometheus instance to scrape,
+in-repo or otherwise) regardless of whether the optional `observability`
+profile below is running.
+
 RabbitMQ connectivity (the API logs `RabbitMQ connected at amqp://...` on
 boot if this fails, check `RABBITMQ_USER`/`RABBITMQ_PASSWORD` match what the
 `rabbitmq` service was actually initialized with — see the note in
@@ -146,6 +155,23 @@ change its credentials after first boot):
 ```bash
 docker compose -f deployments/docker-compose/docker-compose.prod.yml logs app | grep RabbitMQ
 ```
+
+## Observability (optional)
+
+Prometheus and Grafana are bundled in the same compose file but sit behind
+the `observability` profile, so the default commands above never start
+them. Opt in explicitly:
+
+```bash
+docker compose -f deployments/docker-compose/docker-compose.prod.yml \
+  --env-file deployments/docker-compose/.env --profile observability up -d --build
+```
+
+This adds `prometheus` (port `9090`, scrapes the API's `/metrics`) and
+`grafana` (port `3001`, provisioned dashboards under
+`deployments/observability/grafana/`). Neither is required for the backend
+to run or for `.github/workflows/deploy.yml`'s production deploy, which only
+runs `pull`/`up --no-build` against the default (non-observability) profile.
 
 ## Backend Ownership Rules
 

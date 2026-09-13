@@ -1,11 +1,15 @@
 # Production/local stack for the ecomm-web-server backend: Postgres + Redis +
-# the NestJS API, plus Prometheus/Grafana for observability. This is the
-# canonical compose file for both local use and the production server
-# deployed by .github/workflows/deploy.yml.
+# RabbitMQ + the NestJS API. This is the canonical compose file for both
+# local use and the production server deployed by
+# .github/workflows/deploy.yml.
 #
 # Usage (from the repo root):
 #   cp deployments/docker-compose/.env.example deployments/docker-compose/.env
 #   docker compose -f deployments/docker-compose/docker-compose.prod.yml --env-file deployments/docker-compose/.env up --build
+#
+# Prometheus/Grafana (observability) are optional and off by default — they
+# sit behind the "observability" Compose profile, so add
+# `--profile observability` to the command above to also start them.
 #
 # See docs/backend-deployment.md and docs/docker-deployment.md for what must
 # change before this goes anywhere near production (every placeholder value
@@ -114,6 +118,7 @@ services:
 
   prometheus:
     image: prom/prometheus:v2.55.1
+    profiles: ["observability"]
     restart: unless-stopped
     volumes:
       - ../observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
@@ -123,6 +128,7 @@ services:
 
   grafana:
     image: grafana/grafana:11.2.2
+    profiles: ["observability"]
     restart: unless-stopped
     depends_on:
       - prometheus

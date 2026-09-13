@@ -150,7 +150,7 @@ docker compose -f deployments/docker-compose/docker-compose.dev.yml up -d
 Starts PostgreSQL (port 5448), Redis (port 6388), and RabbitMQ (AMQP on 5682,
 management UI on 15682) for the API running on the host via `pnpm start:dev`.
 
-### Full Stack (App + Infra + Observability)
+### Full Stack (App + Infra)
 
 `deployments/docker-compose/docker-compose.prod.yml` is the canonical compose
 file for both a local full-stack run and the production server deployed by
@@ -174,8 +174,6 @@ docker compose -f deployments/docker-compose/docker-compose.prod.yml \
 | `redis` | Cache / sessions | 6379 |
 | `rabbitmq` | POS outbox event broker (AMQP) | 5672 |
 | `rabbitmq` | Management UI | 15672 |
-| `prometheus` | Metrics scraping (`app`'s `/metrics`) | 9090 |
-| `grafana` | Metrics dashboards | 3001 |
 
 Rebuilding after a code change (e.g. after pulling new commits):
 
@@ -183,6 +181,11 @@ Rebuilding after a code change (e.g. after pulling new commits):
 docker compose -f deployments/docker-compose/docker-compose.prod.yml build app
 docker compose -f deployments/docker-compose/docker-compose.prod.yml up -d --no-build app
 ```
+
+Prometheus/Grafana are optional and off by default (they sit behind the
+`observability` Compose profile) — add `--profile observability` to the `up`
+command to also start `prometheus` (9090) and `grafana` (3001). See
+[docs/backend-deployment.md](docs/backend-deployment.md#observability-optional).
 
 For production deployment guidance, see
 [docs/backend-deployment.md](docs/backend-deployment.md) and
