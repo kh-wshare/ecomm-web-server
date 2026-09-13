@@ -167,9 +167,21 @@ export class OrderService {
         where: { checkoutSessionId },
         orderBy: { inventoryStockId: 'asc' },
       });
+      // NON_STOCKED products never get a reservation row (InventoryService
+      // skips them entirely), so the expected count is stockable items only
+      // — comparing against checkout.items.length would wrongly expire any
+      // checkout containing a non-stocked product.
+      const products = await tx.product.findMany({
+        where: { id: { in: [...new Set(checkout.items.map((i) => i.productId))] } },
+        select: { id: true, trackStock: true },
+      });
+      const trackStockById = new Map(products.map((p) => [p.id, p.trackStock]));
+      const stockableItemCount = checkout.items.filter(
+        (item) => trackStockById.get(item.productId) ?? true,
+      ).length;
       const isExpired =
         checkout.expiresAt.getTime() <= Date.now() ||
-        reservations.length !== checkout.items.length ||
+        reservations.length !== stockableItemCount ||
         reservations.some(
           (reservation) =>
             reservation.status !== 'ACTIVE' ||

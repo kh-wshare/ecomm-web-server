@@ -38,6 +38,7 @@ describe('InventoryService reservations', () => {
     const productFindFirst = jest.fn().mockResolvedValue({
       id: stock.productId,
       status: 'ACTIVE',
+      trackStock: true,
       channelVisibility: [
         {
           channel: SalesChannel.WEBSITE,
@@ -90,6 +91,7 @@ describe('InventoryService reservations', () => {
     return {
       service: new InventoryService(prisma, notifications),
       transaction,
+      productFindFirst,
       reservationCreate,
       stockUpdate,
       movementCreate,
@@ -197,5 +199,33 @@ describe('InventoryService reservations', () => {
       ),
     ).rejects.toThrow(new ConflictException('Duplicate checkout stock item'));
     expect(harness.transaction.mock.calls).toHaveLength(0);
+  });
+
+  it('skips stock locking and reservation entirely for a non-stocked product', async () => {
+    const harness = createHarness();
+    harness.productFindFirst.mockResolvedValue({
+      id: stock.productId,
+      status: 'ACTIVE',
+      trackStock: false,
+      channelVisibility: [
+        { channel: SalesChannel.POS, isVisible: true, isPurchasable: true },
+      ],
+      variants: [],
+    });
+
+    const result = await harness.service.reserveCheckout(
+      'merchant-1',
+      'user-1',
+      'checkout-1',
+      SalesChannel.POS,
+      [{ productId: 'product-1', quantity: 4 }],
+      expiresAt,
+      {},
+    );
+
+    expect(result).toHaveLength(0);
+    expect(harness.reservationCreate.mock.calls).toHaveLength(0);
+    expect(harness.stockUpdate.mock.calls).toHaveLength(0);
+    expect(harness.syncStockAlert.mock.calls).toHaveLength(0);
   });
 });

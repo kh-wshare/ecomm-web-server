@@ -119,6 +119,13 @@ export class CatalogService {
             product,
             dto.inventory,
           );
+          if (dto.trackStock && !dto.inventory?.length) {
+            await this.ensureInventoryStockForTracking(
+              tx,
+              merchantId,
+              product.id,
+            );
+          }
           await tx.auditLog.create({
             data: {
               merchantId,
@@ -265,6 +272,13 @@ export class CatalogService {
               : {}),
           },
         });
+        if (dto.trackStock === true) {
+          await this.ensureInventoryStockForTracking(
+            tx,
+            merchantId,
+            productId,
+          );
+        }
         const product = await tx.product.findUniqueOrThrow({
           where: { id: productId },
           include: productDetailInclude,
@@ -579,6 +593,36 @@ export class CatalogService {
 
   private stockKey(productId: string, variantId?: string) {
     return variantId ? `variant:${variantId}` : `product:${productId}`;
+  }
+
+  /**
+   * Switching a product to STOCKED must make inventory enforcement take
+   * effect immediately, not just flip a flag — upsert a zero-stock row per
+   * currently-active variant (or the bare product, if it has none) so the
+   * product is trackable on its next checkout instead of 404ing for having
+   * no inventory row. No-ops for rows that already exist.
+   */
+  private async ensureInventoryStockForTracking(
+    tx: Prisma.TransactionClient,
+    merchantId: string,
+    productId: string,
+  ) {
+    const variants = await tx.productVariant.findMany({
+      where: { productId, status: 'ACTIVE' },
+      select: { id: true },
+    });
+    const targets = variants.length
+      ? variants.map((variant) => ({ variantId: variant.id as string | undefined }))
+      : [{ variantId: undefined as string | undefined }];
+
+    for (const { variantId } of targets) {
+      const stockKey = this.stockKey(productId, variantId);
+      await tx.inventoryStock.upsert({
+        where: { merchantId_stockKey: { merchantId, stockKey } },
+        update: {},
+        create: { merchantId, productId, variantId, stockKey },
+      });
+    }
   }
 
   private normalizeSku(sku: string) {

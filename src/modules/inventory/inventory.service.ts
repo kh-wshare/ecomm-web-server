@@ -219,6 +219,11 @@ export class InventoryService {
       new Date(Date.now() + (dto.expiresInMinutes ?? 15) * 60 * 1000),
       metadata,
     );
+    if (!result) {
+      throw new ConflictException(
+        'Product does not track stock and cannot be reserved',
+      );
+    }
     return result;
   }
 
@@ -255,6 +260,7 @@ export class InventoryService {
         return {
           ...item,
           stockKey: this.stockKey(item.productId, item.variantId),
+          trackStock: target.product.trackStock,
         };
       }),
     );
@@ -281,9 +287,11 @@ export class InventoryService {
         };
         stock: object;
       }> = [];
-      for (const target of targets.sort((a, b) =>
-        a.stockKey.localeCompare(b.stockKey),
-      )) {
+      // NON_STOCKED products are always sellable — skip stock locking and
+      // reservation entirely instead of 404ing for having no stock row.
+      for (const target of targets
+        .filter((t) => t.trackStock)
+        .sort((a, b) => a.stockKey.localeCompare(b.stockKey))) {
         let stock = await this.lockStock(tx, merchantId, target.stockKey);
         stock = await this.expireLockedStock(tx, stock);
 
@@ -685,6 +693,7 @@ export class InventoryService {
       select: {
         id: true,
         status: true,
+        trackStock: true,
         channelVisibility: true,
         variants: {
           where: variantId ? { id: variantId } : { id: { in: [] } },
