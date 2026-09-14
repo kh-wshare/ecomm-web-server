@@ -956,6 +956,74 @@ export type EnumMerchantUserStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumMerchantUserStatusFilter<$PrismaModel>
 }
 
+export type EnumCartStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CartStatus | Prisma.EnumCartStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CartStatus[] | Prisma.ListEnumCartStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CartStatus[] | Prisma.ListEnumCartStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCartStatusFilter<$PrismaModel> | $Enums.CartStatus
+}
+
+export type EnumCartStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CartStatus | Prisma.EnumCartStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CartStatus[] | Prisma.ListEnumCartStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CartStatus[] | Prisma.ListEnumCartStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCartStatusWithAggregatesFilter<$PrismaModel> | $Enums.CartStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCartStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCartStatusFilter<$PrismaModel>
+}
+
+export type EnumDeliveryMethodTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.DeliveryMethodType | Prisma.EnumDeliveryMethodTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.DeliveryMethodType[] | Prisma.ListEnumDeliveryMethodTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DeliveryMethodType[] | Prisma.ListEnumDeliveryMethodTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDeliveryMethodTypeFilter<$PrismaModel> | $Enums.DeliveryMethodType
+}
+
+export type EnumDeliveryMethodStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.DeliveryMethodStatus | Prisma.EnumDeliveryMethodStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DeliveryMethodStatus[] | Prisma.ListEnumDeliveryMethodStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DeliveryMethodStatus[] | Prisma.ListEnumDeliveryMethodStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDeliveryMethodStatusFilter<$PrismaModel> | $Enums.DeliveryMethodStatus
+}
+
+export type EnumDeliveryMethodTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DeliveryMethodType | Prisma.EnumDeliveryMethodTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.DeliveryMethodType[] | Prisma.ListEnumDeliveryMethodTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DeliveryMethodType[] | Prisma.ListEnumDeliveryMethodTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDeliveryMethodTypeWithAggregatesFilter<$PrismaModel> | $Enums.DeliveryMethodType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDeliveryMethodTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDeliveryMethodTypeFilter<$PrismaModel>
+}
+
+export type EnumDeliveryMethodStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DeliveryMethodStatus | Prisma.EnumDeliveryMethodStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DeliveryMethodStatus[] | Prisma.ListEnumDeliveryMethodStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DeliveryMethodStatus[] | Prisma.ListEnumDeliveryMethodStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDeliveryMethodStatusWithAggregatesFilter<$PrismaModel> | $Enums.DeliveryMethodStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDeliveryMethodStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDeliveryMethodStatusFilter<$PrismaModel>
+}
+
+export type EnumShipmentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ShipmentStatus | Prisma.EnumShipmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ShipmentStatus[] | Prisma.ListEnumShipmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ShipmentStatus[] | Prisma.ListEnumShipmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumShipmentStatusFilter<$PrismaModel> | $Enums.ShipmentStatus
+}
+
+export type EnumShipmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ShipmentStatus | Prisma.EnumShipmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ShipmentStatus[] | Prisma.ListEnumShipmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ShipmentStatus[] | Prisma.ListEnumShipmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumShipmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.ShipmentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumShipmentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumShipmentStatusFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1851,6 +1919,74 @@ export type NestedEnumMerchantUserStatusWithAggregatesFilter<$PrismaModel = neve
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumMerchantUserStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumMerchantUserStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumCartStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CartStatus | Prisma.EnumCartStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CartStatus[] | Prisma.ListEnumCartStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CartStatus[] | Prisma.ListEnumCartStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCartStatusFilter<$PrismaModel> | $Enums.CartStatus
+}
+
+export type NestedEnumCartStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CartStatus | Prisma.EnumCartStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CartStatus[] | Prisma.ListEnumCartStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CartStatus[] | Prisma.ListEnumCartStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCartStatusWithAggregatesFilter<$PrismaModel> | $Enums.CartStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCartStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCartStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumDeliveryMethodTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.DeliveryMethodType | Prisma.EnumDeliveryMethodTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.DeliveryMethodType[] | Prisma.ListEnumDeliveryMethodTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DeliveryMethodType[] | Prisma.ListEnumDeliveryMethodTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDeliveryMethodTypeFilter<$PrismaModel> | $Enums.DeliveryMethodType
+}
+
+export type NestedEnumDeliveryMethodStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.DeliveryMethodStatus | Prisma.EnumDeliveryMethodStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DeliveryMethodStatus[] | Prisma.ListEnumDeliveryMethodStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DeliveryMethodStatus[] | Prisma.ListEnumDeliveryMethodStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDeliveryMethodStatusFilter<$PrismaModel> | $Enums.DeliveryMethodStatus
+}
+
+export type NestedEnumDeliveryMethodTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DeliveryMethodType | Prisma.EnumDeliveryMethodTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.DeliveryMethodType[] | Prisma.ListEnumDeliveryMethodTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DeliveryMethodType[] | Prisma.ListEnumDeliveryMethodTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDeliveryMethodTypeWithAggregatesFilter<$PrismaModel> | $Enums.DeliveryMethodType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDeliveryMethodTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDeliveryMethodTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumDeliveryMethodStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DeliveryMethodStatus | Prisma.EnumDeliveryMethodStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DeliveryMethodStatus[] | Prisma.ListEnumDeliveryMethodStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DeliveryMethodStatus[] | Prisma.ListEnumDeliveryMethodStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDeliveryMethodStatusWithAggregatesFilter<$PrismaModel> | $Enums.DeliveryMethodStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDeliveryMethodStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDeliveryMethodStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumShipmentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ShipmentStatus | Prisma.EnumShipmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ShipmentStatus[] | Prisma.ListEnumShipmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ShipmentStatus[] | Prisma.ListEnumShipmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumShipmentStatusFilter<$PrismaModel> | $Enums.ShipmentStatus
+}
+
+export type NestedEnumShipmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ShipmentStatus | Prisma.EnumShipmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ShipmentStatus[] | Prisma.ListEnumShipmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ShipmentStatus[] | Prisma.ListEnumShipmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumShipmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.ShipmentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumShipmentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumShipmentStatusFilter<$PrismaModel>
 }
 
 

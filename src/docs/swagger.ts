@@ -9,6 +9,7 @@ import { CatalogModule } from '@modules/catalog/catalog.module';
 import { CheckoutModule } from '@modules/checkout/checkout.module';
 import { FileStorageModule } from '@modules/merchant/file-storage/file-storage.module';
 import { InventoryModule } from '@modules/inventory/inventory.module';
+import { LogisticsModule } from '@modules/logistics/logistics.module';
 import { MerchantModule } from '@modules/merchant/merchant.module';
 import { NotificationModule } from '@modules/merchant/notification/notification.module';
 import { OrderModule } from '@modules/order/order.module';
@@ -30,6 +31,9 @@ import { UsersModule } from '@modules/users/users.module';
 import { StorefrontPaymentModule } from '@modules/storefront/payment/payment.module';
 import { StorefrontPaymentWebhookModule } from '@modules/storefront/payment-webhook/payment-webhook.module';
 import { StorefrontSocialPostModule } from '@modules/storefront/social-post/public-social.module';
+import { CartModule } from '@modules/storefront/cart/cart.module';
+import { StorefrontAddressModule } from '@modules/storefront/address/address.module';
+import { StorefrontDeliveryModule } from '@modules/storefront/delivery/storefront-delivery.module';
 
 function envFlag(name: string, fallback: boolean): boolean {
   const value = process.env[name];
@@ -84,6 +88,7 @@ export function setupSwagger(
         ThemeModule,
         OrderModule,
         PaymentModule,
+        LogisticsModule,
         SocialPostModule,
         NotificationModule,
       ],
@@ -137,17 +142,24 @@ export function setupSwagger(
     const config = new DocumentBuilder()
       .setTitle('Storefront API')
       .setDescription(
-        'Public storefront browsing, checkout sessions, payment initiation, and payment status polling',
+        'Public storefront browsing, carts, shopper addresses, delivery options and tracking, checkout sessions, payment initiation, and payment status polling',
       )
       .setVersion('1.0')
       .addApiKey(
         { type: 'apiKey', name: 'X-Checkout-Token', in: 'header' },
         'checkout-token',
       )
+      .addApiKey(
+        { type: 'apiKey', name: 'X-Cart-Token', in: 'header' },
+        'cart-token',
+      )
       .build();
     const document = SwaggerModule.createDocument(app, config, {
       include: [
         StorefrontModule,
+        CartModule,
+        StorefrontAddressModule,
+        StorefrontDeliveryModule,
         CheckoutModule,
         StorefrontSocialPostModule,
         StorefrontPaymentModule,

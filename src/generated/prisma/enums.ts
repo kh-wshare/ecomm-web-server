@@ -314,3 +314,51 @@ export const IdempotencyKeyStatus = {
 } as const
 
 export type IdempotencyKeyStatus = (typeof IdempotencyKeyStatus)[keyof typeof IdempotencyKeyStatus]
+
+
+export const CartStatus = {
+  ACTIVE: 'ACTIVE',
+  CONVERTED: 'CONVERTED',
+  ABANDONED: 'ABANDONED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type CartStatus = (typeof CartStatus)[keyof typeof CartStatus]
+
+
+export const AddressType = {
+  SHIPPING: 'SHIPPING',
+  BILLING: 'BILLING'
+} as const
+
+export type AddressType = (typeof AddressType)[keyof typeof AddressType]
+
+
+export const DeliveryMethodType = {
+  PICKUP: 'PICKUP',
+  DELIVERY: 'DELIVERY'
+} as const
+
+export type DeliveryMethodType = (typeof DeliveryMethodType)[keyof typeof DeliveryMethodType]
+
+
+export const DeliveryMethodStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE'
+} as const
+
+export type DeliveryMethodStatus = (typeof DeliveryMethodStatus)[keyof typeof DeliveryMethodStatus]
+
+
+export const ShipmentStatus = {
+  PENDING: 'PENDING',
+  READY_FOR_PICKUP: 'READY_FOR_PICKUP',
+  IN_TRANSIT: 'IN_TRANSIT',
+  OUT_FOR_DELIVERY: 'OUT_FOR_DELIVERY',
+  DELIVERED: 'DELIVERED',
+  FAILED: 'FAILED',
+  RETURNED: 'RETURNED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type ShipmentStatus = (typeof ShipmentStatus)[keyof typeof ShipmentStatus]

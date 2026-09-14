@@ -17,6 +17,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { SalesChannel } from '#app/generated/prisma/enums';
+import { AddressInputDto } from '#app/modules/logistics/dto/address.dto';
 
 export class CheckoutItemInputDto {
   @ApiProperty({ format: 'uuid' })
@@ -85,4 +86,28 @@ export class CreateCheckoutSessionDto {
   @ValidateNested({ each: true })
   @Type(() => CheckoutItemInputDto)
   items!: CheckoutItemInputDto[];
+
+  @ApiPropertyOptional({
+    format: 'uuid',
+    description:
+      'Delivery method to use. Its fee is re-quoted here, never taken from the client.',
+  })
+  @IsOptional()
+  @IsUUID()
+  deliveryMethodId?: string;
+
+  @ApiPropertyOptional({
+    type: AddressInputDto,
+    description: 'Required when the delivery method ships to an address',
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => AddressInputDto)
+  shippingAddress?: AddressInputDto;
+
+  @ApiPropertyOptional({ type: AddressInputDto })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => AddressInputDto)
+  billingAddress?: AddressInputDto;
 }

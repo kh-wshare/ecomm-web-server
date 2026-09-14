@@ -10,15 +10,38 @@ import {
   randomUUID,
   timingSafeEqual,
 } from 'node:crypto';
+import { Prisma } from '#app/generated/prisma/client';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
 import { InventoryService } from '#app/modules/inventory/inventory.service';
+import {
+  AddressLike,
+  AddressSnapshot,
+  toAddressSnapshot,
+} from '#app/modules/logistics/address-snapshot';
+import { DeliveryQuoteService } from '#app/modules/logistics/delivery-quote.service';
 import { OrderService } from '#app/modules/order/order.service';
 import { CartPricingService } from '#app/modules/pricing/cart-pricing.service';
+import { StorefrontContextService } from '#app/modules/storefront/context/storefront-context.service';
 import { CreateCheckoutSessionDto } from './dto/checkout-input.dto';
 
 type AuditMetadata = {
   ipAddress?: string;
   userAgent?: string;
+};
+
+/**
+ * What the service accepts, as opposed to what the public endpoint validates.
+ * Identical to `CreateCheckoutSessionDto` except that addresses may arrive in
+ * any address-shaped form — `CartService` hands over `CustomerAddress` rows
+ * straight from the shopper's address book rather than re-serialising them
+ * into wire DTOs.
+ */
+export type CreateCheckoutSessionInput = Omit<
+  CreateCheckoutSessionDto,
+  'shippingAddress' | 'billingAddress'
+> & {
+  shippingAddress?: AddressLike | null;
+  billingAddress?: AddressLike | null;
 };
 
 @Injectable()
@@ -28,33 +51,47 @@ export class CheckoutService {
     private readonly inventory: InventoryService,
     private readonly orders: OrderService,
     private readonly pricing: CartPricingService,
+    private readonly context: StorefrontContextService,
+    private readonly delivery: DeliveryQuoteService,
   ) {}
 
-  async create(dto: CreateCheckoutSessionDto, metadata: AuditMetadata) {
+  async create(dto: CreateCheckoutSessionInput, metadata: AuditMetadata) {
     if (dto.sourceChannel === 'POS') {
       throw new BadRequestException(
         'POS checkout requires an authenticated merchant flow',
       );
     }
-    const merchant = await this.prisma.merchant.findFirst({
-      where: {
-        slug: dto.merchantSlug.trim().toLowerCase(),
-        status: 'ACTIVE',
-        deletedAt: null,
-      },
-      select: { id: true },
-    });
-    if (!merchant) throw new NotFoundException('Storefront not found');
+    const merchantId = await this.context.resolveMerchantId(dto.merchantSlug);
 
     const {
       items: checkoutItems,
       currency,
       subtotal,
     } = await this.pricing.buildPricedItems(
-      merchant.id,
+      merchantId,
       dto.sourceChannel,
       dto.items,
     );
+    const shippingAddress = dto.shippingAddress
+      ? toAddressSnapshot(dto.shippingAddress)
+      : null;
+    const billingAddress = dto.billingAddress
+      ? toAddressSnapshot(dto.billingAddress)
+      : null;
+    const delivery = await this.resolveDelivery(
+      merchantId,
+      dto.deliveryMethodId,
+      shippingAddress,
+      {
+        itemCount: checkoutItems.reduce(
+          (total, item) => total + item.quantity,
+          0,
+        ),
+        subtotal,
+      },
+    );
+    const shippingAmount = delivery?.fee ?? new Prisma.Decimal(0);
+    const totalAmount = subtotal.plus(shippingAmount);
 
     const sessionId = randomUUID();
     const checkoutToken = randomBytes(32).toString('base64url');
@@ -63,7 +100,7 @@ export class CheckoutService {
       await tx.checkoutSession.create({
         data: {
           id: sessionId,
-          merchantId: merchant.id,
+          merchantId,
           customerId: dto.customerId,
           customerName: dto.customerName?.trim(),
           customerEmail: dto.customerEmail?.trim().toLowerCase(),
@@ -71,22 +108,28 @@ export class CheckoutService {
           sourceChannel: dto.sourceChannel,
           accessTokenHash: this.hashToken(checkoutToken),
           subtotalAmount: subtotal,
-          totalAmount: subtotal,
+          shippingAmount,
+          totalAmount,
           currency,
+          deliveryMethodId: delivery?.methodId ?? null,
+          deliveryMethodName: delivery?.name ?? null,
+          shippingAddress: shippingAddress ?? Prisma.DbNull,
+          billingAddress: billingAddress ?? Prisma.DbNull,
           expiresAt,
           items: { create: checkoutItems },
         },
       });
       await tx.auditLog.create({
         data: {
-          merchantId: merchant.id,
+          merchantId,
           action: 'checkout.created',
           entityType: 'checkout_session',
           entityId: sessionId,
           after: {
             sourceChannel: dto.sourceChannel,
             itemCount: checkoutItems.length,
-            totalAmount: subtotal.toString(),
+            shippingAmount: shippingAmount.toString(),
+            totalAmount: totalAmount.toString(),
             expiresAt: expiresAt.toISOString(),
           },
           ...metadata,
@@ -96,7 +139,7 @@ export class CheckoutService {
 
     try {
       await this.inventory.reserveCheckout(
-        merchant.id,
+        merchantId,
         null,
         sessionId,
         dto.sourceChannel,
@@ -151,6 +194,37 @@ export class CheckoutService {
     return this.toPublicSession(session);
   }
 
+  /**
+   * Re-quotes the requested delivery method against the merchant's current
+   * rates and this cart's address. The client sends only a method id — never a
+   * fee — so a tampered or simply stale fee cannot reach an order.
+   */
+  private async resolveDelivery(
+    merchantId: string,
+    deliveryMethodId: string | undefined,
+    shippingAddress: AddressSnapshot | null,
+    cart: { itemCount: number; subtotal: Prisma.Decimal },
+  ) {
+    if (!deliveryMethodId) return null;
+    const quote = await this.delivery.quoteMethod(
+      merchantId,
+      deliveryMethodId,
+      shippingAddress,
+      cart,
+    );
+    if (!quote) {
+      throw new BadRequestException(
+        'That delivery method is not available for this address',
+      );
+    }
+    if (quote.type === 'DELIVERY' && !shippingAddress) {
+      throw new BadRequestException(
+        'A shipping address is required for this delivery method',
+      );
+    }
+    return quote;
+  }
+
   private async authenticate(sessionId: string, token: string | undefined) {
     if (!token) throw new UnauthorizedException('Checkout token is required');
     const session = await this.loadSession(sessionId);
@@ -198,8 +272,13 @@ export class CheckoutService {
       subtotalAmount: { toString(): string };
       discountAmount: { toString(): string };
       feeAmount: { toString(): string };
+      shippingAmount: { toString(): string };
       totalAmount: { toString(): string };
       currency: string;
+      deliveryMethodId: string | null;
+      deliveryMethodName: string | null;
+      shippingAddress: unknown;
+      billingAddress: unknown;
       expiresAt: Date;
       createdAt: Date;
       updatedAt: Date;
@@ -221,8 +300,13 @@ export class CheckoutService {
       subtotalAmount: session.subtotalAmount.toString(),
       discountAmount: session.discountAmount.toString(),
       feeAmount: session.feeAmount.toString(),
+      shippingAmount: session.shippingAmount.toString(),
       totalAmount: session.totalAmount.toString(),
       currency: session.currency,
+      deliveryMethodId: session.deliveryMethodId,
+      deliveryMethodName: session.deliveryMethodName,
+      shippingAddress: session.shippingAddress,
+      billingAddress: session.billingAddress,
       expiresAt: session.expiresAt,
       createdAt: session.createdAt,
       updatedAt: session.updatedAt,

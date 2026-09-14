@@ -249,6 +249,11 @@ export type MerchantWhereInput = {
   kitchenOrders?: Prisma.KitchenOrderListRelationFilter
   paymentRefunds?: Prisma.PaymentRefundListRelationFilter
   idempotencyKeys?: Prisma.IdempotencyKeyListRelationFilter
+  carts?: Prisma.CartListRelationFilter
+  customerAddresses?: Prisma.CustomerAddressListRelationFilter
+  deliveryMethods?: Prisma.DeliveryMethodListRelationFilter
+  deliveryZones?: Prisma.DeliveryZoneListRelationFilter
+  shipments?: Prisma.ShipmentListRelationFilter
 }
 
 export type MerchantOrderByWithRelationInput = {
@@ -289,6 +294,11 @@ export type MerchantOrderByWithRelationInput = {
   kitchenOrders?: Prisma.KitchenOrderOrderByRelationAggregateInput
   paymentRefunds?: Prisma.PaymentRefundOrderByRelationAggregateInput
   idempotencyKeys?: Prisma.IdempotencyKeyOrderByRelationAggregateInput
+  carts?: Prisma.CartOrderByRelationAggregateInput
+  customerAddresses?: Prisma.CustomerAddressOrderByRelationAggregateInput
+  deliveryMethods?: Prisma.DeliveryMethodOrderByRelationAggregateInput
+  deliveryZones?: Prisma.DeliveryZoneOrderByRelationAggregateInput
+  shipments?: Prisma.ShipmentOrderByRelationAggregateInput
 }
 
 export type MerchantWhereUniqueInput = Prisma.AtLeast<{
@@ -332,6 +342,11 @@ export type MerchantWhereUniqueInput = Prisma.AtLeast<{
   kitchenOrders?: Prisma.KitchenOrderListRelationFilter
   paymentRefunds?: Prisma.PaymentRefundListRelationFilter
   idempotencyKeys?: Prisma.IdempotencyKeyListRelationFilter
+  carts?: Prisma.CartListRelationFilter
+  customerAddresses?: Prisma.CustomerAddressListRelationFilter
+  deliveryMethods?: Prisma.DeliveryMethodListRelationFilter
+  deliveryZones?: Prisma.DeliveryZoneListRelationFilter
+  shipments?: Prisma.ShipmentListRelationFilter
 }, "id" | "slug">
 
 export type MerchantOrderByWithAggregationInput = {
@@ -404,6 +419,11 @@ export type MerchantCreateInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateInput = {
@@ -444,6 +464,11 @@ export type MerchantUncheckedCreateInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUpdateInput = {
@@ -484,6 +509,11 @@ export type MerchantUpdateInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateInput = {
@@ -524,6 +554,11 @@ export type MerchantUncheckedUpdateInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateManyInput = {
@@ -1000,6 +1035,76 @@ export type MerchantUpdateOneWithoutAuditLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.MerchantUpdateToOneWithWhereWithoutAuditLogsInput, Prisma.MerchantUpdateWithoutAuditLogsInput>, Prisma.MerchantUncheckedUpdateWithoutAuditLogsInput>
 }
 
+export type MerchantCreateNestedOneWithoutCartsInput = {
+  create?: Prisma.XOR<Prisma.MerchantCreateWithoutCartsInput, Prisma.MerchantUncheckedCreateWithoutCartsInput>
+  connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutCartsInput
+  connect?: Prisma.MerchantWhereUniqueInput
+}
+
+export type MerchantUpdateOneRequiredWithoutCartsNestedInput = {
+  create?: Prisma.XOR<Prisma.MerchantCreateWithoutCartsInput, Prisma.MerchantUncheckedCreateWithoutCartsInput>
+  connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutCartsInput
+  upsert?: Prisma.MerchantUpsertWithoutCartsInput
+  connect?: Prisma.MerchantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MerchantUpdateToOneWithWhereWithoutCartsInput, Prisma.MerchantUpdateWithoutCartsInput>, Prisma.MerchantUncheckedUpdateWithoutCartsInput>
+}
+
+export type MerchantCreateNestedOneWithoutCustomerAddressesInput = {
+  create?: Prisma.XOR<Prisma.MerchantCreateWithoutCustomerAddressesInput, Prisma.MerchantUncheckedCreateWithoutCustomerAddressesInput>
+  connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutCustomerAddressesInput
+  connect?: Prisma.MerchantWhereUniqueInput
+}
+
+export type MerchantUpdateOneRequiredWithoutCustomerAddressesNestedInput = {
+  create?: Prisma.XOR<Prisma.MerchantCreateWithoutCustomerAddressesInput, Prisma.MerchantUncheckedCreateWithoutCustomerAddressesInput>
+  connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutCustomerAddressesInput
+  upsert?: Prisma.MerchantUpsertWithoutCustomerAddressesInput
+  connect?: Prisma.MerchantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MerchantUpdateToOneWithWhereWithoutCustomerAddressesInput, Prisma.MerchantUpdateWithoutCustomerAddressesInput>, Prisma.MerchantUncheckedUpdateWithoutCustomerAddressesInput>
+}
+
+export type MerchantCreateNestedOneWithoutDeliveryMethodsInput = {
+  create?: Prisma.XOR<Prisma.MerchantCreateWithoutDeliveryMethodsInput, Prisma.MerchantUncheckedCreateWithoutDeliveryMethodsInput>
+  connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutDeliveryMethodsInput
+  connect?: Prisma.MerchantWhereUniqueInput
+}
+
+export type MerchantUpdateOneRequiredWithoutDeliveryMethodsNestedInput = {
+  create?: Prisma.XOR<Prisma.MerchantCreateWithoutDeliveryMethodsInput, Prisma.MerchantUncheckedCreateWithoutDeliveryMethodsInput>
+  connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutDeliveryMethodsInput
+  upsert?: Prisma.MerchantUpsertWithoutDeliveryMethodsInput
+  connect?: Prisma.MerchantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MerchantUpdateToOneWithWhereWithoutDeliveryMethodsInput, Prisma.MerchantUpdateWithoutDeliveryMethodsInput>, Prisma.MerchantUncheckedUpdateWithoutDeliveryMethodsInput>
+}
+
+export type MerchantCreateNestedOneWithoutDeliveryZonesInput = {
+  create?: Prisma.XOR<Prisma.MerchantCreateWithoutDeliveryZonesInput, Prisma.MerchantUncheckedCreateWithoutDeliveryZonesInput>
+  connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutDeliveryZonesInput
+  connect?: Prisma.MerchantWhereUniqueInput
+}
+
+export type MerchantUpdateOneRequiredWithoutDeliveryZonesNestedInput = {
+  create?: Prisma.XOR<Prisma.MerchantCreateWithoutDeliveryZonesInput, Prisma.MerchantUncheckedCreateWithoutDeliveryZonesInput>
+  connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutDeliveryZonesInput
+  upsert?: Prisma.MerchantUpsertWithoutDeliveryZonesInput
+  connect?: Prisma.MerchantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MerchantUpdateToOneWithWhereWithoutDeliveryZonesInput, Prisma.MerchantUpdateWithoutDeliveryZonesInput>, Prisma.MerchantUncheckedUpdateWithoutDeliveryZonesInput>
+}
+
+export type MerchantCreateNestedOneWithoutShipmentsInput = {
+  create?: Prisma.XOR<Prisma.MerchantCreateWithoutShipmentsInput, Prisma.MerchantUncheckedCreateWithoutShipmentsInput>
+  connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutShipmentsInput
+  connect?: Prisma.MerchantWhereUniqueInput
+}
+
+export type MerchantUpdateOneRequiredWithoutShipmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.MerchantCreateWithoutShipmentsInput, Prisma.MerchantUncheckedCreateWithoutShipmentsInput>
+  connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutShipmentsInput
+  upsert?: Prisma.MerchantUpsertWithoutShipmentsInput
+  connect?: Prisma.MerchantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MerchantUpdateToOneWithWhereWithoutShipmentsInput, Prisma.MerchantUpdateWithoutShipmentsInput>, Prisma.MerchantUncheckedUpdateWithoutShipmentsInput>
+}
+
 export type MerchantCreateWithoutBranchesInput = {
   id?: string
   name: string
@@ -1037,6 +1142,11 @@ export type MerchantCreateWithoutBranchesInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutBranchesInput = {
@@ -1076,6 +1186,11 @@ export type MerchantUncheckedCreateWithoutBranchesInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutBranchesInput = {
@@ -1131,6 +1246,11 @@ export type MerchantUpdateWithoutBranchesInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutBranchesInput = {
@@ -1170,6 +1290,11 @@ export type MerchantUncheckedUpdateWithoutBranchesInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutProductsInput = {
@@ -1209,6 +1334,11 @@ export type MerchantCreateWithoutProductsInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutProductsInput = {
@@ -1248,6 +1378,11 @@ export type MerchantUncheckedCreateWithoutProductsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutProductsInput = {
@@ -1303,6 +1438,11 @@ export type MerchantUpdateWithoutProductsInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutProductsInput = {
@@ -1342,6 +1482,11 @@ export type MerchantUncheckedUpdateWithoutProductsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutProductCategoriesInput = {
@@ -1381,6 +1526,11 @@ export type MerchantCreateWithoutProductCategoriesInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutProductCategoriesInput = {
@@ -1420,6 +1570,11 @@ export type MerchantUncheckedCreateWithoutProductCategoriesInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutProductCategoriesInput = {
@@ -1475,6 +1630,11 @@ export type MerchantUpdateWithoutProductCategoriesInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutProductCategoriesInput = {
@@ -1514,6 +1674,11 @@ export type MerchantUncheckedUpdateWithoutProductCategoriesInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutThemeInput = {
@@ -1553,6 +1718,11 @@ export type MerchantCreateWithoutThemeInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutThemeInput = {
@@ -1592,6 +1762,11 @@ export type MerchantUncheckedCreateWithoutThemeInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutThemeInput = {
@@ -1647,6 +1822,11 @@ export type MerchantUpdateWithoutThemeInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutThemeInput = {
@@ -1686,6 +1866,11 @@ export type MerchantUncheckedUpdateWithoutThemeInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutInventoryStocksInput = {
@@ -1725,6 +1910,11 @@ export type MerchantCreateWithoutInventoryStocksInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutInventoryStocksInput = {
@@ -1764,6 +1954,11 @@ export type MerchantUncheckedCreateWithoutInventoryStocksInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutInventoryStocksInput = {
@@ -1819,6 +2014,11 @@ export type MerchantUpdateWithoutInventoryStocksInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutInventoryStocksInput = {
@@ -1858,6 +2058,11 @@ export type MerchantUncheckedUpdateWithoutInventoryStocksInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutInventoryReservationsInput = {
@@ -1897,6 +2102,11 @@ export type MerchantCreateWithoutInventoryReservationsInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutInventoryReservationsInput = {
@@ -1936,6 +2146,11 @@ export type MerchantUncheckedCreateWithoutInventoryReservationsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutInventoryReservationsInput = {
@@ -1991,6 +2206,11 @@ export type MerchantUpdateWithoutInventoryReservationsInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutInventoryReservationsInput = {
@@ -2030,6 +2250,11 @@ export type MerchantUncheckedUpdateWithoutInventoryReservationsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutCheckoutSessionsInput = {
@@ -2069,6 +2294,11 @@ export type MerchantCreateWithoutCheckoutSessionsInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutCheckoutSessionsInput = {
@@ -2108,6 +2338,11 @@ export type MerchantUncheckedCreateWithoutCheckoutSessionsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutCheckoutSessionsInput = {
@@ -2163,6 +2398,11 @@ export type MerchantUpdateWithoutCheckoutSessionsInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutCheckoutSessionsInput = {
@@ -2202,6 +2442,11 @@ export type MerchantUncheckedUpdateWithoutCheckoutSessionsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutOrdersInput = {
@@ -2241,6 +2486,11 @@ export type MerchantCreateWithoutOrdersInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutOrdersInput = {
@@ -2280,6 +2530,11 @@ export type MerchantUncheckedCreateWithoutOrdersInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutOrdersInput = {
@@ -2335,6 +2590,11 @@ export type MerchantUpdateWithoutOrdersInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutOrdersInput = {
@@ -2374,6 +2634,11 @@ export type MerchantUncheckedUpdateWithoutOrdersInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutPaymentProvidersInput = {
@@ -2413,6 +2678,11 @@ export type MerchantCreateWithoutPaymentProvidersInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutPaymentProvidersInput = {
@@ -2452,6 +2722,11 @@ export type MerchantUncheckedCreateWithoutPaymentProvidersInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutPaymentProvidersInput = {
@@ -2507,6 +2782,11 @@ export type MerchantUpdateWithoutPaymentProvidersInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutPaymentProvidersInput = {
@@ -2546,6 +2826,11 @@ export type MerchantUncheckedUpdateWithoutPaymentProvidersInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutPaymentsInput = {
@@ -2585,6 +2870,11 @@ export type MerchantCreateWithoutPaymentsInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutPaymentsInput = {
@@ -2624,6 +2914,11 @@ export type MerchantUncheckedCreateWithoutPaymentsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutPaymentsInput = {
@@ -2679,6 +2974,11 @@ export type MerchantUpdateWithoutPaymentsInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutPaymentsInput = {
@@ -2718,6 +3018,11 @@ export type MerchantUncheckedUpdateWithoutPaymentsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutPaymentWebhookEventsInput = {
@@ -2757,6 +3062,11 @@ export type MerchantCreateWithoutPaymentWebhookEventsInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutPaymentWebhookEventsInput = {
@@ -2796,6 +3106,11 @@ export type MerchantUncheckedCreateWithoutPaymentWebhookEventsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutPaymentWebhookEventsInput = {
@@ -2851,6 +3166,11 @@ export type MerchantUpdateWithoutPaymentWebhookEventsInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutPaymentWebhookEventsInput = {
@@ -2890,6 +3210,11 @@ export type MerchantUncheckedUpdateWithoutPaymentWebhookEventsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutPaymentRefundsInput = {
@@ -2929,6 +3254,11 @@ export type MerchantCreateWithoutPaymentRefundsInput = {
   customers?: Prisma.CustomerCreateNestedManyWithoutMerchantInput
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutPaymentRefundsInput = {
@@ -2968,6 +3298,11 @@ export type MerchantUncheckedCreateWithoutPaymentRefundsInput = {
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutMerchantInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutPaymentRefundsInput = {
@@ -3023,6 +3358,11 @@ export type MerchantUpdateWithoutPaymentRefundsInput = {
   customers?: Prisma.CustomerUpdateManyWithoutMerchantNestedInput
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutPaymentRefundsInput = {
@@ -3062,6 +3402,11 @@ export type MerchantUncheckedUpdateWithoutPaymentRefundsInput = {
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutMerchantNestedInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutPosDevicesInput = {
@@ -3101,6 +3446,11 @@ export type MerchantCreateWithoutPosDevicesInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutPosDevicesInput = {
@@ -3140,6 +3490,11 @@ export type MerchantUncheckedCreateWithoutPosDevicesInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutPosDevicesInput = {
@@ -3195,6 +3550,11 @@ export type MerchantUpdateWithoutPosDevicesInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutPosDevicesInput = {
@@ -3234,6 +3594,11 @@ export type MerchantUncheckedUpdateWithoutPosDevicesInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutPosShiftsInput = {
@@ -3273,6 +3638,11 @@ export type MerchantCreateWithoutPosShiftsInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutPosShiftsInput = {
@@ -3312,6 +3682,11 @@ export type MerchantUncheckedCreateWithoutPosShiftsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutPosShiftsInput = {
@@ -3367,6 +3742,11 @@ export type MerchantUpdateWithoutPosShiftsInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutPosShiftsInput = {
@@ -3406,6 +3786,11 @@ export type MerchantUncheckedUpdateWithoutPosShiftsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutPosTablesInput = {
@@ -3445,6 +3830,11 @@ export type MerchantCreateWithoutPosTablesInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutPosTablesInput = {
@@ -3484,6 +3874,11 @@ export type MerchantUncheckedCreateWithoutPosTablesInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutPosTablesInput = {
@@ -3539,6 +3934,11 @@ export type MerchantUpdateWithoutPosTablesInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutPosTablesInput = {
@@ -3578,6 +3978,11 @@ export type MerchantUncheckedUpdateWithoutPosTablesInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutCustomersInput = {
@@ -3617,6 +4022,11 @@ export type MerchantCreateWithoutCustomersInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutCustomersInput = {
@@ -3656,6 +4066,11 @@ export type MerchantUncheckedCreateWithoutCustomersInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutCustomersInput = {
@@ -3711,6 +4126,11 @@ export type MerchantUpdateWithoutCustomersInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutCustomersInput = {
@@ -3750,6 +4170,11 @@ export type MerchantUncheckedUpdateWithoutCustomersInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutKitchenOrdersInput = {
@@ -3789,6 +4214,11 @@ export type MerchantCreateWithoutKitchenOrdersInput = {
   customers?: Prisma.CustomerCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutKitchenOrdersInput = {
@@ -3828,6 +4258,11 @@ export type MerchantUncheckedCreateWithoutKitchenOrdersInput = {
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutKitchenOrdersInput = {
@@ -3883,6 +4318,11 @@ export type MerchantUpdateWithoutKitchenOrdersInput = {
   customers?: Prisma.CustomerUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutKitchenOrdersInput = {
@@ -3922,6 +4362,11 @@ export type MerchantUncheckedUpdateWithoutKitchenOrdersInput = {
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutIdempotencyKeysInput = {
@@ -3961,6 +4406,11 @@ export type MerchantCreateWithoutIdempotencyKeysInput = {
   customers?: Prisma.CustomerCreateNestedManyWithoutMerchantInput
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutIdempotencyKeysInput = {
@@ -4000,6 +4450,11 @@ export type MerchantUncheckedCreateWithoutIdempotencyKeysInput = {
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutMerchantInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutIdempotencyKeysInput = {
@@ -4055,6 +4510,11 @@ export type MerchantUpdateWithoutIdempotencyKeysInput = {
   customers?: Prisma.CustomerUpdateManyWithoutMerchantNestedInput
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutIdempotencyKeysInput = {
@@ -4094,6 +4554,11 @@ export type MerchantUncheckedUpdateWithoutIdempotencyKeysInput = {
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutMerchantNestedInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutNotificationsInput = {
@@ -4133,6 +4598,11 @@ export type MerchantCreateWithoutNotificationsInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutNotificationsInput = {
@@ -4172,6 +4642,11 @@ export type MerchantUncheckedCreateWithoutNotificationsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutNotificationsInput = {
@@ -4227,6 +4702,11 @@ export type MerchantUpdateWithoutNotificationsInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutNotificationsInput = {
@@ -4266,6 +4746,11 @@ export type MerchantUncheckedUpdateWithoutNotificationsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutSocialPostsInput = {
@@ -4305,6 +4790,11 @@ export type MerchantCreateWithoutSocialPostsInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutSocialPostsInput = {
@@ -4344,6 +4834,11 @@ export type MerchantUncheckedCreateWithoutSocialPostsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutSocialPostsInput = {
@@ -4399,6 +4894,11 @@ export type MerchantUpdateWithoutSocialPostsInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutSocialPostsInput = {
@@ -4438,6 +4938,11 @@ export type MerchantUncheckedUpdateWithoutSocialPostsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutWebsiteArticlesInput = {
@@ -4477,6 +4982,11 @@ export type MerchantCreateWithoutWebsiteArticlesInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutWebsiteArticlesInput = {
@@ -4516,6 +5026,11 @@ export type MerchantUncheckedCreateWithoutWebsiteArticlesInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutWebsiteArticlesInput = {
@@ -4571,6 +5086,11 @@ export type MerchantUpdateWithoutWebsiteArticlesInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutWebsiteArticlesInput = {
@@ -4610,6 +5130,11 @@ export type MerchantUncheckedUpdateWithoutWebsiteArticlesInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutInventoryMovementsInput = {
@@ -4649,6 +5174,11 @@ export type MerchantCreateWithoutInventoryMovementsInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutInventoryMovementsInput = {
@@ -4688,6 +5218,11 @@ export type MerchantUncheckedCreateWithoutInventoryMovementsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutInventoryMovementsInput = {
@@ -4743,6 +5278,11 @@ export type MerchantUpdateWithoutInventoryMovementsInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutInventoryMovementsInput = {
@@ -4782,6 +5322,11 @@ export type MerchantUncheckedUpdateWithoutInventoryMovementsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutMembershipsInput = {
@@ -4821,6 +5366,11 @@ export type MerchantCreateWithoutMembershipsInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutMembershipsInput = {
@@ -4860,6 +5410,11 @@ export type MerchantUncheckedCreateWithoutMembershipsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutMembershipsInput = {
@@ -4915,6 +5470,11 @@ export type MerchantUpdateWithoutMembershipsInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutMembershipsInput = {
@@ -4954,6 +5514,11 @@ export type MerchantUncheckedUpdateWithoutMembershipsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutRolesInput = {
@@ -4993,6 +5558,11 @@ export type MerchantCreateWithoutRolesInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutRolesInput = {
@@ -5032,6 +5602,11 @@ export type MerchantUncheckedCreateWithoutRolesInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutRolesInput = {
@@ -5087,6 +5662,11 @@ export type MerchantUpdateWithoutRolesInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutRolesInput = {
@@ -5126,6 +5706,11 @@ export type MerchantUncheckedUpdateWithoutRolesInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutSessionsInput = {
@@ -5165,6 +5750,11 @@ export type MerchantCreateWithoutSessionsInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutSessionsInput = {
@@ -5204,6 +5794,11 @@ export type MerchantUncheckedCreateWithoutSessionsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutSessionsInput = {
@@ -5259,6 +5854,11 @@ export type MerchantUpdateWithoutSessionsInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutSessionsInput = {
@@ -5298,6 +5898,11 @@ export type MerchantUncheckedUpdateWithoutSessionsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutInvitationsInput = {
@@ -5337,6 +5942,11 @@ export type MerchantCreateWithoutInvitationsInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutInvitationsInput = {
@@ -5376,6 +5986,11 @@ export type MerchantUncheckedCreateWithoutInvitationsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutInvitationsInput = {
@@ -5431,6 +6046,11 @@ export type MerchantUpdateWithoutInvitationsInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutInvitationsInput = {
@@ -5470,6 +6090,11 @@ export type MerchantUncheckedUpdateWithoutInvitationsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutAuditLogsInput = {
@@ -5509,6 +6134,11 @@ export type MerchantCreateWithoutAuditLogsInput = {
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutAuditLogsInput = {
@@ -5548,6 +6178,11 @@ export type MerchantUncheckedCreateWithoutAuditLogsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutAuditLogsInput = {
@@ -5603,6 +6238,11 @@ export type MerchantUpdateWithoutAuditLogsInput = {
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutAuditLogsInput = {
@@ -5642,6 +6282,971 @@ export type MerchantUncheckedUpdateWithoutAuditLogsInput = {
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
   paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+}
+
+export type MerchantCreateWithoutCartsInput = {
+  id?: string
+  name: string
+  slug: string
+  email?: string | null
+  phone?: string | null
+  status?: $Enums.MerchantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  returnStockOnRefund?: boolean
+  memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
+  roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
+  invitations?: Prisma.MerchantInvitationCreateNestedManyWithoutMerchantInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutMerchantInput
+  products?: Prisma.ProductCreateNestedManyWithoutMerchantInput
+  inventoryStocks?: Prisma.InventoryStockCreateNestedManyWithoutMerchantInput
+  inventoryReservations?: Prisma.InventoryReservationCreateNestedManyWithoutMerchantInput
+  inventoryMovements?: Prisma.InventoryMovementCreateNestedManyWithoutMerchantInput
+  theme?: Prisma.MerchantThemeCreateNestedOneWithoutMerchantInput
+  checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutMerchantInput
+  orders?: Prisma.OrderCreateNestedManyWithoutMerchantInput
+  paymentProviders?: Prisma.PaymentProviderCreateNestedManyWithoutMerchantInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutMerchantInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventCreateNestedManyWithoutMerchantInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutMerchantInput
+  socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
+  websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
+  branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
+  posDevices?: Prisma.PosDeviceCreateNestedManyWithoutMerchantInput
+  posShifts?: Prisma.PosShiftCreateNestedManyWithoutMerchantInput
+  posTables?: Prisma.PosTableCreateNestedManyWithoutMerchantInput
+  customers?: Prisma.CustomerCreateNestedManyWithoutMerchantInput
+  kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
+  paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+}
+
+export type MerchantUncheckedCreateWithoutCartsInput = {
+  id?: string
+  name: string
+  slug: string
+  email?: string | null
+  phone?: string | null
+  status?: $Enums.MerchantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  returnStockOnRefund?: boolean
+  memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
+  invitations?: Prisma.MerchantInvitationUncheckedCreateNestedManyWithoutMerchantInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutMerchantInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryStocks?: Prisma.InventoryStockUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryReservations?: Prisma.InventoryReservationUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryMovements?: Prisma.InventoryMovementUncheckedCreateNestedManyWithoutMerchantInput
+  theme?: Prisma.MerchantThemeUncheckedCreateNestedOneWithoutMerchantInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutMerchantInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutMerchantInput
+  paymentProviders?: Prisma.PaymentProviderUncheckedCreateNestedManyWithoutMerchantInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutMerchantInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUncheckedCreateNestedManyWithoutMerchantInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMerchantInput
+  socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
+  websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
+  branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
+  posDevices?: Prisma.PosDeviceUncheckedCreateNestedManyWithoutMerchantInput
+  posShifts?: Prisma.PosShiftUncheckedCreateNestedManyWithoutMerchantInput
+  posTables?: Prisma.PosTableUncheckedCreateNestedManyWithoutMerchantInput
+  customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutMerchantInput
+  kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
+  paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+}
+
+export type MerchantCreateOrConnectWithoutCartsInput = {
+  where: Prisma.MerchantWhereUniqueInput
+  create: Prisma.XOR<Prisma.MerchantCreateWithoutCartsInput, Prisma.MerchantUncheckedCreateWithoutCartsInput>
+}
+
+export type MerchantUpsertWithoutCartsInput = {
+  update: Prisma.XOR<Prisma.MerchantUpdateWithoutCartsInput, Prisma.MerchantUncheckedUpdateWithoutCartsInput>
+  create: Prisma.XOR<Prisma.MerchantCreateWithoutCartsInput, Prisma.MerchantUncheckedCreateWithoutCartsInput>
+  where?: Prisma.MerchantWhereInput
+}
+
+export type MerchantUpdateToOneWithWhereWithoutCartsInput = {
+  where?: Prisma.MerchantWhereInput
+  data: Prisma.XOR<Prisma.MerchantUpdateWithoutCartsInput, Prisma.MerchantUncheckedUpdateWithoutCartsInput>
+}
+
+export type MerchantUpdateWithoutCartsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMerchantStatusFieldUpdateOperationsInput | $Enums.MerchantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
+  invitations?: Prisma.MerchantInvitationUpdateManyWithoutMerchantNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutMerchantNestedInput
+  products?: Prisma.ProductUpdateManyWithoutMerchantNestedInput
+  inventoryStocks?: Prisma.InventoryStockUpdateManyWithoutMerchantNestedInput
+  inventoryReservations?: Prisma.InventoryReservationUpdateManyWithoutMerchantNestedInput
+  inventoryMovements?: Prisma.InventoryMovementUpdateManyWithoutMerchantNestedInput
+  theme?: Prisma.MerchantThemeUpdateOneWithoutMerchantNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutMerchantNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutMerchantNestedInput
+  paymentProviders?: Prisma.PaymentProviderUpdateManyWithoutMerchantNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutMerchantNestedInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUpdateManyWithoutMerchantNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutMerchantNestedInput
+  socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
+  websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
+  branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
+  posDevices?: Prisma.PosDeviceUpdateManyWithoutMerchantNestedInput
+  posShifts?: Prisma.PosShiftUpdateManyWithoutMerchantNestedInput
+  posTables?: Prisma.PosTableUpdateManyWithoutMerchantNestedInput
+  customers?: Prisma.CustomerUpdateManyWithoutMerchantNestedInput
+  kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
+  paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+}
+
+export type MerchantUncheckedUpdateWithoutCartsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMerchantStatusFieldUpdateOperationsInput | $Enums.MerchantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
+  invitations?: Prisma.MerchantInvitationUncheckedUpdateManyWithoutMerchantNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutMerchantNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryStocks?: Prisma.InventoryStockUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryReservations?: Prisma.InventoryReservationUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryMovements?: Prisma.InventoryMovementUncheckedUpdateManyWithoutMerchantNestedInput
+  theme?: Prisma.MerchantThemeUncheckedUpdateOneWithoutMerchantNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutMerchantNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentProviders?: Prisma.PaymentProviderUncheckedUpdateManyWithoutMerchantNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUncheckedUpdateManyWithoutMerchantNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMerchantNestedInput
+  socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
+  websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
+  branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
+  posDevices?: Prisma.PosDeviceUncheckedUpdateManyWithoutMerchantNestedInput
+  posShifts?: Prisma.PosShiftUncheckedUpdateManyWithoutMerchantNestedInput
+  posTables?: Prisma.PosTableUncheckedUpdateManyWithoutMerchantNestedInput
+  customers?: Prisma.CustomerUncheckedUpdateManyWithoutMerchantNestedInput
+  kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+}
+
+export type MerchantCreateWithoutCustomerAddressesInput = {
+  id?: string
+  name: string
+  slug: string
+  email?: string | null
+  phone?: string | null
+  status?: $Enums.MerchantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  returnStockOnRefund?: boolean
+  memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
+  roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
+  invitations?: Prisma.MerchantInvitationCreateNestedManyWithoutMerchantInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutMerchantInput
+  products?: Prisma.ProductCreateNestedManyWithoutMerchantInput
+  inventoryStocks?: Prisma.InventoryStockCreateNestedManyWithoutMerchantInput
+  inventoryReservations?: Prisma.InventoryReservationCreateNestedManyWithoutMerchantInput
+  inventoryMovements?: Prisma.InventoryMovementCreateNestedManyWithoutMerchantInput
+  theme?: Prisma.MerchantThemeCreateNestedOneWithoutMerchantInput
+  checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutMerchantInput
+  orders?: Prisma.OrderCreateNestedManyWithoutMerchantInput
+  paymentProviders?: Prisma.PaymentProviderCreateNestedManyWithoutMerchantInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutMerchantInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventCreateNestedManyWithoutMerchantInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutMerchantInput
+  socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
+  websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
+  branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
+  posDevices?: Prisma.PosDeviceCreateNestedManyWithoutMerchantInput
+  posShifts?: Prisma.PosShiftCreateNestedManyWithoutMerchantInput
+  posTables?: Prisma.PosTableCreateNestedManyWithoutMerchantInput
+  customers?: Prisma.CustomerCreateNestedManyWithoutMerchantInput
+  kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
+  paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+}
+
+export type MerchantUncheckedCreateWithoutCustomerAddressesInput = {
+  id?: string
+  name: string
+  slug: string
+  email?: string | null
+  phone?: string | null
+  status?: $Enums.MerchantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  returnStockOnRefund?: boolean
+  memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
+  invitations?: Prisma.MerchantInvitationUncheckedCreateNestedManyWithoutMerchantInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutMerchantInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryStocks?: Prisma.InventoryStockUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryReservations?: Prisma.InventoryReservationUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryMovements?: Prisma.InventoryMovementUncheckedCreateNestedManyWithoutMerchantInput
+  theme?: Prisma.MerchantThemeUncheckedCreateNestedOneWithoutMerchantInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutMerchantInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutMerchantInput
+  paymentProviders?: Prisma.PaymentProviderUncheckedCreateNestedManyWithoutMerchantInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutMerchantInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUncheckedCreateNestedManyWithoutMerchantInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMerchantInput
+  socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
+  websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
+  branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
+  posDevices?: Prisma.PosDeviceUncheckedCreateNestedManyWithoutMerchantInput
+  posShifts?: Prisma.PosShiftUncheckedCreateNestedManyWithoutMerchantInput
+  posTables?: Prisma.PosTableUncheckedCreateNestedManyWithoutMerchantInput
+  customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutMerchantInput
+  kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
+  paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+}
+
+export type MerchantCreateOrConnectWithoutCustomerAddressesInput = {
+  where: Prisma.MerchantWhereUniqueInput
+  create: Prisma.XOR<Prisma.MerchantCreateWithoutCustomerAddressesInput, Prisma.MerchantUncheckedCreateWithoutCustomerAddressesInput>
+}
+
+export type MerchantUpsertWithoutCustomerAddressesInput = {
+  update: Prisma.XOR<Prisma.MerchantUpdateWithoutCustomerAddressesInput, Prisma.MerchantUncheckedUpdateWithoutCustomerAddressesInput>
+  create: Prisma.XOR<Prisma.MerchantCreateWithoutCustomerAddressesInput, Prisma.MerchantUncheckedCreateWithoutCustomerAddressesInput>
+  where?: Prisma.MerchantWhereInput
+}
+
+export type MerchantUpdateToOneWithWhereWithoutCustomerAddressesInput = {
+  where?: Prisma.MerchantWhereInput
+  data: Prisma.XOR<Prisma.MerchantUpdateWithoutCustomerAddressesInput, Prisma.MerchantUncheckedUpdateWithoutCustomerAddressesInput>
+}
+
+export type MerchantUpdateWithoutCustomerAddressesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMerchantStatusFieldUpdateOperationsInput | $Enums.MerchantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
+  invitations?: Prisma.MerchantInvitationUpdateManyWithoutMerchantNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutMerchantNestedInput
+  products?: Prisma.ProductUpdateManyWithoutMerchantNestedInput
+  inventoryStocks?: Prisma.InventoryStockUpdateManyWithoutMerchantNestedInput
+  inventoryReservations?: Prisma.InventoryReservationUpdateManyWithoutMerchantNestedInput
+  inventoryMovements?: Prisma.InventoryMovementUpdateManyWithoutMerchantNestedInput
+  theme?: Prisma.MerchantThemeUpdateOneWithoutMerchantNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutMerchantNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutMerchantNestedInput
+  paymentProviders?: Prisma.PaymentProviderUpdateManyWithoutMerchantNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutMerchantNestedInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUpdateManyWithoutMerchantNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutMerchantNestedInput
+  socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
+  websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
+  branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
+  posDevices?: Prisma.PosDeviceUpdateManyWithoutMerchantNestedInput
+  posShifts?: Prisma.PosShiftUpdateManyWithoutMerchantNestedInput
+  posTables?: Prisma.PosTableUpdateManyWithoutMerchantNestedInput
+  customers?: Prisma.CustomerUpdateManyWithoutMerchantNestedInput
+  kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
+  paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+}
+
+export type MerchantUncheckedUpdateWithoutCustomerAddressesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMerchantStatusFieldUpdateOperationsInput | $Enums.MerchantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
+  invitations?: Prisma.MerchantInvitationUncheckedUpdateManyWithoutMerchantNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutMerchantNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryStocks?: Prisma.InventoryStockUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryReservations?: Prisma.InventoryReservationUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryMovements?: Prisma.InventoryMovementUncheckedUpdateManyWithoutMerchantNestedInput
+  theme?: Prisma.MerchantThemeUncheckedUpdateOneWithoutMerchantNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutMerchantNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentProviders?: Prisma.PaymentProviderUncheckedUpdateManyWithoutMerchantNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUncheckedUpdateManyWithoutMerchantNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMerchantNestedInput
+  socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
+  websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
+  branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
+  posDevices?: Prisma.PosDeviceUncheckedUpdateManyWithoutMerchantNestedInput
+  posShifts?: Prisma.PosShiftUncheckedUpdateManyWithoutMerchantNestedInput
+  posTables?: Prisma.PosTableUncheckedUpdateManyWithoutMerchantNestedInput
+  customers?: Prisma.CustomerUncheckedUpdateManyWithoutMerchantNestedInput
+  kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+}
+
+export type MerchantCreateWithoutDeliveryMethodsInput = {
+  id?: string
+  name: string
+  slug: string
+  email?: string | null
+  phone?: string | null
+  status?: $Enums.MerchantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  returnStockOnRefund?: boolean
+  memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
+  roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
+  invitations?: Prisma.MerchantInvitationCreateNestedManyWithoutMerchantInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutMerchantInput
+  products?: Prisma.ProductCreateNestedManyWithoutMerchantInput
+  inventoryStocks?: Prisma.InventoryStockCreateNestedManyWithoutMerchantInput
+  inventoryReservations?: Prisma.InventoryReservationCreateNestedManyWithoutMerchantInput
+  inventoryMovements?: Prisma.InventoryMovementCreateNestedManyWithoutMerchantInput
+  theme?: Prisma.MerchantThemeCreateNestedOneWithoutMerchantInput
+  checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutMerchantInput
+  orders?: Prisma.OrderCreateNestedManyWithoutMerchantInput
+  paymentProviders?: Prisma.PaymentProviderCreateNestedManyWithoutMerchantInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutMerchantInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventCreateNestedManyWithoutMerchantInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutMerchantInput
+  socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
+  websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
+  branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
+  posDevices?: Prisma.PosDeviceCreateNestedManyWithoutMerchantInput
+  posShifts?: Prisma.PosShiftCreateNestedManyWithoutMerchantInput
+  posTables?: Prisma.PosTableCreateNestedManyWithoutMerchantInput
+  customers?: Prisma.CustomerCreateNestedManyWithoutMerchantInput
+  kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
+  paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+}
+
+export type MerchantUncheckedCreateWithoutDeliveryMethodsInput = {
+  id?: string
+  name: string
+  slug: string
+  email?: string | null
+  phone?: string | null
+  status?: $Enums.MerchantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  returnStockOnRefund?: boolean
+  memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
+  invitations?: Prisma.MerchantInvitationUncheckedCreateNestedManyWithoutMerchantInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutMerchantInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryStocks?: Prisma.InventoryStockUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryReservations?: Prisma.InventoryReservationUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryMovements?: Prisma.InventoryMovementUncheckedCreateNestedManyWithoutMerchantInput
+  theme?: Prisma.MerchantThemeUncheckedCreateNestedOneWithoutMerchantInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutMerchantInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutMerchantInput
+  paymentProviders?: Prisma.PaymentProviderUncheckedCreateNestedManyWithoutMerchantInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutMerchantInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUncheckedCreateNestedManyWithoutMerchantInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMerchantInput
+  socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
+  websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
+  branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
+  posDevices?: Prisma.PosDeviceUncheckedCreateNestedManyWithoutMerchantInput
+  posShifts?: Prisma.PosShiftUncheckedCreateNestedManyWithoutMerchantInput
+  posTables?: Prisma.PosTableUncheckedCreateNestedManyWithoutMerchantInput
+  customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutMerchantInput
+  kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
+  paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+}
+
+export type MerchantCreateOrConnectWithoutDeliveryMethodsInput = {
+  where: Prisma.MerchantWhereUniqueInput
+  create: Prisma.XOR<Prisma.MerchantCreateWithoutDeliveryMethodsInput, Prisma.MerchantUncheckedCreateWithoutDeliveryMethodsInput>
+}
+
+export type MerchantUpsertWithoutDeliveryMethodsInput = {
+  update: Prisma.XOR<Prisma.MerchantUpdateWithoutDeliveryMethodsInput, Prisma.MerchantUncheckedUpdateWithoutDeliveryMethodsInput>
+  create: Prisma.XOR<Prisma.MerchantCreateWithoutDeliveryMethodsInput, Prisma.MerchantUncheckedCreateWithoutDeliveryMethodsInput>
+  where?: Prisma.MerchantWhereInput
+}
+
+export type MerchantUpdateToOneWithWhereWithoutDeliveryMethodsInput = {
+  where?: Prisma.MerchantWhereInput
+  data: Prisma.XOR<Prisma.MerchantUpdateWithoutDeliveryMethodsInput, Prisma.MerchantUncheckedUpdateWithoutDeliveryMethodsInput>
+}
+
+export type MerchantUpdateWithoutDeliveryMethodsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMerchantStatusFieldUpdateOperationsInput | $Enums.MerchantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
+  invitations?: Prisma.MerchantInvitationUpdateManyWithoutMerchantNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutMerchantNestedInput
+  products?: Prisma.ProductUpdateManyWithoutMerchantNestedInput
+  inventoryStocks?: Prisma.InventoryStockUpdateManyWithoutMerchantNestedInput
+  inventoryReservations?: Prisma.InventoryReservationUpdateManyWithoutMerchantNestedInput
+  inventoryMovements?: Prisma.InventoryMovementUpdateManyWithoutMerchantNestedInput
+  theme?: Prisma.MerchantThemeUpdateOneWithoutMerchantNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutMerchantNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutMerchantNestedInput
+  paymentProviders?: Prisma.PaymentProviderUpdateManyWithoutMerchantNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutMerchantNestedInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUpdateManyWithoutMerchantNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutMerchantNestedInput
+  socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
+  websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
+  branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
+  posDevices?: Prisma.PosDeviceUpdateManyWithoutMerchantNestedInput
+  posShifts?: Prisma.PosShiftUpdateManyWithoutMerchantNestedInput
+  posTables?: Prisma.PosTableUpdateManyWithoutMerchantNestedInput
+  customers?: Prisma.CustomerUpdateManyWithoutMerchantNestedInput
+  kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
+  paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+}
+
+export type MerchantUncheckedUpdateWithoutDeliveryMethodsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMerchantStatusFieldUpdateOperationsInput | $Enums.MerchantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
+  invitations?: Prisma.MerchantInvitationUncheckedUpdateManyWithoutMerchantNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutMerchantNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryStocks?: Prisma.InventoryStockUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryReservations?: Prisma.InventoryReservationUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryMovements?: Prisma.InventoryMovementUncheckedUpdateManyWithoutMerchantNestedInput
+  theme?: Prisma.MerchantThemeUncheckedUpdateOneWithoutMerchantNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutMerchantNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentProviders?: Prisma.PaymentProviderUncheckedUpdateManyWithoutMerchantNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUncheckedUpdateManyWithoutMerchantNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMerchantNestedInput
+  socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
+  websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
+  branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
+  posDevices?: Prisma.PosDeviceUncheckedUpdateManyWithoutMerchantNestedInput
+  posShifts?: Prisma.PosShiftUncheckedUpdateManyWithoutMerchantNestedInput
+  posTables?: Prisma.PosTableUncheckedUpdateManyWithoutMerchantNestedInput
+  customers?: Prisma.CustomerUncheckedUpdateManyWithoutMerchantNestedInput
+  kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+}
+
+export type MerchantCreateWithoutDeliveryZonesInput = {
+  id?: string
+  name: string
+  slug: string
+  email?: string | null
+  phone?: string | null
+  status?: $Enums.MerchantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  returnStockOnRefund?: boolean
+  memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
+  roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
+  invitations?: Prisma.MerchantInvitationCreateNestedManyWithoutMerchantInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutMerchantInput
+  products?: Prisma.ProductCreateNestedManyWithoutMerchantInput
+  inventoryStocks?: Prisma.InventoryStockCreateNestedManyWithoutMerchantInput
+  inventoryReservations?: Prisma.InventoryReservationCreateNestedManyWithoutMerchantInput
+  inventoryMovements?: Prisma.InventoryMovementCreateNestedManyWithoutMerchantInput
+  theme?: Prisma.MerchantThemeCreateNestedOneWithoutMerchantInput
+  checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutMerchantInput
+  orders?: Prisma.OrderCreateNestedManyWithoutMerchantInput
+  paymentProviders?: Prisma.PaymentProviderCreateNestedManyWithoutMerchantInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutMerchantInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventCreateNestedManyWithoutMerchantInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutMerchantInput
+  socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
+  websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
+  branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
+  posDevices?: Prisma.PosDeviceCreateNestedManyWithoutMerchantInput
+  posShifts?: Prisma.PosShiftCreateNestedManyWithoutMerchantInput
+  posTables?: Prisma.PosTableCreateNestedManyWithoutMerchantInput
+  customers?: Prisma.CustomerCreateNestedManyWithoutMerchantInput
+  kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
+  paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+}
+
+export type MerchantUncheckedCreateWithoutDeliveryZonesInput = {
+  id?: string
+  name: string
+  slug: string
+  email?: string | null
+  phone?: string | null
+  status?: $Enums.MerchantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  returnStockOnRefund?: boolean
+  memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
+  invitations?: Prisma.MerchantInvitationUncheckedCreateNestedManyWithoutMerchantInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutMerchantInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryStocks?: Prisma.InventoryStockUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryReservations?: Prisma.InventoryReservationUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryMovements?: Prisma.InventoryMovementUncheckedCreateNestedManyWithoutMerchantInput
+  theme?: Prisma.MerchantThemeUncheckedCreateNestedOneWithoutMerchantInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutMerchantInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutMerchantInput
+  paymentProviders?: Prisma.PaymentProviderUncheckedCreateNestedManyWithoutMerchantInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutMerchantInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUncheckedCreateNestedManyWithoutMerchantInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMerchantInput
+  socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
+  websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
+  branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
+  posDevices?: Prisma.PosDeviceUncheckedCreateNestedManyWithoutMerchantInput
+  posShifts?: Prisma.PosShiftUncheckedCreateNestedManyWithoutMerchantInput
+  posTables?: Prisma.PosTableUncheckedCreateNestedManyWithoutMerchantInput
+  customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutMerchantInput
+  kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
+  paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+}
+
+export type MerchantCreateOrConnectWithoutDeliveryZonesInput = {
+  where: Prisma.MerchantWhereUniqueInput
+  create: Prisma.XOR<Prisma.MerchantCreateWithoutDeliveryZonesInput, Prisma.MerchantUncheckedCreateWithoutDeliveryZonesInput>
+}
+
+export type MerchantUpsertWithoutDeliveryZonesInput = {
+  update: Prisma.XOR<Prisma.MerchantUpdateWithoutDeliveryZonesInput, Prisma.MerchantUncheckedUpdateWithoutDeliveryZonesInput>
+  create: Prisma.XOR<Prisma.MerchantCreateWithoutDeliveryZonesInput, Prisma.MerchantUncheckedCreateWithoutDeliveryZonesInput>
+  where?: Prisma.MerchantWhereInput
+}
+
+export type MerchantUpdateToOneWithWhereWithoutDeliveryZonesInput = {
+  where?: Prisma.MerchantWhereInput
+  data: Prisma.XOR<Prisma.MerchantUpdateWithoutDeliveryZonesInput, Prisma.MerchantUncheckedUpdateWithoutDeliveryZonesInput>
+}
+
+export type MerchantUpdateWithoutDeliveryZonesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMerchantStatusFieldUpdateOperationsInput | $Enums.MerchantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
+  invitations?: Prisma.MerchantInvitationUpdateManyWithoutMerchantNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutMerchantNestedInput
+  products?: Prisma.ProductUpdateManyWithoutMerchantNestedInput
+  inventoryStocks?: Prisma.InventoryStockUpdateManyWithoutMerchantNestedInput
+  inventoryReservations?: Prisma.InventoryReservationUpdateManyWithoutMerchantNestedInput
+  inventoryMovements?: Prisma.InventoryMovementUpdateManyWithoutMerchantNestedInput
+  theme?: Prisma.MerchantThemeUpdateOneWithoutMerchantNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutMerchantNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutMerchantNestedInput
+  paymentProviders?: Prisma.PaymentProviderUpdateManyWithoutMerchantNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutMerchantNestedInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUpdateManyWithoutMerchantNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutMerchantNestedInput
+  socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
+  websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
+  branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
+  posDevices?: Prisma.PosDeviceUpdateManyWithoutMerchantNestedInput
+  posShifts?: Prisma.PosShiftUpdateManyWithoutMerchantNestedInput
+  posTables?: Prisma.PosTableUpdateManyWithoutMerchantNestedInput
+  customers?: Prisma.CustomerUpdateManyWithoutMerchantNestedInput
+  kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
+  paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+}
+
+export type MerchantUncheckedUpdateWithoutDeliveryZonesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMerchantStatusFieldUpdateOperationsInput | $Enums.MerchantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
+  invitations?: Prisma.MerchantInvitationUncheckedUpdateManyWithoutMerchantNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutMerchantNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryStocks?: Prisma.InventoryStockUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryReservations?: Prisma.InventoryReservationUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryMovements?: Prisma.InventoryMovementUncheckedUpdateManyWithoutMerchantNestedInput
+  theme?: Prisma.MerchantThemeUncheckedUpdateOneWithoutMerchantNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutMerchantNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentProviders?: Prisma.PaymentProviderUncheckedUpdateManyWithoutMerchantNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUncheckedUpdateManyWithoutMerchantNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMerchantNestedInput
+  socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
+  websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
+  branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
+  posDevices?: Prisma.PosDeviceUncheckedUpdateManyWithoutMerchantNestedInput
+  posShifts?: Prisma.PosShiftUncheckedUpdateManyWithoutMerchantNestedInput
+  posTables?: Prisma.PosTableUncheckedUpdateManyWithoutMerchantNestedInput
+  customers?: Prisma.CustomerUncheckedUpdateManyWithoutMerchantNestedInput
+  kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+}
+
+export type MerchantCreateWithoutShipmentsInput = {
+  id?: string
+  name: string
+  slug: string
+  email?: string | null
+  phone?: string | null
+  status?: $Enums.MerchantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  returnStockOnRefund?: boolean
+  memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
+  roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
+  invitations?: Prisma.MerchantInvitationCreateNestedManyWithoutMerchantInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutMerchantInput
+  products?: Prisma.ProductCreateNestedManyWithoutMerchantInput
+  inventoryStocks?: Prisma.InventoryStockCreateNestedManyWithoutMerchantInput
+  inventoryReservations?: Prisma.InventoryReservationCreateNestedManyWithoutMerchantInput
+  inventoryMovements?: Prisma.InventoryMovementCreateNestedManyWithoutMerchantInput
+  theme?: Prisma.MerchantThemeCreateNestedOneWithoutMerchantInput
+  checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutMerchantInput
+  orders?: Prisma.OrderCreateNestedManyWithoutMerchantInput
+  paymentProviders?: Prisma.PaymentProviderCreateNestedManyWithoutMerchantInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutMerchantInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventCreateNestedManyWithoutMerchantInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutMerchantInput
+  socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
+  websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
+  branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
+  posDevices?: Prisma.PosDeviceCreateNestedManyWithoutMerchantInput
+  posShifts?: Prisma.PosShiftCreateNestedManyWithoutMerchantInput
+  posTables?: Prisma.PosTableCreateNestedManyWithoutMerchantInput
+  customers?: Prisma.CustomerCreateNestedManyWithoutMerchantInput
+  kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
+  paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+}
+
+export type MerchantUncheckedCreateWithoutShipmentsInput = {
+  id?: string
+  name: string
+  slug: string
+  email?: string | null
+  phone?: string | null
+  status?: $Enums.MerchantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  returnStockOnRefund?: boolean
+  memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
+  invitations?: Prisma.MerchantInvitationUncheckedCreateNestedManyWithoutMerchantInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutMerchantInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryStocks?: Prisma.InventoryStockUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryReservations?: Prisma.InventoryReservationUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryMovements?: Prisma.InventoryMovementUncheckedCreateNestedManyWithoutMerchantInput
+  theme?: Prisma.MerchantThemeUncheckedCreateNestedOneWithoutMerchantInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutMerchantInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutMerchantInput
+  paymentProviders?: Prisma.PaymentProviderUncheckedCreateNestedManyWithoutMerchantInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutMerchantInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUncheckedCreateNestedManyWithoutMerchantInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMerchantInput
+  socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
+  websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
+  branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
+  posDevices?: Prisma.PosDeviceUncheckedCreateNestedManyWithoutMerchantInput
+  posShifts?: Prisma.PosShiftUncheckedCreateNestedManyWithoutMerchantInput
+  posTables?: Prisma.PosTableUncheckedCreateNestedManyWithoutMerchantInput
+  customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutMerchantInput
+  kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
+  paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+}
+
+export type MerchantCreateOrConnectWithoutShipmentsInput = {
+  where: Prisma.MerchantWhereUniqueInput
+  create: Prisma.XOR<Prisma.MerchantCreateWithoutShipmentsInput, Prisma.MerchantUncheckedCreateWithoutShipmentsInput>
+}
+
+export type MerchantUpsertWithoutShipmentsInput = {
+  update: Prisma.XOR<Prisma.MerchantUpdateWithoutShipmentsInput, Prisma.MerchantUncheckedUpdateWithoutShipmentsInput>
+  create: Prisma.XOR<Prisma.MerchantCreateWithoutShipmentsInput, Prisma.MerchantUncheckedCreateWithoutShipmentsInput>
+  where?: Prisma.MerchantWhereInput
+}
+
+export type MerchantUpdateToOneWithWhereWithoutShipmentsInput = {
+  where?: Prisma.MerchantWhereInput
+  data: Prisma.XOR<Prisma.MerchantUpdateWithoutShipmentsInput, Prisma.MerchantUncheckedUpdateWithoutShipmentsInput>
+}
+
+export type MerchantUpdateWithoutShipmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMerchantStatusFieldUpdateOperationsInput | $Enums.MerchantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
+  invitations?: Prisma.MerchantInvitationUpdateManyWithoutMerchantNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutMerchantNestedInput
+  products?: Prisma.ProductUpdateManyWithoutMerchantNestedInput
+  inventoryStocks?: Prisma.InventoryStockUpdateManyWithoutMerchantNestedInput
+  inventoryReservations?: Prisma.InventoryReservationUpdateManyWithoutMerchantNestedInput
+  inventoryMovements?: Prisma.InventoryMovementUpdateManyWithoutMerchantNestedInput
+  theme?: Prisma.MerchantThemeUpdateOneWithoutMerchantNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutMerchantNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutMerchantNestedInput
+  paymentProviders?: Prisma.PaymentProviderUpdateManyWithoutMerchantNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutMerchantNestedInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUpdateManyWithoutMerchantNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutMerchantNestedInput
+  socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
+  websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
+  branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
+  posDevices?: Prisma.PosDeviceUpdateManyWithoutMerchantNestedInput
+  posShifts?: Prisma.PosShiftUpdateManyWithoutMerchantNestedInput
+  posTables?: Prisma.PosTableUpdateManyWithoutMerchantNestedInput
+  customers?: Prisma.CustomerUpdateManyWithoutMerchantNestedInput
+  kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
+  paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+}
+
+export type MerchantUncheckedUpdateWithoutShipmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMerchantStatusFieldUpdateOperationsInput | $Enums.MerchantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
+  invitations?: Prisma.MerchantInvitationUncheckedUpdateManyWithoutMerchantNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutMerchantNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryStocks?: Prisma.InventoryStockUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryReservations?: Prisma.InventoryReservationUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryMovements?: Prisma.InventoryMovementUncheckedUpdateManyWithoutMerchantNestedInput
+  theme?: Prisma.MerchantThemeUncheckedUpdateOneWithoutMerchantNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutMerchantNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentProviders?: Prisma.PaymentProviderUncheckedUpdateManyWithoutMerchantNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUncheckedUpdateManyWithoutMerchantNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMerchantNestedInput
+  socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
+  websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
+  branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
+  posDevices?: Prisma.PosDeviceUncheckedUpdateManyWithoutMerchantNestedInput
+  posShifts?: Prisma.PosShiftUncheckedUpdateManyWithoutMerchantNestedInput
+  posTables?: Prisma.PosTableUncheckedUpdateManyWithoutMerchantNestedInput
+  customers?: Prisma.CustomerUncheckedUpdateManyWithoutMerchantNestedInput
+  kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 
@@ -5676,6 +7281,11 @@ export type MerchantCountOutputType = {
   kitchenOrders: number
   paymentRefunds: number
   idempotencyKeys: number
+  carts: number
+  customerAddresses: number
+  deliveryMethods: number
+  deliveryZones: number
+  shipments: number
 }
 
 export type MerchantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -5705,6 +7315,11 @@ export type MerchantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   kitchenOrders?: boolean | MerchantCountOutputTypeCountKitchenOrdersArgs
   paymentRefunds?: boolean | MerchantCountOutputTypeCountPaymentRefundsArgs
   idempotencyKeys?: boolean | MerchantCountOutputTypeCountIdempotencyKeysArgs
+  carts?: boolean | MerchantCountOutputTypeCountCartsArgs
+  customerAddresses?: boolean | MerchantCountOutputTypeCountCustomerAddressesArgs
+  deliveryMethods?: boolean | MerchantCountOutputTypeCountDeliveryMethodsArgs
+  deliveryZones?: boolean | MerchantCountOutputTypeCountDeliveryZonesArgs
+  shipments?: boolean | MerchantCountOutputTypeCountShipmentsArgs
 }
 
 /**
@@ -5899,6 +7514,41 @@ export type MerchantCountOutputTypeCountIdempotencyKeysArgs<ExtArgs extends runt
   where?: Prisma.IdempotencyKeyWhereInput
 }
 
+/**
+ * MerchantCountOutputType without action
+ */
+export type MerchantCountOutputTypeCountCartsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CartWhereInput
+}
+
+/**
+ * MerchantCountOutputType without action
+ */
+export type MerchantCountOutputTypeCountCustomerAddressesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CustomerAddressWhereInput
+}
+
+/**
+ * MerchantCountOutputType without action
+ */
+export type MerchantCountOutputTypeCountDeliveryMethodsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DeliveryMethodWhereInput
+}
+
+/**
+ * MerchantCountOutputType without action
+ */
+export type MerchantCountOutputTypeCountDeliveryZonesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DeliveryZoneWhereInput
+}
+
+/**
+ * MerchantCountOutputType without action
+ */
+export type MerchantCountOutputTypeCountShipmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ShipmentWhereInput
+}
+
 
 export type MerchantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -5938,6 +7588,11 @@ export type MerchantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   kitchenOrders?: boolean | Prisma.Merchant$kitchenOrdersArgs<ExtArgs>
   paymentRefunds?: boolean | Prisma.Merchant$paymentRefundsArgs<ExtArgs>
   idempotencyKeys?: boolean | Prisma.Merchant$idempotencyKeysArgs<ExtArgs>
+  carts?: boolean | Prisma.Merchant$cartsArgs<ExtArgs>
+  customerAddresses?: boolean | Prisma.Merchant$customerAddressesArgs<ExtArgs>
+  deliveryMethods?: boolean | Prisma.Merchant$deliveryMethodsArgs<ExtArgs>
+  deliveryZones?: boolean | Prisma.Merchant$deliveryZonesArgs<ExtArgs>
+  shipments?: boolean | Prisma.Merchant$shipmentsArgs<ExtArgs>
   _count?: boolean | Prisma.MerchantCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["merchant"]>
 
@@ -6009,6 +7664,11 @@ export type MerchantInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   kitchenOrders?: boolean | Prisma.Merchant$kitchenOrdersArgs<ExtArgs>
   paymentRefunds?: boolean | Prisma.Merchant$paymentRefundsArgs<ExtArgs>
   idempotencyKeys?: boolean | Prisma.Merchant$idempotencyKeysArgs<ExtArgs>
+  carts?: boolean | Prisma.Merchant$cartsArgs<ExtArgs>
+  customerAddresses?: boolean | Prisma.Merchant$customerAddressesArgs<ExtArgs>
+  deliveryMethods?: boolean | Prisma.Merchant$deliveryMethodsArgs<ExtArgs>
+  deliveryZones?: boolean | Prisma.Merchant$deliveryZonesArgs<ExtArgs>
+  shipments?: boolean | Prisma.Merchant$shipmentsArgs<ExtArgs>
   _count?: boolean | Prisma.MerchantCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MerchantIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -6044,6 +7704,11 @@ export type $MerchantPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     kitchenOrders: Prisma.$KitchenOrderPayload<ExtArgs>[]
     paymentRefunds: Prisma.$PaymentRefundPayload<ExtArgs>[]
     idempotencyKeys: Prisma.$IdempotencyKeyPayload<ExtArgs>[]
+    carts: Prisma.$CartPayload<ExtArgs>[]
+    customerAddresses: Prisma.$CustomerAddressPayload<ExtArgs>[]
+    deliveryMethods: Prisma.$DeliveryMethodPayload<ExtArgs>[]
+    deliveryZones: Prisma.$DeliveryZonePayload<ExtArgs>[]
+    shipments: Prisma.$ShipmentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -6477,6 +8142,11 @@ export interface Prisma__MerchantClient<T, Null = never, ExtArgs extends runtime
   kitchenOrders<T extends Prisma.Merchant$kitchenOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Merchant$kitchenOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KitchenOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   paymentRefunds<T extends Prisma.Merchant$paymentRefundsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Merchant$paymentRefundsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentRefundPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   idempotencyKeys<T extends Prisma.Merchant$idempotencyKeysArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Merchant$idempotencyKeysArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IdempotencyKeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  carts<T extends Prisma.Merchant$cartsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Merchant$cartsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CartPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  customerAddresses<T extends Prisma.Merchant$customerAddressesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Merchant$customerAddressesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CustomerAddressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  deliveryMethods<T extends Prisma.Merchant$deliveryMethodsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Merchant$deliveryMethodsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DeliveryMethodPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  deliveryZones<T extends Prisma.Merchant$deliveryZonesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Merchant$deliveryZonesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DeliveryZonePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  shipments<T extends Prisma.Merchant$shipmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Merchant$shipmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7549,6 +9219,126 @@ export type Merchant$idempotencyKeysArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.IdempotencyKeyScalarFieldEnum | Prisma.IdempotencyKeyScalarFieldEnum[]
+}
+
+/**
+ * Merchant.carts
+ */
+export type Merchant$cartsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Cart
+   */
+  select?: Prisma.CartSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Cart
+   */
+  omit?: Prisma.CartOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CartInclude<ExtArgs> | null
+  where?: Prisma.CartWhereInput
+  orderBy?: Prisma.CartOrderByWithRelationInput | Prisma.CartOrderByWithRelationInput[]
+  cursor?: Prisma.CartWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CartScalarFieldEnum | Prisma.CartScalarFieldEnum[]
+}
+
+/**
+ * Merchant.customerAddresses
+ */
+export type Merchant$customerAddressesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CustomerAddress
+   */
+  select?: Prisma.CustomerAddressSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CustomerAddress
+   */
+  omit?: Prisma.CustomerAddressOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerAddressInclude<ExtArgs> | null
+  where?: Prisma.CustomerAddressWhereInput
+  orderBy?: Prisma.CustomerAddressOrderByWithRelationInput | Prisma.CustomerAddressOrderByWithRelationInput[]
+  cursor?: Prisma.CustomerAddressWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CustomerAddressScalarFieldEnum | Prisma.CustomerAddressScalarFieldEnum[]
+}
+
+/**
+ * Merchant.deliveryMethods
+ */
+export type Merchant$deliveryMethodsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DeliveryMethod
+   */
+  select?: Prisma.DeliveryMethodSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DeliveryMethod
+   */
+  omit?: Prisma.DeliveryMethodOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DeliveryMethodInclude<ExtArgs> | null
+  where?: Prisma.DeliveryMethodWhereInput
+  orderBy?: Prisma.DeliveryMethodOrderByWithRelationInput | Prisma.DeliveryMethodOrderByWithRelationInput[]
+  cursor?: Prisma.DeliveryMethodWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DeliveryMethodScalarFieldEnum | Prisma.DeliveryMethodScalarFieldEnum[]
+}
+
+/**
+ * Merchant.deliveryZones
+ */
+export type Merchant$deliveryZonesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DeliveryZone
+   */
+  select?: Prisma.DeliveryZoneSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DeliveryZone
+   */
+  omit?: Prisma.DeliveryZoneOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DeliveryZoneInclude<ExtArgs> | null
+  where?: Prisma.DeliveryZoneWhereInput
+  orderBy?: Prisma.DeliveryZoneOrderByWithRelationInput | Prisma.DeliveryZoneOrderByWithRelationInput[]
+  cursor?: Prisma.DeliveryZoneWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DeliveryZoneScalarFieldEnum | Prisma.DeliveryZoneScalarFieldEnum[]
+}
+
+/**
+ * Merchant.shipments
+ */
+export type Merchant$shipmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Shipment
+   */
+  select?: Prisma.ShipmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Shipment
+   */
+  omit?: Prisma.ShipmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ShipmentInclude<ExtArgs> | null
+  where?: Prisma.ShipmentWhereInput
+  orderBy?: Prisma.ShipmentOrderByWithRelationInput | Prisma.ShipmentOrderByWithRelationInput[]
+  cursor?: Prisma.ShipmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ShipmentScalarFieldEnum | Prisma.ShipmentScalarFieldEnum[]
 }
 
 /**

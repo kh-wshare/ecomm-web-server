@@ -172,7 +172,9 @@ export class OrderService {
       // — comparing against checkout.items.length would wrongly expire any
       // checkout containing a non-stocked product.
       const products = await tx.product.findMany({
-        where: { id: { in: [...new Set(checkout.items.map((i) => i.productId))] } },
+        where: {
+          id: { in: [...new Set(checkout.items.map((i) => i.productId))] },
+        },
         select: { id: true, trackStock: true },
       });
       const trackStockById = new Map(products.map((p) => [p.id, p.trackStock]));
@@ -225,8 +227,16 @@ export class OrderService {
           subtotalAmount: checkout.subtotalAmount,
           discountAmount: checkout.discountAmount,
           feeAmount: checkout.feeAmount,
+          shippingAmount: checkout.shippingAmount,
           totalAmount: checkout.totalAmount,
           currency: checkout.currency,
+          // Snapshotted, not referenced: the order must keep the address and
+          // delivery method name it was bought with even if the shopper later
+          // edits the saved address or the merchant renames the method.
+          deliveryMethodId: checkout.deliveryMethodId,
+          deliveryMethodName: checkout.deliveryMethodName,
+          shippingAddress: checkout.shippingAddress ?? Prisma.DbNull,
+          billingAddress: checkout.billingAddress ?? Prisma.DbNull,
           ...(posContext
             ? {
                 branchId: posContext.branchId,

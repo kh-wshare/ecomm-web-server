@@ -51,6 +51,12 @@ Merchant enables product channels
         ↓
 Customer discovers product from website/social/POS
         ↓
+Customer adds to cart
+        ↓
+Customer enters delivery address
+        ↓
+Customer picks a delivery method
+        ↓
 Customer starts checkout
         ↓
 System reserves stock
@@ -65,7 +71,11 @@ Inventory reservation becomes sold
         ↓
 Merchant receives notification
         ↓
-Merchant fulfills order
+Merchant creates a shipment
+        ↓
+Customer tracks the shipment
+        ↓
+Shipment delivered → order fulfilled
 ```
 
 ---
@@ -122,6 +132,8 @@ Merchant fulfills order
 
 ### Sprint 5: Checkout & Order
 
+- [x] Storefront cart (anonymous `X-Cart-Token`).
+- [x] Shopper address book.
 - [x] Checkout session.
 - [x] Inventory reservation.
 - [x] Order creation.
@@ -130,6 +142,22 @@ Merchant fulfills order
 - [ ] Order success page.
 - [x] Order list page.
 - [x] Order detail page.
+
+### Sprint 5.5: Delivery & Logistics
+
+- [x] Delivery methods (pickup/delivery) CRUD.
+- [x] Priced delivery zones (flat, per-item, free-over, subtotal bands).
+- [x] Delivery quoting for a cart and a bare destination.
+- [x] Shipping amount carried through checkout into the order.
+- [x] Shipments with carrier + tracking number.
+- [x] Partial/split shipments per order item.
+- [x] Shipment status workflow + tracking events.
+- [x] Order fulfillment status derived from shipments.
+- [x] Public order tracking page API.
+- [ ] Merchant delivery-method settings UI.
+- [ ] Storefront address + delivery picker UI.
+- [ ] Shipment management UI.
+- [ ] Third-party carrier rate/label integration.
 
 ### Sprint 6: Payment & Webhook
 
@@ -193,6 +221,9 @@ Merchant fulfills order
 - [x] Inventory module.
 - [x] Order module.
 - [x] Checkout module.
+- [x] Cart module.
+- [x] Address module.
+- [x] Logistics module (delivery methods, zones, shipments).
 - [x] Payment webhook module.
 - [x] Theme live config module.
 - [x] Public storefront APIs.
@@ -232,12 +263,14 @@ Merchant fulfills order
 4. Product Catalog
 5. Inventory
 6. Storefront
-7. Checkout
-8. Order
-9. Payment
-10. Notification
-11. Theme Builder
-12. Social Commerce
+7. Cart
+8. Checkout
+9. Order
+10. Payment
+11. Logistics
+12. Notification
+13. Theme Builder
+14. Social Commerce
 ```
 
 ---

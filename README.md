@@ -12,7 +12,9 @@ This is the **backend API** for the e-commerce platform with tenant isolation, a
 - **Authentication & Authorization** - JWT-based with refresh token rotation and merchant switching
 - **Product Catalog** - SKU management, variants, visibility, and status tracking
 - **Inventory Management** - Stock adjustments, concurrent reservations, expiration handling, and movement history
+- **Carts & Addresses** - Anonymous token-based storefront carts and a shopper address book, no account required
 - **Checkout & Orders** - Session-based checkout with price verification and order lifecycle management
+- **Delivery & Logistics** - Pickup/delivery methods, priced zones, shipments, tracking events, and public order tracking
 - **Payments** - Payment provider adapters and webhook handling
 - **Real-Time Features** - WebSocket support via Socket.IO
 - **File Storage** - Local or cloud provider file management
@@ -215,10 +217,12 @@ For production deployment guidance, see
 │       ├── checkout/         # Public checkout sessions
 │       ├── order/            # Order lifecycle
 │       ├── payment/          # Payment providers, KHQR/PayWay adapters
+│       ├── logistics/        # Delivery methods/zones, shipments, tracking
 │       ├── pricing/          # Shared cart-pricing logic
 │       ├── pos/              # POS backend (devices/shifts/orders/kitchen/
 │       │                     # payments/tables/customers/sync/audit/realtime)
-│       └── storefront/       # Public storefront + payment/webhook/social-post
+│       └── storefront/       # Public storefront (cart/address/delivery/
+│                             # context/payment/webhook/social-post)
 ├── test/                     # End-to-end tests
 ├── prisma/                   # Database schema & migrations
 │   ├── schema.prisma

@@ -273,11 +273,7 @@ export class CatalogService {
           },
         });
         if (dto.trackStock === true) {
-          await this.ensureInventoryStockForTracking(
-            tx,
-            merchantId,
-            productId,
-          );
+          await this.ensureInventoryStockForTracking(tx, merchantId, productId);
         }
         const product = await tx.product.findUniqueOrThrow({
           where: { id: productId },
@@ -612,7 +608,9 @@ export class CatalogService {
       select: { id: true },
     });
     const targets = variants.length
-      ? variants.map((variant) => ({ variantId: variant.id as string | undefined }))
+      ? variants.map((variant) => ({
+          variantId: variant.id,
+        }))
       : [{ variantId: undefined as string | undefined }];
 
     for (const { variantId } of targets) {

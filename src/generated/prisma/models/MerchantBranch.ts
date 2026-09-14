@@ -284,6 +284,7 @@ export type MerchantBranchWhereInput = {
   posTables?: Prisma.PosTableListRelationFilter
   orders?: Prisma.OrderListRelationFilter
   checkoutSessions?: Prisma.CheckoutSessionListRelationFilter
+  deliveryMethods?: Prisma.DeliveryMethodListRelationFilter
 }
 
 export type MerchantBranchOrderByWithRelationInput = {
@@ -310,6 +311,7 @@ export type MerchantBranchOrderByWithRelationInput = {
   posTables?: Prisma.PosTableOrderByRelationAggregateInput
   orders?: Prisma.OrderOrderByRelationAggregateInput
   checkoutSessions?: Prisma.CheckoutSessionOrderByRelationAggregateInput
+  deliveryMethods?: Prisma.DeliveryMethodOrderByRelationAggregateInput
 }
 
 export type MerchantBranchWhereUniqueInput = Prisma.AtLeast<{
@@ -340,6 +342,7 @@ export type MerchantBranchWhereUniqueInput = Prisma.AtLeast<{
   posTables?: Prisma.PosTableListRelationFilter
   orders?: Prisma.OrderListRelationFilter
   checkoutSessions?: Prisma.CheckoutSessionListRelationFilter
+  deliveryMethods?: Prisma.DeliveryMethodListRelationFilter
 }, "id" | "merchantId_code">
 
 export type MerchantBranchOrderByWithAggregationInput = {
@@ -411,6 +414,7 @@ export type MerchantBranchCreateInput = {
   posTables?: Prisma.PosTableCreateNestedManyWithoutBranchInput
   orders?: Prisma.OrderCreateNestedManyWithoutBranchInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutBranchInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutBranchInput
 }
 
 export type MerchantBranchUncheckedCreateInput = {
@@ -436,6 +440,7 @@ export type MerchantBranchUncheckedCreateInput = {
   posTables?: Prisma.PosTableUncheckedCreateNestedManyWithoutBranchInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBranchInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutBranchInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type MerchantBranchUpdateInput = {
@@ -461,6 +466,7 @@ export type MerchantBranchUpdateInput = {
   posTables?: Prisma.PosTableUpdateManyWithoutBranchNestedInput
   orders?: Prisma.OrderUpdateManyWithoutBranchNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutBranchNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutBranchNestedInput
 }
 
 export type MerchantBranchUncheckedUpdateInput = {
@@ -486,6 +492,7 @@ export type MerchantBranchUncheckedUpdateInput = {
   posTables?: Prisma.PosTableUncheckedUpdateManyWithoutBranchNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutBranchNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutBranchNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type MerchantBranchCreateManyInput = {
@@ -752,6 +759,22 @@ export type MerchantBranchUpdateOneRequiredWithoutPosTablesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.MerchantBranchUpdateToOneWithWhereWithoutPosTablesInput, Prisma.MerchantBranchUpdateWithoutPosTablesInput>, Prisma.MerchantBranchUncheckedUpdateWithoutPosTablesInput>
 }
 
+export type MerchantBranchCreateNestedOneWithoutDeliveryMethodsInput = {
+  create?: Prisma.XOR<Prisma.MerchantBranchCreateWithoutDeliveryMethodsInput, Prisma.MerchantBranchUncheckedCreateWithoutDeliveryMethodsInput>
+  connectOrCreate?: Prisma.MerchantBranchCreateOrConnectWithoutDeliveryMethodsInput
+  connect?: Prisma.MerchantBranchWhereUniqueInput
+}
+
+export type MerchantBranchUpdateOneWithoutDeliveryMethodsNestedInput = {
+  create?: Prisma.XOR<Prisma.MerchantBranchCreateWithoutDeliveryMethodsInput, Prisma.MerchantBranchUncheckedCreateWithoutDeliveryMethodsInput>
+  connectOrCreate?: Prisma.MerchantBranchCreateOrConnectWithoutDeliveryMethodsInput
+  upsert?: Prisma.MerchantBranchUpsertWithoutDeliveryMethodsInput
+  disconnect?: Prisma.MerchantBranchWhereInput | boolean
+  delete?: Prisma.MerchantBranchWhereInput | boolean
+  connect?: Prisma.MerchantBranchWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MerchantBranchUpdateToOneWithWhereWithoutDeliveryMethodsInput, Prisma.MerchantBranchUpdateWithoutDeliveryMethodsInput>, Prisma.MerchantBranchUncheckedUpdateWithoutDeliveryMethodsInput>
+}
+
 export type MerchantBranchCreateWithoutMerchantInput = {
   id?: string
   name: string
@@ -774,6 +797,7 @@ export type MerchantBranchCreateWithoutMerchantInput = {
   posTables?: Prisma.PosTableCreateNestedManyWithoutBranchInput
   orders?: Prisma.OrderCreateNestedManyWithoutBranchInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutBranchInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutBranchInput
 }
 
 export type MerchantBranchUncheckedCreateWithoutMerchantInput = {
@@ -798,6 +822,7 @@ export type MerchantBranchUncheckedCreateWithoutMerchantInput = {
   posTables?: Prisma.PosTableUncheckedCreateNestedManyWithoutBranchInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBranchInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutBranchInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type MerchantBranchCreateOrConnectWithoutMerchantInput = {
@@ -871,6 +896,7 @@ export type MerchantBranchCreateWithoutCheckoutSessionsInput = {
   posShifts?: Prisma.PosShiftCreateNestedManyWithoutBranchInput
   posTables?: Prisma.PosTableCreateNestedManyWithoutBranchInput
   orders?: Prisma.OrderCreateNestedManyWithoutBranchInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutBranchInput
 }
 
 export type MerchantBranchUncheckedCreateWithoutCheckoutSessionsInput = {
@@ -895,6 +921,7 @@ export type MerchantBranchUncheckedCreateWithoutCheckoutSessionsInput = {
   posShifts?: Prisma.PosShiftUncheckedCreateNestedManyWithoutBranchInput
   posTables?: Prisma.PosTableUncheckedCreateNestedManyWithoutBranchInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBranchInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type MerchantBranchCreateOrConnectWithoutCheckoutSessionsInput = {
@@ -935,6 +962,7 @@ export type MerchantBranchUpdateWithoutCheckoutSessionsInput = {
   posShifts?: Prisma.PosShiftUpdateManyWithoutBranchNestedInput
   posTables?: Prisma.PosTableUpdateManyWithoutBranchNestedInput
   orders?: Prisma.OrderUpdateManyWithoutBranchNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutBranchNestedInput
 }
 
 export type MerchantBranchUncheckedUpdateWithoutCheckoutSessionsInput = {
@@ -959,6 +987,7 @@ export type MerchantBranchUncheckedUpdateWithoutCheckoutSessionsInput = {
   posShifts?: Prisma.PosShiftUncheckedUpdateManyWithoutBranchNestedInput
   posTables?: Prisma.PosTableUncheckedUpdateManyWithoutBranchNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutBranchNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type MerchantBranchCreateWithoutOrdersInput = {
@@ -983,6 +1012,7 @@ export type MerchantBranchCreateWithoutOrdersInput = {
   posShifts?: Prisma.PosShiftCreateNestedManyWithoutBranchInput
   posTables?: Prisma.PosTableCreateNestedManyWithoutBranchInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutBranchInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutBranchInput
 }
 
 export type MerchantBranchUncheckedCreateWithoutOrdersInput = {
@@ -1007,6 +1037,7 @@ export type MerchantBranchUncheckedCreateWithoutOrdersInput = {
   posShifts?: Prisma.PosShiftUncheckedCreateNestedManyWithoutBranchInput
   posTables?: Prisma.PosTableUncheckedCreateNestedManyWithoutBranchInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutBranchInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type MerchantBranchCreateOrConnectWithoutOrdersInput = {
@@ -1047,6 +1078,7 @@ export type MerchantBranchUpdateWithoutOrdersInput = {
   posShifts?: Prisma.PosShiftUpdateManyWithoutBranchNestedInput
   posTables?: Prisma.PosTableUpdateManyWithoutBranchNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutBranchNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutBranchNestedInput
 }
 
 export type MerchantBranchUncheckedUpdateWithoutOrdersInput = {
@@ -1071,6 +1103,7 @@ export type MerchantBranchUncheckedUpdateWithoutOrdersInput = {
   posShifts?: Prisma.PosShiftUncheckedUpdateManyWithoutBranchNestedInput
   posTables?: Prisma.PosTableUncheckedUpdateManyWithoutBranchNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutBranchNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type MerchantBranchCreateWithoutPosDevicesInput = {
@@ -1095,6 +1128,7 @@ export type MerchantBranchCreateWithoutPosDevicesInput = {
   posTables?: Prisma.PosTableCreateNestedManyWithoutBranchInput
   orders?: Prisma.OrderCreateNestedManyWithoutBranchInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutBranchInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutBranchInput
 }
 
 export type MerchantBranchUncheckedCreateWithoutPosDevicesInput = {
@@ -1119,6 +1153,7 @@ export type MerchantBranchUncheckedCreateWithoutPosDevicesInput = {
   posTables?: Prisma.PosTableUncheckedCreateNestedManyWithoutBranchInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBranchInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutBranchInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type MerchantBranchCreateOrConnectWithoutPosDevicesInput = {
@@ -1159,6 +1194,7 @@ export type MerchantBranchUpdateWithoutPosDevicesInput = {
   posTables?: Prisma.PosTableUpdateManyWithoutBranchNestedInput
   orders?: Prisma.OrderUpdateManyWithoutBranchNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutBranchNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutBranchNestedInput
 }
 
 export type MerchantBranchUncheckedUpdateWithoutPosDevicesInput = {
@@ -1183,6 +1219,7 @@ export type MerchantBranchUncheckedUpdateWithoutPosDevicesInput = {
   posTables?: Prisma.PosTableUncheckedUpdateManyWithoutBranchNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutBranchNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutBranchNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type MerchantBranchCreateWithoutPosShiftsInput = {
@@ -1207,6 +1244,7 @@ export type MerchantBranchCreateWithoutPosShiftsInput = {
   posTables?: Prisma.PosTableCreateNestedManyWithoutBranchInput
   orders?: Prisma.OrderCreateNestedManyWithoutBranchInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutBranchInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutBranchInput
 }
 
 export type MerchantBranchUncheckedCreateWithoutPosShiftsInput = {
@@ -1231,6 +1269,7 @@ export type MerchantBranchUncheckedCreateWithoutPosShiftsInput = {
   posTables?: Prisma.PosTableUncheckedCreateNestedManyWithoutBranchInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBranchInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutBranchInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type MerchantBranchCreateOrConnectWithoutPosShiftsInput = {
@@ -1271,6 +1310,7 @@ export type MerchantBranchUpdateWithoutPosShiftsInput = {
   posTables?: Prisma.PosTableUpdateManyWithoutBranchNestedInput
   orders?: Prisma.OrderUpdateManyWithoutBranchNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutBranchNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutBranchNestedInput
 }
 
 export type MerchantBranchUncheckedUpdateWithoutPosShiftsInput = {
@@ -1295,6 +1335,7 @@ export type MerchantBranchUncheckedUpdateWithoutPosShiftsInput = {
   posTables?: Prisma.PosTableUncheckedUpdateManyWithoutBranchNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutBranchNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutBranchNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type MerchantBranchCreateWithoutPosTablesInput = {
@@ -1319,6 +1360,7 @@ export type MerchantBranchCreateWithoutPosTablesInput = {
   posShifts?: Prisma.PosShiftCreateNestedManyWithoutBranchInput
   orders?: Prisma.OrderCreateNestedManyWithoutBranchInput
   checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutBranchInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutBranchInput
 }
 
 export type MerchantBranchUncheckedCreateWithoutPosTablesInput = {
@@ -1343,6 +1385,7 @@ export type MerchantBranchUncheckedCreateWithoutPosTablesInput = {
   posShifts?: Prisma.PosShiftUncheckedCreateNestedManyWithoutBranchInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBranchInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutBranchInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type MerchantBranchCreateOrConnectWithoutPosTablesInput = {
@@ -1383,6 +1426,7 @@ export type MerchantBranchUpdateWithoutPosTablesInput = {
   posShifts?: Prisma.PosShiftUpdateManyWithoutBranchNestedInput
   orders?: Prisma.OrderUpdateManyWithoutBranchNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutBranchNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutBranchNestedInput
 }
 
 export type MerchantBranchUncheckedUpdateWithoutPosTablesInput = {
@@ -1405,6 +1449,123 @@ export type MerchantBranchUncheckedUpdateWithoutPosTablesInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   posDevices?: Prisma.PosDeviceUncheckedUpdateManyWithoutBranchNestedInput
   posShifts?: Prisma.PosShiftUncheckedUpdateManyWithoutBranchNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutBranchNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutBranchNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutBranchNestedInput
+}
+
+export type MerchantBranchCreateWithoutDeliveryMethodsInput = {
+  id?: string
+  name: string
+  code: string
+  phone?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  city?: string | null
+  province?: string | null
+  postalCode?: string | null
+  country?: string | null
+  registerName?: string | null
+  isDefault?: boolean
+  status?: $Enums.MerchantBranchStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  merchant: Prisma.MerchantCreateNestedOneWithoutBranchesInput
+  posDevices?: Prisma.PosDeviceCreateNestedManyWithoutBranchInput
+  posShifts?: Prisma.PosShiftCreateNestedManyWithoutBranchInput
+  posTables?: Prisma.PosTableCreateNestedManyWithoutBranchInput
+  orders?: Prisma.OrderCreateNestedManyWithoutBranchInput
+  checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutBranchInput
+}
+
+export type MerchantBranchUncheckedCreateWithoutDeliveryMethodsInput = {
+  id?: string
+  merchantId: string
+  name: string
+  code: string
+  phone?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  city?: string | null
+  province?: string | null
+  postalCode?: string | null
+  country?: string | null
+  registerName?: string | null
+  isDefault?: boolean
+  status?: $Enums.MerchantBranchStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  posDevices?: Prisma.PosDeviceUncheckedCreateNestedManyWithoutBranchInput
+  posShifts?: Prisma.PosShiftUncheckedCreateNestedManyWithoutBranchInput
+  posTables?: Prisma.PosTableUncheckedCreateNestedManyWithoutBranchInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBranchInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutBranchInput
+}
+
+export type MerchantBranchCreateOrConnectWithoutDeliveryMethodsInput = {
+  where: Prisma.MerchantBranchWhereUniqueInput
+  create: Prisma.XOR<Prisma.MerchantBranchCreateWithoutDeliveryMethodsInput, Prisma.MerchantBranchUncheckedCreateWithoutDeliveryMethodsInput>
+}
+
+export type MerchantBranchUpsertWithoutDeliveryMethodsInput = {
+  update: Prisma.XOR<Prisma.MerchantBranchUpdateWithoutDeliveryMethodsInput, Prisma.MerchantBranchUncheckedUpdateWithoutDeliveryMethodsInput>
+  create: Prisma.XOR<Prisma.MerchantBranchCreateWithoutDeliveryMethodsInput, Prisma.MerchantBranchUncheckedCreateWithoutDeliveryMethodsInput>
+  where?: Prisma.MerchantBranchWhereInput
+}
+
+export type MerchantBranchUpdateToOneWithWhereWithoutDeliveryMethodsInput = {
+  where?: Prisma.MerchantBranchWhereInput
+  data: Prisma.XOR<Prisma.MerchantBranchUpdateWithoutDeliveryMethodsInput, Prisma.MerchantBranchUncheckedUpdateWithoutDeliveryMethodsInput>
+}
+
+export type MerchantBranchUpdateWithoutDeliveryMethodsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumMerchantBranchStatusFieldUpdateOperationsInput | $Enums.MerchantBranchStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  merchant?: Prisma.MerchantUpdateOneRequiredWithoutBranchesNestedInput
+  posDevices?: Prisma.PosDeviceUpdateManyWithoutBranchNestedInput
+  posShifts?: Prisma.PosShiftUpdateManyWithoutBranchNestedInput
+  posTables?: Prisma.PosTableUpdateManyWithoutBranchNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutBranchNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutBranchNestedInput
+}
+
+export type MerchantBranchUncheckedUpdateWithoutDeliveryMethodsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  registerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumMerchantBranchStatusFieldUpdateOperationsInput | $Enums.MerchantBranchStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  posDevices?: Prisma.PosDeviceUncheckedUpdateManyWithoutBranchNestedInput
+  posShifts?: Prisma.PosShiftUncheckedUpdateManyWithoutBranchNestedInput
+  posTables?: Prisma.PosTableUncheckedUpdateManyWithoutBranchNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutBranchNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutBranchNestedInput
 }
@@ -1450,6 +1611,7 @@ export type MerchantBranchUpdateWithoutMerchantInput = {
   posTables?: Prisma.PosTableUpdateManyWithoutBranchNestedInput
   orders?: Prisma.OrderUpdateManyWithoutBranchNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutBranchNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutBranchNestedInput
 }
 
 export type MerchantBranchUncheckedUpdateWithoutMerchantInput = {
@@ -1474,6 +1636,7 @@ export type MerchantBranchUncheckedUpdateWithoutMerchantInput = {
   posTables?: Prisma.PosTableUncheckedUpdateManyWithoutBranchNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutBranchNestedInput
   checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutBranchNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type MerchantBranchUncheckedUpdateManyWithoutMerchantInput = {
@@ -1506,6 +1669,7 @@ export type MerchantBranchCountOutputType = {
   posTables: number
   orders: number
   checkoutSessions: number
+  deliveryMethods: number
 }
 
 export type MerchantBranchCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1514,6 +1678,7 @@ export type MerchantBranchCountOutputTypeSelect<ExtArgs extends runtime.Types.Ex
   posTables?: boolean | MerchantBranchCountOutputTypeCountPosTablesArgs
   orders?: boolean | MerchantBranchCountOutputTypeCountOrdersArgs
   checkoutSessions?: boolean | MerchantBranchCountOutputTypeCountCheckoutSessionsArgs
+  deliveryMethods?: boolean | MerchantBranchCountOutputTypeCountDeliveryMethodsArgs
 }
 
 /**
@@ -1561,6 +1726,13 @@ export type MerchantBranchCountOutputTypeCountCheckoutSessionsArgs<ExtArgs exten
   where?: Prisma.CheckoutSessionWhereInput
 }
 
+/**
+ * MerchantBranchCountOutputType without action
+ */
+export type MerchantBranchCountOutputTypeCountDeliveryMethodsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DeliveryMethodWhereInput
+}
+
 
 export type MerchantBranchSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1586,6 +1758,7 @@ export type MerchantBranchSelect<ExtArgs extends runtime.Types.Extensions.Intern
   posTables?: boolean | Prisma.MerchantBranch$posTablesArgs<ExtArgs>
   orders?: boolean | Prisma.MerchantBranch$ordersArgs<ExtArgs>
   checkoutSessions?: boolean | Prisma.MerchantBranch$checkoutSessionsArgs<ExtArgs>
+  deliveryMethods?: boolean | Prisma.MerchantBranch$deliveryMethodsArgs<ExtArgs>
   _count?: boolean | Prisma.MerchantBranchCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["merchantBranch"]>
 
@@ -1659,6 +1832,7 @@ export type MerchantBranchInclude<ExtArgs extends runtime.Types.Extensions.Inter
   posTables?: boolean | Prisma.MerchantBranch$posTablesArgs<ExtArgs>
   orders?: boolean | Prisma.MerchantBranch$ordersArgs<ExtArgs>
   checkoutSessions?: boolean | Prisma.MerchantBranch$checkoutSessionsArgs<ExtArgs>
+  deliveryMethods?: boolean | Prisma.MerchantBranch$deliveryMethodsArgs<ExtArgs>
   _count?: boolean | Prisma.MerchantBranchCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MerchantBranchIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1677,6 +1851,7 @@ export type $MerchantBranchPayload<ExtArgs extends runtime.Types.Extensions.Inte
     posTables: Prisma.$PosTablePayload<ExtArgs>[]
     orders: Prisma.$OrderPayload<ExtArgs>[]
     checkoutSessions: Prisma.$CheckoutSessionPayload<ExtArgs>[]
+    deliveryMethods: Prisma.$DeliveryMethodPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2096,6 +2271,7 @@ export interface Prisma__MerchantBranchClient<T, Null = never, ExtArgs extends r
   posTables<T extends Prisma.MerchantBranch$posTablesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MerchantBranch$posTablesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PosTablePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   orders<T extends Prisma.MerchantBranch$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MerchantBranch$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   checkoutSessions<T extends Prisma.MerchantBranch$checkoutSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MerchantBranch$checkoutSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CheckoutSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  deliveryMethods<T extends Prisma.MerchantBranch$deliveryMethodsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MerchantBranch$deliveryMethodsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DeliveryMethodPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2660,6 +2836,30 @@ export type MerchantBranch$checkoutSessionsArgs<ExtArgs extends runtime.Types.Ex
   take?: number
   skip?: number
   distinct?: Prisma.CheckoutSessionScalarFieldEnum | Prisma.CheckoutSessionScalarFieldEnum[]
+}
+
+/**
+ * MerchantBranch.deliveryMethods
+ */
+export type MerchantBranch$deliveryMethodsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DeliveryMethod
+   */
+  select?: Prisma.DeliveryMethodSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DeliveryMethod
+   */
+  omit?: Prisma.DeliveryMethodOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DeliveryMethodInclude<ExtArgs> | null
+  where?: Prisma.DeliveryMethodWhereInput
+  orderBy?: Prisma.DeliveryMethodOrderByWithRelationInput | Prisma.DeliveryMethodOrderByWithRelationInput[]
+  cursor?: Prisma.DeliveryMethodWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DeliveryMethodScalarFieldEnum | Prisma.DeliveryMethodScalarFieldEnum[]
 }
 
 /**

@@ -72,20 +72,51 @@ replacements or forks of the shared modules; don't move them under `pos/`.
 `pricing/` (top-level, not nested under either) is the same pattern at a
 smaller scale: `CartPricingService` prices a cart of items, and both
 `checkout/` (storefront) and `pos/orders` call it instead of each
-maintaining their own copy.
+maintaining their own copy. `storefront/context` is the newest member of that
+family: one slug-to-merchant lookup shared by every public surface.
+
+## Shared between Merchant dashboard and Storefront
+
+```txt
+logistics       delivery methods + priced zones, shipments, tracking events
+```
+
+`logistics/` is top-level for the same reason `order/` and `payment/` are, but
+its two audiences are the merchant dashboard and the storefront rather than
+the dashboard and POS — it appears in `/docs/merchant`, and the storefront
+reaches the *same* services through `storefront/delivery` and
+`storefront/cart`. `DeliveryQuoteService` prices a delivery option exactly
+once, so a shopper and a merchant can never be looking at two different fees;
+`ShipmentsService.findForOrder` is likewise the one read behind both the
+dashboard's shipment list and the public tracking page. Do not fork a
+storefront copy of either.
+
+POS does not use it: a POS sale is handed over at the counter, so it has no
+delivery method and no shipment.
 
 ## Storefront-only (public, no JWT)
 
 ```txt
 storefront                    public catalog browsing by merchant slug
+storefront/cart               anonymous cart: lines, contact, delivery choice, convert to checkout
+storefront/address            shopper address book, reached through the cart
+storefront/delivery           delivery quoting for a destination + order tracking
+storefront/context            slug -> merchant lookup shared by all of the above
 checkout                      public checkout session creation/confirm/cancel
 storefront/payment            public payment-intent creation + status polling
 storefront/payment-webhook    provider webhook callbacks (KHQR push, PayWay callback)
 storefront/social-post        public social post / shoppable-hotspot pages
 ```
 
-Authenticated by `X-Checkout-Token`, not a user JWT — see
+Authenticated by opaque bearer tokens, not a user JWT: `X-Cart-Token` for a
+cart and `X-Checkout-Token` for a checkout session. Both store only a SHA-256
+hash and compare in constant time — see `cart.service.ts`'s `authenticate` and
 `checkout.service.ts`'s token-hash verification.
+
+Shoppers have no account, so the address book hangs off the merchant's
+`Customer` directory (the same table POS walk-in customers use) rather than a
+user. The cart's contact details identify which customer that is, which is why
+a cart needs a name plus an email or phone before an address can be saved.
 
 ## Platform admin-only
 
@@ -133,6 +164,7 @@ which is why the POS concept is called a "shift," not a "session."
 | `inventory` | ✅ | ✅ | | | Shared |
 | `order` | ✅ | ✅ | | | Shared; POS layers on top via `pos/orders` |
 | `payment` | ✅ | ✅ | | | Shared; POS layers on top via `pos/payments` |
+| `logistics` | ✅ | | ✅ (via `storefront/*`) | | Shared; delivery methods/zones + shipments |
 | `pricing` | | | ✅ (via `checkout`) | | Shared with POS too, no doc of its own |
 | `merchant/theme` | ✅ | | | | |
 | `merchant/social-post` | ✅ | | | | |
@@ -140,6 +172,10 @@ which is why the POS concept is called a "shift," not a "session."
 | `merchant/file-storage` | ✅ | | | | |
 | `pos/*` | | ✅ | | | POS-only, see above |
 | `storefront` | | | ✅ | | |
+| `storefront/cart` | | | ✅ | | `X-Cart-Token`, no shopper account |
+| `storefront/address` | | | ✅ | | Address book under the cart |
+| `storefront/delivery` | | | ✅ | | Quoting + order tracking |
+| `storefront/context` | — | — | — | — | No controller; slug lookup, like `pricing` |
 | `checkout` | | | ✅ | | |
 | `storefront/payment` | | | ✅ | | |
 | `storefront/payment-webhook` | | | ✅ | | |

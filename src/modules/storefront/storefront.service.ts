@@ -7,6 +7,7 @@ import { ProductStatus, SalesChannel } from '#app/generated/prisma/enums';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
 import { CommerceCacheService } from '#app/infrastructure/redis/commerce-cache.service';
 import { ThemeService } from '#app/modules/merchant/theme/theme.service';
+import { StorefrontContextService } from './context/storefront-context.service';
 import { StorefrontOrderQueryDto } from './dto/storefront-order-query.dto';
 import { StorefrontProductQueryDto } from './dto/storefront-query.dto';
 
@@ -19,10 +20,11 @@ export class StorefrontService {
     private readonly prisma: PrismaService,
     private readonly themes: ThemeService,
     private readonly cache: CommerceCacheService,
+    private readonly context: StorefrontContextService,
   ) {}
 
   async getStorefront(merchantSlug: string) {
-    const merchant = await this.getMerchant(merchantSlug);
+    const merchant = await this.context.resolveMerchant(merchantSlug);
     const query = Object.assign(new StorefrontProductQueryDto(), {
       page: 1,
       limit: 8,
@@ -40,7 +42,7 @@ export class StorefrontService {
   }
 
   async listProducts(merchantSlug: string, query: StorefrontProductQueryDto) {
-    const merchant = await this.getMerchant(merchantSlug);
+    const merchant = await this.context.resolveMerchant(merchantSlug);
     return this.listProductsForMerchant(merchant.id, query);
   }
 
@@ -49,7 +51,7 @@ export class StorefrontService {
     productSlug: string,
     channel: SalesChannel = SalesChannel.WEBSITE,
   ) {
-    const merchant = await this.getMerchant(merchantSlug);
+    const merchant = await this.context.resolveMerchant(merchantSlug);
     const normalizedSlug = productSlug.trim().toLowerCase();
     return this.cache.rememberHash(
       this.cache.publicProductsKey(merchant.id),
@@ -76,12 +78,12 @@ export class StorefrontService {
   }
 
   async getTheme(merchantSlug: string) {
-    const merchant = await this.getMerchant(merchantSlug);
+    const merchant = await this.context.resolveMerchant(merchantSlug);
     return this.getThemeForMerchant(merchant.id);
   }
 
   async listOrders(merchantSlug: string, query: StorefrontOrderQueryDto) {
-    const merchant = await this.getMerchant(merchantSlug);
+    const merchant = await this.context.resolveMerchant(merchantSlug);
     const where: Prisma.OrderWhereInput = {
       merchantId: merchant.id,
       customerEmail: {
@@ -108,7 +110,7 @@ export class StorefrontService {
     orderNumber: string,
     customerEmail: string,
   ) {
-    const merchant = await this.getMerchant(merchantSlug);
+    const merchant = await this.context.resolveMerchant(merchantSlug);
     const order = await this.prisma.order.findFirst({
       where: {
         merchantId: merchant.id,
@@ -119,25 +121,6 @@ export class StorefrontService {
     });
     if (!order) throw new NotFoundException('Order not found');
     return order;
-  }
-
-  private async getMerchant(slug: string) {
-    const merchant = await this.prisma.merchant.findFirst({
-      where: {
-        slug: slug.trim().toLowerCase(),
-        status: 'ACTIVE',
-        deletedAt: null,
-      },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        email: true,
-        phone: true,
-      },
-    });
-    if (!merchant) throw new NotFoundException('Storefront not found');
-    return merchant;
   }
 
   private async listProductsForMerchant(

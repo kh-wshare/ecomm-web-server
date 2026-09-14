@@ -30,6 +30,7 @@ export type CheckoutSessionAvgAggregateOutputType = {
   subtotalAmount: runtime.Decimal | null
   discountAmount: runtime.Decimal | null
   feeAmount: runtime.Decimal | null
+  shippingAmount: runtime.Decimal | null
   totalAmount: runtime.Decimal | null
 }
 
@@ -37,6 +38,7 @@ export type CheckoutSessionSumAggregateOutputType = {
   subtotalAmount: runtime.Decimal | null
   discountAmount: runtime.Decimal | null
   feeAmount: runtime.Decimal | null
+  shippingAmount: runtime.Decimal | null
   totalAmount: runtime.Decimal | null
 }
 
@@ -55,8 +57,11 @@ export type CheckoutSessionMinAggregateOutputType = {
   subtotalAmount: runtime.Decimal | null
   discountAmount: runtime.Decimal | null
   feeAmount: runtime.Decimal | null
+  shippingAmount: runtime.Decimal | null
   totalAmount: runtime.Decimal | null
   currency: string | null
+  deliveryMethodId: string | null
+  deliveryMethodName: string | null
   expiresAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -77,8 +82,11 @@ export type CheckoutSessionMaxAggregateOutputType = {
   subtotalAmount: runtime.Decimal | null
   discountAmount: runtime.Decimal | null
   feeAmount: runtime.Decimal | null
+  shippingAmount: runtime.Decimal | null
   totalAmount: runtime.Decimal | null
   currency: string | null
+  deliveryMethodId: string | null
+  deliveryMethodName: string | null
   expiresAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -99,8 +107,13 @@ export type CheckoutSessionCountAggregateOutputType = {
   subtotalAmount: number
   discountAmount: number
   feeAmount: number
+  shippingAmount: number
   totalAmount: number
   currency: number
+  deliveryMethodId: number
+  deliveryMethodName: number
+  shippingAddress: number
+  billingAddress: number
   expiresAt: number
   createdAt: number
   updatedAt: number
@@ -112,6 +125,7 @@ export type CheckoutSessionAvgAggregateInputType = {
   subtotalAmount?: true
   discountAmount?: true
   feeAmount?: true
+  shippingAmount?: true
   totalAmount?: true
 }
 
@@ -119,6 +133,7 @@ export type CheckoutSessionSumAggregateInputType = {
   subtotalAmount?: true
   discountAmount?: true
   feeAmount?: true
+  shippingAmount?: true
   totalAmount?: true
 }
 
@@ -137,8 +152,11 @@ export type CheckoutSessionMinAggregateInputType = {
   subtotalAmount?: true
   discountAmount?: true
   feeAmount?: true
+  shippingAmount?: true
   totalAmount?: true
   currency?: true
+  deliveryMethodId?: true
+  deliveryMethodName?: true
   expiresAt?: true
   createdAt?: true
   updatedAt?: true
@@ -159,8 +177,11 @@ export type CheckoutSessionMaxAggregateInputType = {
   subtotalAmount?: true
   discountAmount?: true
   feeAmount?: true
+  shippingAmount?: true
   totalAmount?: true
   currency?: true
+  deliveryMethodId?: true
+  deliveryMethodName?: true
   expiresAt?: true
   createdAt?: true
   updatedAt?: true
@@ -181,8 +202,13 @@ export type CheckoutSessionCountAggregateInputType = {
   subtotalAmount?: true
   discountAmount?: true
   feeAmount?: true
+  shippingAmount?: true
   totalAmount?: true
   currency?: true
+  deliveryMethodId?: true
+  deliveryMethodName?: true
+  shippingAddress?: true
+  billingAddress?: true
   expiresAt?: true
   createdAt?: true
   updatedAt?: true
@@ -290,8 +316,13 @@ export type CheckoutSessionGroupByOutputType = {
   subtotalAmount: runtime.Decimal
   discountAmount: runtime.Decimal
   feeAmount: runtime.Decimal
+  shippingAmount: runtime.Decimal
   totalAmount: runtime.Decimal
   currency: string
+  deliveryMethodId: string | null
+  deliveryMethodName: string | null
+  shippingAddress: runtime.JsonValue | null
+  billingAddress: runtime.JsonValue | null
   expiresAt: Date
   createdAt: Date
   updatedAt: Date
@@ -335,8 +366,13 @@ export type CheckoutSessionWhereInput = {
   subtotalAmount?: Prisma.DecimalFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFilter<"CheckoutSession"> | string
+  deliveryMethodId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
+  deliveryMethodName?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
+  shippingAddress?: Prisma.JsonNullableFilter<"CheckoutSession">
+  billingAddress?: Prisma.JsonNullableFilter<"CheckoutSession">
   expiresAt?: Prisma.DateTimeFilter<"CheckoutSession"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"CheckoutSession"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CheckoutSession"> | Date | string
@@ -344,8 +380,10 @@ export type CheckoutSessionWhereInput = {
   branch?: Prisma.XOR<Prisma.MerchantBranchNullableScalarRelationFilter, Prisma.MerchantBranchWhereInput> | null
   posDevice?: Prisma.XOR<Prisma.PosDeviceNullableScalarRelationFilter, Prisma.PosDeviceWhereInput> | null
   customer?: Prisma.XOR<Prisma.CustomerNullableScalarRelationFilter, Prisma.CustomerWhereInput> | null
+  deliveryMethod?: Prisma.XOR<Prisma.DeliveryMethodNullableScalarRelationFilter, Prisma.DeliveryMethodWhereInput> | null
   items?: Prisma.CheckoutItemListRelationFilter
   order?: Prisma.XOR<Prisma.OrderNullableScalarRelationFilter, Prisma.OrderWhereInput> | null
+  cart?: Prisma.XOR<Prisma.CartNullableScalarRelationFilter, Prisma.CartWhereInput> | null
 }
 
 export type CheckoutSessionOrderByWithRelationInput = {
@@ -363,8 +401,13 @@ export type CheckoutSessionOrderByWithRelationInput = {
   subtotalAmount?: Prisma.SortOrder
   discountAmount?: Prisma.SortOrder
   feeAmount?: Prisma.SortOrder
+  shippingAmount?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  deliveryMethodId?: Prisma.SortOrderInput | Prisma.SortOrder
+  deliveryMethodName?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  billingAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -372,8 +415,10 @@ export type CheckoutSessionOrderByWithRelationInput = {
   branch?: Prisma.MerchantBranchOrderByWithRelationInput
   posDevice?: Prisma.PosDeviceOrderByWithRelationInput
   customer?: Prisma.CustomerOrderByWithRelationInput
+  deliveryMethod?: Prisma.DeliveryMethodOrderByWithRelationInput
   items?: Prisma.CheckoutItemOrderByRelationAggregateInput
   order?: Prisma.OrderOrderByWithRelationInput
+  cart?: Prisma.CartOrderByWithRelationInput
 }
 
 export type CheckoutSessionWhereUniqueInput = Prisma.AtLeast<{
@@ -394,8 +439,13 @@ export type CheckoutSessionWhereUniqueInput = Prisma.AtLeast<{
   subtotalAmount?: Prisma.DecimalFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFilter<"CheckoutSession"> | string
+  deliveryMethodId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
+  deliveryMethodName?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
+  shippingAddress?: Prisma.JsonNullableFilter<"CheckoutSession">
+  billingAddress?: Prisma.JsonNullableFilter<"CheckoutSession">
   expiresAt?: Prisma.DateTimeFilter<"CheckoutSession"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"CheckoutSession"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CheckoutSession"> | Date | string
@@ -403,8 +453,10 @@ export type CheckoutSessionWhereUniqueInput = Prisma.AtLeast<{
   branch?: Prisma.XOR<Prisma.MerchantBranchNullableScalarRelationFilter, Prisma.MerchantBranchWhereInput> | null
   posDevice?: Prisma.XOR<Prisma.PosDeviceNullableScalarRelationFilter, Prisma.PosDeviceWhereInput> | null
   customer?: Prisma.XOR<Prisma.CustomerNullableScalarRelationFilter, Prisma.CustomerWhereInput> | null
+  deliveryMethod?: Prisma.XOR<Prisma.DeliveryMethodNullableScalarRelationFilter, Prisma.DeliveryMethodWhereInput> | null
   items?: Prisma.CheckoutItemListRelationFilter
   order?: Prisma.XOR<Prisma.OrderNullableScalarRelationFilter, Prisma.OrderWhereInput> | null
+  cart?: Prisma.XOR<Prisma.CartNullableScalarRelationFilter, Prisma.CartWhereInput> | null
 }, "id" | "accessTokenHash">
 
 export type CheckoutSessionOrderByWithAggregationInput = {
@@ -422,8 +474,13 @@ export type CheckoutSessionOrderByWithAggregationInput = {
   subtotalAmount?: Prisma.SortOrder
   discountAmount?: Prisma.SortOrder
   feeAmount?: Prisma.SortOrder
+  shippingAmount?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  deliveryMethodId?: Prisma.SortOrderInput | Prisma.SortOrder
+  deliveryMethodName?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  billingAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -452,8 +509,13 @@ export type CheckoutSessionScalarWhereWithAggregatesInput = {
   subtotalAmount?: Prisma.DecimalWithAggregatesFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalWithAggregatesFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalWithAggregatesFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalWithAggregatesFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalWithAggregatesFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringWithAggregatesFilter<"CheckoutSession"> | string
+  deliveryMethodId?: Prisma.UuidNullableWithAggregatesFilter<"CheckoutSession"> | string | null
+  deliveryMethodName?: Prisma.StringNullableWithAggregatesFilter<"CheckoutSession"> | string | null
+  shippingAddress?: Prisma.JsonNullableWithAggregatesFilter<"CheckoutSession">
+  billingAddress?: Prisma.JsonNullableWithAggregatesFilter<"CheckoutSession">
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"CheckoutSession"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CheckoutSession"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CheckoutSession"> | Date | string
@@ -470,8 +532,12 @@ export type CheckoutSessionCreateInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -479,8 +545,10 @@ export type CheckoutSessionCreateInput = {
   branch?: Prisma.MerchantBranchCreateNestedOneWithoutCheckoutSessionsInput
   posDevice?: Prisma.PosDeviceCreateNestedOneWithoutCheckoutSessionsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutCheckoutSessionsInput
+  deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCheckoutSessionsInput
   items?: Prisma.CheckoutItemCreateNestedManyWithoutCheckoutSessionInput
   order?: Prisma.OrderCreateNestedOneWithoutCheckoutSessionInput
+  cart?: Prisma.CartCreateNestedOneWithoutCheckoutSessionInput
 }
 
 export type CheckoutSessionUncheckedCreateInput = {
@@ -498,13 +566,19 @@ export type CheckoutSessionUncheckedCreateInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodId?: string | null
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.CheckoutItemUncheckedCreateNestedManyWithoutCheckoutSessionInput
   order?: Prisma.OrderUncheckedCreateNestedOneWithoutCheckoutSessionInput
+  cart?: Prisma.CartUncheckedCreateNestedOneWithoutCheckoutSessionInput
 }
 
 export type CheckoutSessionUpdateInput = {
@@ -518,8 +592,12 @@ export type CheckoutSessionUpdateInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -527,8 +605,10 @@ export type CheckoutSessionUpdateInput = {
   branch?: Prisma.MerchantBranchUpdateOneWithoutCheckoutSessionsNestedInput
   posDevice?: Prisma.PosDeviceUpdateOneWithoutCheckoutSessionsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutCheckoutSessionsNestedInput
+  deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCheckoutSessionsNestedInput
   items?: Prisma.CheckoutItemUpdateManyWithoutCheckoutSessionNestedInput
   order?: Prisma.OrderUpdateOneWithoutCheckoutSessionNestedInput
+  cart?: Prisma.CartUpdateOneWithoutCheckoutSessionNestedInput
 }
 
 export type CheckoutSessionUncheckedUpdateInput = {
@@ -546,13 +626,19 @@ export type CheckoutSessionUncheckedUpdateInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.CheckoutItemUncheckedUpdateManyWithoutCheckoutSessionNestedInput
   order?: Prisma.OrderUncheckedUpdateOneWithoutCheckoutSessionNestedInput
+  cart?: Prisma.CartUncheckedUpdateOneWithoutCheckoutSessionNestedInput
 }
 
 export type CheckoutSessionCreateManyInput = {
@@ -570,8 +656,13 @@ export type CheckoutSessionCreateManyInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodId?: string | null
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -588,8 +679,12 @@ export type CheckoutSessionUpdateManyMutationInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -610,8 +705,13 @@ export type CheckoutSessionUncheckedUpdateManyInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -642,8 +742,13 @@ export type CheckoutSessionCountOrderByAggregateInput = {
   subtotalAmount?: Prisma.SortOrder
   discountAmount?: Prisma.SortOrder
   feeAmount?: Prisma.SortOrder
+  shippingAmount?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  deliveryMethodId?: Prisma.SortOrder
+  deliveryMethodName?: Prisma.SortOrder
+  shippingAddress?: Prisma.SortOrder
+  billingAddress?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -653,6 +758,7 @@ export type CheckoutSessionAvgOrderByAggregateInput = {
   subtotalAmount?: Prisma.SortOrder
   discountAmount?: Prisma.SortOrder
   feeAmount?: Prisma.SortOrder
+  shippingAmount?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
 }
 
@@ -671,8 +777,11 @@ export type CheckoutSessionMaxOrderByAggregateInput = {
   subtotalAmount?: Prisma.SortOrder
   discountAmount?: Prisma.SortOrder
   feeAmount?: Prisma.SortOrder
+  shippingAmount?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  deliveryMethodId?: Prisma.SortOrder
+  deliveryMethodName?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -693,8 +802,11 @@ export type CheckoutSessionMinOrderByAggregateInput = {
   subtotalAmount?: Prisma.SortOrder
   discountAmount?: Prisma.SortOrder
   feeAmount?: Prisma.SortOrder
+  shippingAmount?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  deliveryMethodId?: Prisma.SortOrder
+  deliveryMethodName?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -704,12 +816,18 @@ export type CheckoutSessionSumOrderByAggregateInput = {
   subtotalAmount?: Prisma.SortOrder
   discountAmount?: Prisma.SortOrder
   feeAmount?: Prisma.SortOrder
+  shippingAmount?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
 }
 
 export type CheckoutSessionScalarRelationFilter = {
   is?: Prisma.CheckoutSessionWhereInput
   isNot?: Prisma.CheckoutSessionWhereInput
+}
+
+export type CheckoutSessionNullableScalarRelationFilter = {
+  is?: Prisma.CheckoutSessionWhereInput | null
+  isNot?: Prisma.CheckoutSessionWhereInput | null
 }
 
 export type CheckoutSessionCreateNestedManyWithoutMerchantInput = {
@@ -912,6 +1030,64 @@ export type CheckoutSessionUncheckedUpdateManyWithoutCustomerNestedInput = {
   deleteMany?: Prisma.CheckoutSessionScalarWhereInput | Prisma.CheckoutSessionScalarWhereInput[]
 }
 
+export type CheckoutSessionCreateNestedOneWithoutCartInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutCartInput, Prisma.CheckoutSessionUncheckedCreateWithoutCartInput>
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutCartInput
+  connect?: Prisma.CheckoutSessionWhereUniqueInput
+}
+
+export type CheckoutSessionUpdateOneWithoutCartNestedInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutCartInput, Prisma.CheckoutSessionUncheckedCreateWithoutCartInput>
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutCartInput
+  upsert?: Prisma.CheckoutSessionUpsertWithoutCartInput
+  disconnect?: Prisma.CheckoutSessionWhereInput | boolean
+  delete?: Prisma.CheckoutSessionWhereInput | boolean
+  connect?: Prisma.CheckoutSessionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CheckoutSessionUpdateToOneWithWhereWithoutCartInput, Prisma.CheckoutSessionUpdateWithoutCartInput>, Prisma.CheckoutSessionUncheckedUpdateWithoutCartInput>
+}
+
+export type CheckoutSessionCreateNestedManyWithoutDeliveryMethodInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutDeliveryMethodInput, Prisma.CheckoutSessionUncheckedCreateWithoutDeliveryMethodInput> | Prisma.CheckoutSessionCreateWithoutDeliveryMethodInput[] | Prisma.CheckoutSessionUncheckedCreateWithoutDeliveryMethodInput[]
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutDeliveryMethodInput | Prisma.CheckoutSessionCreateOrConnectWithoutDeliveryMethodInput[]
+  createMany?: Prisma.CheckoutSessionCreateManyDeliveryMethodInputEnvelope
+  connect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+}
+
+export type CheckoutSessionUncheckedCreateNestedManyWithoutDeliveryMethodInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutDeliveryMethodInput, Prisma.CheckoutSessionUncheckedCreateWithoutDeliveryMethodInput> | Prisma.CheckoutSessionCreateWithoutDeliveryMethodInput[] | Prisma.CheckoutSessionUncheckedCreateWithoutDeliveryMethodInput[]
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutDeliveryMethodInput | Prisma.CheckoutSessionCreateOrConnectWithoutDeliveryMethodInput[]
+  createMany?: Prisma.CheckoutSessionCreateManyDeliveryMethodInputEnvelope
+  connect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+}
+
+export type CheckoutSessionUpdateManyWithoutDeliveryMethodNestedInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutDeliveryMethodInput, Prisma.CheckoutSessionUncheckedCreateWithoutDeliveryMethodInput> | Prisma.CheckoutSessionCreateWithoutDeliveryMethodInput[] | Prisma.CheckoutSessionUncheckedCreateWithoutDeliveryMethodInput[]
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutDeliveryMethodInput | Prisma.CheckoutSessionCreateOrConnectWithoutDeliveryMethodInput[]
+  upsert?: Prisma.CheckoutSessionUpsertWithWhereUniqueWithoutDeliveryMethodInput | Prisma.CheckoutSessionUpsertWithWhereUniqueWithoutDeliveryMethodInput[]
+  createMany?: Prisma.CheckoutSessionCreateManyDeliveryMethodInputEnvelope
+  set?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  disconnect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  delete?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  connect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  update?: Prisma.CheckoutSessionUpdateWithWhereUniqueWithoutDeliveryMethodInput | Prisma.CheckoutSessionUpdateWithWhereUniqueWithoutDeliveryMethodInput[]
+  updateMany?: Prisma.CheckoutSessionUpdateManyWithWhereWithoutDeliveryMethodInput | Prisma.CheckoutSessionUpdateManyWithWhereWithoutDeliveryMethodInput[]
+  deleteMany?: Prisma.CheckoutSessionScalarWhereInput | Prisma.CheckoutSessionScalarWhereInput[]
+}
+
+export type CheckoutSessionUncheckedUpdateManyWithoutDeliveryMethodNestedInput = {
+  create?: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutDeliveryMethodInput, Prisma.CheckoutSessionUncheckedCreateWithoutDeliveryMethodInput> | Prisma.CheckoutSessionCreateWithoutDeliveryMethodInput[] | Prisma.CheckoutSessionUncheckedCreateWithoutDeliveryMethodInput[]
+  connectOrCreate?: Prisma.CheckoutSessionCreateOrConnectWithoutDeliveryMethodInput | Prisma.CheckoutSessionCreateOrConnectWithoutDeliveryMethodInput[]
+  upsert?: Prisma.CheckoutSessionUpsertWithWhereUniqueWithoutDeliveryMethodInput | Prisma.CheckoutSessionUpsertWithWhereUniqueWithoutDeliveryMethodInput[]
+  createMany?: Prisma.CheckoutSessionCreateManyDeliveryMethodInputEnvelope
+  set?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  disconnect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  delete?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  connect?: Prisma.CheckoutSessionWhereUniqueInput | Prisma.CheckoutSessionWhereUniqueInput[]
+  update?: Prisma.CheckoutSessionUpdateWithWhereUniqueWithoutDeliveryMethodInput | Prisma.CheckoutSessionUpdateWithWhereUniqueWithoutDeliveryMethodInput[]
+  updateMany?: Prisma.CheckoutSessionUpdateManyWithWhereWithoutDeliveryMethodInput | Prisma.CheckoutSessionUpdateManyWithWhereWithoutDeliveryMethodInput[]
+  deleteMany?: Prisma.CheckoutSessionScalarWhereInput | Prisma.CheckoutSessionScalarWhereInput[]
+}
+
 export type CheckoutSessionCreateWithoutMerchantInput = {
   id?: string
   customerName?: string | null
@@ -923,16 +1099,22 @@ export type CheckoutSessionCreateWithoutMerchantInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.MerchantBranchCreateNestedOneWithoutCheckoutSessionsInput
   posDevice?: Prisma.PosDeviceCreateNestedOneWithoutCheckoutSessionsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutCheckoutSessionsInput
+  deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCheckoutSessionsInput
   items?: Prisma.CheckoutItemCreateNestedManyWithoutCheckoutSessionInput
   order?: Prisma.OrderCreateNestedOneWithoutCheckoutSessionInput
+  cart?: Prisma.CartCreateNestedOneWithoutCheckoutSessionInput
 }
 
 export type CheckoutSessionUncheckedCreateWithoutMerchantInput = {
@@ -949,13 +1131,19 @@ export type CheckoutSessionUncheckedCreateWithoutMerchantInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodId?: string | null
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.CheckoutItemUncheckedCreateNestedManyWithoutCheckoutSessionInput
   order?: Prisma.OrderUncheckedCreateNestedOneWithoutCheckoutSessionInput
+  cart?: Prisma.CartUncheckedCreateNestedOneWithoutCheckoutSessionInput
 }
 
 export type CheckoutSessionCreateOrConnectWithoutMerchantInput = {
@@ -1002,8 +1190,13 @@ export type CheckoutSessionScalarWhereInput = {
   subtotalAmount?: Prisma.DecimalFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFilter<"CheckoutSession"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFilter<"CheckoutSession"> | string
+  deliveryMethodId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
+  deliveryMethodName?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
+  shippingAddress?: Prisma.JsonNullableFilter<"CheckoutSession">
+  billingAddress?: Prisma.JsonNullableFilter<"CheckoutSession">
   expiresAt?: Prisma.DateTimeFilter<"CheckoutSession"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"CheckoutSession"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CheckoutSession"> | Date | string
@@ -1020,16 +1213,22 @@ export type CheckoutSessionCreateWithoutBranchInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
   merchant: Prisma.MerchantCreateNestedOneWithoutCheckoutSessionsInput
   posDevice?: Prisma.PosDeviceCreateNestedOneWithoutCheckoutSessionsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutCheckoutSessionsInput
+  deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCheckoutSessionsInput
   items?: Prisma.CheckoutItemCreateNestedManyWithoutCheckoutSessionInput
   order?: Prisma.OrderCreateNestedOneWithoutCheckoutSessionInput
+  cart?: Prisma.CartCreateNestedOneWithoutCheckoutSessionInput
 }
 
 export type CheckoutSessionUncheckedCreateWithoutBranchInput = {
@@ -1046,13 +1245,19 @@ export type CheckoutSessionUncheckedCreateWithoutBranchInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodId?: string | null
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.CheckoutItemUncheckedCreateNestedManyWithoutCheckoutSessionInput
   order?: Prisma.OrderUncheckedCreateNestedOneWithoutCheckoutSessionInput
+  cart?: Prisma.CartUncheckedCreateNestedOneWithoutCheckoutSessionInput
 }
 
 export type CheckoutSessionCreateOrConnectWithoutBranchInput = {
@@ -1092,8 +1297,12 @@ export type CheckoutSessionCreateWithoutItemsInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1101,7 +1310,9 @@ export type CheckoutSessionCreateWithoutItemsInput = {
   branch?: Prisma.MerchantBranchCreateNestedOneWithoutCheckoutSessionsInput
   posDevice?: Prisma.PosDeviceCreateNestedOneWithoutCheckoutSessionsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutCheckoutSessionsInput
+  deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCheckoutSessionsInput
   order?: Prisma.OrderCreateNestedOneWithoutCheckoutSessionInput
+  cart?: Prisma.CartCreateNestedOneWithoutCheckoutSessionInput
 }
 
 export type CheckoutSessionUncheckedCreateWithoutItemsInput = {
@@ -1119,12 +1330,18 @@ export type CheckoutSessionUncheckedCreateWithoutItemsInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodId?: string | null
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
   order?: Prisma.OrderUncheckedCreateNestedOneWithoutCheckoutSessionInput
+  cart?: Prisma.CartUncheckedCreateNestedOneWithoutCheckoutSessionInput
 }
 
 export type CheckoutSessionCreateOrConnectWithoutItemsInput = {
@@ -1154,8 +1371,12 @@ export type CheckoutSessionUpdateWithoutItemsInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1163,7 +1384,9 @@ export type CheckoutSessionUpdateWithoutItemsInput = {
   branch?: Prisma.MerchantBranchUpdateOneWithoutCheckoutSessionsNestedInput
   posDevice?: Prisma.PosDeviceUpdateOneWithoutCheckoutSessionsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutCheckoutSessionsNestedInput
+  deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCheckoutSessionsNestedInput
   order?: Prisma.OrderUpdateOneWithoutCheckoutSessionNestedInput
+  cart?: Prisma.CartUpdateOneWithoutCheckoutSessionNestedInput
 }
 
 export type CheckoutSessionUncheckedUpdateWithoutItemsInput = {
@@ -1181,12 +1404,18 @@ export type CheckoutSessionUncheckedUpdateWithoutItemsInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   order?: Prisma.OrderUncheckedUpdateOneWithoutCheckoutSessionNestedInput
+  cart?: Prisma.CartUncheckedUpdateOneWithoutCheckoutSessionNestedInput
 }
 
 export type CheckoutSessionCreateWithoutOrderInput = {
@@ -1200,8 +1429,12 @@ export type CheckoutSessionCreateWithoutOrderInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1209,7 +1442,9 @@ export type CheckoutSessionCreateWithoutOrderInput = {
   branch?: Prisma.MerchantBranchCreateNestedOneWithoutCheckoutSessionsInput
   posDevice?: Prisma.PosDeviceCreateNestedOneWithoutCheckoutSessionsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutCheckoutSessionsInput
+  deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCheckoutSessionsInput
   items?: Prisma.CheckoutItemCreateNestedManyWithoutCheckoutSessionInput
+  cart?: Prisma.CartCreateNestedOneWithoutCheckoutSessionInput
 }
 
 export type CheckoutSessionUncheckedCreateWithoutOrderInput = {
@@ -1227,12 +1462,18 @@ export type CheckoutSessionUncheckedCreateWithoutOrderInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodId?: string | null
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.CheckoutItemUncheckedCreateNestedManyWithoutCheckoutSessionInput
+  cart?: Prisma.CartUncheckedCreateNestedOneWithoutCheckoutSessionInput
 }
 
 export type CheckoutSessionCreateOrConnectWithoutOrderInput = {
@@ -1262,8 +1503,12 @@ export type CheckoutSessionUpdateWithoutOrderInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1271,7 +1516,9 @@ export type CheckoutSessionUpdateWithoutOrderInput = {
   branch?: Prisma.MerchantBranchUpdateOneWithoutCheckoutSessionsNestedInput
   posDevice?: Prisma.PosDeviceUpdateOneWithoutCheckoutSessionsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutCheckoutSessionsNestedInput
+  deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCheckoutSessionsNestedInput
   items?: Prisma.CheckoutItemUpdateManyWithoutCheckoutSessionNestedInput
+  cart?: Prisma.CartUpdateOneWithoutCheckoutSessionNestedInput
 }
 
 export type CheckoutSessionUncheckedUpdateWithoutOrderInput = {
@@ -1289,12 +1536,18 @@ export type CheckoutSessionUncheckedUpdateWithoutOrderInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.CheckoutItemUncheckedUpdateManyWithoutCheckoutSessionNestedInput
+  cart?: Prisma.CartUncheckedUpdateOneWithoutCheckoutSessionNestedInput
 }
 
 export type CheckoutSessionCreateWithoutPosDeviceInput = {
@@ -1308,16 +1561,22 @@ export type CheckoutSessionCreateWithoutPosDeviceInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
   merchant: Prisma.MerchantCreateNestedOneWithoutCheckoutSessionsInput
   branch?: Prisma.MerchantBranchCreateNestedOneWithoutCheckoutSessionsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutCheckoutSessionsInput
+  deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCheckoutSessionsInput
   items?: Prisma.CheckoutItemCreateNestedManyWithoutCheckoutSessionInput
   order?: Prisma.OrderCreateNestedOneWithoutCheckoutSessionInput
+  cart?: Prisma.CartCreateNestedOneWithoutCheckoutSessionInput
 }
 
 export type CheckoutSessionUncheckedCreateWithoutPosDeviceInput = {
@@ -1334,13 +1593,19 @@ export type CheckoutSessionUncheckedCreateWithoutPosDeviceInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodId?: string | null
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.CheckoutItemUncheckedCreateNestedManyWithoutCheckoutSessionInput
   order?: Prisma.OrderUncheckedCreateNestedOneWithoutCheckoutSessionInput
+  cart?: Prisma.CartUncheckedCreateNestedOneWithoutCheckoutSessionInput
 }
 
 export type CheckoutSessionCreateOrConnectWithoutPosDeviceInput = {
@@ -1380,16 +1645,22 @@ export type CheckoutSessionCreateWithoutCustomerInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
   merchant: Prisma.MerchantCreateNestedOneWithoutCheckoutSessionsInput
   branch?: Prisma.MerchantBranchCreateNestedOneWithoutCheckoutSessionsInput
   posDevice?: Prisma.PosDeviceCreateNestedOneWithoutCheckoutSessionsInput
+  deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCheckoutSessionsInput
   items?: Prisma.CheckoutItemCreateNestedManyWithoutCheckoutSessionInput
   order?: Prisma.OrderCreateNestedOneWithoutCheckoutSessionInput
+  cart?: Prisma.CartCreateNestedOneWithoutCheckoutSessionInput
 }
 
 export type CheckoutSessionUncheckedCreateWithoutCustomerInput = {
@@ -1406,13 +1677,19 @@ export type CheckoutSessionUncheckedCreateWithoutCustomerInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodId?: string | null
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.CheckoutItemUncheckedCreateNestedManyWithoutCheckoutSessionInput
   order?: Prisma.OrderUncheckedCreateNestedOneWithoutCheckoutSessionInput
+  cart?: Prisma.CartUncheckedCreateNestedOneWithoutCheckoutSessionInput
 }
 
 export type CheckoutSessionCreateOrConnectWithoutCustomerInput = {
@@ -1441,6 +1718,222 @@ export type CheckoutSessionUpdateManyWithWhereWithoutCustomerInput = {
   data: Prisma.XOR<Prisma.CheckoutSessionUpdateManyMutationInput, Prisma.CheckoutSessionUncheckedUpdateManyWithoutCustomerInput>
 }
 
+export type CheckoutSessionCreateWithoutCartInput = {
+  id?: string
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  sourceChannel: $Enums.SalesChannel
+  status?: $Enums.CheckoutSessionStatus
+  accessTokenHash: string
+  subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  merchant: Prisma.MerchantCreateNestedOneWithoutCheckoutSessionsInput
+  branch?: Prisma.MerchantBranchCreateNestedOneWithoutCheckoutSessionsInput
+  posDevice?: Prisma.PosDeviceCreateNestedOneWithoutCheckoutSessionsInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutCheckoutSessionsInput
+  deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCheckoutSessionsInput
+  items?: Prisma.CheckoutItemCreateNestedManyWithoutCheckoutSessionInput
+  order?: Prisma.OrderCreateNestedOneWithoutCheckoutSessionInput
+}
+
+export type CheckoutSessionUncheckedCreateWithoutCartInput = {
+  id?: string
+  merchantId: string
+  branchId?: string | null
+  posDeviceId?: string | null
+  customerId?: string | null
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  sourceChannel: $Enums.SalesChannel
+  status?: $Enums.CheckoutSessionStatus
+  accessTokenHash: string
+  subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  deliveryMethodId?: string | null
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  items?: Prisma.CheckoutItemUncheckedCreateNestedManyWithoutCheckoutSessionInput
+  order?: Prisma.OrderUncheckedCreateNestedOneWithoutCheckoutSessionInput
+}
+
+export type CheckoutSessionCreateOrConnectWithoutCartInput = {
+  where: Prisma.CheckoutSessionWhereUniqueInput
+  create: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutCartInput, Prisma.CheckoutSessionUncheckedCreateWithoutCartInput>
+}
+
+export type CheckoutSessionUpsertWithoutCartInput = {
+  update: Prisma.XOR<Prisma.CheckoutSessionUpdateWithoutCartInput, Prisma.CheckoutSessionUncheckedUpdateWithoutCartInput>
+  create: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutCartInput, Prisma.CheckoutSessionUncheckedCreateWithoutCartInput>
+  where?: Prisma.CheckoutSessionWhereInput
+}
+
+export type CheckoutSessionUpdateToOneWithWhereWithoutCartInput = {
+  where?: Prisma.CheckoutSessionWhereInput
+  data: Prisma.XOR<Prisma.CheckoutSessionUpdateWithoutCartInput, Prisma.CheckoutSessionUncheckedUpdateWithoutCartInput>
+}
+
+export type CheckoutSessionUpdateWithoutCartInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  status?: Prisma.EnumCheckoutSessionStatusFieldUpdateOperationsInput | $Enums.CheckoutSessionStatus
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  merchant?: Prisma.MerchantUpdateOneRequiredWithoutCheckoutSessionsNestedInput
+  branch?: Prisma.MerchantBranchUpdateOneWithoutCheckoutSessionsNestedInput
+  posDevice?: Prisma.PosDeviceUpdateOneWithoutCheckoutSessionsNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutCheckoutSessionsNestedInput
+  deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCheckoutSessionsNestedInput
+  items?: Prisma.CheckoutItemUpdateManyWithoutCheckoutSessionNestedInput
+  order?: Prisma.OrderUpdateOneWithoutCheckoutSessionNestedInput
+}
+
+export type CheckoutSessionUncheckedUpdateWithoutCartInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  status?: Prisma.EnumCheckoutSessionStatusFieldUpdateOperationsInput | $Enums.CheckoutSessionStatus
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.CheckoutItemUncheckedUpdateManyWithoutCheckoutSessionNestedInput
+  order?: Prisma.OrderUncheckedUpdateOneWithoutCheckoutSessionNestedInput
+}
+
+export type CheckoutSessionCreateWithoutDeliveryMethodInput = {
+  id?: string
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  sourceChannel: $Enums.SalesChannel
+  status?: $Enums.CheckoutSessionStatus
+  accessTokenHash: string
+  subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  merchant: Prisma.MerchantCreateNestedOneWithoutCheckoutSessionsInput
+  branch?: Prisma.MerchantBranchCreateNestedOneWithoutCheckoutSessionsInput
+  posDevice?: Prisma.PosDeviceCreateNestedOneWithoutCheckoutSessionsInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutCheckoutSessionsInput
+  items?: Prisma.CheckoutItemCreateNestedManyWithoutCheckoutSessionInput
+  order?: Prisma.OrderCreateNestedOneWithoutCheckoutSessionInput
+  cart?: Prisma.CartCreateNestedOneWithoutCheckoutSessionInput
+}
+
+export type CheckoutSessionUncheckedCreateWithoutDeliveryMethodInput = {
+  id?: string
+  merchantId: string
+  branchId?: string | null
+  posDeviceId?: string | null
+  customerId?: string | null
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  sourceChannel: $Enums.SalesChannel
+  status?: $Enums.CheckoutSessionStatus
+  accessTokenHash: string
+  subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  items?: Prisma.CheckoutItemUncheckedCreateNestedManyWithoutCheckoutSessionInput
+  order?: Prisma.OrderUncheckedCreateNestedOneWithoutCheckoutSessionInput
+  cart?: Prisma.CartUncheckedCreateNestedOneWithoutCheckoutSessionInput
+}
+
+export type CheckoutSessionCreateOrConnectWithoutDeliveryMethodInput = {
+  where: Prisma.CheckoutSessionWhereUniqueInput
+  create: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutDeliveryMethodInput, Prisma.CheckoutSessionUncheckedCreateWithoutDeliveryMethodInput>
+}
+
+export type CheckoutSessionCreateManyDeliveryMethodInputEnvelope = {
+  data: Prisma.CheckoutSessionCreateManyDeliveryMethodInput | Prisma.CheckoutSessionCreateManyDeliveryMethodInput[]
+  skipDuplicates?: boolean
+}
+
+export type CheckoutSessionUpsertWithWhereUniqueWithoutDeliveryMethodInput = {
+  where: Prisma.CheckoutSessionWhereUniqueInput
+  update: Prisma.XOR<Prisma.CheckoutSessionUpdateWithoutDeliveryMethodInput, Prisma.CheckoutSessionUncheckedUpdateWithoutDeliveryMethodInput>
+  create: Prisma.XOR<Prisma.CheckoutSessionCreateWithoutDeliveryMethodInput, Prisma.CheckoutSessionUncheckedCreateWithoutDeliveryMethodInput>
+}
+
+export type CheckoutSessionUpdateWithWhereUniqueWithoutDeliveryMethodInput = {
+  where: Prisma.CheckoutSessionWhereUniqueInput
+  data: Prisma.XOR<Prisma.CheckoutSessionUpdateWithoutDeliveryMethodInput, Prisma.CheckoutSessionUncheckedUpdateWithoutDeliveryMethodInput>
+}
+
+export type CheckoutSessionUpdateManyWithWhereWithoutDeliveryMethodInput = {
+  where: Prisma.CheckoutSessionScalarWhereInput
+  data: Prisma.XOR<Prisma.CheckoutSessionUpdateManyMutationInput, Prisma.CheckoutSessionUncheckedUpdateManyWithoutDeliveryMethodInput>
+}
+
 export type CheckoutSessionCreateManyMerchantInput = {
   id?: string
   branchId?: string | null
@@ -1455,8 +1948,13 @@ export type CheckoutSessionCreateManyMerchantInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodId?: string | null
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1473,16 +1971,22 @@ export type CheckoutSessionUpdateWithoutMerchantInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.MerchantBranchUpdateOneWithoutCheckoutSessionsNestedInput
   posDevice?: Prisma.PosDeviceUpdateOneWithoutCheckoutSessionsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutCheckoutSessionsNestedInput
+  deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCheckoutSessionsNestedInput
   items?: Prisma.CheckoutItemUpdateManyWithoutCheckoutSessionNestedInput
   order?: Prisma.OrderUpdateOneWithoutCheckoutSessionNestedInput
+  cart?: Prisma.CartUpdateOneWithoutCheckoutSessionNestedInput
 }
 
 export type CheckoutSessionUncheckedUpdateWithoutMerchantInput = {
@@ -1499,13 +2003,19 @@ export type CheckoutSessionUncheckedUpdateWithoutMerchantInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.CheckoutItemUncheckedUpdateManyWithoutCheckoutSessionNestedInput
   order?: Prisma.OrderUncheckedUpdateOneWithoutCheckoutSessionNestedInput
+  cart?: Prisma.CartUncheckedUpdateOneWithoutCheckoutSessionNestedInput
 }
 
 export type CheckoutSessionUncheckedUpdateManyWithoutMerchantInput = {
@@ -1522,8 +2032,13 @@ export type CheckoutSessionUncheckedUpdateManyWithoutMerchantInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1543,8 +2058,13 @@ export type CheckoutSessionCreateManyBranchInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodId?: string | null
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1561,16 +2081,22 @@ export type CheckoutSessionUpdateWithoutBranchInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   merchant?: Prisma.MerchantUpdateOneRequiredWithoutCheckoutSessionsNestedInput
   posDevice?: Prisma.PosDeviceUpdateOneWithoutCheckoutSessionsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutCheckoutSessionsNestedInput
+  deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCheckoutSessionsNestedInput
   items?: Prisma.CheckoutItemUpdateManyWithoutCheckoutSessionNestedInput
   order?: Prisma.OrderUpdateOneWithoutCheckoutSessionNestedInput
+  cart?: Prisma.CartUpdateOneWithoutCheckoutSessionNestedInput
 }
 
 export type CheckoutSessionUncheckedUpdateWithoutBranchInput = {
@@ -1587,13 +2113,19 @@ export type CheckoutSessionUncheckedUpdateWithoutBranchInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.CheckoutItemUncheckedUpdateManyWithoutCheckoutSessionNestedInput
   order?: Prisma.OrderUncheckedUpdateOneWithoutCheckoutSessionNestedInput
+  cart?: Prisma.CartUncheckedUpdateOneWithoutCheckoutSessionNestedInput
 }
 
 export type CheckoutSessionUncheckedUpdateManyWithoutBranchInput = {
@@ -1610,8 +2142,13 @@ export type CheckoutSessionUncheckedUpdateManyWithoutBranchInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1631,8 +2168,13 @@ export type CheckoutSessionCreateManyPosDeviceInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodId?: string | null
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1649,16 +2191,22 @@ export type CheckoutSessionUpdateWithoutPosDeviceInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   merchant?: Prisma.MerchantUpdateOneRequiredWithoutCheckoutSessionsNestedInput
   branch?: Prisma.MerchantBranchUpdateOneWithoutCheckoutSessionsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutCheckoutSessionsNestedInput
+  deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCheckoutSessionsNestedInput
   items?: Prisma.CheckoutItemUpdateManyWithoutCheckoutSessionNestedInput
   order?: Prisma.OrderUpdateOneWithoutCheckoutSessionNestedInput
+  cart?: Prisma.CartUpdateOneWithoutCheckoutSessionNestedInput
 }
 
 export type CheckoutSessionUncheckedUpdateWithoutPosDeviceInput = {
@@ -1675,13 +2223,19 @@ export type CheckoutSessionUncheckedUpdateWithoutPosDeviceInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.CheckoutItemUncheckedUpdateManyWithoutCheckoutSessionNestedInput
   order?: Prisma.OrderUncheckedUpdateOneWithoutCheckoutSessionNestedInput
+  cart?: Prisma.CartUncheckedUpdateOneWithoutCheckoutSessionNestedInput
 }
 
 export type CheckoutSessionUncheckedUpdateManyWithoutPosDeviceInput = {
@@ -1698,8 +2252,13 @@ export type CheckoutSessionUncheckedUpdateManyWithoutPosDeviceInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1719,8 +2278,13 @@ export type CheckoutSessionCreateManyCustomerInput = {
   subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  deliveryMethodId?: string | null
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1737,16 +2301,22 @@ export type CheckoutSessionUpdateWithoutCustomerInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   merchant?: Prisma.MerchantUpdateOneRequiredWithoutCheckoutSessionsNestedInput
   branch?: Prisma.MerchantBranchUpdateOneWithoutCheckoutSessionsNestedInput
   posDevice?: Prisma.PosDeviceUpdateOneWithoutCheckoutSessionsNestedInput
+  deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCheckoutSessionsNestedInput
   items?: Prisma.CheckoutItemUpdateManyWithoutCheckoutSessionNestedInput
   order?: Prisma.OrderUpdateOneWithoutCheckoutSessionNestedInput
+  cart?: Prisma.CartUpdateOneWithoutCheckoutSessionNestedInput
 }
 
 export type CheckoutSessionUncheckedUpdateWithoutCustomerInput = {
@@ -1763,13 +2333,19 @@ export type CheckoutSessionUncheckedUpdateWithoutCustomerInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.CheckoutItemUncheckedUpdateManyWithoutCheckoutSessionNestedInput
   order?: Prisma.OrderUncheckedUpdateOneWithoutCheckoutSessionNestedInput
+  cart?: Prisma.CartUncheckedUpdateOneWithoutCheckoutSessionNestedInput
 }
 
 export type CheckoutSessionUncheckedUpdateManyWithoutCustomerInput = {
@@ -1786,8 +2362,123 @@ export type CheckoutSessionUncheckedUpdateManyWithoutCustomerInput = {
   subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CheckoutSessionCreateManyDeliveryMethodInput = {
+  id?: string
+  merchantId: string
+  branchId?: string | null
+  posDeviceId?: string | null
+  customerId?: string | null
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  sourceChannel: $Enums.SalesChannel
+  status?: $Enums.CheckoutSessionStatus
+  accessTokenHash: string
+  subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CheckoutSessionUpdateWithoutDeliveryMethodInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  status?: Prisma.EnumCheckoutSessionStatusFieldUpdateOperationsInput | $Enums.CheckoutSessionStatus
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  merchant?: Prisma.MerchantUpdateOneRequiredWithoutCheckoutSessionsNestedInput
+  branch?: Prisma.MerchantBranchUpdateOneWithoutCheckoutSessionsNestedInput
+  posDevice?: Prisma.PosDeviceUpdateOneWithoutCheckoutSessionsNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutCheckoutSessionsNestedInput
+  items?: Prisma.CheckoutItemUpdateManyWithoutCheckoutSessionNestedInput
+  order?: Prisma.OrderUpdateOneWithoutCheckoutSessionNestedInput
+  cart?: Prisma.CartUpdateOneWithoutCheckoutSessionNestedInput
+}
+
+export type CheckoutSessionUncheckedUpdateWithoutDeliveryMethodInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  status?: Prisma.EnumCheckoutSessionStatusFieldUpdateOperationsInput | $Enums.CheckoutSessionStatus
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.CheckoutItemUncheckedUpdateManyWithoutCheckoutSessionNestedInput
+  order?: Prisma.OrderUncheckedUpdateOneWithoutCheckoutSessionNestedInput
+  cart?: Prisma.CartUncheckedUpdateOneWithoutCheckoutSessionNestedInput
+}
+
+export type CheckoutSessionUncheckedUpdateManyWithoutDeliveryMethodInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  status?: Prisma.EnumCheckoutSessionStatusFieldUpdateOperationsInput | $Enums.CheckoutSessionStatus
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1839,8 +2530,13 @@ export type CheckoutSessionSelect<ExtArgs extends runtime.Types.Extensions.Inter
   subtotalAmount?: boolean
   discountAmount?: boolean
   feeAmount?: boolean
+  shippingAmount?: boolean
   totalAmount?: boolean
   currency?: boolean
+  deliveryMethodId?: boolean
+  deliveryMethodName?: boolean
+  shippingAddress?: boolean
+  billingAddress?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1848,8 +2544,10 @@ export type CheckoutSessionSelect<ExtArgs extends runtime.Types.Extensions.Inter
   branch?: boolean | Prisma.CheckoutSession$branchArgs<ExtArgs>
   posDevice?: boolean | Prisma.CheckoutSession$posDeviceArgs<ExtArgs>
   customer?: boolean | Prisma.CheckoutSession$customerArgs<ExtArgs>
+  deliveryMethod?: boolean | Prisma.CheckoutSession$deliveryMethodArgs<ExtArgs>
   items?: boolean | Prisma.CheckoutSession$itemsArgs<ExtArgs>
   order?: boolean | Prisma.CheckoutSession$orderArgs<ExtArgs>
+  cart?: boolean | Prisma.CheckoutSession$cartArgs<ExtArgs>
   _count?: boolean | Prisma.CheckoutSessionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["checkoutSession"]>
 
@@ -1868,8 +2566,13 @@ export type CheckoutSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   subtotalAmount?: boolean
   discountAmount?: boolean
   feeAmount?: boolean
+  shippingAmount?: boolean
   totalAmount?: boolean
   currency?: boolean
+  deliveryMethodId?: boolean
+  deliveryMethodName?: boolean
+  shippingAddress?: boolean
+  billingAddress?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1877,6 +2580,7 @@ export type CheckoutSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   branch?: boolean | Prisma.CheckoutSession$branchArgs<ExtArgs>
   posDevice?: boolean | Prisma.CheckoutSession$posDeviceArgs<ExtArgs>
   customer?: boolean | Prisma.CheckoutSession$customerArgs<ExtArgs>
+  deliveryMethod?: boolean | Prisma.CheckoutSession$deliveryMethodArgs<ExtArgs>
 }, ExtArgs["result"]["checkoutSession"]>
 
 export type CheckoutSessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1894,8 +2598,13 @@ export type CheckoutSessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   subtotalAmount?: boolean
   discountAmount?: boolean
   feeAmount?: boolean
+  shippingAmount?: boolean
   totalAmount?: boolean
   currency?: boolean
+  deliveryMethodId?: boolean
+  deliveryMethodName?: boolean
+  shippingAddress?: boolean
+  billingAddress?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1903,6 +2612,7 @@ export type CheckoutSessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   branch?: boolean | Prisma.CheckoutSession$branchArgs<ExtArgs>
   posDevice?: boolean | Prisma.CheckoutSession$posDeviceArgs<ExtArgs>
   customer?: boolean | Prisma.CheckoutSession$customerArgs<ExtArgs>
+  deliveryMethod?: boolean | Prisma.CheckoutSession$deliveryMethodArgs<ExtArgs>
 }, ExtArgs["result"]["checkoutSession"]>
 
 export type CheckoutSessionSelectScalar = {
@@ -1920,21 +2630,28 @@ export type CheckoutSessionSelectScalar = {
   subtotalAmount?: boolean
   discountAmount?: boolean
   feeAmount?: boolean
+  shippingAmount?: boolean
   totalAmount?: boolean
   currency?: boolean
+  deliveryMethodId?: boolean
+  deliveryMethodName?: boolean
+  shippingAddress?: boolean
+  billingAddress?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CheckoutSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "merchantId" | "branchId" | "posDeviceId" | "customerId" | "customerName" | "customerEmail" | "customerPhone" | "sourceChannel" | "status" | "accessTokenHash" | "subtotalAmount" | "discountAmount" | "feeAmount" | "totalAmount" | "currency" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["checkoutSession"]>
+export type CheckoutSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "merchantId" | "branchId" | "posDeviceId" | "customerId" | "customerName" | "customerEmail" | "customerPhone" | "sourceChannel" | "status" | "accessTokenHash" | "subtotalAmount" | "discountAmount" | "feeAmount" | "shippingAmount" | "totalAmount" | "currency" | "deliveryMethodId" | "deliveryMethodName" | "shippingAddress" | "billingAddress" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["checkoutSession"]>
 export type CheckoutSessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
   branch?: boolean | Prisma.CheckoutSession$branchArgs<ExtArgs>
   posDevice?: boolean | Prisma.CheckoutSession$posDeviceArgs<ExtArgs>
   customer?: boolean | Prisma.CheckoutSession$customerArgs<ExtArgs>
+  deliveryMethod?: boolean | Prisma.CheckoutSession$deliveryMethodArgs<ExtArgs>
   items?: boolean | Prisma.CheckoutSession$itemsArgs<ExtArgs>
   order?: boolean | Prisma.CheckoutSession$orderArgs<ExtArgs>
+  cart?: boolean | Prisma.CheckoutSession$cartArgs<ExtArgs>
   _count?: boolean | Prisma.CheckoutSessionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CheckoutSessionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1942,12 +2659,14 @@ export type CheckoutSessionIncludeCreateManyAndReturn<ExtArgs extends runtime.Ty
   branch?: boolean | Prisma.CheckoutSession$branchArgs<ExtArgs>
   posDevice?: boolean | Prisma.CheckoutSession$posDeviceArgs<ExtArgs>
   customer?: boolean | Prisma.CheckoutSession$customerArgs<ExtArgs>
+  deliveryMethod?: boolean | Prisma.CheckoutSession$deliveryMethodArgs<ExtArgs>
 }
 export type CheckoutSessionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
   branch?: boolean | Prisma.CheckoutSession$branchArgs<ExtArgs>
   posDevice?: boolean | Prisma.CheckoutSession$posDeviceArgs<ExtArgs>
   customer?: boolean | Prisma.CheckoutSession$customerArgs<ExtArgs>
+  deliveryMethod?: boolean | Prisma.CheckoutSession$deliveryMethodArgs<ExtArgs>
 }
 
 export type $CheckoutSessionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1957,8 +2676,10 @@ export type $CheckoutSessionPayload<ExtArgs extends runtime.Types.Extensions.Int
     branch: Prisma.$MerchantBranchPayload<ExtArgs> | null
     posDevice: Prisma.$PosDevicePayload<ExtArgs> | null
     customer: Prisma.$CustomerPayload<ExtArgs> | null
+    deliveryMethod: Prisma.$DeliveryMethodPayload<ExtArgs> | null
     items: Prisma.$CheckoutItemPayload<ExtArgs>[]
     order: Prisma.$OrderPayload<ExtArgs> | null
+    cart: Prisma.$CartPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1975,8 +2696,13 @@ export type $CheckoutSessionPayload<ExtArgs extends runtime.Types.Extensions.Int
     subtotalAmount: runtime.Decimal
     discountAmount: runtime.Decimal
     feeAmount: runtime.Decimal
+    shippingAmount: runtime.Decimal
     totalAmount: runtime.Decimal
     currency: string
+    deliveryMethodId: string | null
+    deliveryMethodName: string | null
+    shippingAddress: runtime.JsonValue | null
+    billingAddress: runtime.JsonValue | null
     expiresAt: Date
     createdAt: Date
     updatedAt: Date
@@ -2378,8 +3104,10 @@ export interface Prisma__CheckoutSessionClient<T, Null = never, ExtArgs extends 
   branch<T extends Prisma.CheckoutSession$branchArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutSession$branchArgs<ExtArgs>>): Prisma.Prisma__MerchantBranchClient<runtime.Types.Result.GetResult<Prisma.$MerchantBranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   posDevice<T extends Prisma.CheckoutSession$posDeviceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutSession$posDeviceArgs<ExtArgs>>): Prisma.Prisma__PosDeviceClient<runtime.Types.Result.GetResult<Prisma.$PosDevicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   customer<T extends Prisma.CheckoutSession$customerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutSession$customerArgs<ExtArgs>>): Prisma.Prisma__CustomerClient<runtime.Types.Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  deliveryMethod<T extends Prisma.CheckoutSession$deliveryMethodArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutSession$deliveryMethodArgs<ExtArgs>>): Prisma.Prisma__DeliveryMethodClient<runtime.Types.Result.GetResult<Prisma.$DeliveryMethodPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   items<T extends Prisma.CheckoutSession$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutSession$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CheckoutItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   order<T extends Prisma.CheckoutSession$orderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutSession$orderArgs<ExtArgs>>): Prisma.Prisma__OrderClient<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  cart<T extends Prisma.CheckoutSession$cartArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CheckoutSession$cartArgs<ExtArgs>>): Prisma.Prisma__CartClient<runtime.Types.Result.GetResult<Prisma.$CartPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2423,8 +3151,13 @@ export interface CheckoutSessionFieldRefs {
   readonly subtotalAmount: Prisma.FieldRef<"CheckoutSession", 'Decimal'>
   readonly discountAmount: Prisma.FieldRef<"CheckoutSession", 'Decimal'>
   readonly feeAmount: Prisma.FieldRef<"CheckoutSession", 'Decimal'>
+  readonly shippingAmount: Prisma.FieldRef<"CheckoutSession", 'Decimal'>
   readonly totalAmount: Prisma.FieldRef<"CheckoutSession", 'Decimal'>
   readonly currency: Prisma.FieldRef<"CheckoutSession", 'String'>
+  readonly deliveryMethodId: Prisma.FieldRef<"CheckoutSession", 'String'>
+  readonly deliveryMethodName: Prisma.FieldRef<"CheckoutSession", 'String'>
+  readonly shippingAddress: Prisma.FieldRef<"CheckoutSession", 'Json'>
+  readonly billingAddress: Prisma.FieldRef<"CheckoutSession", 'Json'>
   readonly expiresAt: Prisma.FieldRef<"CheckoutSession", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"CheckoutSession", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"CheckoutSession", 'DateTime'>
@@ -2886,6 +3619,25 @@ export type CheckoutSession$customerArgs<ExtArgs extends runtime.Types.Extension
 }
 
 /**
+ * CheckoutSession.deliveryMethod
+ */
+export type CheckoutSession$deliveryMethodArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DeliveryMethod
+   */
+  select?: Prisma.DeliveryMethodSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DeliveryMethod
+   */
+  omit?: Prisma.DeliveryMethodOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DeliveryMethodInclude<ExtArgs> | null
+  where?: Prisma.DeliveryMethodWhereInput
+}
+
+/**
  * CheckoutSession.items
  */
 export type CheckoutSession$itemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2926,6 +3678,25 @@ export type CheckoutSession$orderArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   include?: Prisma.OrderInclude<ExtArgs> | null
   where?: Prisma.OrderWhereInput
+}
+
+/**
+ * CheckoutSession.cart
+ */
+export type CheckoutSession$cartArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Cart
+   */
+  select?: Prisma.CartSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Cart
+   */
+  omit?: Prisma.CartOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CartInclude<ExtArgs> | null
+  where?: Prisma.CartWhereInput
 }
 
 /**

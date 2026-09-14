@@ -227,3 +227,63 @@ export type MerchantInvitation = Prisma.MerchantInvitationModel
  * 
  */
 export type AuditLog = Prisma.AuditLogModel
+/**
+ * Model Cart
+ * An anonymous storefront cart. Identified by an opaque bearer token whose
+ * SHA-256 hash is stored here — the same scheme `CheckoutSession` uses, so a
+ * shopper never needs an account. `customerId` is attached lazily (the first
+ * time the shopper saves an address), which is what lets a future shopper
+ * login adopt an existing anonymous cart without a migration.
+ * 
+ * Deliberately stores no prices: line items are re-priced through
+ * `CartPricingService` on every read so a cart can never quote a stale price.
+ */
+export type Cart = Prisma.CartModel
+/**
+ * Model CartItem
+ * One cart line. `lineKey` exists because Postgres treats NULLs as distinct
+ * in a unique index, so `@@unique([cartId, productId, variantId])` would not
+ * actually collapse repeat adds of a simple (variantless) product. It uses
+ * the same `product:<id>` / `variant:<id>` shape as `InventoryStock.stockKey`.
+ */
+export type CartItem = Prisma.CartItemModel
+/**
+ * Model CustomerAddress
+ * A reusable shopper address, scoped to one merchant's customer directory.
+ * Orders never point at these rows — they carry a JSON snapshot instead, so
+ * editing or deleting an address can never rewrite delivery history.
+ */
+export type CustomerAddress = Prisma.CustomerAddressModel
+/**
+ * Model DeliveryMethod
+ * A way the merchant gets an order to the shopper: either in-store PICKUP at
+ * a branch (always free, no address needed) or DELIVERY priced by whichever
+ * `DeliveryZone` matches the shipping address.
+ */
+export type DeliveryMethod = Prisma.DeliveryMethodModel
+/**
+ * Model DeliveryZone
+ * A priced destination band inside a delivery method. A zone matches an
+ * address when every non-empty geo list contains that part of the address;
+ * `isFallback` zones match any address and are only considered once no
+ * specific zone matches.
+ */
+export type DeliveryZone = Prisma.DeliveryZoneModel
+/**
+ * Model Shipment
+ * A physical hand-off of (some of) an order's items. An order can have more
+ * than one when it ships in parts, which is why `ShipmentItem` carries
+ * quantities rather than the shipment owning the order outright.
+ */
+export type Shipment = Prisma.ShipmentModel
+/**
+ * Model ShipmentItem
+ * 
+ */
+export type ShipmentItem = Prisma.ShipmentItemModel
+/**
+ * Model ShipmentEvent
+ * Append-only tracking history for a shipment. The storefront tracking page
+ * reads these rather than the shipment's current status alone.
+ */
+export type ShipmentEvent = Prisma.ShipmentEventModel
