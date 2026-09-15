@@ -1,5 +1,5 @@
 import { Prisma } from '#app/generated/prisma/client';
-import { toAddressSnapshot } from './address-snapshot';
+import { toAddressSnapshot } from '../address-snapshot';
 
 describe('toAddressSnapshot', () => {
   it('normalizes a wire DTO into the stored shape', () => {
