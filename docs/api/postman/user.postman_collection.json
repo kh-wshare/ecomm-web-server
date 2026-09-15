@@ -1,0 +1,1681 @@
+{
+  "info": {
+    "name": "User API — 1.0",
+    "description": "Authentication, sessions, profiles, and merchant access\n\nGenerated from `docs/api/openapi/user.openapi.json` by `pnpm docs:postman`. Edit the generator, not this file.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "00 · Setup — sign in",
+      "description": "Run this first. It registers (or reuses) a merchant owner, signs in, and stores `accessToken`, `merchantId` and `merchantSlug` for every other folder.",
+      "item": [
+        {
+          "name": "Register a merchant and owner (idempotent)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"merchantName\": \"Acme Store\",\n  \"fullName\": \"Acme Owner\",\n  \"email\": \"{{merchantEmail}}\",\n  \"password\": \"{{merchantPassword}}\",\n  \"phone\": \"+15551234567\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register-merchant",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register-merchant"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "A 409 means the owner already exists from an earlier run; the sign-in below still works."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const setVar = (key, value) => {",
+                  "  if (value === undefined || value === null) return;",
+                  "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                  "  else pm.collectionVariables.set(key, value);",
+                  "};",
+                  "",
+                  "pm.test(\"Registers, or reports the account already exists\", function () {",
+                  "  pm.expect([201, 409]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "  const body = pm.response.json();",
+                  "  if (body.data?.accessToken) {",
+                  "    setVar(\"accessToken\", body.data?.accessToken);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sign in",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{merchantEmail}}\",\n  \"password\": \"{{merchantPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const setVar = (key, value) => {",
+                  "  if (value === undefined || value === null) return;",
+                  "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                  "  else pm.collectionVariables.set(key, value);",
+                  "};",
+                  "",
+                  "pm.test(\"Returns 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const body = pm.response.json();",
+                  "",
+                  "pm.test(\"Issues an access and refresh token\", function () {",
+                  "  pm.expect(body.data?.accessToken).to.be.a(\"string\").and.not.empty;",
+                  "  pm.expect(body.data?.refreshToken).to.be.a(\"string\").and.not.empty;",
+                  "});",
+                  "",
+                  "pm.test(\"Reports at least one merchant membership\", function () {",
+                  "  pm.expect(body.data?.merchants).to.be.an(\"array\").that.is.not.empty;",
+                  "});",
+                  "",
+                  "setVar(\"accessToken\", body.data?.accessToken);",
+                  "setVar(\"refreshToken\", body.data?.refreshToken);",
+                  "const active = body.data?.activeMerchant || body.data?.merchants[0];",
+                  "if (active && active.merchant) {",
+                  "  setVar(\"merchantId\", active.merchant.id);",
+                  "  setVar(\"merchantSlug\", active.merchant.slug);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Who am I",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Returns 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Echoes the signed-in account\", function () {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data?.user.email).to.eql(pm.variables.get(\"merchantEmail\"));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Endpoints",
+      "description": "One request per documented operation, each asserting the response envelope and capturing ids for the next call.",
+      "item": [
+        {
+          "name": "Auth",
+          "item": [
+            {
+              "name": "Register a merchant and its owner account",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"merchantName\": \"Acme Store\",\n  \"fullName\": \"John Doe\",\n  \"email\": \"user@example.com\",\n  \"password\": \"StrongPassword123!\",\n  \"phone\": \"+15551234567\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/register-merchant",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "register-merchant"
+                  ]
+                },
+                "description": "`POST /auth/register-merchant`\n\nOperation id: `AuthController_registerMerchant`\n\nDocumented responses: **201**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [201];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"registerMerchantId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Login with email and password",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"strongPassword123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "`POST /auth/login`\n\nOperation id: `AuthController_login`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"loginId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Rotate a refresh token",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"refreshToken\": \"sample-refreshToken\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/refresh",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "refresh"
+                  ]
+                },
+                "description": "`POST /auth/refresh`\n\nOperation id: `AuthController_refresh`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"refreshId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /auth/logout",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/logout",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "logout"
+                  ]
+                },
+                "description": "`POST /auth/logout`\n\nOperation id: `AuthController_logout`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"logoutId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /auth/logout-all",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/logout-all",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "logout-all"
+                  ]
+                },
+                "description": "`POST /auth/logout-all`\n\nOperation id: `AuthController_logoutAll`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"logoutAllId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Get current account and merchant memberships",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "me"
+                  ]
+                },
+                "description": "`GET /auth/me`\n\nOperation id: `AuthController_me`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"List payloads carry pagination meta when paginated\", function () {",
+                      "    if (Array.isArray(body.data) && body.meta) {",
+                      "      pm.expect(body.meta).to.include.all.keys(\"limit\", \"page\", \"total\");",
+                      "    }",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST /auth/switch-merchant",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"merchantId\": \"{{merchantId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/switch-merchant",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "switch-merchant"
+                  ]
+                },
+                "description": "`POST /auth/switch-merchant`\n\nOperation id: `AuthController_switchMerchant`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"switchMerchantId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Login with a Firebase Google ID token",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"idToken\": \"sample-idToken\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login/firebase-google",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login",
+                    "firebase-google"
+                  ]
+                },
+                "description": "`POST /auth/login/firebase-google`\n\nOperation id: `SocialAuthController_loginWithFirebaseGoogle`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"firebaseGoogleId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Login with a Telegram OIDC ID token",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"idToken\": \"sample-idToken\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login/telegram",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login",
+                    "telegram"
+                  ]
+                },
+                "description": "`POST /auth/login/telegram`\n\nOperation id: `SocialAuthController_loginWithTelegram`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"telegramId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Exchange a Telegram OAuth code for an ID token",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"sample-code\",\n  \"codeVerifier\": \"sample-codeVerifier\",\n  \"redirectUri\": \"sample-redirectUri\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/telegram/token",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "telegram",
+                    "token"
+                  ]
+                },
+                "description": "`POST /auth/telegram/token`\n\nOperation id: `SocialAuthController_exchangeTelegramCode`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"tokenId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Login as a storefront customer with Firebase Google",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"idToken\": \"sample-idToken\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/customer/login/firebase-google",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "customer",
+                    "login",
+                    "firebase-google"
+                  ]
+                },
+                "description": "`POST /auth/customer/login/firebase-google`\n\nOperation id: `SocialAuthController_loginCustomerWithFirebaseGoogle`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"firebaseGoogleId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Login as a storefront customer with Telegram",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"idToken\": \"sample-idToken\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/customer/login/telegram",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "customer",
+                    "login",
+                    "telegram"
+                  ]
+                },
+                "description": "`POST /auth/customer/login/telegram`\n\nOperation id: `SocialAuthController_loginCustomerWithTelegram`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"telegramId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Login with a Telegram Mini App (verified initData)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"initData\": \"sample-initData\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/telegram/mini-app",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "telegram",
+                    "mini-app"
+                  ]
+                },
+                "description": "`POST /auth/telegram/mini-app`\n\nOperation id: `SocialAuthController_loginWithTelegramMiniApp`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"miniAppId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Login as a storefront customer with a Telegram Mini App (verified initData)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"initData\": \"sample-initData\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/customer/telegram/mini-app",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "customer",
+                    "telegram",
+                    "mini-app"
+                  ]
+                },
+                "description": "`POST /auth/customer/telegram/mini-app`\n\nOperation id: `SocialAuthController_loginCustomerWithTelegramMiniApp`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"miniAppId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Link a Telegram Mini App identity to the current authenticated user",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"initData\": \"sample-initData\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/telegram/mini-app/link",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "telegram",
+                    "mini-app",
+                    "link"
+                  ]
+                },
+                "description": "`POST /auth/telegram/mini-app/link`\n\nOperation id: `SocialAuthController_linkTelegramMiniApp[0]`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"linkId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Link a Telegram Mini App identity to the current authenticated user",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"initData\": \"sample-initData\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/customer/telegram/mini-app/link",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "customer",
+                    "telegram",
+                    "mini-app",
+                    "link"
+                  ]
+                },
+                "description": "`POST /auth/customer/telegram/mini-app/link`\n\nOperation id: `SocialAuthController_linkTelegramMiniApp[1]`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"linkId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Contract · Authentication",
+      "description": "Each protected resource must reject an unauthenticated caller rather than return data.",
+      "item": [
+        {
+          "name": "Auth · rejects a missing token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "`GET /auth/me` without an Authorization header must not leak tenant data."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Unauthenticated request is rejected with 401\", function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Contract · Validation",
+      "description": "The global ValidationPipe runs with `whitelist` and `transform`; required fields must be enforced server-side.",
+      "item": [
+        {
+          "name": "Auth · rejects an empty body",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register-merchant",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register-merchant"
+              ]
+            },
+            "description": "`POST /auth/register-merchant` requires `merchantName`, `fullName`, `email`, `password`."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Missing required fields are not accepted\", function () {",
+                  "  // 401/403 mean a guard refused first, which is also not acceptance.",
+                  "  pm.expect([400, 401, 403, 422]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Validation errors name the offending fields\", function () {",
+                  "  if (pm.response.code !== 400) return;",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(JSON.stringify(body)).to.match(/message|errors/i);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test(\"Returns JSON\", function () {",
+          "  pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(",
+          "    \"application/json\",",
+          "  );",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "merchantEmail",
+      "value": "owner@acme-store.test",
+      "type": "string"
+    },
+    {
+      "key": "merchantPassword",
+      "value": "StrongPassword123!",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "merchantId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  }
+}

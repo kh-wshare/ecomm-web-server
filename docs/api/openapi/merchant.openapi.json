@@ -1,0 +1,6524 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/merchants": {
+      "post": {
+        "operationId": "MerchantController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMerchantDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create another merchant for the current account",
+        "tags": [
+          "Merchant"
+        ]
+      }
+    },
+    "/merchant": {
+      "get": {
+        "operationId": "MerchantController_findCurrent",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get the active merchant profile",
+        "tags": [
+          "Merchant"
+        ]
+      },
+      "patch": {
+        "operationId": "MerchantController_updateCurrent",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMerchantDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Merchant slug is already in use"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update the active merchant profile",
+        "tags": [
+          "Merchant"
+        ]
+      }
+    },
+    "/merchant/dashboard": {
+      "get": {
+        "operationId": "MerchantController_dashboard",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantDashboardDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get the active merchant dashboard summary",
+        "tags": [
+          "Merchant"
+        ]
+      }
+    },
+    "/branches": {
+      "get": {
+        "operationId": "BranchController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "INACTIVE"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BranchDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List merchant branches",
+        "tags": [
+          "Branches"
+        ]
+      },
+      "post": {
+        "operationId": "BranchController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBranchDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BranchDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Branch code is already in use"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a merchant branch",
+        "tags": [
+          "Branches"
+        ]
+      }
+    },
+    "/branches/{id}": {
+      "patch": {
+        "operationId": "BranchController_update",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBranchDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BranchDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Branch not found"
+          },
+          "409": {
+            "description": "Branch code is already in use"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a merchant branch",
+        "tags": [
+          "Branches"
+        ]
+      },
+      "delete": {
+        "operationId": "BranchController_archive",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BranchDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Branch not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Archive a merchant branch",
+        "tags": [
+          "Branches"
+        ]
+      }
+    },
+    "/products": {
+      "post": {
+        "operationId": "CatalogController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "SKU or slug is already in use"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a product in the active merchant",
+        "tags": [
+          "Catalog"
+        ]
+      },
+      "get": {
+        "operationId": "CatalogController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "ACTIVE",
+                "INACTIVE"
+              ]
+            }
+          },
+          {
+            "name": "categoryId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "categorySlug",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "example": "coffee",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List products for the active merchant",
+        "tags": [
+          "Catalog"
+        ]
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "operationId": "CatalogController_findOne",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a product from the active merchant",
+        "tags": [
+          "Catalog"
+        ]
+      },
+      "patch": {
+        "operationId": "CatalogController_update",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "SKU or slug is already in use"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a product in the active merchant",
+        "tags": [
+          "Catalog"
+        ]
+      },
+      "delete": {
+        "operationId": "CatalogController_remove",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Soft-delete a product in the active merchant",
+        "tags": [
+          "Catalog"
+        ]
+      }
+    },
+    "/products/{id}/channel-visibility": {
+      "patch": {
+        "operationId": "CatalogController_updateChannelVisibility",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateChannelVisibilityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductChannelVisibilityDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update product visibility by sales channel",
+        "tags": [
+          "Catalog"
+        ]
+      }
+    },
+    "/categories": {
+      "get": {
+        "operationId": "CategoriesController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "INACTIVE"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductCategoryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List product categories for the active merchant",
+        "tags": [
+          "Catalog"
+        ]
+      },
+      "post": {
+        "operationId": "CategoriesController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductCategoryDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Category slug is already in use"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a product category",
+        "tags": [
+          "Catalog"
+        ]
+      }
+    },
+    "/categories/{id}": {
+      "patch": {
+        "operationId": "CategoriesController_update",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductCategoryDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Category slug is already in use"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a product category",
+        "tags": [
+          "Catalog"
+        ]
+      },
+      "delete": {
+        "operationId": "CategoriesController_archive",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductCategoryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Archive a product category",
+        "tags": [
+          "Catalog"
+        ]
+      }
+    },
+    "/files/upload": {
+      "post": {
+        "operationId": "FileStorageController_upload",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "purpose": {
+                    "type": "string",
+                    "default": "media"
+                  },
+                  "visibility": {
+                    "type": "string",
+                    "enum": [
+                      "public",
+                      "private"
+                    ],
+                    "default": "public"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadedFileDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Upload a merchant file",
+        "tags": [
+          "Files"
+        ]
+      }
+    },
+    "/files/merchants/{merchantId}/{purpose}/{date}/{filename}": {
+      "get": {
+        "operationId": "FileStorageController_streamLocalFile",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "purpose",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filename",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {}
+        ],
+        "tags": [
+          "Files"
+        ]
+      }
+    },
+    "/inventory": {
+      "get": {
+        "operationId": "InventoryController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "productId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InventoryStockDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List inventory for the active merchant",
+        "tags": [
+          "Inventory"
+        ]
+      }
+    },
+    "/inventory/{productId}": {
+      "get": {
+        "operationId": "InventoryController_findProduct",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductInventoryDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get stock detail for a merchant product",
+        "tags": [
+          "Inventory"
+        ]
+      }
+    },
+    "/inventory/adjust": {
+      "post": {
+        "operationId": "InventoryController_adjust",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdjustInventoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryStockDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Apply a signed manual stock adjustment",
+        "tags": [
+          "Inventory"
+        ]
+      }
+    },
+    "/inventory/reserve": {
+      "post": {
+        "operationId": "InventoryController_reserve",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReserveInventoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryOperationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reserve stock for a checkout session",
+        "tags": [
+          "Inventory"
+        ]
+      }
+    },
+    "/inventory/release": {
+      "post": {
+        "operationId": "InventoryController_release",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReleaseInventoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryOperationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Release an active stock reservation",
+        "tags": [
+          "Inventory"
+        ]
+      }
+    },
+    "/inventory/confirm": {
+      "post": {
+        "operationId": "InventoryController_confirm",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmInventoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryOperationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Confirm reserved stock after payment",
+        "tags": [
+          "Inventory"
+        ]
+      }
+    },
+    "/notifications": {
+      "get": {
+        "operationId": "NotificationController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "unread",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "maxLength": 80,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotificationDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List notifications for the active merchant",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/unread-count": {
+      "get": {
+        "operationId": "NotificationController_unreadCount",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnreadNotificationCountDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Count unread merchant notifications",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/read-all": {
+      "patch": {
+        "operationId": "NotificationController_markAllRead",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Mark every merchant notification as read",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/{id}/read": {
+      "patch": {
+        "operationId": "NotificationController_markRead",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Mark one merchant notification as read",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/themes/current": {
+      "get": {
+        "operationId": "ThemeController_getCurrent",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentThemeDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get the active merchant draft and live theme",
+        "tags": [
+          "Theme Builder"
+        ]
+      }
+    },
+    "/themes/draft": {
+      "patch": {
+        "operationId": "ThemeController_updateDraft",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateThemeDraftDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentThemeDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Custom domain is already in use"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Save the active merchant draft theme",
+        "tags": [
+          "Theme Builder"
+        ]
+      }
+    },
+    "/themes/preview": {
+      "post": {
+        "operationId": "ThemeController_preview",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewThemeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThemePreviewDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Preview a saved or unsaved theme config",
+        "tags": [
+          "Theme Builder"
+        ]
+      }
+    },
+    "/themes/publish": {
+      "post": {
+        "operationId": "ThemeController_publish",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveThemeResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Publish the current draft theme",
+        "tags": [
+          "Theme Builder"
+        ]
+      }
+    },
+    "/themes/reset": {
+      "post": {
+        "operationId": "ThemeController_reset",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentThemeDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reset the draft to the default theme",
+        "tags": [
+          "Theme Builder"
+        ]
+      }
+    },
+    "/orders": {
+      "get": {
+        "operationId": "OrderController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "PENDING_PAYMENT",
+                "RESERVED",
+                "PAID",
+                "PROCESSING",
+                "FULFILLED",
+                "COMPLETED",
+                "CANCELLED",
+                "PAYMENT_FAILED",
+                "EXPIRED",
+                "REFUNDED"
+              ]
+            }
+          },
+          {
+            "name": "paymentStatus",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "PARTIAL",
+                "PAID",
+                "FAILED",
+                "REFUNDED"
+              ]
+            }
+          },
+          {
+            "name": "fulfillmentStatus",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "UNFULFILLED",
+                "PROCESSING",
+                "FULFILLED",
+                "CANCELLED"
+              ]
+            }
+          },
+          {
+            "name": "sourceChannel",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "POS",
+                "WEBSITE",
+                "FACEBOOK",
+                "INSTAGRAM",
+                "TIKTOK"
+              ]
+            }
+          },
+          {
+            "name": "dateFrom",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-07-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-07-31",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrderDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List orders for the active merchant",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/orders/{id}": {
+      "get": {
+        "operationId": "OrderController_findOne",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get an order from the active merchant",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/orders/{id}/status": {
+      "patch": {
+        "operationId": "OrderController_updateStatus",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Advance a paid order through fulfillment",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/orders/{id}/cancel": {
+      "post": {
+        "operationId": "OrderController_cancel",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cancel an unpaid order and release its stock",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/orders/{id}/refund": {
+      "post": {
+        "operationId": "OrderController_refund",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefundOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Refund a paid order with an audited stock policy",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/delivery-methods": {
+      "get": {
+        "operationId": "DeliveryMethodsController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "INACTIVE"
+              ]
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PICKUP",
+                "DELIVERY"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeliveryMethodDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List delivery methods and their zones",
+        "tags": [
+          "Delivery Methods"
+        ]
+      },
+      "post": {
+        "operationId": "DeliveryMethodsController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDeliveryMethodDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryMethodDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Delivery method code is already in use"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a delivery method",
+        "tags": [
+          "Delivery Methods"
+        ]
+      }
+    },
+    "/delivery-methods/{id}": {
+      "get": {
+        "operationId": "DeliveryMethodsController_findOne",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryMethodDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Delivery method not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a delivery method",
+        "tags": [
+          "Delivery Methods"
+        ]
+      },
+      "patch": {
+        "operationId": "DeliveryMethodsController_update",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDeliveryMethodDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryMethodDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Delivery method not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a delivery method",
+        "tags": [
+          "Delivery Methods"
+        ]
+      },
+      "delete": {
+        "operationId": "DeliveryMethodsController_archive",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryMethodDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Delivery method not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Archive a delivery method and its zones",
+        "tags": [
+          "Delivery Methods"
+        ]
+      }
+    },
+    "/delivery-methods/{id}/zones": {
+      "post": {
+        "operationId": "DeliveryMethodsController_createZone",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDeliveryZoneDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryZoneDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Delivery method not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Add a priced zone to a delivery method",
+        "tags": [
+          "Delivery Methods"
+        ]
+      }
+    },
+    "/delivery-methods/{id}/zones/{zoneId}": {
+      "patch": {
+        "operationId": "DeliveryMethodsController_updateZone",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "zoneId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDeliveryZoneDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryZoneDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Delivery zone not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a delivery zone",
+        "tags": [
+          "Delivery Methods"
+        ]
+      },
+      "delete": {
+        "operationId": "DeliveryMethodsController_archiveZone",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "zoneId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryZoneDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Delivery zone not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Archive a delivery zone",
+        "tags": [
+          "Delivery Methods"
+        ]
+      }
+    },
+    "/shipments": {
+      "get": {
+        "operationId": "ShipmentsController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "READY_FOR_PICKUP",
+                "IN_TRANSIT",
+                "OUT_FOR_DELIVERY",
+                "DELIVERED",
+                "FAILED",
+                "RETURNED",
+                "CANCELLED"
+              ]
+            }
+          },
+          {
+            "name": "orderId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShipmentDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List shipments",
+        "tags": [
+          "Shipments"
+        ]
+      }
+    },
+    "/shipments/{id}": {
+      "get": {
+        "operationId": "ShipmentsController_findOne",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShipmentDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shipment not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a shipment with its tracking history",
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "patch": {
+        "operationId": "ShipmentsController_update",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateShipmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShipmentDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shipment not found"
+          },
+          "409": {
+            "description": "Shipment has reached a final status"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a shipment carrier, tracking or address",
+        "tags": [
+          "Shipments"
+        ]
+      }
+    },
+    "/orders/{orderId}/shipments": {
+      "get": {
+        "operationId": "ShipmentsController_findForOrder",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShipmentDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List an order's shipments",
+        "tags": [
+          "Shipments"
+        ]
+      },
+      "post": {
+        "description": "Omit `items` to ship every unit that is not already covered by a live shipment.",
+        "operationId": "ShipmentsController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateShipmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShipmentDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Order not found"
+          },
+          "409": {
+            "description": "Order cannot be shipped, or the units are already shipped"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Ship an order, in full or in part",
+        "tags": [
+          "Shipments"
+        ]
+      }
+    },
+    "/shipments/{id}/status": {
+      "patch": {
+        "description": "Rolls the parent order's fulfillment status up from all of its shipments.",
+        "operationId": "ShipmentsController_updateStatus",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateShipmentStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShipmentDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shipment not found"
+          },
+          "409": {
+            "description": "Status transition is not allowed"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Advance a shipment and append a tracking event",
+        "tags": [
+          "Shipments"
+        ]
+      }
+    },
+    "/payments/providers": {
+      "post": {
+        "operationId": "PaymentController_connectProvider",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConnectPaymentProviderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentProviderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Connect or rotate a payment provider",
+        "tags": [
+          "Payments"
+        ]
+      },
+      "get": {
+        "operationId": "PaymentController_listProviders",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PaymentProviderDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List payment providers for the active merchant",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/payments/providers/{provider}/disconnect": {
+      "patch": {
+        "operationId": "PaymentController_disconnectProvider",
+        "parameters": [
+          {
+            "name": "provider",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentProviderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Disconnect a payment provider",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/payments/transactions": {
+      "get": {
+        "operationId": "PaymentController_findAll",
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "provider",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "HMAC",
+                "KHQR",
+                "ABA_PAYWAY",
+                "CASH"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "PROCESSING",
+                "CONFIRMED",
+                "FAILED",
+                "CANCELLED",
+                "REFUNDED",
+                "UNKNOWN"
+              ]
+            }
+          },
+          {
+            "name": "dateFrom",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-07-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-07-31",
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PaymentDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List payments for the active merchant",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/payments/{id}": {
+      "get": {
+        "operationId": "PaymentController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a payment from the active merchant",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/social-posts": {
+      "post": {
+        "operationId": "SocialPostController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSocialPostDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SocialPostDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a social post draft",
+        "tags": [
+          "Social Commerce"
+        ]
+      },
+      "get": {
+        "operationId": "SocialPostController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "PUBLISHED",
+                "PARTIALLY_PUBLISHED",
+                "FAILED"
+              ]
+            }
+          },
+          {
+            "name": "platform",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "WEBSITE",
+                "FACEBOOK",
+                "INSTAGRAM",
+                "TIKTOK"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SocialPostDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List social posts for the active merchant",
+        "tags": [
+          "Social Commerce"
+        ]
+      }
+    },
+    "/social-posts/{id}": {
+      "get": {
+        "operationId": "SocialPostController_findOne",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SocialPostDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a social post from the active merchant",
+        "tags": [
+          "Social Commerce"
+        ]
+      },
+      "patch": {
+        "operationId": "SocialPostController_update",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSocialPostDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SocialPostDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update an unpublished social post",
+        "tags": [
+          "Social Commerce"
+        ]
+      }
+    },
+    "/social-posts/{id}/hotspots": {
+      "post": {
+        "operationId": "SocialPostController_addHotspot",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddHotspotDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShoppableHotspotDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Add an active product hotspot",
+        "tags": [
+          "Social Commerce"
+        ]
+      }
+    },
+    "/social-posts/{id}/publish": {
+      "post": {
+        "operationId": "SocialPostController_publish",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublishSocialPostDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SocialPostDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Publish to each selected platform independently",
+        "tags": [
+          "Social Commerce"
+        ]
+      }
+    },
+    "/social-posts/{id}/logs": {
+      "get": {
+        "operationId": "SocialPostController_logs",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SocialPublishLogDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get per-platform publishing logs",
+        "tags": [
+          "Social Commerce"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Merchant API",
+    "description": "Tenant-scoped merchant dashboard operations",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      },
+      "merchant-context": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Merchant-ID"
+      }
+    },
+    "schemas": {
+      "CreateMerchantDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Acme Store",
+            "maxLength": 120
+          },
+          "email": {
+            "type": "string",
+            "example": "store@example.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+15551234567",
+            "maxLength": 40
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "MerchantDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "email": {
+            "type": "object",
+            "nullable": true
+          },
+          "phone": {
+            "type": "object",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE",
+              "SUSPENDED"
+            ]
+          },
+          "returnStockOnRefund": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "deletedAt": {
+            "type": "object",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "status",
+          "returnStockOnRefund",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateMerchantDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Acme Store",
+            "maxLength": 120
+          },
+          "slug": {
+            "type": "string",
+            "example": "acme-store",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 120
+          },
+          "email": {
+            "type": "string",
+            "example": "store@example.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+15551234567",
+            "maxLength": 40
+          },
+          "returnStockOnRefund": {
+            "type": "boolean",
+            "default": true,
+            "description": "Return sold inventory when a paid order is refunded"
+          }
+        }
+      },
+      "MembershipSummaryDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "active": {
+            "type": "number"
+          },
+          "invited": {
+            "type": "number"
+          },
+          "disabled": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "total",
+          "active",
+          "invited",
+          "disabled"
+        ]
+      },
+      "MerchantActivityDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "action": {
+            "type": "string"
+          },
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "object",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "action",
+          "entityType",
+          "createdAt"
+        ]
+      },
+      "MerchantDashboardDto": {
+        "type": "object",
+        "properties": {
+          "merchant": {
+            "$ref": "#/components/schemas/MerchantDto"
+          },
+          "memberships": {
+            "$ref": "#/components/schemas/MembershipSummaryDto"
+          },
+          "pendingInvitations": {
+            "type": "number"
+          },
+          "recentActivity": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MerchantActivityDto"
+            }
+          }
+        },
+        "required": [
+          "merchant",
+          "memberships",
+          "pendingInvitations",
+          "recentActivity"
+        ]
+      },
+      "BranchDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "object",
+            "nullable": true
+          },
+          "addressLine1": {
+            "type": "object",
+            "nullable": true
+          },
+          "addressLine2": {
+            "type": "object",
+            "nullable": true
+          },
+          "city": {
+            "type": "object",
+            "nullable": true
+          },
+          "province": {
+            "type": "object",
+            "nullable": true
+          },
+          "postalCode": {
+            "type": "object",
+            "nullable": true
+          },
+          "country": {
+            "type": "object",
+            "nullable": true
+          },
+          "registerName": {
+            "type": "object",
+            "nullable": true
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "name",
+          "code",
+          "isDefault",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateBranchDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Central Counter",
+            "maxLength": 120
+          },
+          "code": {
+            "type": "string",
+            "example": "CENTRAL",
+            "maxLength": 40
+          },
+          "phone": {
+            "type": "string",
+            "example": "+1 555 100 2000",
+            "maxLength": 40
+          },
+          "addressLine1": {
+            "type": "string",
+            "example": "123 Market Street",
+            "maxLength": 180
+          },
+          "addressLine2": {
+            "type": "string",
+            "example": "Suite 5",
+            "maxLength": 180
+          },
+          "city": {
+            "type": "string",
+            "example": "San Francisco",
+            "maxLength": 120
+          },
+          "province": {
+            "type": "string",
+            "example": "California",
+            "maxLength": 120
+          },
+          "postalCode": {
+            "type": "string",
+            "example": "94105",
+            "maxLength": 40
+          },
+          "country": {
+            "type": "string",
+            "example": "US",
+            "maxLength": 80
+          },
+          "registerName": {
+            "type": "string",
+            "example": "Register 01",
+            "maxLength": 80
+          },
+          "isDefault": {
+            "type": "boolean",
+            "default": false
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "default": "ACTIVE"
+          }
+        },
+        "required": [
+          "name",
+          "code"
+        ]
+      },
+      "UpdateBranchDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Central Counter",
+            "maxLength": 120
+          },
+          "code": {
+            "type": "string",
+            "example": "CENTRAL",
+            "maxLength": 40
+          },
+          "phone": {
+            "type": "string",
+            "example": "+1 555 100 2000",
+            "maxLength": 40
+          },
+          "addressLine1": {
+            "type": "string",
+            "example": "123 Market Street",
+            "maxLength": 180
+          },
+          "addressLine2": {
+            "type": "string",
+            "example": "Suite 5",
+            "maxLength": 180
+          },
+          "city": {
+            "type": "string",
+            "example": "San Francisco",
+            "maxLength": 120
+          },
+          "province": {
+            "type": "string",
+            "example": "California",
+            "maxLength": 120
+          },
+          "postalCode": {
+            "type": "string",
+            "example": "94105",
+            "maxLength": 40
+          },
+          "country": {
+            "type": "string",
+            "example": "US",
+            "maxLength": 80
+          },
+          "registerName": {
+            "type": "string",
+            "example": "Register 01",
+            "maxLength": 80
+          },
+          "isDefault": {
+            "type": "boolean",
+            "default": false
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "default": "ACTIVE"
+          }
+        }
+      },
+      "ProductVariantInputDto": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "example": "SHIRT-BLK-M",
+            "maxLength": 80
+          },
+          "name": {
+            "type": "string",
+            "example": "Black / Medium",
+            "maxLength": 120
+          },
+          "price": {
+            "type": "string",
+            "example": "29.99"
+          },
+          "attributes": {
+            "type": "object",
+            "example": {
+              "color": "black",
+              "size": "M"
+            },
+            "additionalProperties": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "default": "ACTIVE"
+          }
+        },
+        "required": [
+          "sku",
+          "name",
+          "price",
+          "attributes"
+        ]
+      },
+      "ProductMediaInputDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "example": "https://cdn.example.com/products/shirt.jpg"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "IMAGE",
+              "VIDEO"
+            ],
+            "default": "IMAGE"
+          },
+          "sortOrder": {
+            "type": "number",
+            "default": 0,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "ChannelVisibilityInputDto": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "isVisible": {
+            "type": "boolean"
+          },
+          "isPurchasable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "channel",
+          "isVisible",
+          "isPurchasable"
+        ]
+      },
+      "CreateProductInventoryInputDto": {
+        "type": "object",
+        "properties": {
+          "variantSku": {
+            "type": "string",
+            "example": "SHIRT-BLK-M",
+            "description": "Variant SKU to initialize. Omit to initialize the base product stock.",
+            "maxLength": 80
+          },
+          "initialStock": {
+            "type": "number",
+            "example": 25,
+            "minimum": 0,
+            "default": 0
+          },
+          "safetyBuffer": {
+            "type": "number",
+            "example": 2,
+            "minimum": 0,
+            "default": 0
+          }
+        }
+      },
+      "CreateProductDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Classic T-Shirt",
+            "maxLength": 160
+          },
+          "slug": {
+            "type": "string",
+            "example": "classic-t-shirt",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 180
+          },
+          "description": {
+            "type": "string"
+          },
+          "sku": {
+            "type": "string",
+            "example": "SHIRT-001",
+            "maxLength": 80
+          },
+          "price": {
+            "type": "string",
+            "example": "29.99"
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD",
+            "default": "USD"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "default": "DRAFT"
+          },
+          "categoryId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "trackStock": {
+            "type": "boolean",
+            "description": "Whether this product tracks inventory. When true, sets inventoryType to STOCKED and stock/reservation checks apply; when false (default), the product is always sellable regardless of inventory.",
+            "default": false
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductVariantInputDto"
+            }
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductMediaInputDto"
+            }
+          },
+          "channelVisibility": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChannelVisibilityInputDto"
+            }
+          },
+          "inventory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateProductInventoryInputDto"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "sku",
+          "price"
+        ]
+      },
+      "ProductCategoryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "merchantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "object",
+            "nullable": true
+          },
+          "logoUrl": {
+            "type": "object",
+            "nullable": true
+          },
+          "sortOrder": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "name",
+          "slug",
+          "sortOrder",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ProductVariantDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string",
+            "example": "29.99"
+          },
+          "attributes": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "sku",
+          "name",
+          "price",
+          "attributes",
+          "status"
+        ]
+      },
+      "ProductMediaDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "url": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "IMAGE",
+              "VIDEO"
+            ]
+          },
+          "sortOrder": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "type",
+          "sortOrder"
+        ]
+      },
+      "ProductChannelVisibilityDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "isVisible": {
+            "type": "boolean"
+          },
+          "isPurchasable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "channel",
+          "isVisible",
+          "isPurchasable"
+        ]
+      },
+      "ProductDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "merchantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "object",
+            "nullable": true
+          },
+          "sku": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string",
+            "example": "29.99"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          },
+          "inventoryType": {
+            "type": "string",
+            "enum": [
+              "STOCKED",
+              "NON_STOCKED"
+            ]
+          },
+          "trackStock": {
+            "type": "boolean",
+            "description": "Quick boolean mirror of inventoryType === STOCKED, for fast conditional checks"
+          },
+          "categoryId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "category": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProductCategoryDto"
+              }
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "deletedAt": {
+            "type": "object",
+            "format": "date-time",
+            "nullable": true
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductVariantDto"
+            }
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductMediaDto"
+            }
+          },
+          "channelVisibility": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductChannelVisibilityDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "name",
+          "slug",
+          "sku",
+          "price",
+          "currency",
+          "status",
+          "inventoryType",
+          "trackStock",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateProductDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Classic T-Shirt",
+            "maxLength": 160
+          },
+          "slug": {
+            "type": "string",
+            "example": "classic-t-shirt",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 180
+          },
+          "description": {
+            "type": "string"
+          },
+          "sku": {
+            "type": "string",
+            "example": "SHIRT-001",
+            "maxLength": 80
+          },
+          "price": {
+            "type": "string",
+            "example": "29.99"
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD",
+            "default": "USD"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "default": "DRAFT"
+          },
+          "categoryId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "trackStock": {
+            "type": "boolean",
+            "description": "Whether this product tracks inventory. When true, sets inventoryType to STOCKED and stock/reservation checks apply; when false (default), the product is always sellable regardless of inventory.",
+            "default": false
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductVariantInputDto"
+            }
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductMediaInputDto"
+            }
+          },
+          "channelVisibility": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChannelVisibilityInputDto"
+            }
+          }
+        }
+      },
+      "UpdateChannelVisibilityDto": {
+        "type": "object",
+        "properties": {
+          "channels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChannelVisibilityInputDto"
+            }
+          }
+        },
+        "required": [
+          "channels"
+        ]
+      },
+      "CreateProductCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Coffee",
+            "maxLength": 120
+          },
+          "slug": {
+            "type": "string",
+            "example": "coffee",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 140
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "logoUrl": {
+            "type": "object",
+            "example": "https://cdn.example.com/category-logo.png",
+            "maxLength": 2048,
+            "nullable": true
+          },
+          "sortOrder": {
+            "type": "number",
+            "default": 0,
+            "minimum": 0
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "default": "ACTIVE"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateProductCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Coffee",
+            "maxLength": 120
+          },
+          "slug": {
+            "type": "string",
+            "example": "coffee",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 140
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "logoUrl": {
+            "type": "object",
+            "example": "https://cdn.example.com/category-logo.png",
+            "maxLength": 2048,
+            "nullable": true
+          },
+          "sortOrder": {
+            "type": "number",
+            "default": 0,
+            "minimum": 0
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "default": "ACTIVE"
+          }
+        }
+      },
+      "UploadedFileDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "bucket": {
+            "type": "string"
+          },
+          "originalName": {
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "key",
+          "url",
+          "provider",
+          "originalName",
+          "contentType",
+          "size"
+        ]
+      },
+      "InventoryStockDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "merchantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "totalStock": {
+            "type": "number"
+          },
+          "reservedStock": {
+            "type": "number"
+          },
+          "soldStock": {
+            "type": "number"
+          },
+          "safetyBuffer": {
+            "type": "number"
+          },
+          "availableStock": {
+            "type": "number"
+          },
+          "onlineSellableStock": {
+            "type": "number"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "productId",
+          "totalStock",
+          "reservedStock",
+          "soldStock",
+          "safetyBuffer",
+          "availableStock",
+          "onlineSellableStock",
+          "updatedAt"
+        ]
+      },
+      "InventoryReservationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "inventoryStockId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "CONFIRMED",
+              "RELEASED",
+              "EXPIRED"
+            ]
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "inventoryStockId",
+          "quantity",
+          "status",
+          "expiresAt"
+        ]
+      },
+      "InventoryMovementDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "STOCK_IN",
+              "STOCK_OUT",
+              "RESERVED",
+              "RESERVATION_RELEASED",
+              "SOLD",
+              "REFUND_RETURN",
+              "MANUAL_ADJUSTMENT"
+            ]
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "referenceId": {
+            "type": "object",
+            "nullable": true
+          },
+          "referenceType": {
+            "type": "object",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "quantity",
+          "createdAt"
+        ]
+      },
+      "ProductInventoryDetailDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "productType": {
+            "type": "string",
+            "enum": [
+              "SIMPLE",
+              "VARIABLE"
+            ]
+          },
+          "stocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InventoryStockDto"
+            }
+          },
+          "activeReservations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InventoryReservationDto"
+            }
+          },
+          "recentMovements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InventoryMovementDto"
+            }
+          }
+        },
+        "required": [
+          "productId",
+          "productType",
+          "stocks",
+          "activeReservations",
+          "recentMovements"
+        ]
+      },
+      "AdjustInventoryDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantityDelta": {
+            "type": "number",
+            "example": 10,
+            "description": "Signed change applied to total stock"
+          },
+          "safetyBuffer": {
+            "type": "number",
+            "example": 2,
+            "minimum": 0
+          },
+          "referenceId": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "referenceType": {
+            "type": "string",
+            "maxLength": 80,
+            "example": "purchase_order"
+          }
+        },
+        "required": [
+          "productId",
+          "quantityDelta"
+        ]
+      },
+      "ReserveInventoryDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1
+          },
+          "checkoutSessionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "expiresInMinutes": {
+            "type": "number",
+            "default": 15,
+            "minimum": 1,
+            "maximum": 120
+          }
+        },
+        "required": [
+          "productId",
+          "quantity",
+          "checkoutSessionId",
+          "channel"
+        ]
+      },
+      "InventoryOperationDto": {
+        "type": "object",
+        "properties": {
+          "stock": {
+            "$ref": "#/components/schemas/InventoryStockDto"
+          },
+          "reservation": {
+            "$ref": "#/components/schemas/InventoryReservationDto"
+          }
+        },
+        "required": [
+          "stock"
+        ]
+      },
+      "ReleaseInventoryDto": {
+        "type": "object",
+        "properties": {
+          "reservationId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "reservationId"
+        ]
+      },
+      "ConfirmInventoryDto": {
+        "type": "object",
+        "properties": {
+          "reservationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "reservationId"
+        ]
+      },
+      "NotificationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "readAt": {
+            "type": "object"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "title",
+          "message",
+          "createdAt"
+        ]
+      },
+      "UnreadNotificationCountDto": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "count"
+        ]
+      },
+      "ThemeConfigDto": {
+        "type": "object",
+        "properties": {
+          "colors": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "typography": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "layout": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "hero": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "colors",
+          "typography",
+          "layout"
+        ]
+      },
+      "CurrentThemeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "merchantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "liveConfig": {
+            "$ref": "#/components/schemas/ThemeConfigDto"
+          },
+          "draftConfig": {
+            "$ref": "#/components/schemas/ThemeConfigDto"
+          },
+          "customDomain": {
+            "type": "object",
+            "nullable": true
+          },
+          "publishedAt": {
+            "type": "object",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "liveConfig",
+          "draftConfig",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateThemeDraftDto": {
+        "type": "object",
+        "properties": {
+          "config": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Complete theme config validated against the theme JSON Schema"
+          },
+          "customDomain": {
+            "type": "object",
+            "example": "shop.example.com",
+            "nullable": true,
+            "maxLength": 253
+          }
+        }
+      },
+      "PreviewThemeDto": {
+        "type": "object",
+        "properties": {
+          "config": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Optional unsaved config to preview"
+          }
+        }
+      },
+      "ThemePreviewDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "number"
+          },
+          "config": {
+            "$ref": "#/components/schemas/ThemeConfigDto"
+          },
+          "publishedAt": {
+            "type": "object",
+            "format": "date-time",
+            "nullable": true
+          },
+          "preview": {
+            "type": "boolean"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "provided"
+            ]
+          }
+        },
+        "required": [
+          "version",
+          "config",
+          "preview",
+          "source"
+        ]
+      },
+      "LiveThemeResponseDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "number"
+          },
+          "config": {
+            "$ref": "#/components/schemas/ThemeConfigDto"
+          },
+          "publishedAt": {
+            "type": "object",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": [
+          "version",
+          "config"
+        ]
+      },
+      "OrderItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "object",
+            "format": "uuid"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unitPrice": {
+            "type": "string"
+          },
+          "totalPrice": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "productId",
+          "sku",
+          "name",
+          "quantity",
+          "unitPrice",
+          "totalPrice"
+        ]
+      },
+      "OrderDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderNumber": {
+            "type": "string"
+          },
+          "sourceChannel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PENDING_PAYMENT",
+              "RESERVED",
+              "PAID",
+              "PROCESSING",
+              "FULFILLED",
+              "COMPLETED",
+              "CANCELLED",
+              "PAYMENT_FAILED",
+              "EXPIRED",
+              "REFUNDED"
+            ]
+          },
+          "paymentStatus": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "PARTIAL",
+              "PAID",
+              "FAILED",
+              "REFUNDED"
+            ]
+          },
+          "fulfillmentStatus": {
+            "type": "string",
+            "enum": [
+              "UNFULFILLED",
+              "PROCESSING",
+              "FULFILLED",
+              "CANCELLED"
+            ]
+          },
+          "subtotalAmount": {
+            "type": "string"
+          },
+          "discountAmount": {
+            "type": "string"
+          },
+          "feeAmount": {
+            "type": "string"
+          },
+          "totalAmount": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "orderNumber",
+          "sourceChannel",
+          "status",
+          "paymentStatus",
+          "fulfillmentStatus",
+          "subtotalAmount",
+          "discountAmount",
+          "feeAmount",
+          "totalAmount",
+          "currency",
+          "items"
+        ]
+      },
+      "UpdateOrderStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "PROCESSING",
+              "FULFILLED",
+              "COMPLETED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "RefundOrderDto": {
+        "type": "object",
+        "properties": {
+          "returnStock": {
+            "type": "boolean",
+            "description": "Optional override; otherwise the merchant return-stock setting is used"
+          }
+        }
+      },
+      "DeliveryZoneDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "countries": {
+            "example": [
+              "KH"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "provinces": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "postalCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "baseFee": {
+            "type": "string",
+            "example": "2.50"
+          },
+          "perItemFee": {
+            "type": "string",
+            "example": "0.50"
+          },
+          "freeOverSubtotal": {
+            "type": "object",
+            "nullable": true,
+            "example": "50.00"
+          },
+          "minSubtotal": {
+            "type": "object",
+            "nullable": true
+          },
+          "maxSubtotal": {
+            "type": "object",
+            "nullable": true
+          },
+          "estimatedMinDays": {
+            "type": "object",
+            "nullable": true,
+            "example": 1
+          },
+          "estimatedMaxDays": {
+            "type": "object",
+            "nullable": true,
+            "example": 3
+          },
+          "isFallback": {
+            "type": "boolean"
+          },
+          "sortOrder": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "countries",
+          "provinces",
+          "cities",
+          "postalCodes",
+          "baseFee",
+          "perItemFee",
+          "isFallback",
+          "sortOrder"
+        ]
+      },
+      "DeliveryMethodDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "merchantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "branchId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string",
+            "example": "STANDARD"
+          },
+          "description": {
+            "type": "object",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "PICKUP",
+              "DELIVERY"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "sortOrder": {
+            "type": "number"
+          },
+          "zones": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeliveryZoneDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "name",
+          "code",
+          "type",
+          "status",
+          "isDefault",
+          "sortOrder",
+          "zones"
+        ]
+      },
+      "CreateDeliveryMethodDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120,
+            "example": "Standard delivery"
+          },
+          "code": {
+            "type": "string",
+            "example": "STANDARD",
+            "maxLength": 40
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "PICKUP",
+              "DELIVERY"
+            ],
+            "default": "DELIVERY"
+          },
+          "branchId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Collection branch; only meaningful for PICKUP methods"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          },
+          "isDefault": {
+            "type": "boolean",
+            "default": false
+          },
+          "sortOrder": {
+            "type": "number",
+            "default": 0,
+            "minimum": 0,
+            "maximum": 9999
+          }
+        },
+        "required": [
+          "name",
+          "code"
+        ]
+      },
+      "UpdateDeliveryMethodDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120,
+            "example": "Standard delivery"
+          },
+          "code": {
+            "type": "string",
+            "example": "STANDARD",
+            "maxLength": 40
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "PICKUP",
+              "DELIVERY"
+            ],
+            "default": "DELIVERY"
+          },
+          "branchId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Collection branch; only meaningful for PICKUP methods"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          },
+          "isDefault": {
+            "type": "boolean",
+            "default": false
+          },
+          "sortOrder": {
+            "type": "number",
+            "default": 0,
+            "minimum": 0,
+            "maximum": 9999
+          }
+        }
+      },
+      "CreateDeliveryZoneDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120,
+            "example": "Phnom Penh"
+          },
+          "countries": {
+            "maxItems": 200,
+            "example": [
+              "KH"
+            ],
+            "description": "ISO 3166-1 alpha-2 country codes. Empty matches any country.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "provinces": {
+            "maxItems": 200,
+            "example": [
+              "Phnom Penh"
+            ],
+            "description": "Provinces/states. Empty matches any province.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cities": {
+            "maxItems": 200,
+            "example": [
+              "Phnom Penh"
+            ],
+            "description": "Cities. Empty matches any city.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "postalCodes": {
+            "maxItems": 200,
+            "example": [
+              "12000"
+            ],
+            "description": "Postal codes. Empty matches any postal code.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "baseFee": {
+            "type": "string",
+            "example": "2.50",
+            "default": "0"
+          },
+          "perItemFee": {
+            "type": "string",
+            "example": "0.50",
+            "default": "0",
+            "description": "Added once per unit across the whole cart"
+          },
+          "freeOverSubtotal": {
+            "type": "string",
+            "example": "50.00",
+            "description": "Shipping becomes free once the cart subtotal reaches this"
+          },
+          "minSubtotal": {
+            "type": "string",
+            "example": "10.00",
+            "description": "Zone is not offered below this cart subtotal"
+          },
+          "maxSubtotal": {
+            "type": "string",
+            "example": "500.00",
+            "description": "Zone is not offered above this cart subtotal"
+          },
+          "estimatedMinDays": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 365
+          },
+          "estimatedMaxDays": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 365
+          },
+          "isFallback": {
+            "type": "boolean",
+            "default": false,
+            "description": "Matches any address, but only when no specific zone matched first"
+          },
+          "sortOrder": {
+            "type": "number",
+            "default": 0,
+            "minimum": 0,
+            "maximum": 9999
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateDeliveryZoneDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120,
+            "example": "Phnom Penh"
+          },
+          "countries": {
+            "maxItems": 200,
+            "example": [
+              "KH"
+            ],
+            "description": "ISO 3166-1 alpha-2 country codes. Empty matches any country.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "provinces": {
+            "maxItems": 200,
+            "example": [
+              "Phnom Penh"
+            ],
+            "description": "Provinces/states. Empty matches any province.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cities": {
+            "maxItems": 200,
+            "example": [
+              "Phnom Penh"
+            ],
+            "description": "Cities. Empty matches any city.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "postalCodes": {
+            "maxItems": 200,
+            "example": [
+              "12000"
+            ],
+            "description": "Postal codes. Empty matches any postal code.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "baseFee": {
+            "type": "string",
+            "example": "2.50",
+            "default": "0"
+          },
+          "perItemFee": {
+            "type": "string",
+            "example": "0.50",
+            "default": "0",
+            "description": "Added once per unit across the whole cart"
+          },
+          "freeOverSubtotal": {
+            "type": "string",
+            "example": "50.00",
+            "description": "Shipping becomes free once the cart subtotal reaches this"
+          },
+          "minSubtotal": {
+            "type": "string",
+            "example": "10.00",
+            "description": "Zone is not offered below this cart subtotal"
+          },
+          "maxSubtotal": {
+            "type": "string",
+            "example": "500.00",
+            "description": "Zone is not offered above this cart subtotal"
+          },
+          "estimatedMinDays": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 365
+          },
+          "estimatedMaxDays": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 365
+          },
+          "isFallback": {
+            "type": "boolean",
+            "default": false,
+            "description": "Matches any address, but only when no specific zone matched first"
+          },
+          "sortOrder": {
+            "type": "number",
+            "default": 0,
+            "minimum": 0,
+            "maximum": 9999
+          }
+        }
+      },
+      "ShipmentItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderItemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantity": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "orderItemId",
+          "quantity"
+        ]
+      },
+      "ShipmentEventDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "READY_FOR_PICKUP",
+              "IN_TRANSIT",
+              "OUT_FOR_DELIVERY",
+              "DELIVERED",
+              "FAILED",
+              "RETURNED",
+              "CANCELLED"
+            ]
+          },
+          "message": {
+            "type": "object",
+            "nullable": true
+          },
+          "location": {
+            "type": "object",
+            "nullable": true
+          },
+          "occurredAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "occurredAt"
+        ]
+      },
+      "ShipmentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "shipmentNumber": {
+            "type": "string",
+            "example": "SHP-20260915-A1B2C3D4E5"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "READY_FOR_PICKUP",
+              "IN_TRANSIT",
+              "OUT_FOR_DELIVERY",
+              "DELIVERED",
+              "FAILED",
+              "RETURNED",
+              "CANCELLED"
+            ]
+          },
+          "carrierName": {
+            "type": "object",
+            "nullable": true
+          },
+          "trackingNumber": {
+            "type": "object",
+            "nullable": true
+          },
+          "trackingUrl": {
+            "type": "object",
+            "nullable": true
+          },
+          "shippedAt": {
+            "type": "object",
+            "nullable": true
+          },
+          "deliveredAt": {
+            "type": "object",
+            "nullable": true
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShipmentItemDto"
+            }
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShipmentEventDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "orderId",
+          "shipmentNumber",
+          "status",
+          "items",
+          "events"
+        ]
+      },
+      "AddressInputDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 60,
+            "example": "Home"
+          },
+          "recipientName": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 30
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "line1": {
+            "type": "string",
+            "maxLength": 200,
+            "example": "12 Street 240"
+          },
+          "line2": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 100,
+            "example": "Phnom Penh"
+          },
+          "province": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "postalCode": {
+            "type": "string",
+            "maxLength": 20
+          },
+          "country": {
+            "type": "string",
+            "example": "KH",
+            "description": "ISO 3166-1 alpha-2 code"
+          },
+          "latitude": {
+            "type": "number",
+            "example": 11.5564
+          },
+          "longitude": {
+            "type": "number",
+            "example": 104.9282
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "recipientName",
+          "line1",
+          "country"
+        ]
+      },
+      "ShipmentItemInputDto": {
+        "type": "object",
+        "properties": {
+          "orderItemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "orderItemId",
+          "quantity"
+        ]
+      },
+      "CreateShipmentDto": {
+        "type": "object",
+        "properties": {
+          "deliveryMethodId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Defaults to the order's delivery method"
+          },
+          "carrierName": {
+            "type": "string",
+            "maxLength": 120,
+            "example": "J&T Express"
+          },
+          "trackingNumber": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "trackingUrl": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "address": {
+            "description": "Defaults to the order's shipping address snapshot",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AddressInputDto"
+              }
+            ]
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "items": {
+            "description": "Defaults to every not-yet-shipped unit on the order when omitted",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShipmentItemInputDto"
+            }
+          }
+        }
+      },
+      "UpdateShipmentDto": {
+        "type": "object",
+        "properties": {
+          "carrierName": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "trackingNumber": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "trackingUrl": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "address": {
+            "$ref": "#/components/schemas/AddressInputDto"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      },
+      "UpdateShipmentStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "READY_FOR_PICKUP",
+              "IN_TRANSIT",
+              "OUT_FOR_DELIVERY",
+              "DELIVERED",
+              "FAILED",
+              "RETURNED",
+              "CANCELLED"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "location": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "occurredAt": {
+            "type": "string",
+            "description": "When the event happened; defaults to now"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "ConnectPaymentProviderDto": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "enum": [
+              "HMAC",
+              "KHQR",
+              "ABA_PAYWAY",
+              "CASH"
+            ]
+          },
+          "webhookSecret": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "description": "Webhook signing secret. Required for the HMAC provider."
+          },
+          "providerSecret": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 1000,
+            "description": "Primary provider secret, such as a Bakong token or PayWay API key."
+          },
+          "config": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Non-secret provider metadata such as an account identifier"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "default": "ACTIVE"
+          }
+        },
+        "required": [
+          "provider"
+        ]
+      },
+      "PaymentProviderDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "HMAC",
+              "KHQR",
+              "ABA_PAYWAY",
+              "CASH"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          },
+          "config": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "hasWebhookSecret": {
+            "type": "boolean"
+          },
+          "hasProviderSecret": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "provider",
+          "status",
+          "config",
+          "hasWebhookSecret",
+          "hasProviderSecret",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaymentActionDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "QR"
+            ]
+          },
+          "qrPayload": {
+            "type": "string"
+          },
+          "qrImage": {
+            "type": "string",
+            "description": "PayWay data URL for the generated QR image"
+          },
+          "deepLink": {
+            "type": "string"
+          },
+          "reference": {
+            "type": "string",
+            "description": "Provider verification reference"
+          }
+        },
+        "required": [
+          "type",
+          "qrPayload",
+          "qrImage"
+        ]
+      },
+      "PaymentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "HMAC",
+              "KHQR",
+              "ABA_PAYWAY",
+              "CASH"
+            ]
+          },
+          "providerTransactionId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "PROCESSING",
+              "CONFIRMED",
+              "FAILED",
+              "CANCELLED",
+              "REFUNDED",
+              "UNKNOWN"
+            ]
+          },
+          "paidAt": {
+            "type": "object"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "action": {
+            "$ref": "#/components/schemas/PaymentActionDto"
+          }
+        },
+        "required": [
+          "id",
+          "orderId",
+          "provider",
+          "providerTransactionId",
+          "amount",
+          "currency",
+          "status",
+          "createdAt"
+        ]
+      },
+      "CreateSocialPostDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 180
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 20000
+          },
+          "mediaUrls": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "content"
+        ]
+      },
+      "ShoppableHotspotDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "object",
+            "format": "uuid"
+          },
+          "xPercent": {
+            "type": "string"
+          },
+          "yPercent": {
+            "type": "string"
+          },
+          "label": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "productId",
+          "xPercent",
+          "yPercent"
+        ]
+      },
+      "SocialPostDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "mediaUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PUBLISHED",
+              "PARTIALLY_PUBLISHED",
+              "FAILED"
+            ]
+          },
+          "targetPlatforms": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "WEBSITE",
+                "FACEBOOK",
+                "INSTAGRAM",
+                "TIKTOK"
+              ]
+            }
+          },
+          "hotspots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShoppableHotspotDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "slug",
+          "content",
+          "mediaUrls",
+          "status",
+          "targetPlatforms",
+          "hotspots"
+        ]
+      },
+      "UpdateSocialPostDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 180
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 20000
+          },
+          "mediaUrls": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AddHotspotDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "xPercent": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "yPercent": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "productId",
+          "xPercent",
+          "yPercent"
+        ]
+      },
+      "PublishSocialPostDto": {
+        "type": "object",
+        "properties": {
+          "platforms": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "WEBSITE",
+                "FACEBOOK",
+                "INSTAGRAM",
+                "TIKTOK"
+              ]
+            }
+          }
+        },
+        "required": [
+          "platforms"
+        ]
+      },
+      "SocialPublishLogDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PUBLISHED",
+              "FAILED"
+            ]
+          },
+          "externalUrl": {
+            "type": "object"
+          },
+          "error": {
+            "type": "object"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "platform",
+          "status",
+          "createdAt"
+        ]
+      }
+    }
+  }
+}

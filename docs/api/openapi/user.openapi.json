@@ -1,0 +1,571 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/auth/register-merchant": {
+      "post": {
+        "operationId": "AuthController_registerMerchant",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Register a merchant and its owner account",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Login with email and password",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Rotate a refresh token",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/logout-all": {
+      "post": {
+        "operationId": "AuthController_logoutAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "operationId": "AuthController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current account and merchant memberships",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/switch-merchant": {
+      "post": {
+        "operationId": "AuthController_switchMerchant",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SwitchMerchantDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/login/firebase-google": {
+      "post": {
+        "operationId": "SocialAuthController_loginWithFirebaseGoogle",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FirebaseGoogleLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Login with a Firebase Google ID token",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/login/telegram": {
+      "post": {
+        "operationId": "SocialAuthController_loginWithTelegram",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TelegramLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Login with a Telegram OIDC ID token",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/telegram/token": {
+      "post": {
+        "operationId": "SocialAuthController_exchangeTelegramCode",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TelegramTokenExchangeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Exchange a Telegram OAuth code for an ID token",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/customer/login/firebase-google": {
+      "post": {
+        "operationId": "SocialAuthController_loginCustomerWithFirebaseGoogle",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FirebaseGoogleLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Login as a storefront customer with Firebase Google",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/customer/login/telegram": {
+      "post": {
+        "operationId": "SocialAuthController_loginCustomerWithTelegram",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TelegramLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Login as a storefront customer with Telegram",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/telegram/mini-app": {
+      "post": {
+        "operationId": "SocialAuthController_loginWithTelegramMiniApp",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TelegramMiniAppLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Login with a Telegram Mini App (verified initData)",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/customer/telegram/mini-app": {
+      "post": {
+        "operationId": "SocialAuthController_loginCustomerWithTelegramMiniApp",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TelegramMiniAppLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Login as a storefront customer with a Telegram Mini App (verified initData)",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/telegram/mini-app/link": {
+      "post": {
+        "operationId": "SocialAuthController_linkTelegramMiniApp[0]",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TelegramMiniAppLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Link a Telegram Mini App identity to the current authenticated user",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/customer/telegram/mini-app/link": {
+      "post": {
+        "operationId": "SocialAuthController_linkTelegramMiniApp[1]",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TelegramMiniAppLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Link a Telegram Mini App identity to the current authenticated user",
+        "tags": [
+          "Auth"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "User API",
+    "description": "Authentication, sessions, profiles, and merchant access",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "merchantName": {
+            "type": "string",
+            "example": "Acme Store"
+          },
+          "fullName": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "StrongPassword123!",
+            "minLength": 10
+          },
+          "phone": {
+            "type": "string",
+            "example": "+15551234567"
+          }
+        },
+        "required": [
+          "merchantName",
+          "fullName",
+          "email",
+          "password"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "strongPassword123"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "RefreshTokenDto": {
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "refreshToken"
+        ]
+      },
+      "SwitchMerchantDto": {
+        "type": "object",
+        "properties": {
+          "merchantId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "merchantId"
+        ]
+      },
+      "FirebaseGoogleLoginDto": {
+        "type": "object",
+        "properties": {
+          "idToken": {
+            "type": "string",
+            "description": "Firebase Authentication ID token from Google sign-in"
+          }
+        },
+        "required": [
+          "idToken"
+        ]
+      },
+      "TelegramLoginDto": {
+        "type": "object",
+        "properties": {
+          "idToken": {
+            "type": "string",
+            "description": "Telegram Login OIDC ID token returned by telegram-login.js"
+          }
+        },
+        "required": [
+          "idToken"
+        ]
+      },
+      "TelegramTokenExchangeDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Authorization code returned by Telegram OAuth"
+          },
+          "codeVerifier": {
+            "type": "string",
+            "description": "PKCE code verifier generated before authorization"
+          },
+          "redirectUri": {
+            "type": "string",
+            "description": "Redirect URI used for the Telegram authorization request"
+          }
+        },
+        "required": [
+          "code",
+          "codeVerifier",
+          "redirectUri"
+        ]
+      },
+      "TelegramMiniAppLoginDto": {
+        "type": "object",
+        "properties": {
+          "initData": {
+            "type": "string",
+            "description": "Raw Telegram.WebApp.initData string from the Mini App (never initDataUnsafe)"
+          }
+        },
+        "required": [
+          "initData"
+        ]
+      }
+    }
+  }
+}

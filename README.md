@@ -111,6 +111,17 @@ Swagger documentation is available at:
 
 Control visibility with `SWAGGER_*_ENABLED` environment variables.
 
+Each surface also ships an exported OpenAPI document and a Postman collection
+with runnable test cases — merchant and storefront are fully separate suites:
+
+```bash
+pnpm docs:api            # regenerate docs/api/openapi + docs/api/postman
+pnpm test:api            # run the merchant and storefront suites with Newman
+```
+
+See [docs/api/README.md](docs/api/README.md) for the surface map, the order the
+end-to-end folders run in, and the edge cases each suite covers.
+
 ## 📋 Backend Scripts
 
 ```bash
@@ -131,6 +142,10 @@ pnpm format             # Format code
 # Build
 pnpm build              # Production build
 pnpm start:prod         # Run production build
+
+# API docs & contract tests
+pnpm docs:api           # Export OpenAPI + rebuild Postman collections
+pnpm test:api           # Run merchant + storefront Postman suites (Newman)
 
 # Database
 pnpm prisma:generate    # Generate Prisma Client

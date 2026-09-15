@@ -1,0 +1,5528 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/branches": {
+      "get": {
+        "operationId": "BranchController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "INACTIVE"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BranchDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List merchant branches",
+        "tags": [
+          "Branches"
+        ]
+      },
+      "post": {
+        "operationId": "BranchController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBranchDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BranchDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Branch code is already in use"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a merchant branch",
+        "tags": [
+          "Branches"
+        ]
+      }
+    },
+    "/branches/{id}": {
+      "patch": {
+        "operationId": "BranchController_update",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBranchDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BranchDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Branch not found"
+          },
+          "409": {
+            "description": "Branch code is already in use"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a merchant branch",
+        "tags": [
+          "Branches"
+        ]
+      },
+      "delete": {
+        "operationId": "BranchController_archive",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BranchDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Branch not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Archive a merchant branch",
+        "tags": [
+          "Branches"
+        ]
+      }
+    },
+    "/products": {
+      "post": {
+        "operationId": "CatalogController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "SKU or slug is already in use"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a product in the active merchant",
+        "tags": [
+          "Catalog"
+        ]
+      },
+      "get": {
+        "operationId": "CatalogController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "ACTIVE",
+                "INACTIVE"
+              ]
+            }
+          },
+          {
+            "name": "categoryId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "categorySlug",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "example": "coffee",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List products for the active merchant",
+        "tags": [
+          "Catalog"
+        ]
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "operationId": "CatalogController_findOne",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a product from the active merchant",
+        "tags": [
+          "Catalog"
+        ]
+      },
+      "patch": {
+        "operationId": "CatalogController_update",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "SKU or slug is already in use"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a product in the active merchant",
+        "tags": [
+          "Catalog"
+        ]
+      },
+      "delete": {
+        "operationId": "CatalogController_remove",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Soft-delete a product in the active merchant",
+        "tags": [
+          "Catalog"
+        ]
+      }
+    },
+    "/products/{id}/channel-visibility": {
+      "patch": {
+        "operationId": "CatalogController_updateChannelVisibility",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateChannelVisibilityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductChannelVisibilityDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update product visibility by sales channel",
+        "tags": [
+          "Catalog"
+        ]
+      }
+    },
+    "/categories": {
+      "get": {
+        "operationId": "CategoriesController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "INACTIVE"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductCategoryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List product categories for the active merchant",
+        "tags": [
+          "Catalog"
+        ]
+      },
+      "post": {
+        "operationId": "CategoriesController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductCategoryDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Category slug is already in use"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a product category",
+        "tags": [
+          "Catalog"
+        ]
+      }
+    },
+    "/categories/{id}": {
+      "patch": {
+        "operationId": "CategoriesController_update",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductCategoryDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Category slug is already in use"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a product category",
+        "tags": [
+          "Catalog"
+        ]
+      },
+      "delete": {
+        "operationId": "CategoriesController_archive",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductCategoryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Archive a product category",
+        "tags": [
+          "Catalog"
+        ]
+      }
+    },
+    "/inventory": {
+      "get": {
+        "operationId": "InventoryController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "productId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InventoryStockDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List inventory for the active merchant",
+        "tags": [
+          "Inventory"
+        ]
+      }
+    },
+    "/inventory/{productId}": {
+      "get": {
+        "operationId": "InventoryController_findProduct",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductInventoryDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get stock detail for a merchant product",
+        "tags": [
+          "Inventory"
+        ]
+      }
+    },
+    "/inventory/adjust": {
+      "post": {
+        "operationId": "InventoryController_adjust",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdjustInventoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryStockDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Apply a signed manual stock adjustment",
+        "tags": [
+          "Inventory"
+        ]
+      }
+    },
+    "/inventory/reserve": {
+      "post": {
+        "operationId": "InventoryController_reserve",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReserveInventoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryOperationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reserve stock for a checkout session",
+        "tags": [
+          "Inventory"
+        ]
+      }
+    },
+    "/inventory/release": {
+      "post": {
+        "operationId": "InventoryController_release",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReleaseInventoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryOperationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Release an active stock reservation",
+        "tags": [
+          "Inventory"
+        ]
+      }
+    },
+    "/inventory/confirm": {
+      "post": {
+        "operationId": "InventoryController_confirm",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmInventoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryOperationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Confirm reserved stock after payment",
+        "tags": [
+          "Inventory"
+        ]
+      }
+    },
+    "/orders": {
+      "get": {
+        "operationId": "OrderController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "PENDING_PAYMENT",
+                "RESERVED",
+                "PAID",
+                "PROCESSING",
+                "FULFILLED",
+                "COMPLETED",
+                "CANCELLED",
+                "PAYMENT_FAILED",
+                "EXPIRED",
+                "REFUNDED"
+              ]
+            }
+          },
+          {
+            "name": "paymentStatus",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "PARTIAL",
+                "PAID",
+                "FAILED",
+                "REFUNDED"
+              ]
+            }
+          },
+          {
+            "name": "fulfillmentStatus",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "UNFULFILLED",
+                "PROCESSING",
+                "FULFILLED",
+                "CANCELLED"
+              ]
+            }
+          },
+          {
+            "name": "sourceChannel",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "POS",
+                "WEBSITE",
+                "FACEBOOK",
+                "INSTAGRAM",
+                "TIKTOK"
+              ]
+            }
+          },
+          {
+            "name": "dateFrom",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-07-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-07-31",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrderDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List orders for the active merchant",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/orders/{id}": {
+      "get": {
+        "operationId": "OrderController_findOne",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get an order from the active merchant",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/orders/{id}/status": {
+      "patch": {
+        "operationId": "OrderController_updateStatus",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Advance a paid order through fulfillment",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/orders/{id}/cancel": {
+      "post": {
+        "operationId": "OrderController_cancel",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cancel an unpaid order and release its stock",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/orders/{id}/refund": {
+      "post": {
+        "operationId": "OrderController_refund",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefundOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Refund a paid order with an audited stock policy",
+        "tags": [
+          "Orders"
+        ]
+      }
+    },
+    "/payments/providers": {
+      "post": {
+        "operationId": "PaymentController_connectProvider",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConnectPaymentProviderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentProviderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Connect or rotate a payment provider",
+        "tags": [
+          "Payments"
+        ]
+      },
+      "get": {
+        "operationId": "PaymentController_listProviders",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PaymentProviderDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List payment providers for the active merchant",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/payments/providers/{provider}/disconnect": {
+      "patch": {
+        "operationId": "PaymentController_disconnectProvider",
+        "parameters": [
+          {
+            "name": "provider",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentProviderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Disconnect a payment provider",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/payments/transactions": {
+      "get": {
+        "operationId": "PaymentController_findAll",
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "provider",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "HMAC",
+                "KHQR",
+                "ABA_PAYWAY",
+                "CASH"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "PROCESSING",
+                "CONFIRMED",
+                "FAILED",
+                "CANCELLED",
+                "REFUNDED",
+                "UNKNOWN"
+              ]
+            }
+          },
+          {
+            "name": "dateFrom",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-07-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-07-31",
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PaymentDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List payments for the active merchant",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/payments/{id}": {
+      "get": {
+        "operationId": "PaymentController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a payment from the active merchant",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/pos/bootstrap": {
+      "get": {
+        "operationId": "PosController_bootstrap",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "deviceId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Aggregate payload for the POS app’s initial local sync",
+        "tags": [
+          "POS"
+        ]
+      }
+    },
+    "/pos/sales": {
+      "post": {
+        "deprecated": true,
+        "description": "Legacy single-call sale endpoint: bypasses device/shift tracking and marks the order paid directly without creating a Payment record. Prefer POST /pos/devices + POST /pos/shifts + POST /pos/orders + POST /pos/orders/:orderId/payments, which support split/multi-tender payments, kitchen workflow, and proper payment ledger records.",
+        "operationId": "PosController_createSale",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePosSaleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PosSaleResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Complete a one-shot POS sale and return a receipt (deprecated)",
+        "tags": [
+          "POS"
+        ]
+      }
+    },
+    "/pos/devices": {
+      "get": {
+        "operationId": "PosDevicesController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "INACTIVE",
+                "REVOKED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PosDeviceDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List registered POS devices",
+        "tags": [
+          "POS Devices"
+        ]
+      },
+      "post": {
+        "operationId": "PosDevicesController_register",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterPosDeviceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PosDeviceDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Register (or re-register) a POS device",
+        "tags": [
+          "POS Devices"
+        ]
+      }
+    },
+    "/pos/shifts": {
+      "post": {
+        "operationId": "PosShiftsController_open",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpenPosShiftDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PosShiftDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Open a POS cashier shift",
+        "tags": [
+          "POS Shifts"
+        ]
+      }
+    },
+    "/pos/shifts/current": {
+      "get": {
+        "operationId": "PosShiftsController_current",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "deviceId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "POS-DEVICE-001",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PosShiftDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get the current open shift for a device",
+        "tags": [
+          "POS Shifts"
+        ]
+      }
+    },
+    "/pos/shifts/{shiftId}/close": {
+      "post": {
+        "operationId": "PosShiftsController_close",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "shiftId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClosePosShiftDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PosShiftDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Close a POS cashier shift and reconcile cash",
+        "tags": [
+          "POS Shifts"
+        ]
+      }
+    },
+    "/pos/orders": {
+      "post": {
+        "operationId": "PosOrdersController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePosOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PosOrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a POS order",
+        "tags": [
+          "POS Orders"
+        ]
+      },
+      "get": {
+        "operationId": "PosOrdersController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-09-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-09-30",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "PENDING_PAYMENT",
+                "RESERVED",
+                "PAID",
+                "PROCESSING",
+                "FULFILLED",
+                "COMPLETED",
+                "CANCELLED",
+                "PAYMENT_FAILED",
+                "EXPIRED",
+                "REFUNDED"
+              ]
+            }
+          },
+          {
+            "name": "paymentStatus",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "PARTIAL",
+                "PAID",
+                "FAILED",
+                "REFUNDED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PosOrderDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List POS orders",
+        "tags": [
+          "POS Orders"
+        ]
+      }
+    },
+    "/pos/orders/{orderId}": {
+      "get": {
+        "operationId": "PosOrdersController_findOne",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PosOrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get POS order detail",
+        "tags": [
+          "POS Orders"
+        ]
+      },
+      "patch": {
+        "operationId": "PosOrdersController_update",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePosOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PosOrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Modify a POS order’s items",
+        "tags": [
+          "POS Orders"
+        ]
+      }
+    },
+    "/pos/orders/{orderId}/cancel": {
+      "post": {
+        "operationId": "PosOrdersController_cancel",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelPosOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PosOrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cancel a POS order",
+        "tags": [
+          "POS Orders"
+        ]
+      }
+    },
+    "/pos/orders/{orderId}/table": {
+      "post": {
+        "operationId": "PosOrdersController_assignTable",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignPosOrderTableDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PosOrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Assign a POS order to a table",
+        "tags": [
+          "POS Orders"
+        ]
+      }
+    },
+    "/pos/tables": {
+      "get": {
+        "operationId": "PosTablesController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "AVAILABLE",
+                "OCCUPIED",
+                "RESERVED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List tables",
+        "tags": [
+          "POS Tables"
+        ]
+      },
+      "post": {
+        "operationId": "PosTablesController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePosTableDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a table",
+        "tags": [
+          "POS Tables"
+        ]
+      }
+    },
+    "/pos/tables/{tableId}": {
+      "patch": {
+        "operationId": "PosTablesController_update",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tableId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePosTableDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a table (status/seats)",
+        "tags": [
+          "POS Tables"
+        ]
+      }
+    },
+    "/pos/orders/{orderId}/kitchen": {
+      "post": {
+        "operationId": "KitchenController_sendToKitchen",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KitchenOrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Send new/changed order items to the kitchen",
+        "tags": [
+          "POS Kitchen"
+        ]
+      }
+    },
+    "/pos/kitchen/orders": {
+      "get": {
+        "operationId": "KitchenController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "ACCEPTED",
+                "PREPARING",
+                "READY",
+                "COMPLETED",
+                "CANCELLED"
+              ]
+            }
+          },
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/KitchenOrderDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List kitchen orders",
+        "tags": [
+          "POS Kitchen"
+        ]
+      }
+    },
+    "/pos/kitchen/orders/{id}/status": {
+      "patch": {
+        "operationId": "KitchenController_updateStatus",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateKitchenOrderStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KitchenOrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Advance a kitchen order’s status",
+        "tags": [
+          "POS Kitchen"
+        ]
+      }
+    },
+    "/pos/orders/{orderId}/payments": {
+      "post": {
+        "operationId": "PosPaymentsController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePosPaymentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Take a payment (cash or KHQR) against an order",
+        "tags": [
+          "POS Payments"
+        ]
+      }
+    },
+    "/pos/payments/{paymentId}": {
+      "get": {
+        "operationId": "PosPaymentsController_findOne",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get payment status (polls KHQR provider if still pending)",
+        "tags": [
+          "POS Payments"
+        ]
+      }
+    },
+    "/pos/payments/{paymentId}/refund": {
+      "post": {
+        "operationId": "PosPaymentsController_refund",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePosRefundDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Refund all or part of a confirmed payment",
+        "tags": [
+          "POS Payments"
+        ]
+      }
+    },
+    "/pos/customers": {
+      "get": {
+        "operationId": "PosCustomersController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Search POS customers",
+        "tags": [
+          "POS Customers"
+        ]
+      },
+      "post": {
+        "operationId": "PosCustomersController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a POS customer",
+        "tags": [
+          "POS Customers"
+        ]
+      }
+    },
+    "/pos/sync": {
+      "get": {
+        "operationId": "PosSyncController_pull",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cursor-based incremental sync of catalog/inventory/orders/payments",
+        "tags": [
+          "POS Sync"
+        ]
+      }
+    },
+    "/pos/sync/batch": {
+      "post": {
+        "operationId": "PosSyncController_batch",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncBatchDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Apply a batch of offline-queued operations",
+        "tags": [
+          "POS Sync"
+        ]
+      }
+    },
+    "/pos/audit-logs": {
+      "get": {
+        "operationId": "PosAuditController_findAll",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "action",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "PAYMENT_SUCCESS",
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityType",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "order",
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List POS audit log entries",
+        "tags": [
+          "POS Audit"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "POS API",
+    "description": "Authenticated point-of-sale operations for branch selection, POS catalog browsing, inventory visibility, POS sale completion, and POS order lookup",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      },
+      "merchant-context": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Merchant-ID"
+      }
+    },
+    "schemas": {
+      "BranchDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "object",
+            "nullable": true
+          },
+          "addressLine1": {
+            "type": "object",
+            "nullable": true
+          },
+          "addressLine2": {
+            "type": "object",
+            "nullable": true
+          },
+          "city": {
+            "type": "object",
+            "nullable": true
+          },
+          "province": {
+            "type": "object",
+            "nullable": true
+          },
+          "postalCode": {
+            "type": "object",
+            "nullable": true
+          },
+          "country": {
+            "type": "object",
+            "nullable": true
+          },
+          "registerName": {
+            "type": "object",
+            "nullable": true
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "name",
+          "code",
+          "isDefault",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateBranchDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Central Counter",
+            "maxLength": 120
+          },
+          "code": {
+            "type": "string",
+            "example": "CENTRAL",
+            "maxLength": 40
+          },
+          "phone": {
+            "type": "string",
+            "example": "+1 555 100 2000",
+            "maxLength": 40
+          },
+          "addressLine1": {
+            "type": "string",
+            "example": "123 Market Street",
+            "maxLength": 180
+          },
+          "addressLine2": {
+            "type": "string",
+            "example": "Suite 5",
+            "maxLength": 180
+          },
+          "city": {
+            "type": "string",
+            "example": "San Francisco",
+            "maxLength": 120
+          },
+          "province": {
+            "type": "string",
+            "example": "California",
+            "maxLength": 120
+          },
+          "postalCode": {
+            "type": "string",
+            "example": "94105",
+            "maxLength": 40
+          },
+          "country": {
+            "type": "string",
+            "example": "US",
+            "maxLength": 80
+          },
+          "registerName": {
+            "type": "string",
+            "example": "Register 01",
+            "maxLength": 80
+          },
+          "isDefault": {
+            "type": "boolean",
+            "default": false
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "default": "ACTIVE"
+          }
+        },
+        "required": [
+          "name",
+          "code"
+        ]
+      },
+      "UpdateBranchDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Central Counter",
+            "maxLength": 120
+          },
+          "code": {
+            "type": "string",
+            "example": "CENTRAL",
+            "maxLength": 40
+          },
+          "phone": {
+            "type": "string",
+            "example": "+1 555 100 2000",
+            "maxLength": 40
+          },
+          "addressLine1": {
+            "type": "string",
+            "example": "123 Market Street",
+            "maxLength": 180
+          },
+          "addressLine2": {
+            "type": "string",
+            "example": "Suite 5",
+            "maxLength": 180
+          },
+          "city": {
+            "type": "string",
+            "example": "San Francisco",
+            "maxLength": 120
+          },
+          "province": {
+            "type": "string",
+            "example": "California",
+            "maxLength": 120
+          },
+          "postalCode": {
+            "type": "string",
+            "example": "94105",
+            "maxLength": 40
+          },
+          "country": {
+            "type": "string",
+            "example": "US",
+            "maxLength": 80
+          },
+          "registerName": {
+            "type": "string",
+            "example": "Register 01",
+            "maxLength": 80
+          },
+          "isDefault": {
+            "type": "boolean",
+            "default": false
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "default": "ACTIVE"
+          }
+        }
+      },
+      "ProductVariantInputDto": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "example": "SHIRT-BLK-M",
+            "maxLength": 80
+          },
+          "name": {
+            "type": "string",
+            "example": "Black / Medium",
+            "maxLength": 120
+          },
+          "price": {
+            "type": "string",
+            "example": "29.99"
+          },
+          "attributes": {
+            "type": "object",
+            "example": {
+              "color": "black",
+              "size": "M"
+            },
+            "additionalProperties": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "default": "ACTIVE"
+          }
+        },
+        "required": [
+          "sku",
+          "name",
+          "price",
+          "attributes"
+        ]
+      },
+      "ProductMediaInputDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "example": "https://cdn.example.com/products/shirt.jpg"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "IMAGE",
+              "VIDEO"
+            ],
+            "default": "IMAGE"
+          },
+          "sortOrder": {
+            "type": "number",
+            "default": 0,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "ChannelVisibilityInputDto": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "isVisible": {
+            "type": "boolean"
+          },
+          "isPurchasable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "channel",
+          "isVisible",
+          "isPurchasable"
+        ]
+      },
+      "CreateProductInventoryInputDto": {
+        "type": "object",
+        "properties": {
+          "variantSku": {
+            "type": "string",
+            "example": "SHIRT-BLK-M",
+            "description": "Variant SKU to initialize. Omit to initialize the base product stock.",
+            "maxLength": 80
+          },
+          "initialStock": {
+            "type": "number",
+            "example": 25,
+            "minimum": 0,
+            "default": 0
+          },
+          "safetyBuffer": {
+            "type": "number",
+            "example": 2,
+            "minimum": 0,
+            "default": 0
+          }
+        }
+      },
+      "CreateProductDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Classic T-Shirt",
+            "maxLength": 160
+          },
+          "slug": {
+            "type": "string",
+            "example": "classic-t-shirt",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 180
+          },
+          "description": {
+            "type": "string"
+          },
+          "sku": {
+            "type": "string",
+            "example": "SHIRT-001",
+            "maxLength": 80
+          },
+          "price": {
+            "type": "string",
+            "example": "29.99"
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD",
+            "default": "USD"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "default": "DRAFT"
+          },
+          "categoryId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "trackStock": {
+            "type": "boolean",
+            "description": "Whether this product tracks inventory. When true, sets inventoryType to STOCKED and stock/reservation checks apply; when false (default), the product is always sellable regardless of inventory.",
+            "default": false
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductVariantInputDto"
+            }
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductMediaInputDto"
+            }
+          },
+          "channelVisibility": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChannelVisibilityInputDto"
+            }
+          },
+          "inventory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateProductInventoryInputDto"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "sku",
+          "price"
+        ]
+      },
+      "ProductCategoryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "merchantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "object",
+            "nullable": true
+          },
+          "logoUrl": {
+            "type": "object",
+            "nullable": true
+          },
+          "sortOrder": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "name",
+          "slug",
+          "sortOrder",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ProductVariantDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string",
+            "example": "29.99"
+          },
+          "attributes": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "sku",
+          "name",
+          "price",
+          "attributes",
+          "status"
+        ]
+      },
+      "ProductMediaDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "url": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "IMAGE",
+              "VIDEO"
+            ]
+          },
+          "sortOrder": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "type",
+          "sortOrder"
+        ]
+      },
+      "ProductChannelVisibilityDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "isVisible": {
+            "type": "boolean"
+          },
+          "isPurchasable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "channel",
+          "isVisible",
+          "isPurchasable"
+        ]
+      },
+      "ProductDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "merchantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "object",
+            "nullable": true
+          },
+          "sku": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string",
+            "example": "29.99"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          },
+          "inventoryType": {
+            "type": "string",
+            "enum": [
+              "STOCKED",
+              "NON_STOCKED"
+            ]
+          },
+          "trackStock": {
+            "type": "boolean",
+            "description": "Quick boolean mirror of inventoryType === STOCKED, for fast conditional checks"
+          },
+          "categoryId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "category": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProductCategoryDto"
+              }
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "deletedAt": {
+            "type": "object",
+            "format": "date-time",
+            "nullable": true
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductVariantDto"
+            }
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductMediaDto"
+            }
+          },
+          "channelVisibility": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductChannelVisibilityDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "name",
+          "slug",
+          "sku",
+          "price",
+          "currency",
+          "status",
+          "inventoryType",
+          "trackStock",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateProductDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Classic T-Shirt",
+            "maxLength": 160
+          },
+          "slug": {
+            "type": "string",
+            "example": "classic-t-shirt",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 180
+          },
+          "description": {
+            "type": "string"
+          },
+          "sku": {
+            "type": "string",
+            "example": "SHIRT-001",
+            "maxLength": 80
+          },
+          "price": {
+            "type": "string",
+            "example": "29.99"
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD",
+            "default": "USD"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "default": "DRAFT"
+          },
+          "categoryId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "trackStock": {
+            "type": "boolean",
+            "description": "Whether this product tracks inventory. When true, sets inventoryType to STOCKED and stock/reservation checks apply; when false (default), the product is always sellable regardless of inventory.",
+            "default": false
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductVariantInputDto"
+            }
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductMediaInputDto"
+            }
+          },
+          "channelVisibility": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChannelVisibilityInputDto"
+            }
+          }
+        }
+      },
+      "UpdateChannelVisibilityDto": {
+        "type": "object",
+        "properties": {
+          "channels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChannelVisibilityInputDto"
+            }
+          }
+        },
+        "required": [
+          "channels"
+        ]
+      },
+      "CreateProductCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Coffee",
+            "maxLength": 120
+          },
+          "slug": {
+            "type": "string",
+            "example": "coffee",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 140
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "logoUrl": {
+            "type": "object",
+            "example": "https://cdn.example.com/category-logo.png",
+            "maxLength": 2048,
+            "nullable": true
+          },
+          "sortOrder": {
+            "type": "number",
+            "default": 0,
+            "minimum": 0
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "default": "ACTIVE"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateProductCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Coffee",
+            "maxLength": 120
+          },
+          "slug": {
+            "type": "string",
+            "example": "coffee",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 140
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "logoUrl": {
+            "type": "object",
+            "example": "https://cdn.example.com/category-logo.png",
+            "maxLength": 2048,
+            "nullable": true
+          },
+          "sortOrder": {
+            "type": "number",
+            "default": 0,
+            "minimum": 0
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "default": "ACTIVE"
+          }
+        }
+      },
+      "InventoryStockDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "merchantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "totalStock": {
+            "type": "number"
+          },
+          "reservedStock": {
+            "type": "number"
+          },
+          "soldStock": {
+            "type": "number"
+          },
+          "safetyBuffer": {
+            "type": "number"
+          },
+          "availableStock": {
+            "type": "number"
+          },
+          "onlineSellableStock": {
+            "type": "number"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "productId",
+          "totalStock",
+          "reservedStock",
+          "soldStock",
+          "safetyBuffer",
+          "availableStock",
+          "onlineSellableStock",
+          "updatedAt"
+        ]
+      },
+      "InventoryReservationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "inventoryStockId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "CONFIRMED",
+              "RELEASED",
+              "EXPIRED"
+            ]
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "inventoryStockId",
+          "quantity",
+          "status",
+          "expiresAt"
+        ]
+      },
+      "InventoryMovementDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "STOCK_IN",
+              "STOCK_OUT",
+              "RESERVED",
+              "RESERVATION_RELEASED",
+              "SOLD",
+              "REFUND_RETURN",
+              "MANUAL_ADJUSTMENT"
+            ]
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "referenceId": {
+            "type": "object",
+            "nullable": true
+          },
+          "referenceType": {
+            "type": "object",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "quantity",
+          "createdAt"
+        ]
+      },
+      "ProductInventoryDetailDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "productType": {
+            "type": "string",
+            "enum": [
+              "SIMPLE",
+              "VARIABLE"
+            ]
+          },
+          "stocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InventoryStockDto"
+            }
+          },
+          "activeReservations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InventoryReservationDto"
+            }
+          },
+          "recentMovements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InventoryMovementDto"
+            }
+          }
+        },
+        "required": [
+          "productId",
+          "productType",
+          "stocks",
+          "activeReservations",
+          "recentMovements"
+        ]
+      },
+      "AdjustInventoryDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantityDelta": {
+            "type": "number",
+            "example": 10,
+            "description": "Signed change applied to total stock"
+          },
+          "safetyBuffer": {
+            "type": "number",
+            "example": 2,
+            "minimum": 0
+          },
+          "referenceId": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "referenceType": {
+            "type": "string",
+            "maxLength": 80,
+            "example": "purchase_order"
+          }
+        },
+        "required": [
+          "productId",
+          "quantityDelta"
+        ]
+      },
+      "ReserveInventoryDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1
+          },
+          "checkoutSessionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "expiresInMinutes": {
+            "type": "number",
+            "default": 15,
+            "minimum": 1,
+            "maximum": 120
+          }
+        },
+        "required": [
+          "productId",
+          "quantity",
+          "checkoutSessionId",
+          "channel"
+        ]
+      },
+      "InventoryOperationDto": {
+        "type": "object",
+        "properties": {
+          "stock": {
+            "$ref": "#/components/schemas/InventoryStockDto"
+          },
+          "reservation": {
+            "$ref": "#/components/schemas/InventoryReservationDto"
+          }
+        },
+        "required": [
+          "stock"
+        ]
+      },
+      "ReleaseInventoryDto": {
+        "type": "object",
+        "properties": {
+          "reservationId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "reservationId"
+        ]
+      },
+      "ConfirmInventoryDto": {
+        "type": "object",
+        "properties": {
+          "reservationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "reservationId"
+        ]
+      },
+      "OrderItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "object",
+            "format": "uuid"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unitPrice": {
+            "type": "string"
+          },
+          "totalPrice": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "productId",
+          "sku",
+          "name",
+          "quantity",
+          "unitPrice",
+          "totalPrice"
+        ]
+      },
+      "OrderDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderNumber": {
+            "type": "string"
+          },
+          "sourceChannel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PENDING_PAYMENT",
+              "RESERVED",
+              "PAID",
+              "PROCESSING",
+              "FULFILLED",
+              "COMPLETED",
+              "CANCELLED",
+              "PAYMENT_FAILED",
+              "EXPIRED",
+              "REFUNDED"
+            ]
+          },
+          "paymentStatus": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "PARTIAL",
+              "PAID",
+              "FAILED",
+              "REFUNDED"
+            ]
+          },
+          "fulfillmentStatus": {
+            "type": "string",
+            "enum": [
+              "UNFULFILLED",
+              "PROCESSING",
+              "FULFILLED",
+              "CANCELLED"
+            ]
+          },
+          "subtotalAmount": {
+            "type": "string"
+          },
+          "discountAmount": {
+            "type": "string"
+          },
+          "feeAmount": {
+            "type": "string"
+          },
+          "totalAmount": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "orderNumber",
+          "sourceChannel",
+          "status",
+          "paymentStatus",
+          "fulfillmentStatus",
+          "subtotalAmount",
+          "discountAmount",
+          "feeAmount",
+          "totalAmount",
+          "currency",
+          "items"
+        ]
+      },
+      "UpdateOrderStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "PROCESSING",
+              "FULFILLED",
+              "COMPLETED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "RefundOrderDto": {
+        "type": "object",
+        "properties": {
+          "returnStock": {
+            "type": "boolean",
+            "description": "Optional override; otherwise the merchant return-stock setting is used"
+          }
+        }
+      },
+      "ConnectPaymentProviderDto": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "enum": [
+              "HMAC",
+              "KHQR",
+              "ABA_PAYWAY",
+              "CASH"
+            ]
+          },
+          "webhookSecret": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "description": "Webhook signing secret. Required for the HMAC provider."
+          },
+          "providerSecret": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 1000,
+            "description": "Primary provider secret, such as a Bakong token or PayWay API key."
+          },
+          "config": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Non-secret provider metadata such as an account identifier"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "default": "ACTIVE"
+          }
+        },
+        "required": [
+          "provider"
+        ]
+      },
+      "PaymentProviderDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "HMAC",
+              "KHQR",
+              "ABA_PAYWAY",
+              "CASH"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          },
+          "config": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "hasWebhookSecret": {
+            "type": "boolean"
+          },
+          "hasProviderSecret": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "provider",
+          "status",
+          "config",
+          "hasWebhookSecret",
+          "hasProviderSecret",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaymentActionDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "QR"
+            ]
+          },
+          "qrPayload": {
+            "type": "string"
+          },
+          "qrImage": {
+            "type": "string",
+            "description": "PayWay data URL for the generated QR image"
+          },
+          "deepLink": {
+            "type": "string"
+          },
+          "reference": {
+            "type": "string",
+            "description": "Provider verification reference"
+          }
+        },
+        "required": [
+          "type",
+          "qrPayload",
+          "qrImage"
+        ]
+      },
+      "PaymentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "HMAC",
+              "KHQR",
+              "ABA_PAYWAY",
+              "CASH"
+            ]
+          },
+          "providerTransactionId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "PROCESSING",
+              "CONFIRMED",
+              "FAILED",
+              "CANCELLED",
+              "REFUNDED",
+              "UNKNOWN"
+            ]
+          },
+          "paidAt": {
+            "type": "object"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "action": {
+            "$ref": "#/components/schemas/PaymentActionDto"
+          }
+        },
+        "required": [
+          "id",
+          "orderId",
+          "provider",
+          "providerTransactionId",
+          "amount",
+          "currency",
+          "status",
+          "createdAt"
+        ]
+      },
+      "CreatePosSaleItemDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "category": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 300
+          }
+        },
+        "required": [
+          "productId",
+          "quantity"
+        ]
+      },
+      "CreatePosSaleDto": {
+        "type": "object",
+        "properties": {
+          "branchId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerName": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "paymentMethod": {
+            "type": "string",
+            "enum": [
+              "CASH",
+              "KHQR"
+            ]
+          },
+          "cashReceived": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 999999.99,
+            "default": 0
+          },
+          "discountAmount": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 999999.99,
+            "default": 0
+          },
+          "serviceChargeAmount": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 999999.99,
+            "default": 0
+          },
+          "taxAmount": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 999999.99,
+            "default": 0
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreatePosSaleItemDto"
+            }
+          }
+        },
+        "required": [
+          "branchId",
+          "paymentMethod",
+          "items"
+        ]
+      },
+      "PosReceiptItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "category": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "productId",
+          "category",
+          "name",
+          "sku",
+          "quantity",
+          "unitPrice",
+          "note"
+        ]
+      },
+      "PosReceiptDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderNumber": {
+            "type": "string"
+          },
+          "branchName": {
+            "type": "string"
+          },
+          "cashierName": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PosReceiptItemDto"
+            }
+          },
+          "subtotal": {
+            "type": "number"
+          },
+          "discount": {
+            "type": "number"
+          },
+          "serviceCharge": {
+            "type": "number"
+          },
+          "tax": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "paymentMethod": {
+            "type": "string",
+            "enum": [
+              "CASH",
+              "KHQR"
+            ]
+          },
+          "cashReceived": {
+            "type": "number"
+          },
+          "changeDue": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "orderNumber",
+          "branchName",
+          "cashierName",
+          "createdAt",
+          "customerName",
+          "items",
+          "subtotal",
+          "discount",
+          "serviceCharge",
+          "tax",
+          "total",
+          "paymentMethod",
+          "cashReceived",
+          "changeDue"
+        ]
+      },
+      "PosSaleResponseDto": {
+        "type": "object",
+        "properties": {
+          "order": {
+            "$ref": "#/components/schemas/OrderDto"
+          },
+          "receipt": {
+            "$ref": "#/components/schemas/PosReceiptDto"
+          }
+        },
+        "required": [
+          "order",
+          "receipt"
+        ]
+      },
+      "PosDeviceDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "deviceId": {
+            "type": "string"
+          },
+          "branchId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "object",
+            "nullable": true
+          },
+          "platform": {
+            "type": "object",
+            "nullable": true
+          },
+          "appVersion": {
+            "type": "object",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE",
+              "REVOKED"
+            ]
+          },
+          "lastSeenAt": {
+            "type": "object",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "deviceId",
+          "branchId",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "RegisterPosDeviceDto": {
+        "type": "object",
+        "properties": {
+          "deviceId": {
+            "type": "string",
+            "example": "POS-DEVICE-001",
+            "maxLength": 80
+          },
+          "deviceName": {
+            "type": "string",
+            "example": "Front Counter POS",
+            "maxLength": 120
+          },
+          "platform": {
+            "type": "string",
+            "example": "ANDROID",
+            "maxLength": 40
+          },
+          "appVersion": {
+            "type": "string",
+            "example": "1.0.0",
+            "maxLength": 40
+          },
+          "branchId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "deviceId",
+          "branchId"
+        ]
+      },
+      "OpenPosShiftDto": {
+        "type": "object",
+        "properties": {
+          "deviceId": {
+            "type": "string",
+            "example": "POS-DEVICE-001"
+          },
+          "openingCash": {
+            "type": "number",
+            "example": 100
+          }
+        },
+        "required": [
+          "deviceId",
+          "openingCash"
+        ]
+      },
+      "PosShiftDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "branchId": {
+            "type": "string"
+          },
+          "posDeviceId": {
+            "type": "string"
+          },
+          "openedById": {
+            "type": "string"
+          },
+          "closedById": {
+            "type": "object",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ]
+          },
+          "openingCash": {
+            "type": "string"
+          },
+          "closingCash": {
+            "type": "object",
+            "nullable": true
+          },
+          "expectedCash": {
+            "type": "object",
+            "nullable": true
+          },
+          "cashDifference": {
+            "type": "object",
+            "nullable": true
+          },
+          "note": {
+            "type": "object",
+            "nullable": true
+          },
+          "openedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "closedAt": {
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "branchId",
+          "posDeviceId",
+          "openedById",
+          "status",
+          "openingCash",
+          "openedAt"
+        ]
+      },
+      "ClosePosShiftDto": {
+        "type": "object",
+        "properties": {
+          "closingCash": {
+            "type": "number",
+            "example": 450
+          },
+          "note": {
+            "type": "string",
+            "example": "End of shift"
+          }
+        },
+        "required": [
+          "closingCash"
+        ]
+      },
+      "PosOrderItemDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 2,
+            "minimum": 1
+          },
+          "note": {
+            "type": "string",
+            "example": "Less spicy"
+          }
+        },
+        "required": [
+          "productId",
+          "quantity"
+        ]
+      },
+      "CreatePosOrderDto": {
+        "type": "object",
+        "properties": {
+          "localId": {
+            "type": "string",
+            "description": "Client-generated id for offline dedup"
+          },
+          "deviceId": {
+            "type": "string",
+            "example": "POS-DEVICE-001"
+          },
+          "tableId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "discountAmount": {
+            "type": "number",
+            "example": 0
+          },
+          "note": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PosOrderItemDto"
+            }
+          }
+        },
+        "required": [
+          "deviceId",
+          "items"
+        ]
+      },
+      "PosOrderTotalsDto": {
+        "type": "object",
+        "properties": {
+          "subtotal": {
+            "type": "string"
+          },
+          "discount": {
+            "type": "string"
+          },
+          "tax": {
+            "type": "string"
+          },
+          "total": {
+            "type": "string"
+          },
+          "paid": {
+            "type": "string"
+          },
+          "remaining": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "subtotal",
+          "discount",
+          "tax",
+          "total",
+          "paid",
+          "remaining"
+        ]
+      },
+      "PosOrderDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "localId": {
+            "type": "object",
+            "nullable": true
+          },
+          "orderNumber": {
+            "type": "string"
+          },
+          "orderStatus": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PENDING_PAYMENT",
+              "RESERVED",
+              "PAID",
+              "PROCESSING",
+              "FULFILLED",
+              "COMPLETED",
+              "CANCELLED",
+              "PAYMENT_FAILED",
+              "EXPIRED",
+              "REFUNDED"
+            ]
+          },
+          "fulfillmentStatus": {
+            "type": "string",
+            "enum": [
+              "UNFULFILLED",
+              "PROCESSING",
+              "FULFILLED",
+              "CANCELLED"
+            ]
+          },
+          "paymentStatus": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "PARTIAL",
+              "PAID",
+              "FAILED",
+              "REFUNDED"
+            ]
+          },
+          "tableId": {
+            "type": "object",
+            "nullable": true
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PosOrderItemDto"
+            }
+          },
+          "totals": {
+            "$ref": "#/components/schemas/PosOrderTotalsDto"
+          }
+        },
+        "required": [
+          "id",
+          "orderNumber",
+          "orderStatus",
+          "fulfillmentStatus",
+          "paymentStatus",
+          "items",
+          "totals"
+        ]
+      },
+      "UpdatePosOrderDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PosOrderItemDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "CancelPosOrderDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "example": "Customer cancelled"
+          }
+        }
+      },
+      "AssignPosOrderTableDto": {
+        "type": "object",
+        "properties": {
+          "tableId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "tableId"
+        ]
+      },
+      "CreatePosTableDto": {
+        "type": "object",
+        "properties": {
+          "branchId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "T01",
+            "maxLength": 40
+          },
+          "code": {
+            "type": "string",
+            "example": "T01",
+            "maxLength": 40
+          },
+          "seats": {
+            "type": "number",
+            "example": 4
+          }
+        },
+        "required": [
+          "branchId",
+          "name"
+        ]
+      },
+      "UpdatePosTableDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "AVAILABLE",
+              "OCCUPIED",
+              "RESERVED"
+            ]
+          },
+          "seats": {
+            "type": "number",
+            "example": 4
+          }
+        }
+      },
+      "KitchenOrderItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderItemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "PREPARING",
+              "READY",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          },
+          "note": {
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "orderItemId",
+          "quantity",
+          "status"
+        ]
+      },
+      "KitchenOrderDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tableId": {
+            "type": "object",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "PREPARING",
+              "READY",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          },
+          "sentAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KitchenOrderItemDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "orderId",
+          "status",
+          "sentAt",
+          "items"
+        ]
+      },
+      "UpdateKitchenOrderStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "PREPARING",
+              "READY",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "CreatePosPaymentDto": {
+        "type": "object",
+        "properties": {
+          "paymentMethod": {
+            "type": "string",
+            "enum": [
+              "CASH",
+              "KHQR"
+            ]
+          },
+          "amount": {
+            "type": "number",
+            "example": 10
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "cashReceived": {
+            "type": "number",
+            "description": "Cash tendered by the customer (CASH only)"
+          },
+          "orderItemIds": {
+            "description": "Order item ids this payment settles (informational; full/partial split by amount is always enforced)",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "paymentMethod",
+          "amount"
+        ]
+      },
+      "CreatePosRefundDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 10
+          },
+          "reason": {
+            "type": "string",
+            "example": "Customer cancellation"
+          },
+          "returnStock": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "amount"
+        ]
+      },
+      "CreateCustomerDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "example": "Jane Doe",
+            "maxLength": 120
+          },
+          "phone": {
+            "type": "string",
+            "example": "012345678",
+            "maxLength": 40
+          },
+          "email": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "fullName"
+        ]
+      },
+      "SyncOperationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "sync-operation-1"
+          },
+          "idempotencyKey": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "example": "CREATE_ORDER"
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "payload"
+        ]
+      },
+      "SyncBatchDto": {
+        "type": "object",
+        "properties": {
+          "deviceId": {
+            "type": "string",
+            "example": "POS-DEVICE-001"
+          },
+          "operations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncOperationDto"
+            }
+          }
+        },
+        "required": [
+          "deviceId",
+          "operations"
+        ]
+      }
+    }
+  }
+}

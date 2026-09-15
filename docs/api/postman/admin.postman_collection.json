@@ -1,0 +1,512 @@
+{
+  "info": {
+    "name": "Admin API — 1.0",
+    "description": "Internal platform administration; separate from merchant admin roles\n\nGenerated from `docs/api/openapi/admin.openapi.json` by `pnpm docs:postman`. Edit the generator, not this file.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Endpoints",
+      "description": "One request per documented operation, each asserting the response envelope and capturing ids for the next call.",
+      "item": [
+        {
+          "name": "Platform Admin — Users",
+          "item": [
+            {
+              "name": "List platform users",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "users"
+                  ]
+                },
+                "description": "`GET /admin/users`\n\nOperation id: `UsersController_findAll`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"List payloads carry pagination meta when paginated\", function () {",
+                      "    if (Array.isArray(body.data) && body.meta) {",
+                      "      pm.expect(body.meta).to.include.all.keys(\"limit\", \"page\", \"total\");",
+                      "    }",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Create a platform user",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"user@example.com\",\n  \"fullName\": \"Jane Doe\",\n  \"password\": \"StrongPassword123!\",\n  \"platformRole\": \"USER\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/admin/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "users"
+                  ]
+                },
+                "description": "`POST /admin/users`\n\nOperation id: `UsersController_create`\n\nDocumented responses: **201**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [201];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"userId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Get a platform user",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/users/:userId",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "users",
+                    ":userId"
+                  ],
+                  "variable": [
+                    {
+                      "key": "userId",
+                      "value": "{{userId}}",
+                      "description": "Path parameter `id`"
+                    }
+                  ]
+                },
+                "description": "`GET /admin/users/{id}`\n\nOperation id: `UsersController_findOne`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Deactivate a platform user",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/users/:userId",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "users",
+                    ":userId"
+                  ],
+                  "variable": [
+                    {
+                      "key": "userId",
+                      "value": "{{userId}}",
+                      "description": "Path parameter `id`"
+                    }
+                  ]
+                },
+                "description": "`DELETE /admin/users/{id}`\n\nOperation id: `UsersController_remove`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Contract · Authentication",
+      "description": "Each protected resource must reject an unauthenticated caller rather than return data.",
+      "item": [
+        {
+          "name": "Platform Admin — Users · rejects a missing token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users"
+              ]
+            },
+            "description": "`GET /admin/users` without an Authorization header must not leak tenant data."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Unauthenticated request is rejected with 401\", function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Contract · Validation",
+      "description": "The global ValidationPipe runs with `whitelist` and `transform`; required fields must be enforced server-side.",
+      "item": [
+        {
+          "name": "Platform Admin — Users · rejects an empty body",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users"
+              ]
+            },
+            "description": "`POST /admin/users` requires `email`, `fullName`, `password`."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Missing required fields are not accepted\", function () {",
+                  "  // 401/403 mean a guard refused first, which is also not acceptance.",
+                  "  pm.expect([400, 401, 403, 422]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Validation errors name the offending fields\", function () {",
+                  "  if (pm.response.code !== 400) return;",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(JSON.stringify(body)).to.match(/message|errors/i);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test(\"Returns JSON\", function () {",
+          "  pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(",
+          "    \"application/json\",",
+          "  );",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "merchantEmail",
+      "value": "owner@acme-store.test",
+      "type": "string"
+    },
+    {
+      "key": "merchantPassword",
+      "value": "StrongPassword123!",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  }
+}

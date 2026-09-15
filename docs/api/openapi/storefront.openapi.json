@@ -1,0 +1,3922 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/checkout/session": {
+      "post": {
+        "operationId": "CheckoutController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCheckoutSessionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedCheckoutSessionDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Create a checkout and reserve its stock",
+        "tags": [
+          "Checkout"
+        ]
+      }
+    },
+    "/checkout/session/{id}": {
+      "get": {
+        "operationId": "CheckoutController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Checkout-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutSessionDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Get a checkout session",
+        "tags": [
+          "Checkout"
+        ]
+      }
+    },
+    "/checkout/session/{id}/confirm": {
+      "post": {
+        "operationId": "CheckoutController_confirm",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Checkout-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutSessionDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Confirm checkout and create an unpaid order",
+        "tags": [
+          "Checkout"
+        ]
+      }
+    },
+    "/checkout/session/{id}/cancel": {
+      "post": {
+        "operationId": "CheckoutController_cancel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Checkout-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutSessionDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Cancel checkout and release reserved stock",
+        "tags": [
+          "Checkout"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}": {
+      "get": {
+        "operationId": "StorefrontController_getStorefront",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicStorefrontDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Get public storefront data",
+        "tags": [
+          "Storefront"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/products": {
+      "get": {
+        "operationId": "StorefrontController_listProducts",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "channel",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "WEBSITE",
+              "type": "string",
+              "enum": [
+                "POS",
+                "WEBSITE",
+                "FACEBOOK",
+                "INSTAGRAM",
+                "TIKTOK"
+              ]
+            }
+          },
+          {
+            "name": "categoryId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "categorySlug",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "example": "coffee",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PublicProductDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "List publicly visible products",
+        "tags": [
+          "Storefront"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/products/{productSlug}": {
+      "get": {
+        "operationId": "StorefrontController_getProduct",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "channel",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "WEBSITE",
+              "type": "string",
+              "enum": [
+                "POS",
+                "WEBSITE",
+                "FACEBOOK",
+                "INSTAGRAM",
+                "TIKTOK"
+              ]
+            }
+          },
+          {
+            "name": "categoryId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "categorySlug",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "example": "coffee",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicProductDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Get a publicly visible product",
+        "tags": [
+          "Storefront"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/theme": {
+      "get": {
+        "operationId": "StorefrontController_getTheme",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveThemeDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Get the live storefront theme",
+        "tags": [
+          "Storefront"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/orders": {
+      "get": {
+        "operationId": "StorefrontController_listOrders",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "customerEmail",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "jane@example.com",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "PENDING_PAYMENT",
+                "RESERVED",
+                "PAID",
+                "PROCESSING",
+                "FULFILLED",
+                "COMPLETED",
+                "CANCELLED",
+                "PAYMENT_FAILED",
+                "EXPIRED",
+                "REFUNDED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrderDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "List a customer's orders by email, optionally filtered by status",
+        "tags": [
+          "Storefront"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/orders/{orderNumber}": {
+      "get": {
+        "operationId": "StorefrontController_getOrder",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderNumber",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerEmail",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "jane@example.com",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Get order detail by order number, verified against the customer email",
+        "tags": [
+          "Storefront"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart": {
+      "post": {
+        "description": "Returns a one-time cart token. No shopper account is involved — whoever holds the token holds the cart.",
+        "operationId": "CartController_create",
+        "parameters": [
+          {
+            "name": "X-Cart-Token",
+            "in": "header",
+            "description": "The token returned when the cart was created",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Cart-Token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCartDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedCartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Create a cart",
+        "tags": [
+          "Storefront Cart"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}": {
+      "get": {
+        "operationId": "CartController_findOne",
+        "parameters": [
+          {
+            "name": "X-Cart-Token",
+            "in": "header",
+            "description": "The token returned when the cart was created",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-cart-token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Cart not found"
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Get a cart, re-priced at current catalog prices",
+        "tags": [
+          "Storefront Cart"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}/items": {
+      "post": {
+        "operationId": "CartController_addItem",
+        "parameters": [
+          {
+            "name": "X-Cart-Token",
+            "in": "header",
+            "description": "The token returned when the cart was created",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-cart-token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CartItemInputDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          },
+          "409": {
+            "description": "Product is not purchasable here"
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Add an item, merging onto the matching line if present",
+        "tags": [
+          "Storefront Cart"
+        ]
+      },
+      "delete": {
+        "operationId": "CartController_clear",
+        "parameters": [
+          {
+            "name": "X-Cart-Token",
+            "in": "header",
+            "description": "The token returned when the cart was created",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-cart-token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Empty the cart",
+        "tags": [
+          "Storefront Cart"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}/items/{itemId}": {
+      "patch": {
+        "operationId": "CartController_updateItem",
+        "parameters": [
+          {
+            "name": "X-Cart-Token",
+            "in": "header",
+            "description": "The token returned when the cart was created",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "itemId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-cart-token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCartItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Cart item not found"
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Set a line quantity; zero removes the line",
+        "tags": [
+          "Storefront Cart"
+        ]
+      },
+      "delete": {
+        "operationId": "CartController_removeItem",
+        "parameters": [
+          {
+            "name": "X-Cart-Token",
+            "in": "header",
+            "description": "The token returned when the cart was created",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "itemId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-cart-token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Cart item not found"
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Remove a line",
+        "tags": [
+          "Storefront Cart"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}/contact": {
+      "patch": {
+        "operationId": "CartController_updateContact",
+        "parameters": [
+          {
+            "name": "X-Cart-Token",
+            "in": "header",
+            "description": "The token returned when the cart was created",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-cart-token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCartContactDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Set the shopper name, email, phone or order note",
+        "tags": [
+          "Storefront Cart"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}/delivery-options": {
+      "get": {
+        "operationId": "CartController_deliveryOptions",
+        "parameters": [
+          {
+            "name": "X-Cart-Token",
+            "in": "header",
+            "description": "The token returned when the cart was created",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-cart-token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeliveryOptionDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Delivery options priced for this cart and its shipping address",
+        "tags": [
+          "Storefront Cart"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}/delivery": {
+      "patch": {
+        "operationId": "CartController_selectDelivery",
+        "parameters": [
+          {
+            "name": "X-Cart-Token",
+            "in": "header",
+            "description": "The token returned when the cart was created",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-cart-token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SelectCartDeliveryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          },
+          "409": {
+            "description": "Method is not available for this cart or address"
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Choose a delivery method for this cart",
+        "tags": [
+          "Storefront Cart"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}/checkout": {
+      "post": {
+        "description": "Returns a checkout session plus its X-Checkout-Token; the cart is then CONVERTED.",
+        "operationId": "CartController_checkout",
+        "parameters": [
+          {
+            "name": "X-Cart-Token",
+            "in": "header",
+            "description": "The token returned when the cart was created",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-cart-token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutCartDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutSessionDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          },
+          "409": {
+            "description": "Cart is empty, or its delivery selection is no longer valid"
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Convert the cart into a checkout session and reserve stock",
+        "tags": [
+          "Storefront Cart"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}/addresses": {
+      "get": {
+        "description": "Empty until the cart has contact details and a first address is saved.",
+        "operationId": "StorefrontAddressController_findAll",
+        "parameters": [
+          {
+            "name": "X-Cart-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-cart-token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StorefrontAddressDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "List the shopper's saved addresses",
+        "tags": [
+          "Storefront Addresses"
+        ]
+      },
+      "post": {
+        "operationId": "StorefrontAddressController_create",
+        "parameters": [
+          {
+            "name": "X-Cart-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-cart-token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStorefrontAddressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StorefrontAddressDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cart has no contact name plus email or phone yet"
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Save an address to the shopper address book",
+        "tags": [
+          "Storefront Addresses"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}/addresses/{addressId}": {
+      "patch": {
+        "operationId": "StorefrontAddressController_update",
+        "parameters": [
+          {
+            "name": "X-Cart-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addressId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-cart-token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStorefrontAddressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StorefrontAddressDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Address not found"
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Update a saved address",
+        "tags": [
+          "Storefront Addresses"
+        ]
+      },
+      "delete": {
+        "description": "Past orders keep their own address snapshot and are unaffected.",
+        "operationId": "StorefrontAddressController_remove",
+        "parameters": [
+          {
+            "name": "X-Cart-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addressId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-cart-token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Address deleted"
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Address not found"
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Delete a saved address",
+        "tags": [
+          "Storefront Addresses"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}/addresses/{addressId}/assign": {
+      "patch": {
+        "description": "Setting a shipping address clears any delivery selection, since the chosen method may not serve the new destination.",
+        "operationId": "StorefrontAddressController_assign",
+        "parameters": [
+          {
+            "name": "X-Cart-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addressId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-cart-token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignCartAddressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Address not found"
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Use this address as the cart shipping or billing address",
+        "tags": [
+          "Storefront Addresses"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/delivery-options": {
+      "get": {
+        "description": "For a shipping calculator before a cart exists. With no address, only pickup methods can be priced.",
+        "operationId": "StorefrontDeliveryController_quote",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country",
+            "required": false,
+            "in": "query",
+            "description": "ISO 3166-1 alpha-2",
+            "schema": {
+              "example": "KH",
+              "type": "string"
+            }
+          },
+          {
+            "name": "province",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "Phnom Penh",
+              "type": "string"
+            }
+          },
+          {
+            "name": "city",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "Phnom Penh",
+              "type": "string"
+            }
+          },
+          {
+            "name": "postalCode",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "12000",
+              "type": "string"
+            }
+          },
+          {
+            "name": "subtotal",
+            "required": false,
+            "in": "query",
+            "description": "Cart subtotal, for free-shipping and min/max zone thresholds",
+            "schema": {
+              "default": "0",
+              "example": "49.99",
+              "type": "string"
+            }
+          },
+          {
+            "name": "itemCount",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "maximum": 10000,
+              "default": 1,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeliveryOptionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Quote delivery options for a destination",
+        "tags": [
+          "Storefront Delivery"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/orders/{orderNumber}/tracking": {
+      "get": {
+        "operationId": "StorefrontDeliveryController_track",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderNumber",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerEmail",
+            "required": true,
+            "in": "query",
+            "description": "Must match the email the order was placed with",
+            "schema": {
+              "format": "email",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Order not found"
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Track an order, verified against the customer email",
+        "tags": [
+          "Storefront Delivery"
+        ]
+      }
+    },
+    "/payments/create-intent": {
+      "post": {
+        "operationId": "StorefrontPaymentController_createIntent",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePaymentIntentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Create a payment attempt for a checkout order",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/payments/{id}/status": {
+      "get": {
+        "operationId": "StorefrontPaymentController_status",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Checkout-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Get payment status for a token-authorized checkout",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/payments/webhook/callback": {
+      "post": {
+        "operationId": "PaymentWebhookController_paywayCallback",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Receive and verify an ABA PayWay callback",
+        "tags": [
+          "Payment Webhooks"
+        ]
+      }
+    },
+    "/payments/webhook/{provider}": {
+      "post": {
+        "operationId": "PaymentWebhookController_webhook",
+        "parameters": [
+          {
+            "name": "provider",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Payment-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentWebhookDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentWebhookRespDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Process a signed provider webhook",
+        "tags": [
+          "Payment Webhooks"
+        ]
+      }
+    },
+    "/social-links/{hotspotId}": {
+      "get": {
+        "operationId": "PublicSocialController_resolveSocialLink",
+        "parameters": [
+          {
+            "name": "hotspotId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "platform",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "WEBSITE",
+              "type": "string",
+              "enum": [
+                "WEBSITE",
+                "FACEBOOK",
+                "INSTAGRAM",
+                "TIKTOK"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SocialLinkDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Resolve a hotspot with current stock availability",
+        "tags": [
+          "Social Commerce"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/posts": {
+      "get": {
+        "operationId": "PublicSocialController_listArticles",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "List published website articles",
+        "tags": [
+          "Social Commerce"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/posts/{slug}": {
+      "get": {
+        "operationId": "PublicSocialController_getArticle",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Get a published website article",
+        "tags": [
+          "Social Commerce"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Storefront API",
+    "description": "Public storefront browsing, carts, shopper addresses, delivery options and tracking, checkout sessions, payment initiation, and payment status polling",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "checkout-token": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Checkout-Token"
+      },
+      "cart-token": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Cart-Token"
+      }
+    },
+    "schemas": {
+      "CheckoutItemInputDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "productId",
+          "quantity"
+        ]
+      },
+      "AddressInputDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 60,
+            "example": "Home"
+          },
+          "recipientName": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 30
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "line1": {
+            "type": "string",
+            "maxLength": 200,
+            "example": "12 Street 240"
+          },
+          "line2": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 100,
+            "example": "Phnom Penh"
+          },
+          "province": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "postalCode": {
+            "type": "string",
+            "maxLength": 20
+          },
+          "country": {
+            "type": "string",
+            "example": "KH",
+            "description": "ISO 3166-1 alpha-2 code"
+          },
+          "latitude": {
+            "type": "number",
+            "example": 11.5564
+          },
+          "longitude": {
+            "type": "number",
+            "example": 104.9282
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "recipientName",
+          "line1",
+          "country"
+        ]
+      },
+      "CreateCheckoutSessionDto": {
+        "type": "object",
+        "properties": {
+          "merchantSlug": {
+            "type": "string",
+            "example": "acme-store"
+          },
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerName": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "customerEmail": {
+            "type": "string",
+            "format": "email"
+          },
+          "customerPhone": {
+            "type": "string",
+            "maxLength": 30
+          },
+          "sourceChannel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ],
+            "default": "WEBSITE"
+          },
+          "expiresInMinutes": {
+            "type": "number",
+            "default": 15,
+            "minimum": 1,
+            "maximum": 120
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckoutItemInputDto"
+            }
+          },
+          "deliveryMethodId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Delivery method to use. Its fee is re-quoted here, never taken from the client."
+          },
+          "shippingAddress": {
+            "description": "Required when the delivery method ships to an address",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AddressInputDto"
+              }
+            ]
+          },
+          "billingAddress": {
+            "$ref": "#/components/schemas/AddressInputDto"
+          }
+        },
+        "required": [
+          "merchantSlug",
+          "sourceChannel",
+          "items"
+        ]
+      },
+      "CheckoutItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "object",
+            "format": "uuid"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unitPrice": {
+            "type": "string",
+            "example": "19.99"
+          },
+          "totalPrice": {
+            "type": "string",
+            "example": "39.98"
+          }
+        },
+        "required": [
+          "id",
+          "productId",
+          "sku",
+          "name",
+          "quantity",
+          "unitPrice",
+          "totalPrice"
+        ]
+      },
+      "CheckoutOrderDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderNumber": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "orderNumber",
+          "status"
+        ]
+      },
+      "CheckoutPaymentProviderDto": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "enum": [
+              "HMAC",
+              "KHQR",
+              "ABA_PAYWAY",
+              "CASH"
+            ]
+          }
+        },
+        "required": [
+          "provider"
+        ]
+      },
+      "CreatedCheckoutSessionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "customerName": {
+            "type": "object",
+            "nullable": true
+          },
+          "customerEmail": {
+            "type": "object",
+            "nullable": true
+          },
+          "customerPhone": {
+            "type": "object",
+            "nullable": true
+          },
+          "sourceChannel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "CONFIRMED",
+              "CANCELLED",
+              "EXPIRED"
+            ]
+          },
+          "subtotalAmount": {
+            "type": "string"
+          },
+          "discountAmount": {
+            "type": "string"
+          },
+          "feeAmount": {
+            "type": "string"
+          },
+          "totalAmount": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckoutItemDto"
+            }
+          },
+          "order": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CheckoutOrderDto"
+              }
+            ]
+          },
+          "paymentProviders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckoutPaymentProviderDto"
+            }
+          },
+          "checkoutToken": {
+            "type": "string",
+            "description": "Secret returned once; send it as X-Checkout-Token for session operations"
+          }
+        },
+        "required": [
+          "id",
+          "sourceChannel",
+          "status",
+          "subtotalAmount",
+          "discountAmount",
+          "feeAmount",
+          "totalAmount",
+          "currency",
+          "expiresAt",
+          "createdAt",
+          "updatedAt",
+          "items",
+          "paymentProviders",
+          "checkoutToken"
+        ]
+      },
+      "CheckoutSessionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "customerName": {
+            "type": "object",
+            "nullable": true
+          },
+          "customerEmail": {
+            "type": "object",
+            "nullable": true
+          },
+          "customerPhone": {
+            "type": "object",
+            "nullable": true
+          },
+          "sourceChannel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "CONFIRMED",
+              "CANCELLED",
+              "EXPIRED"
+            ]
+          },
+          "subtotalAmount": {
+            "type": "string"
+          },
+          "discountAmount": {
+            "type": "string"
+          },
+          "feeAmount": {
+            "type": "string"
+          },
+          "totalAmount": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckoutItemDto"
+            }
+          },
+          "order": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CheckoutOrderDto"
+              }
+            ]
+          },
+          "paymentProviders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckoutPaymentProviderDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "sourceChannel",
+          "status",
+          "subtotalAmount",
+          "discountAmount",
+          "feeAmount",
+          "totalAmount",
+          "currency",
+          "expiresAt",
+          "createdAt",
+          "updatedAt",
+          "items",
+          "paymentProviders"
+        ]
+      },
+      "PublicMerchantDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "email": {
+            "type": "object",
+            "nullable": true
+          },
+          "phone": {
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug"
+        ]
+      },
+      "LiveThemeDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "number"
+          },
+          "config": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "publishedAt": {
+            "type": "object",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": [
+          "version",
+          "config"
+        ]
+      },
+      "PublicProductCategoryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "object",
+            "nullable": true
+          },
+          "sortOrder": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "sortOrder"
+        ]
+      },
+      "PublicProductMediaDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "sortOrder": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "url",
+          "type",
+          "sortOrder"
+        ]
+      },
+      "PublicProductVariantDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string",
+            "example": "29.99"
+          },
+          "attributes": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "isAvailable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "sku",
+          "price",
+          "attributes",
+          "isAvailable"
+        ]
+      },
+      "PublicProductDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "object",
+            "nullable": true
+          },
+          "sku": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string",
+            "example": "29.99"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "categoryId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "category": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PublicProductCategoryDto"
+              }
+            ]
+          },
+          "baseIsAvailable": {
+            "type": "boolean"
+          },
+          "isAvailable": {
+            "type": "boolean"
+          },
+          "isPurchasable": {
+            "type": "boolean"
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicProductMediaDto"
+            }
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicProductVariantDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "sku",
+          "price",
+          "currency",
+          "channel",
+          "baseIsAvailable",
+          "isAvailable",
+          "isPurchasable",
+          "media",
+          "variants"
+        ]
+      },
+      "PublicStorefrontDto": {
+        "type": "object",
+        "properties": {
+          "merchant": {
+            "$ref": "#/components/schemas/PublicMerchantDto"
+          },
+          "theme": {
+            "$ref": "#/components/schemas/LiveThemeDto"
+          },
+          "featuredProducts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicProductDto"
+            }
+          }
+        },
+        "required": [
+          "merchant",
+          "theme",
+          "featuredProducts"
+        ]
+      },
+      "OrderItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "object",
+            "format": "uuid"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unitPrice": {
+            "type": "string"
+          },
+          "totalPrice": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "productId",
+          "sku",
+          "name",
+          "quantity",
+          "unitPrice",
+          "totalPrice"
+        ]
+      },
+      "OrderDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderNumber": {
+            "type": "string"
+          },
+          "sourceChannel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PENDING_PAYMENT",
+              "RESERVED",
+              "PAID",
+              "PROCESSING",
+              "FULFILLED",
+              "COMPLETED",
+              "CANCELLED",
+              "PAYMENT_FAILED",
+              "EXPIRED",
+              "REFUNDED"
+            ]
+          },
+          "paymentStatus": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "PARTIAL",
+              "PAID",
+              "FAILED",
+              "REFUNDED"
+            ]
+          },
+          "fulfillmentStatus": {
+            "type": "string",
+            "enum": [
+              "UNFULFILLED",
+              "PROCESSING",
+              "FULFILLED",
+              "CANCELLED"
+            ]
+          },
+          "subtotalAmount": {
+            "type": "string"
+          },
+          "discountAmount": {
+            "type": "string"
+          },
+          "feeAmount": {
+            "type": "string"
+          },
+          "totalAmount": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "orderNumber",
+          "sourceChannel",
+          "status",
+          "paymentStatus",
+          "fulfillmentStatus",
+          "subtotalAmount",
+          "discountAmount",
+          "feeAmount",
+          "totalAmount",
+          "currency",
+          "items"
+        ]
+      },
+      "CartItemInputDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "productId",
+          "quantity"
+        ]
+      },
+      "CreateCartDto": {
+        "type": "object",
+        "properties": {
+          "sourceChannel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ],
+            "default": "WEBSITE",
+            "description": "POS is rejected; POS sells through its own flow"
+          },
+          "items": {
+            "description": "Optional seed lines, so a cart can be created pre-filled",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CartItemInputDto"
+            }
+          }
+        }
+      },
+      "CartLineDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true,
+            "description": "The cart item id, used to update or remove the line"
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "sku": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unitPrice": {
+            "type": "string",
+            "example": "19.99"
+          },
+          "totalPrice": {
+            "type": "string",
+            "example": "39.98"
+          },
+          "note": {
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "required": [
+          "productId",
+          "sku",
+          "name",
+          "quantity",
+          "unitPrice",
+          "totalPrice"
+        ]
+      },
+      "AddressDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "object",
+            "nullable": true
+          },
+          "recipientName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "object",
+            "nullable": true
+          },
+          "email": {
+            "type": "object",
+            "nullable": true
+          },
+          "line1": {
+            "type": "string"
+          },
+          "line2": {
+            "type": "object",
+            "nullable": true
+          },
+          "city": {
+            "type": "object",
+            "nullable": true
+          },
+          "province": {
+            "type": "object",
+            "nullable": true
+          },
+          "postalCode": {
+            "type": "object",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "example": "KH"
+          },
+          "latitude": {
+            "type": "object",
+            "nullable": true,
+            "example": "11.5564000"
+          },
+          "longitude": {
+            "type": "object",
+            "nullable": true,
+            "example": "104.9282000"
+          },
+          "note": {
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "required": [
+          "recipientName",
+          "line1",
+          "country"
+        ]
+      },
+      "DeliveryOptionDto": {
+        "type": "object",
+        "properties": {
+          "methodId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "example": "STANDARD"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "object",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "PICKUP",
+              "DELIVERY"
+            ]
+          },
+          "branchId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "zoneId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "zoneName": {
+            "type": "object",
+            "nullable": true
+          },
+          "fee": {
+            "type": "string",
+            "example": "2.50"
+          },
+          "estimatedMinDays": {
+            "type": "object",
+            "nullable": true
+          },
+          "estimatedMaxDays": {
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "required": [
+          "methodId",
+          "code",
+          "name",
+          "type",
+          "isDefault",
+          "fee"
+        ]
+      },
+      "CreatedCartDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "CONVERTED",
+              "ABANDONED",
+              "EXPIRED"
+            ]
+          },
+          "sourceChannel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "customerId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "customerName": {
+            "type": "object",
+            "nullable": true
+          },
+          "customerEmail": {
+            "type": "object",
+            "nullable": true
+          },
+          "customerPhone": {
+            "type": "object",
+            "nullable": true
+          },
+          "note": {
+            "type": "object",
+            "nullable": true
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "subtotalAmount": {
+            "type": "string",
+            "example": "39.98"
+          },
+          "shippingAmount": {
+            "type": "string",
+            "example": "2.50"
+          },
+          "totalAmount": {
+            "type": "string",
+            "example": "42.48"
+          },
+          "itemCount": {
+            "type": "number",
+            "example": 2
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CartLineDto"
+            }
+          },
+          "shippingAddress": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AddressDto"
+              }
+            ]
+          },
+          "billingAddress": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AddressDto"
+              }
+            ]
+          },
+          "delivery": {
+            "nullable": true,
+            "description": "The chosen delivery method, re-quoted at read time",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryOptionDto"
+              }
+            ]
+          },
+          "checkoutSessionId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "cartToken": {
+            "type": "string",
+            "description": "Send as the X-Cart-Token header on every later request for this cart. Shown once."
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "sourceChannel",
+          "currency",
+          "subtotalAmount",
+          "shippingAmount",
+          "totalAmount",
+          "itemCount",
+          "items",
+          "expiresAt",
+          "cartToken"
+        ]
+      },
+      "CartDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "CONVERTED",
+              "ABANDONED",
+              "EXPIRED"
+            ]
+          },
+          "sourceChannel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "customerId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "customerName": {
+            "type": "object",
+            "nullable": true
+          },
+          "customerEmail": {
+            "type": "object",
+            "nullable": true
+          },
+          "customerPhone": {
+            "type": "object",
+            "nullable": true
+          },
+          "note": {
+            "type": "object",
+            "nullable": true
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "subtotalAmount": {
+            "type": "string",
+            "example": "39.98"
+          },
+          "shippingAmount": {
+            "type": "string",
+            "example": "2.50"
+          },
+          "totalAmount": {
+            "type": "string",
+            "example": "42.48"
+          },
+          "itemCount": {
+            "type": "number",
+            "example": 2
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CartLineDto"
+            }
+          },
+          "shippingAddress": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AddressDto"
+              }
+            ]
+          },
+          "billingAddress": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AddressDto"
+              }
+            ]
+          },
+          "delivery": {
+            "nullable": true,
+            "description": "The chosen delivery method, re-quoted at read time",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryOptionDto"
+              }
+            ]
+          },
+          "checkoutSessionId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "sourceChannel",
+          "currency",
+          "subtotalAmount",
+          "shippingAmount",
+          "totalAmount",
+          "itemCount",
+          "items",
+          "expiresAt"
+        ]
+      },
+      "UpdateCartItemDto": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Zero removes the line"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "quantity"
+        ]
+      },
+      "UpdateCartContactDto": {
+        "type": "object",
+        "properties": {
+          "customerName": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "customerEmail": {
+            "type": "string",
+            "format": "email"
+          },
+          "customerPhone": {
+            "type": "string",
+            "maxLength": 30
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      },
+      "SelectCartDeliveryDto": {
+        "type": "object",
+        "properties": {
+          "deliveryMethodId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "deliveryMethodId"
+        ]
+      },
+      "CheckoutCartDto": {
+        "type": "object",
+        "properties": {
+          "expiresInMinutes": {
+            "type": "number",
+            "default": 15,
+            "minimum": 1,
+            "maximum": 120
+          }
+        }
+      },
+      "StorefrontAddressDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "object",
+            "nullable": true
+          },
+          "recipientName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "object",
+            "nullable": true
+          },
+          "email": {
+            "type": "object",
+            "nullable": true
+          },
+          "line1": {
+            "type": "string"
+          },
+          "line2": {
+            "type": "object",
+            "nullable": true
+          },
+          "city": {
+            "type": "object",
+            "nullable": true
+          },
+          "province": {
+            "type": "object",
+            "nullable": true
+          },
+          "postalCode": {
+            "type": "object",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "example": "KH"
+          },
+          "latitude": {
+            "type": "object",
+            "nullable": true,
+            "example": "11.5564000"
+          },
+          "longitude": {
+            "type": "object",
+            "nullable": true,
+            "example": "104.9282000"
+          },
+          "note": {
+            "type": "object",
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "isDefaultShipping": {
+            "type": "boolean"
+          },
+          "isDefaultBilling": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "recipientName",
+          "line1",
+          "country",
+          "id",
+          "customerId",
+          "isDefaultShipping",
+          "isDefaultBilling",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateStorefrontAddressDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 60,
+            "example": "Home"
+          },
+          "recipientName": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 30
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "line1": {
+            "type": "string",
+            "maxLength": 200,
+            "example": "12 Street 240"
+          },
+          "line2": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 100,
+            "example": "Phnom Penh"
+          },
+          "province": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "postalCode": {
+            "type": "string",
+            "maxLength": 20
+          },
+          "country": {
+            "type": "string",
+            "example": "KH",
+            "description": "ISO 3166-1 alpha-2 code"
+          },
+          "latitude": {
+            "type": "number",
+            "example": 11.5564
+          },
+          "longitude": {
+            "type": "number",
+            "example": 104.9282
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "isDefaultShipping": {
+            "type": "boolean",
+            "default": false,
+            "description": "Use as the shopper's default shipping address"
+          },
+          "isDefaultBilling": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "recipientName",
+          "line1",
+          "country"
+        ]
+      },
+      "UpdateStorefrontAddressDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 60,
+            "example": "Home"
+          },
+          "recipientName": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 30
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "line1": {
+            "type": "string",
+            "maxLength": 200,
+            "example": "12 Street 240"
+          },
+          "line2": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 100,
+            "example": "Phnom Penh"
+          },
+          "province": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "postalCode": {
+            "type": "string",
+            "maxLength": 20
+          },
+          "country": {
+            "type": "string",
+            "example": "KH",
+            "description": "ISO 3166-1 alpha-2 code"
+          },
+          "latitude": {
+            "type": "number",
+            "example": 11.5564
+          },
+          "longitude": {
+            "type": "number",
+            "example": 104.9282
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "isDefaultShipping": {
+            "type": "boolean",
+            "default": false,
+            "description": "Use as the shopper's default shipping address"
+          },
+          "isDefaultBilling": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "AssignCartAddressDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "SHIPPING",
+              "BILLING"
+            ],
+            "description": "Which slot on the cart this address fills"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "CreatePaymentIntentDto": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "checkoutToken": {
+            "type": "string",
+            "description": "Secret issued when the checkout session was created"
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "HMAC",
+              "KHQR",
+              "ABA_PAYWAY",
+              "CASH"
+            ]
+          }
+        },
+        "required": [
+          "orderId",
+          "checkoutToken",
+          "provider"
+        ]
+      },
+      "PaymentActionDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "QR"
+            ]
+          },
+          "qrPayload": {
+            "type": "string"
+          },
+          "qrImage": {
+            "type": "string",
+            "description": "PayWay data URL for the generated QR image"
+          },
+          "deepLink": {
+            "type": "string"
+          },
+          "reference": {
+            "type": "string",
+            "description": "Provider verification reference"
+          }
+        },
+        "required": [
+          "type",
+          "qrPayload",
+          "qrImage"
+        ]
+      },
+      "PaymentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "HMAC",
+              "KHQR",
+              "ABA_PAYWAY",
+              "CASH"
+            ]
+          },
+          "providerTransactionId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "PROCESSING",
+              "CONFIRMED",
+              "FAILED",
+              "CANCELLED",
+              "REFUNDED",
+              "UNKNOWN"
+            ]
+          },
+          "paidAt": {
+            "type": "object"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "action": {
+            "$ref": "#/components/schemas/PaymentActionDto"
+          }
+        },
+        "required": [
+          "id",
+          "orderId",
+          "provider",
+          "providerTransactionId",
+          "amount",
+          "currency",
+          "status",
+          "createdAt"
+        ]
+      },
+      "PaymentWebhookDto": {
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "paymentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "providerTransactionId": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "CONFIRMED",
+              "FAILED"
+            ]
+          },
+          "amount": {
+            "type": "string",
+            "example": "39.98"
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          }
+        },
+        "required": [
+          "eventId",
+          "paymentId",
+          "providerTransactionId",
+          "status",
+          "amount",
+          "currency"
+        ]
+      },
+      "PaymentWebhookRespDto": {
+        "type": "object",
+        "properties": {
+          "duplicate": {
+            "type": "boolean"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "eventStatus": {
+            "type": "string",
+            "enum": [
+              "RECEIVED",
+              "PROCESSED",
+              "FAILED"
+            ]
+          },
+          "payment": {
+            "$ref": "#/components/schemas/PaymentDto"
+          }
+        },
+        "required": [
+          "duplicate",
+          "eventId",
+          "eventStatus",
+          "payment"
+        ]
+      },
+      "SocialLinkDto": {
+        "type": "object",
+        "properties": {
+          "hotspotId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "isAvailable": {
+            "type": "boolean"
+          },
+          "product": {
+            "type": "object"
+          },
+          "storefrontPath": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "hotspotId",
+          "isAvailable",
+          "product",
+          "storefrontPath"
+        ]
+      }
+    }
+  }
+}
