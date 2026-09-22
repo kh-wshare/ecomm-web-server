@@ -15,6 +15,7 @@ import { OrderModule } from '@modules/order/order.module';
 import { PaymentModule } from '@modules/payment/payment.module';
 import { PosDevicesModule } from '@modules/pos/devices/devices.module';
 import { PosAuditModule } from '@modules/pos/audit/audit.module';
+import { PosCartsModule } from '@modules/pos/carts/pos-carts.module';
 import { PosCustomersModule } from '@modules/pos/customers/customers.module';
 import { KitchenModule } from '@modules/pos/kitchen/kitchen.module';
 import { PosOrdersModule } from '@modules/pos/orders/pos-orders.module';
@@ -33,6 +34,7 @@ import { StorefrontSocialPostModule } from '@modules/storefront/social-post/publ
 import { CartModule } from '@modules/storefront/cart/cart.module';
 import { StorefrontAddressModule } from '@modules/storefront/address/address.module';
 import { StorefrontDeliveryModule } from '@modules/storefront/delivery/storefront-delivery.module';
+import { StorefrontLoyaltyModule } from '@modules/storefront/loyalty/storefront-loyalty.module';
 
 /** Authentication a surface expects; drives both Swagger and the Postman export. */
 export type ApiSurfaceAuth = 'bearer' | 'bearer+merchant' | 'storefront-tokens';
@@ -114,6 +116,7 @@ export const API_SURFACES: readonly ApiSurface[] = [
       PaymentModule,
       PosTablesModule,
       PosCustomersModule,
+      PosCartsModule,
       PosSyncModule,
       PosAuditModule,
     ],
@@ -122,7 +125,7 @@ export const API_SURFACES: readonly ApiSurface[] = [
     id: 'storefront',
     title: 'Storefront API',
     description:
-      'Public storefront browsing, carts, shopper addresses, delivery options and tracking, checkout sessions, payment initiation, and payment status polling',
+      'Storefront browsing, carts, shopper addresses (guest via cart token, or signed-in via bearer token), delivery options and tracking, checkout sessions, payment initiation, and payment status polling',
     docsPath: 'docs/storefront',
     envFlag: 'SWAGGER_STOREFRONT_ENABLED',
     enabledByDefaultInProduction: true,
@@ -132,6 +135,7 @@ export const API_SURFACES: readonly ApiSurface[] = [
       CartModule,
       StorefrontAddressModule,
       StorefrontDeliveryModule,
+      StorefrontLoyaltyModule,
       CheckoutModule,
       StorefrontSocialPostModule,
       StorefrontPaymentModule,
@@ -170,6 +174,7 @@ export function buildOpenApiDocument(
     );
   }
   if (surface.auth === 'storefront-tokens') {
+    builder.addBearerAuth();
     builder.addApiKey(
       { type: 'apiKey', name: 'X-Checkout-Token', in: 'header' },
       'checkout-token',

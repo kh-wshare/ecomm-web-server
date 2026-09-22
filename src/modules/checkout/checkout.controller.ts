@@ -45,7 +45,7 @@ export class CheckoutController {
   @ApiOkResponse({ type: CheckoutSessionDto })
   findOne(
     @Param('id', ParseUUIDPipe) id: string,
-    @Headers('x-checkout-token') token: string | undefined,
+    @Headers('X-Checkout-Token') token: string | undefined,
   ) {
     return this.checkout.findOne(id, token);
   }
@@ -57,7 +57,7 @@ export class CheckoutController {
   @ApiOkResponse({ type: CheckoutSessionDto })
   confirm(
     @Param('id', ParseUUIDPipe) id: string,
-    @Headers('x-checkout-token') token: string | undefined,
+    @Headers('X-Checkout-Token') token: string | undefined,
     @Req() request: Request,
   ) {
     return this.checkout.confirm(id, token, this.metadata(request));
@@ -70,7 +70,7 @@ export class CheckoutController {
   @ApiOkResponse({ type: CheckoutSessionDto })
   cancel(
     @Param('id', ParseUUIDPipe) id: string,
-    @Headers('x-checkout-token') token: string | undefined,
+    @Headers('X-Checkout-Token') token: string | undefined,
     @Req() request: Request,
   ) {
     return this.checkout.cancel(id, token, this.metadata(request));

@@ -138,6 +138,17 @@ export type PosTable = Prisma.PosTableModel
  */
 export type Customer = Prisma.CustomerModel
 /**
+ * Model LoyaltyLedgerEntry
+ * One immutable loyalty movement. The balance on `Customer` is the running
+ * sum of these; the ledger exists because a refund has to reverse a specific
+ * grant, which a bare counter cannot express.
+ * 
+ * `@@unique([orderId, type])` is what makes earning idempotent: the paid
+ * transition can be retried (webhook redelivery, a poll racing a callback)
+ * and the second insert simply conflicts instead of granting twice.
+ */
+export type LoyaltyLedgerEntry = Prisma.LoyaltyLedgerEntryModel
+/**
  * Model KitchenOrder
  * 
  */

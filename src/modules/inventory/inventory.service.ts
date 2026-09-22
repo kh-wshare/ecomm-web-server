@@ -45,6 +45,25 @@ type LockedStock = {
   updatedAt: Date;
 };
 
+/**
+ * Columns are snake_case in the database; alias them back so raw rows arrive
+ * shaped like `LockedStock`. A bare `SELECT *` would hand back snake_case keys
+ * that no longer match the type, and `$queryRaw` casts without checking.
+ */
+const LOCKED_STOCK_COLUMNS = Prisma.sql`
+  "id",
+  "merchant_id" AS "merchantId",
+  "product_id" AS "productId",
+  "variant_id" AS "variantId",
+  "stock_key" AS "stockKey",
+  "total_stock" AS "totalStock",
+  "reserved_stock" AS "reservedStock",
+  "sold_stock" AS "soldStock",
+  "safety_buffer" AS "safetyBuffer",
+  "created_at" AS "createdAt",
+  "updated_at" AS "updatedAt"
+`;
+
 @Injectable()
 export class InventoryService {
   constructor(
@@ -715,10 +734,10 @@ export class InventoryService {
     stockKey: string,
   ) {
     const rows = await tx.$queryRaw<LockedStock[]>(Prisma.sql`
-      SELECT *
+      SELECT ${LOCKED_STOCK_COLUMNS}
       FROM "inventory_stocks"
-      WHERE "merchantId" = CAST(${merchantId} AS uuid)
-        AND "stockKey" = ${stockKey}
+      WHERE "merchant_id" = CAST(${merchantId} AS uuid)
+        AND "stock_key" = ${stockKey}
       FOR UPDATE
     `);
     if (!rows[0]) throw new NotFoundException('Inventory stock not found');
@@ -731,9 +750,9 @@ export class InventoryService {
     stockId: string,
   ) {
     const rows = await tx.$queryRaw<LockedStock[]>(Prisma.sql`
-      SELECT *
+      SELECT ${LOCKED_STOCK_COLUMNS}
       FROM "inventory_stocks"
-      WHERE "merchantId" = CAST(${merchantId} AS uuid)
+      WHERE "merchant_id" = CAST(${merchantId} AS uuid)
         AND "id" = CAST(${stockId} AS uuid)
       FOR UPDATE
     `);

@@ -162,6 +162,690 @@
         ]
       }
     },
+    "/storefront/{merchantSlug}/cart": {
+      "post": {
+        "description": "Returns a one-time cart token. No shopper account is involved — whoever holds the token holds the cart.",
+        "operationId": "CartController_create",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCartDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedCartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {}
+        ],
+        "summary": "Create a cart",
+        "tags": [
+          "Cart"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/mine": {
+      "get": {
+        "description": "The one cart lookup that needs no X-Cart-Token, so a shopper who signs in on a new device can pick up where they left off. Requires a bearer token.",
+        "operationId": "CartController_findMine",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "No active cart for this account"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {}
+        ],
+        "summary": "The signed-in shopper's current cart",
+        "tags": [
+          "Cart"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}": {
+      "get": {
+        "description": "Accepts either the X-Cart-Token or a bearer token for the shopper who owns the cart.",
+        "operationId": "CartController_findOne",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Cart-Token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Cart not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {}
+        ],
+        "summary": "Get a cart, re-priced at current catalog prices",
+        "tags": [
+          "Cart"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}/items": {
+      "post": {
+        "operationId": "CartController_addItem",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Cart-Token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CartItemInputDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          },
+          "409": {
+            "description": "Product is not purchasable here"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {}
+        ],
+        "summary": "Add an item, merging onto the matching line if present",
+        "tags": [
+          "Cart"
+        ]
+      },
+      "delete": {
+        "operationId": "CartController_clear",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Cart-Token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {}
+        ],
+        "summary": "Empty the cart",
+        "tags": [
+          "Cart"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}/items/{itemId}": {
+      "patch": {
+        "operationId": "CartController_updateItem",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "itemId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Cart-Token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCartItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Cart item not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {}
+        ],
+        "summary": "Set a line quantity; zero removes the line",
+        "tags": [
+          "Cart"
+        ]
+      },
+      "delete": {
+        "operationId": "CartController_removeItem",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "itemId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Cart-Token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Cart item not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {}
+        ],
+        "summary": "Remove a line",
+        "tags": [
+          "Cart"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}/contact": {
+      "patch": {
+        "operationId": "CartController_updateContact",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Cart-Token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCartContactDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {}
+        ],
+        "summary": "Set the shopper name, email, phone or order note",
+        "tags": [
+          "Cart"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}/delivery-options": {
+      "get": {
+        "operationId": "CartController_deliveryOptions",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Cart-Token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeliveryOptionDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {}
+        ],
+        "summary": "Delivery options priced for this cart and its shipping address",
+        "tags": [
+          "Cart"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}/delivery": {
+      "patch": {
+        "operationId": "CartController_selectDelivery",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Cart-Token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SelectCartDeliveryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          },
+          "409": {
+            "description": "Method is not available for this cart or address"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {}
+        ],
+        "summary": "Choose a delivery method for this cart",
+        "tags": [
+          "Cart"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}/checkout": {
+      "post": {
+        "description": "Returns a checkout session plus its X-Checkout-Token; the cart is then CONVERTED.",
+        "operationId": "CartController_checkout",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Cart-Token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutCartDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutSessionDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          },
+          "409": {
+            "description": "Cart is empty, has no contact details, or its delivery selection is no longer valid"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {}
+        ],
+        "summary": "Convert the cart into a checkout session and reserve stock",
+        "tags": [
+          "Cart"
+        ]
+      }
+    },
     "/storefront/{merchantSlug}": {
       "get": {
         "operationId": "StorefrontController_getStorefront",
@@ -587,746 +1271,14 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/cart": {
-      "post": {
-        "description": "Returns a one-time cart token. No shopper account is involved — whoever holds the token holds the cart.",
-        "operationId": "CartController_create",
-        "parameters": [
-          {
-            "name": "X-Cart-Token",
-            "in": "header",
-            "description": "The token returned when the cart was created",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "merchantSlug",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "X-Cart-Token",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateCartDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreatedCartDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing or invalid cart token"
-          }
-        },
-        "security": [
-          {}
-        ],
-        "summary": "Create a cart",
-        "tags": [
-          "Storefront Cart"
-        ]
-      }
-    },
-    "/storefront/{merchantSlug}/cart/{cartId}": {
+    "/storefront/{merchantSlug}/addresses": {
       "get": {
-        "operationId": "CartController_findOne",
-        "parameters": [
-          {
-            "name": "X-Cart-Token",
-            "in": "header",
-            "description": "The token returned when the cart was created",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "merchantSlug",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "cartId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "x-cart-token",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CartDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing or invalid cart token"
-          },
-          "404": {
-            "description": "Cart not found"
-          }
-        },
-        "security": [
-          {}
-        ],
-        "summary": "Get a cart, re-priced at current catalog prices",
-        "tags": [
-          "Storefront Cart"
-        ]
-      }
-    },
-    "/storefront/{merchantSlug}/cart/{cartId}/items": {
-      "post": {
-        "operationId": "CartController_addItem",
-        "parameters": [
-          {
-            "name": "X-Cart-Token",
-            "in": "header",
-            "description": "The token returned when the cart was created",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "merchantSlug",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "cartId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "x-cart-token",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CartItemInputDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CartDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing or invalid cart token"
-          },
-          "409": {
-            "description": "Product is not purchasable here"
-          }
-        },
-        "security": [
-          {}
-        ],
-        "summary": "Add an item, merging onto the matching line if present",
-        "tags": [
-          "Storefront Cart"
-        ]
-      },
-      "delete": {
-        "operationId": "CartController_clear",
-        "parameters": [
-          {
-            "name": "X-Cart-Token",
-            "in": "header",
-            "description": "The token returned when the cart was created",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "merchantSlug",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "cartId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "x-cart-token",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CartDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing or invalid cart token"
-          }
-        },
-        "security": [
-          {}
-        ],
-        "summary": "Empty the cart",
-        "tags": [
-          "Storefront Cart"
-        ]
-      }
-    },
-    "/storefront/{merchantSlug}/cart/{cartId}/items/{itemId}": {
-      "patch": {
-        "operationId": "CartController_updateItem",
-        "parameters": [
-          {
-            "name": "X-Cart-Token",
-            "in": "header",
-            "description": "The token returned when the cart was created",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "merchantSlug",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "cartId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "itemId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "x-cart-token",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateCartItemDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CartDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing or invalid cart token"
-          },
-          "404": {
-            "description": "Cart item not found"
-          }
-        },
-        "security": [
-          {}
-        ],
-        "summary": "Set a line quantity; zero removes the line",
-        "tags": [
-          "Storefront Cart"
-        ]
-      },
-      "delete": {
-        "operationId": "CartController_removeItem",
-        "parameters": [
-          {
-            "name": "X-Cart-Token",
-            "in": "header",
-            "description": "The token returned when the cart was created",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "merchantSlug",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "cartId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "itemId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "x-cart-token",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CartDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing or invalid cart token"
-          },
-          "404": {
-            "description": "Cart item not found"
-          }
-        },
-        "security": [
-          {}
-        ],
-        "summary": "Remove a line",
-        "tags": [
-          "Storefront Cart"
-        ]
-      }
-    },
-    "/storefront/{merchantSlug}/cart/{cartId}/contact": {
-      "patch": {
-        "operationId": "CartController_updateContact",
-        "parameters": [
-          {
-            "name": "X-Cart-Token",
-            "in": "header",
-            "description": "The token returned when the cart was created",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "merchantSlug",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "cartId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "x-cart-token",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateCartContactDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CartDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing or invalid cart token"
-          }
-        },
-        "security": [
-          {}
-        ],
-        "summary": "Set the shopper name, email, phone or order note",
-        "tags": [
-          "Storefront Cart"
-        ]
-      }
-    },
-    "/storefront/{merchantSlug}/cart/{cartId}/delivery-options": {
-      "get": {
-        "operationId": "CartController_deliveryOptions",
-        "parameters": [
-          {
-            "name": "X-Cart-Token",
-            "in": "header",
-            "description": "The token returned when the cart was created",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "merchantSlug",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "cartId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "x-cart-token",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DeliveryOptionDto"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing or invalid cart token"
-          }
-        },
-        "security": [
-          {}
-        ],
-        "summary": "Delivery options priced for this cart and its shipping address",
-        "tags": [
-          "Storefront Cart"
-        ]
-      }
-    },
-    "/storefront/{merchantSlug}/cart/{cartId}/delivery": {
-      "patch": {
-        "operationId": "CartController_selectDelivery",
-        "parameters": [
-          {
-            "name": "X-Cart-Token",
-            "in": "header",
-            "description": "The token returned when the cart was created",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "merchantSlug",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "cartId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "x-cart-token",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SelectCartDeliveryDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CartDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing or invalid cart token"
-          },
-          "409": {
-            "description": "Method is not available for this cart or address"
-          }
-        },
-        "security": [
-          {}
-        ],
-        "summary": "Choose a delivery method for this cart",
-        "tags": [
-          "Storefront Cart"
-        ]
-      }
-    },
-    "/storefront/{merchantSlug}/cart/{cartId}/checkout": {
-      "post": {
-        "description": "Returns a checkout session plus its X-Checkout-Token; the cart is then CONVERTED.",
-        "operationId": "CartController_checkout",
-        "parameters": [
-          {
-            "name": "X-Cart-Token",
-            "in": "header",
-            "description": "The token returned when the cart was created",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "merchantSlug",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "cartId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "x-cart-token",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CheckoutCartDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CheckoutSessionDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing or invalid cart token"
-          },
-          "409": {
-            "description": "Cart is empty, or its delivery selection is no longer valid"
-          }
-        },
-        "security": [
-          {}
-        ],
-        "summary": "Convert the cart into a checkout session and reserve stock",
-        "tags": [
-          "Storefront Cart"
-        ]
-      }
-    },
-    "/storefront/{merchantSlug}/cart/{cartId}/addresses": {
-      "get": {
-        "description": "Empty until the cart has contact details and a first address is saved.",
         "operationId": "StorefrontAddressController_findAll",
         "parameters": [
           {
-            "name": "X-Cart-Token",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "merchantSlug",
             "required": true,
             "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "cartId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "x-cart-token",
-            "required": true,
-            "in": "header",
             "schema": {
               "type": "string"
             }
@@ -1340,35 +1292,188 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/StorefrontAddressDto"
+                    "$ref": "#/components/schemas/AddressResponseDto"
                   }
                 }
               }
             }
           },
           "401": {
-            "description": "Missing or invalid cart token"
+            "description": "Missing or invalid bearer token"
           }
         },
         "security": [
-          {}
+          {
+            "bearer": []
+          }
         ],
-        "summary": "List the shopper's saved addresses",
+        "summary": "List the signed-in shopper's saved addresses",
         "tags": [
-          "Storefront Addresses"
+          "Addresses"
         ]
       },
       "post": {
         "operationId": "StorefrontAddressController_create",
         "parameters": [
           {
-            "name": "X-Cart-Token",
-            "in": "header",
+            "name": "merchantSlug",
             "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAddressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Save an address without going through a cart",
+        "tags": [
+          "Addresses"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/addresses/{addressId}": {
+      "patch": {
+        "operationId": "StorefrontAddressController_update",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
             "schema": {
               "type": "string"
             }
           },
+          {
+            "name": "addressId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAddressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "404": {
+            "description": "Address not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update one of the shopper’s saved addresses",
+        "tags": [
+          "Addresses"
+        ]
+      },
+      "delete": {
+        "description": "Past orders keep their own address snapshot and are unaffected.",
+        "operationId": "StorefrontAddressController_remove",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addressId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletedAddressDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "404": {
+            "description": "Address not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete one of the shopper’s saved addresses",
+        "tags": [
+          "Addresses"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/cart/{cartId}/addresses": {
+      "get": {
+        "description": "Empty until the cart has contact details and a first address is saved.",
+        "operationId": "GuestAddressController_findAll",
+        "parameters": [
           {
             "name": "merchantSlug",
             "required": true,
@@ -1386,7 +1491,64 @@
             }
           },
           {
-            "name": "x-cart-token",
+            "name": "X-Cart-Token",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AddressResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid cart token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {}
+        ],
+        "summary": "List the shopper's saved addresses",
+        "tags": [
+          "Cart"
+        ]
+      },
+      "post": {
+        "operationId": "GuestAddressController_create",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Cart-Token",
             "required": true,
             "in": "header",
             "schema": {
@@ -1399,7 +1561,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateStorefrontAddressDto"
+                "$ref": "#/components/schemas/CreateAddressDto"
               }
             }
           }
@@ -1410,7 +1572,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StorefrontAddressDto"
+                  "$ref": "#/components/schemas/AddressResponseDto"
                 }
               }
             }
@@ -1423,26 +1585,21 @@
           }
         },
         "security": [
+          {
+            "bearer": []
+          },
           {}
         ],
         "summary": "Save an address to the shopper address book",
         "tags": [
-          "Storefront Addresses"
+          "Cart"
         ]
       }
     },
     "/storefront/{merchantSlug}/cart/{cartId}/addresses/{addressId}": {
       "patch": {
-        "operationId": "StorefrontAddressController_update",
+        "operationId": "GuestAddressController_update",
         "parameters": [
-          {
-            "name": "X-Cart-Token",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "merchantSlug",
             "required": true,
@@ -1468,7 +1625,7 @@
             }
           },
           {
-            "name": "x-cart-token",
+            "name": "X-Cart-Token",
             "required": true,
             "in": "header",
             "schema": {
@@ -1481,7 +1638,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateStorefrontAddressDto"
+                "$ref": "#/components/schemas/UpdateAddressDto"
               }
             }
           }
@@ -1492,7 +1649,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StorefrontAddressDto"
+                  "$ref": "#/components/schemas/AddressResponseDto"
                 }
               }
             }
@@ -1505,25 +1662,20 @@
           }
         },
         "security": [
+          {
+            "bearer": []
+          },
           {}
         ],
         "summary": "Update a saved address",
         "tags": [
-          "Storefront Addresses"
+          "Cart"
         ]
       },
       "delete": {
         "description": "Past orders keep their own address snapshot and are unaffected.",
-        "operationId": "StorefrontAddressController_remove",
+        "operationId": "GuestAddressController_remove",
         "parameters": [
-          {
-            "name": "X-Cart-Token",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "merchantSlug",
             "required": true,
@@ -1549,7 +1701,7 @@
             }
           },
           {
-            "name": "x-cart-token",
+            "name": "X-Cart-Token",
             "required": true,
             "in": "header",
             "schema": {
@@ -1559,7 +1711,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Address deleted"
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletedAddressDto"
+                }
+              }
+            }
           },
           "401": {
             "description": "Missing or invalid cart token"
@@ -1569,27 +1728,22 @@
           }
         },
         "security": [
+          {
+            "bearer": []
+          },
           {}
         ],
         "summary": "Delete a saved address",
         "tags": [
-          "Storefront Addresses"
+          "Cart"
         ]
       }
     },
     "/storefront/{merchantSlug}/cart/{cartId}/addresses/{addressId}/assign": {
       "patch": {
         "description": "Setting a shipping address clears any delivery selection, since the chosen method may not serve the new destination.",
-        "operationId": "StorefrontAddressController_assign",
+        "operationId": "GuestAddressController_assign",
         "parameters": [
-          {
-            "name": "X-Cart-Token",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "merchantSlug",
             "required": true,
@@ -1615,7 +1769,7 @@
             }
           },
           {
-            "name": "x-cart-token",
+            "name": "X-Cart-Token",
             "required": true,
             "in": "header",
             "schema": {
@@ -1652,11 +1806,14 @@
           }
         },
         "security": [
+          {
+            "bearer": []
+          },
           {}
         ],
         "summary": "Use this address as the cart shipping or billing address",
         "tags": [
-          "Storefront Addresses"
+          "Cart"
         ]
       }
     },
@@ -1753,7 +1910,7 @@
         ],
         "summary": "Quote delivery options for a destination",
         "tags": [
-          "Storefront Delivery"
+          "Delivery"
         ]
       }
     },
@@ -1798,7 +1955,46 @@
         ],
         "summary": "Track an order, verified against the customer email",
         "tags": [
-          "Storefront Delivery"
+          "Delivery"
+        ]
+      }
+    },
+    "/storefront/{merchantSlug}/loyalty": {
+      "get": {
+        "operationId": "StorefrontLoyaltyController_findMine",
+        "parameters": [
+          {
+            "name": "merchantSlug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoyaltyBalanceDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "The signed-in shopper's points balance and recent movements",
+        "tags": [
+          "Loyalty"
         ]
       }
     },
@@ -1845,14 +2041,6 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "X-Checkout-Token",
-            "in": "header",
-            "required": true,
             "schema": {
               "type": "string"
             }
@@ -1905,14 +2093,6 @@
             "name": "provider",
             "required": true,
             "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "X-Payment-Signature",
-            "in": "header",
-            "required": true,
             "schema": {
               "type": "string"
             }
@@ -2063,7 +2243,7 @@
   },
   "info": {
     "title": "Storefront API",
-    "description": "Public storefront browsing, carts, shopper addresses, delivery options and tracking, checkout sessions, payment initiation, and payment status polling",
+    "description": "Storefront browsing, carts, shopper addresses (guest via cart token, or signed-in via bearer token), delivery options and tracking, checkout sessions, payment initiation, and payment status polling",
     "version": "1.0",
     "contact": {}
   },
@@ -2071,6 +2251,11 @@
   "servers": [],
   "components": {
     "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      },
       "checkout-token": {
         "type": "apiKey",
         "in": "header",
@@ -2541,6 +2726,560 @@
           "paymentProviders"
         ]
       },
+      "CartItemInputDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "productId",
+          "quantity"
+        ]
+      },
+      "CreateCartDto": {
+        "type": "object",
+        "properties": {
+          "sourceChannel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ],
+            "default": "WEBSITE",
+            "description": "POS is rejected; POS sells through its own flow"
+          },
+          "items": {
+            "description": "Optional seed lines, so a cart can be created pre-filled",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CartItemInputDto"
+            }
+          }
+        }
+      },
+      "CartLineDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true,
+            "description": "The cart item id, used to update or remove the line"
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "sku": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unitPrice": {
+            "type": "string",
+            "example": "19.99"
+          },
+          "totalPrice": {
+            "type": "string",
+            "example": "39.98"
+          },
+          "note": {
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "required": [
+          "productId",
+          "sku",
+          "name",
+          "quantity",
+          "unitPrice",
+          "totalPrice"
+        ]
+      },
+      "AddressDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "object",
+            "nullable": true
+          },
+          "recipientName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "object",
+            "nullable": true
+          },
+          "email": {
+            "type": "object",
+            "nullable": true
+          },
+          "line1": {
+            "type": "string"
+          },
+          "line2": {
+            "type": "object",
+            "nullable": true
+          },
+          "city": {
+            "type": "object",
+            "nullable": true
+          },
+          "province": {
+            "type": "object",
+            "nullable": true
+          },
+          "postalCode": {
+            "type": "object",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "example": "KH"
+          },
+          "latitude": {
+            "type": "object",
+            "nullable": true,
+            "example": "11.5564000"
+          },
+          "longitude": {
+            "type": "object",
+            "nullable": true,
+            "example": "104.9282000"
+          },
+          "note": {
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "required": [
+          "recipientName",
+          "line1",
+          "country"
+        ]
+      },
+      "DeliveryOptionDto": {
+        "type": "object",
+        "properties": {
+          "methodId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "example": "STANDARD"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "object",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "PICKUP",
+              "DELIVERY"
+            ]
+          },
+          "branchId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "zoneId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "zoneName": {
+            "type": "object",
+            "nullable": true
+          },
+          "fee": {
+            "type": "string",
+            "example": "2.50"
+          },
+          "estimatedMinDays": {
+            "type": "object",
+            "nullable": true
+          },
+          "estimatedMaxDays": {
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "required": [
+          "methodId",
+          "code",
+          "name",
+          "type",
+          "isDefault",
+          "fee"
+        ]
+      },
+      "CreatedCartDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "CONVERTED",
+              "MERGED",
+              "ABANDONED",
+              "EXPIRED"
+            ]
+          },
+          "sourceChannel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "customerId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "ownerId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true,
+            "description": "The signed-in shopper this cart belongs to, once claimed. Null for a guest cart."
+          },
+          "customerName": {
+            "type": "object",
+            "nullable": true
+          },
+          "customerEmail": {
+            "type": "object",
+            "nullable": true
+          },
+          "customerPhone": {
+            "type": "object",
+            "nullable": true
+          },
+          "note": {
+            "type": "object",
+            "nullable": true
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "subtotalAmount": {
+            "type": "string",
+            "example": "39.98"
+          },
+          "shippingAmount": {
+            "type": "string",
+            "example": "2.50"
+          },
+          "totalAmount": {
+            "type": "string",
+            "example": "42.48"
+          },
+          "itemCount": {
+            "type": "number",
+            "example": 2
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CartLineDto"
+            }
+          },
+          "shippingAddress": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AddressDto"
+              }
+            ]
+          },
+          "billingAddress": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AddressDto"
+              }
+            ]
+          },
+          "delivery": {
+            "nullable": true,
+            "description": "The chosen delivery method, re-quoted at read time",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryOptionDto"
+              }
+            ]
+          },
+          "checkoutSessionId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "cartToken": {
+            "type": "string",
+            "description": "Send as the X-Cart-Token header on every later request for this cart. Shown once."
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "sourceChannel",
+          "currency",
+          "subtotalAmount",
+          "shippingAmount",
+          "totalAmount",
+          "itemCount",
+          "items",
+          "expiresAt",
+          "cartToken"
+        ]
+      },
+      "CartDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "CONVERTED",
+              "MERGED",
+              "ABANDONED",
+              "EXPIRED"
+            ]
+          },
+          "sourceChannel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "customerId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "ownerId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true,
+            "description": "The signed-in shopper this cart belongs to, once claimed. Null for a guest cart."
+          },
+          "customerName": {
+            "type": "object",
+            "nullable": true
+          },
+          "customerEmail": {
+            "type": "object",
+            "nullable": true
+          },
+          "customerPhone": {
+            "type": "object",
+            "nullable": true
+          },
+          "note": {
+            "type": "object",
+            "nullable": true
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "subtotalAmount": {
+            "type": "string",
+            "example": "39.98"
+          },
+          "shippingAmount": {
+            "type": "string",
+            "example": "2.50"
+          },
+          "totalAmount": {
+            "type": "string",
+            "example": "42.48"
+          },
+          "itemCount": {
+            "type": "number",
+            "example": 2
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CartLineDto"
+            }
+          },
+          "shippingAddress": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AddressDto"
+              }
+            ]
+          },
+          "billingAddress": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AddressDto"
+              }
+            ]
+          },
+          "delivery": {
+            "nullable": true,
+            "description": "The chosen delivery method, re-quoted at read time",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryOptionDto"
+              }
+            ]
+          },
+          "checkoutSessionId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "sourceChannel",
+          "currency",
+          "subtotalAmount",
+          "shippingAmount",
+          "totalAmount",
+          "itemCount",
+          "items",
+          "expiresAt"
+        ]
+      },
+      "UpdateCartItemDto": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Zero removes the line"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "quantity"
+        ]
+      },
+      "UpdateCartContactDto": {
+        "type": "object",
+        "properties": {
+          "customerName": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "customerEmail": {
+            "type": "string",
+            "format": "email"
+          },
+          "customerPhone": {
+            "type": "string",
+            "maxLength": 30
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      },
+      "SelectCartDeliveryDto": {
+        "type": "object",
+        "properties": {
+          "deliveryMethodId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "deliveryMethodId"
+        ]
+      },
+      "CheckoutCartDto": {
+        "type": "object",
+        "properties": {
+          "expiresInMinutes": {
+            "type": "number",
+            "default": 15,
+            "minimum": 1,
+            "maximum": 120
+          }
+        }
+      },
       "PublicMerchantDto": {
         "type": "object",
         "properties": {
@@ -2914,547 +3653,7 @@
           "items"
         ]
       },
-      "CartItemInputDto": {
-        "type": "object",
-        "properties": {
-          "productId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "variantId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "quantity": {
-            "type": "number",
-            "minimum": 1,
-            "maximum": 100
-          },
-          "note": {
-            "type": "string",
-            "maxLength": 200
-          }
-        },
-        "required": [
-          "productId",
-          "quantity"
-        ]
-      },
-      "CreateCartDto": {
-        "type": "object",
-        "properties": {
-          "sourceChannel": {
-            "type": "string",
-            "enum": [
-              "POS",
-              "WEBSITE",
-              "FACEBOOK",
-              "INSTAGRAM",
-              "TIKTOK"
-            ],
-            "default": "WEBSITE",
-            "description": "POS is rejected; POS sells through its own flow"
-          },
-          "items": {
-            "description": "Optional seed lines, so a cart can be created pre-filled",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CartItemInputDto"
-            }
-          }
-        }
-      },
-      "CartLineDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "object",
-            "format": "uuid",
-            "nullable": true,
-            "description": "The cart item id, used to update or remove the line"
-          },
-          "productId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "variantId": {
-            "type": "object",
-            "format": "uuid",
-            "nullable": true
-          },
-          "sku": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "quantity": {
-            "type": "number"
-          },
-          "unitPrice": {
-            "type": "string",
-            "example": "19.99"
-          },
-          "totalPrice": {
-            "type": "string",
-            "example": "39.98"
-          },
-          "note": {
-            "type": "object",
-            "nullable": true
-          }
-        },
-        "required": [
-          "productId",
-          "sku",
-          "name",
-          "quantity",
-          "unitPrice",
-          "totalPrice"
-        ]
-      },
-      "AddressDto": {
-        "type": "object",
-        "properties": {
-          "label": {
-            "type": "object",
-            "nullable": true
-          },
-          "recipientName": {
-            "type": "string"
-          },
-          "phone": {
-            "type": "object",
-            "nullable": true
-          },
-          "email": {
-            "type": "object",
-            "nullable": true
-          },
-          "line1": {
-            "type": "string"
-          },
-          "line2": {
-            "type": "object",
-            "nullable": true
-          },
-          "city": {
-            "type": "object",
-            "nullable": true
-          },
-          "province": {
-            "type": "object",
-            "nullable": true
-          },
-          "postalCode": {
-            "type": "object",
-            "nullable": true
-          },
-          "country": {
-            "type": "string",
-            "example": "KH"
-          },
-          "latitude": {
-            "type": "object",
-            "nullable": true,
-            "example": "11.5564000"
-          },
-          "longitude": {
-            "type": "object",
-            "nullable": true,
-            "example": "104.9282000"
-          },
-          "note": {
-            "type": "object",
-            "nullable": true
-          }
-        },
-        "required": [
-          "recipientName",
-          "line1",
-          "country"
-        ]
-      },
-      "DeliveryOptionDto": {
-        "type": "object",
-        "properties": {
-          "methodId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "code": {
-            "type": "string",
-            "example": "STANDARD"
-          },
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "object",
-            "nullable": true
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "PICKUP",
-              "DELIVERY"
-            ]
-          },
-          "branchId": {
-            "type": "object",
-            "format": "uuid",
-            "nullable": true
-          },
-          "isDefault": {
-            "type": "boolean"
-          },
-          "zoneId": {
-            "type": "object",
-            "format": "uuid",
-            "nullable": true
-          },
-          "zoneName": {
-            "type": "object",
-            "nullable": true
-          },
-          "fee": {
-            "type": "string",
-            "example": "2.50"
-          },
-          "estimatedMinDays": {
-            "type": "object",
-            "nullable": true
-          },
-          "estimatedMaxDays": {
-            "type": "object",
-            "nullable": true
-          }
-        },
-        "required": [
-          "methodId",
-          "code",
-          "name",
-          "type",
-          "isDefault",
-          "fee"
-        ]
-      },
-      "CreatedCartDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "ACTIVE",
-              "CONVERTED",
-              "ABANDONED",
-              "EXPIRED"
-            ]
-          },
-          "sourceChannel": {
-            "type": "string",
-            "enum": [
-              "POS",
-              "WEBSITE",
-              "FACEBOOK",
-              "INSTAGRAM",
-              "TIKTOK"
-            ]
-          },
-          "customerId": {
-            "type": "object",
-            "format": "uuid",
-            "nullable": true
-          },
-          "customerName": {
-            "type": "object",
-            "nullable": true
-          },
-          "customerEmail": {
-            "type": "object",
-            "nullable": true
-          },
-          "customerPhone": {
-            "type": "object",
-            "nullable": true
-          },
-          "note": {
-            "type": "object",
-            "nullable": true
-          },
-          "currency": {
-            "type": "string",
-            "example": "USD"
-          },
-          "subtotalAmount": {
-            "type": "string",
-            "example": "39.98"
-          },
-          "shippingAmount": {
-            "type": "string",
-            "example": "2.50"
-          },
-          "totalAmount": {
-            "type": "string",
-            "example": "42.48"
-          },
-          "itemCount": {
-            "type": "number",
-            "example": 2
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CartLineDto"
-            }
-          },
-          "shippingAddress": {
-            "nullable": true,
-            "type": "object",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AddressDto"
-              }
-            ]
-          },
-          "billingAddress": {
-            "nullable": true,
-            "type": "object",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AddressDto"
-              }
-            ]
-          },
-          "delivery": {
-            "nullable": true,
-            "description": "The chosen delivery method, re-quoted at read time",
-            "type": "object",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DeliveryOptionDto"
-              }
-            ]
-          },
-          "checkoutSessionId": {
-            "type": "object",
-            "format": "uuid",
-            "nullable": true
-          },
-          "expiresAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "cartToken": {
-            "type": "string",
-            "description": "Send as the X-Cart-Token header on every later request for this cart. Shown once."
-          }
-        },
-        "required": [
-          "id",
-          "status",
-          "sourceChannel",
-          "currency",
-          "subtotalAmount",
-          "shippingAmount",
-          "totalAmount",
-          "itemCount",
-          "items",
-          "expiresAt",
-          "cartToken"
-        ]
-      },
-      "CartDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "ACTIVE",
-              "CONVERTED",
-              "ABANDONED",
-              "EXPIRED"
-            ]
-          },
-          "sourceChannel": {
-            "type": "string",
-            "enum": [
-              "POS",
-              "WEBSITE",
-              "FACEBOOK",
-              "INSTAGRAM",
-              "TIKTOK"
-            ]
-          },
-          "customerId": {
-            "type": "object",
-            "format": "uuid",
-            "nullable": true
-          },
-          "customerName": {
-            "type": "object",
-            "nullable": true
-          },
-          "customerEmail": {
-            "type": "object",
-            "nullable": true
-          },
-          "customerPhone": {
-            "type": "object",
-            "nullable": true
-          },
-          "note": {
-            "type": "object",
-            "nullable": true
-          },
-          "currency": {
-            "type": "string",
-            "example": "USD"
-          },
-          "subtotalAmount": {
-            "type": "string",
-            "example": "39.98"
-          },
-          "shippingAmount": {
-            "type": "string",
-            "example": "2.50"
-          },
-          "totalAmount": {
-            "type": "string",
-            "example": "42.48"
-          },
-          "itemCount": {
-            "type": "number",
-            "example": 2
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CartLineDto"
-            }
-          },
-          "shippingAddress": {
-            "nullable": true,
-            "type": "object",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AddressDto"
-              }
-            ]
-          },
-          "billingAddress": {
-            "nullable": true,
-            "type": "object",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AddressDto"
-              }
-            ]
-          },
-          "delivery": {
-            "nullable": true,
-            "description": "The chosen delivery method, re-quoted at read time",
-            "type": "object",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DeliveryOptionDto"
-              }
-            ]
-          },
-          "checkoutSessionId": {
-            "type": "object",
-            "format": "uuid",
-            "nullable": true
-          },
-          "expiresAt": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "status",
-          "sourceChannel",
-          "currency",
-          "subtotalAmount",
-          "shippingAmount",
-          "totalAmount",
-          "itemCount",
-          "items",
-          "expiresAt"
-        ]
-      },
-      "UpdateCartItemDto": {
-        "type": "object",
-        "properties": {
-          "quantity": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 100,
-            "description": "Zero removes the line"
-          },
-          "note": {
-            "type": "string",
-            "maxLength": 200
-          }
-        },
-        "required": [
-          "quantity"
-        ]
-      },
-      "UpdateCartContactDto": {
-        "type": "object",
-        "properties": {
-          "customerName": {
-            "type": "string",
-            "maxLength": 120
-          },
-          "customerEmail": {
-            "type": "string",
-            "format": "email"
-          },
-          "customerPhone": {
-            "type": "string",
-            "maxLength": 30
-          },
-          "note": {
-            "type": "string",
-            "maxLength": 500
-          }
-        }
-      },
-      "SelectCartDeliveryDto": {
-        "type": "object",
-        "properties": {
-          "deliveryMethodId": {
-            "type": "string",
-            "format": "uuid"
-          }
-        },
-        "required": [
-          "deliveryMethodId"
-        ]
-      },
-      "CheckoutCartDto": {
-        "type": "object",
-        "properties": {
-          "expiresInMinutes": {
-            "type": "number",
-            "default": 15,
-            "minimum": 1,
-            "maximum": 120
-          }
-        }
-      },
-      "StorefrontAddressDto": {
+      "AddressResponseDto": {
         "type": "object",
         "properties": {
           "label": {
@@ -3516,6 +3715,18 @@
           "customerId": {
             "type": "string",
             "format": "uuid"
+          },
+          "ownerId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true,
+            "description": "The signed-in shopper who owns this address. Null for a walk-in customer, who has no account."
+          },
+          "createdById": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true,
+            "description": "The staff member who saved it on the customer behalf, if any"
           },
           "isDefaultShipping": {
             "type": "boolean"
@@ -3544,7 +3755,7 @@
           "updatedAt"
         ]
       },
-      "CreateStorefrontAddressDto": {
+      "CreateAddressDto": {
         "type": "object",
         "properties": {
           "label": {
@@ -3605,12 +3816,11 @@
           },
           "isDefaultShipping": {
             "type": "boolean",
-            "default": false,
-            "description": "Use as the shopper's default shipping address"
+            "description": "Use as the customer's default shipping address. Omitted on their first address means yes."
           },
           "isDefaultBilling": {
             "type": "boolean",
-            "default": false
+            "description": "Use as the customer's default billing address."
           }
         },
         "required": [
@@ -3619,7 +3829,7 @@
           "country"
         ]
       },
-      "UpdateStorefrontAddressDto": {
+      "UpdateAddressDto": {
         "type": "object",
         "properties": {
           "label": {
@@ -3680,14 +3890,30 @@
           },
           "isDefaultShipping": {
             "type": "boolean",
-            "default": false,
-            "description": "Use as the shopper's default shipping address"
+            "description": "Use as the customer's default shipping address. Omitted on their first address means yes."
           },
           "isDefaultBilling": {
             "type": "boolean",
-            "default": false
+            "description": "Use as the customer's default billing address."
           }
         }
+      },
+      "DeletedAddressDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "deleted": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "id",
+          "deleted"
+        ]
       },
       "AssignCartAddressDto": {
         "type": "object",
@@ -3703,6 +3929,78 @@
         },
         "required": [
           "type"
+        ]
+      },
+      "LoyaltyEntryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "EARNED",
+              "REVERSED",
+              "ADJUSTED"
+            ]
+          },
+          "points": {
+            "type": "number",
+            "example": 25,
+            "description": "Signed: positive when earned, negative when reversed"
+          },
+          "balanceAfter": {
+            "type": "number",
+            "example": 125
+          },
+          "note": {
+            "type": "object",
+            "nullable": true,
+            "example": "Order ORD-2026-0001"
+          },
+          "orderId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "points",
+          "balanceAfter",
+          "createdAt"
+        ]
+      },
+      "LoyaltyBalanceDto": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "balance": {
+            "type": "number",
+            "example": 125
+          },
+          "entries": {
+            "description": "Most recent 20",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LoyaltyEntryDto"
+            }
+          }
+        },
+        "required": [
+          "customerId",
+          "balance",
+          "entries"
         ]
       },
       "CreatePaymentIntentDto": {

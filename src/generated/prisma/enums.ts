@@ -319,11 +319,21 @@ export type IdempotencyKeyStatus = (typeof IdempotencyKeyStatus)[keyof typeof Id
 export const CartStatus = {
   ACTIVE: 'ACTIVE',
   CONVERTED: 'CONVERTED',
+  MERGED: 'MERGED',
   ABANDONED: 'ABANDONED',
   EXPIRED: 'EXPIRED'
 } as const
 
 export type CartStatus = (typeof CartStatus)[keyof typeof CartStatus]
+
+
+export const LoyaltyEntryType = {
+  EARNED: 'EARNED',
+  REVERSED: 'REVERSED',
+  ADJUSTED: 'ADJUSTED'
+} as const
+
+export type LoyaltyEntryType = (typeof LoyaltyEntryType)[keyof typeof LoyaltyEntryType]
 
 
 export const AddressType = {

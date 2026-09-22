@@ -546,10 +546,15 @@ export class PosOrdersService {
         soldStock: number;
       }>
     >(Prisma.sql`
-      SELECT "id", "productId", "variantId", "totalStock", "reservedStock", "soldStock"
+      SELECT "id",
+             "product_id" AS "productId",
+             "variant_id" AS "variantId",
+             "total_stock" AS "totalStock",
+             "reserved_stock" AS "reservedStock",
+             "sold_stock" AS "soldStock"
       FROM "inventory_stocks"
       WHERE "id" = CAST(${reservation.inventoryStockId} AS uuid)
-        AND "merchantId" = CAST(${merchantId} AS uuid)
+        AND "merchant_id" = CAST(${merchantId} AS uuid)
       FOR UPDATE
     `);
     const stock = stockRows[0];

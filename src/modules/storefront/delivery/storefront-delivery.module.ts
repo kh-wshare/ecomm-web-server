@@ -5,7 +5,7 @@ import { StorefrontDeliveryController } from './storefront-delivery.controller';
 import { StorefrontDeliveryService } from './storefront-delivery.service';
 
 @Module({
-  imports: [StorefrontContextModule, LogisticsModule],
+  imports: [LogisticsModule, StorefrontContextModule],
   controllers: [StorefrontDeliveryController],
   providers: [StorefrontDeliveryService],
 })

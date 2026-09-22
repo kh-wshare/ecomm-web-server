@@ -6,14 +6,6 @@ import { ShipmentsService } from '#app/modules/logistics/shipments.service';
 import { StorefrontContextService } from '#app/modules/storefront/context/storefront-context.service';
 import { QuoteDeliveryDto } from './dto/storefront-delivery.dto';
 
-/**
- * The public face of logistics: what delivery options a storefront offers, and
- * where a shopper's parcel currently is.
- *
- * Both read through `LogisticsModule`'s services rather than re-querying
- * delivery tables, so the storefront can never disagree with the merchant
- * dashboard about a fee or a shipment status.
- */
 @Injectable()
 export class StorefrontDeliveryService {
   constructor(

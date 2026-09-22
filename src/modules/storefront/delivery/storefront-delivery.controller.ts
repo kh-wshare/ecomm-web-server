@@ -14,7 +14,7 @@ import {
 import { StorefrontDeliveryService } from './storefront-delivery.service';
 
 @Public()
-@ApiTags('Storefront Delivery')
+@ApiTags('Delivery')
 @Controller('storefront/:merchantSlug')
 export class StorefrontDeliveryController {
   constructor(private readonly delivery: StorefrontDeliveryService) {}

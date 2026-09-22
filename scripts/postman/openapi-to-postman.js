@@ -254,8 +254,8 @@ function headerParameters(document, operation, surfaceAuth) {
     if (lower === 'authorization') continue;
 
     const variable = {
-      'x-cart-token': '{{cartToken}}',
-      'x-checkout-token': '{{checkoutToken}}',
+      'X-Cart-Token': '{{cartToken}}',
+      'X-Checkout-Token': '{{checkoutToken}}',
       'x-merchant-id': '{{merchantId}}',
       'x-payment-signature': '{{paymentSignature}}',
       'idempotency-key': '{{$guid}}',

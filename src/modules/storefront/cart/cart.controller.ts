@@ -11,11 +11,13 @@ import {
   Patch,
   Post,
   Req,
+  UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiConflictResponse,
   ApiCreatedResponse,
-  ApiHeader,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -23,7 +25,10 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import type { Request } from 'express';
+import { CurrentUser } from '#app/modules/authenticated/decorators/current-user.decorator';
 import { Public } from '#app/modules/authenticated/decorators/public.decorator';
+import { OptionalJwtAuthGuard } from '#app/modules/authenticated/guards/optional-jwt-auth.guard';
+import type { AuthenticatedUser } from '#app/modules/authenticated/interfaces/authenticated-user.interface';
 import { CheckoutSessionDto } from '#app/modules/checkout/dto/checkout-response.dto';
 import { DeliveryOptionDto } from '#app/modules/logistics/dto/delivery-method-response.dto';
 import { CartService } from './cart.service';
@@ -38,19 +43,15 @@ import {
 import { CartDto, CreatedCartDto } from './dto/cart-response.dto';
 
 @Public()
-@ApiTags('Storefront Cart')
-@ApiHeader({
-  name: 'X-Cart-Token',
-  required: true,
-  description: 'The token returned when the cart was created',
-})
+@UseGuards(OptionalJwtAuthGuard)
+@ApiBearerAuth()
+@ApiTags('Cart')
 @ApiUnauthorizedResponse({ description: 'Missing or invalid cart token' })
 @Controller('storefront/:merchantSlug/cart')
 export class CartController {
   constructor(private readonly carts: CartService) {}
 
   @Post()
-  @ApiHeader({ name: 'X-Cart-Token', required: false })
   @ApiOperation({
     summary: 'Create a cart',
     description:
@@ -60,22 +61,42 @@ export class CartController {
   create(
     @Param('merchantSlug') merchantSlug: string,
     @Body() dto: CreateCartDto,
+    @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.create(merchantSlug, dto);
+    return this.carts.create(merchantSlug, dto, user);
+  }
+
+  @Get('mine')
+  @ApiOperation({
+    summary: "The signed-in shopper's current cart",
+    description:
+      'The one cart lookup that needs no X-Cart-Token, so a shopper who signs in on a new device can pick up where they left off. Requires a bearer token.',
+  })
+  @ApiOkResponse({ type: CartDto })
+  @ApiNotFoundResponse({ description: 'No active cart for this account' })
+  findMine(
+    @Param('merchantSlug') merchantSlug: string,
+    @CurrentUser() user?: AuthenticatedUser,
+  ) {
+    if (!user) throw new UnauthorizedException('Sign in to load your cart');
+    return this.carts.findMine(merchantSlug, user);
   }
 
   @Get(':cartId')
   @ApiOperation({
     summary: 'Get a cart, re-priced at current catalog prices',
+    description:
+      'Accepts either the X-Cart-Token or a bearer token for the shopper who owns the cart.',
   })
   @ApiOkResponse({ type: CartDto })
   @ApiNotFoundResponse({ description: 'Cart not found' })
   findOne(
     @Param('merchantSlug') merchantSlug: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
-    @Headers('x-cart-token') token?: string,
+    @Headers('X-Cart-Token') token?: string,
+    @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.findOne(merchantSlug, cartId, token);
+    return this.carts.findOne(merchantSlug, cartId, token, user);
   }
 
   @Post(':cartId/items')
@@ -89,9 +110,10 @@ export class CartController {
     @Param('merchantSlug') merchantSlug: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Body() dto: CartItemInputDto,
-    @Headers('x-cart-token') token?: string,
+    @Headers('X-Cart-Token') token?: string,
+    @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.addItem(merchantSlug, cartId, token, dto);
+    return this.carts.addItem(merchantSlug, cartId, token, dto, user);
   }
 
   @Patch(':cartId/items/:itemId')
@@ -103,9 +125,17 @@ export class CartController {
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Param('itemId', ParseUUIDPipe) itemId: string,
     @Body() dto: UpdateCartItemDto,
-    @Headers('x-cart-token') token?: string,
+    @Headers('X-Cart-Token') token?: string,
+    @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.updateItem(merchantSlug, cartId, token, itemId, dto);
+    return this.carts.updateItem(
+      merchantSlug,
+      cartId,
+      token,
+      itemId,
+      dto,
+      user,
+    );
   }
 
   @Delete(':cartId/items/:itemId')
@@ -117,9 +147,10 @@ export class CartController {
     @Param('merchantSlug') merchantSlug: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Param('itemId', ParseUUIDPipe) itemId: string,
-    @Headers('x-cart-token') token?: string,
+    @Headers('X-Cart-Token') token?: string,
+    @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.removeItem(merchantSlug, cartId, token, itemId);
+    return this.carts.removeItem(merchantSlug, cartId, token, itemId, user);
   }
 
   @Delete(':cartId/items')
@@ -129,9 +160,10 @@ export class CartController {
   clear(
     @Param('merchantSlug') merchantSlug: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
-    @Headers('x-cart-token') token?: string,
+    @Headers('X-Cart-Token') token?: string,
+    @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.clear(merchantSlug, cartId, token);
+    return this.carts.clear(merchantSlug, cartId, token, user);
   }
 
   @Patch(':cartId/contact')
@@ -141,9 +173,10 @@ export class CartController {
     @Param('merchantSlug') merchantSlug: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Body() dto: UpdateCartContactDto,
-    @Headers('x-cart-token') token?: string,
+    @Headers('X-Cart-Token') token?: string,
+    @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.updateContact(merchantSlug, cartId, token, dto);
+    return this.carts.updateContact(merchantSlug, cartId, token, dto, user);
   }
 
   @Get(':cartId/delivery-options')
@@ -154,9 +187,10 @@ export class CartController {
   deliveryOptions(
     @Param('merchantSlug') merchantSlug: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
-    @Headers('x-cart-token') token?: string,
+    @Headers('X-Cart-Token') token?: string,
+    @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.deliveryOptions(merchantSlug, cartId, token);
+    return this.carts.deliveryOptions(merchantSlug, cartId, token, user);
   }
 
   @Patch(':cartId/delivery')
@@ -169,9 +203,10 @@ export class CartController {
     @Param('merchantSlug') merchantSlug: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Body() dto: SelectCartDeliveryDto,
-    @Headers('x-cart-token') token?: string,
+    @Headers('X-Cart-Token') token?: string,
+    @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.selectDelivery(merchantSlug, cartId, token, dto);
+    return this.carts.selectDelivery(merchantSlug, cartId, token, dto, user);
   }
 
   @Post(':cartId/checkout')
@@ -183,18 +218,24 @@ export class CartController {
   })
   @ApiCreatedResponse({ type: CheckoutSessionDto })
   @ApiConflictResponse({
-    description: 'Cart is empty, or its delivery selection is no longer valid',
+    description:
+      'Cart is empty, has no contact details, or its delivery selection is no longer valid',
   })
   checkout(
     @Param('merchantSlug') merchantSlug: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Body() dto: CheckoutCartDto,
     @Req() request: Request,
-    @Headers('x-cart-token') token?: string,
+    @Headers('X-Cart-Token') token?: string,
+    @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.checkoutCart(merchantSlug, cartId, token, dto, {
-      ipAddress: request.ip,
-      userAgent: request.get('user-agent'),
-    });
+    return this.carts.checkoutCart(
+      merchantSlug,
+      cartId,
+      token,
+      dto,
+      { ipAddress: request.ip, userAgent: request.get('user-agent') },
+      user,
+    );
   }
 }

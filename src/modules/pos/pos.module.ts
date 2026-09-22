@@ -3,6 +3,7 @@ import { InventoryModule } from '#app/modules/inventory/inventory.module';
 import { OrderModule } from '#app/modules/order/order.module';
 import { PricingModule } from '#app/modules/pricing/pricing.module';
 import { PosAuditModule } from './audit/audit.module';
+import { PosCartsModule } from './carts/pos-carts.module';
 import { PosCustomersModule } from './customers/customers.module';
 import { PosDevicesModule } from './devices/devices.module';
 import { KitchenModule } from './kitchen/kitchen.module';
@@ -27,6 +28,7 @@ import { PosTablesModule } from './tables/tables.module';
     PosPaymentsModule,
     PosTablesModule,
     PosCustomersModule,
+    PosCartsModule,
     PosSyncModule,
     PosAuditModule,
     PosRealtimeModule,

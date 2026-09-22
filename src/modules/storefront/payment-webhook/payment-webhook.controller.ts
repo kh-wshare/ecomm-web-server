@@ -10,12 +10,7 @@ import {
   Req,
 } from '@nestjs/common';
 import type { RawBodyRequest } from '@nestjs/common';
-import {
-  ApiHeader,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { Request } from 'express';
 
 import { PaymentProviderCode } from '#app/generated/prisma/enums';
@@ -49,7 +44,6 @@ export class PaymentWebhookController {
   @Public()
   @Post(':provider')
   @HttpCode(HttpStatus.OK)
-  @ApiHeader({ name: 'X-Payment-Signature', required: true })
   @ApiOperation({ summary: 'Process a signed provider webhook' })
   @ApiOkResponse({ type: PaymentWebhookRespDto })
   webhook(

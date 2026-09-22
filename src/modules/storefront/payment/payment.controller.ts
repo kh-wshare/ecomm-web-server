@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
-  ApiHeader,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -36,14 +35,13 @@ export class StorefrontPaymentController {
 
   @Public()
   @Get(':id/status')
-  @ApiHeader({ name: 'X-Checkout-Token', required: true })
   @ApiOperation({
     summary: 'Get payment status for a token-authorized checkout',
   })
   @ApiOkResponse({ type: PaymentDto })
   status(
     @Param('id', ParseUUIDPipe) id: string,
-    @Headers('x-checkout-token') token: string | undefined,
+    @Headers('X-Checkout-Token') token: string | undefined,
   ) {
     return this.payments.findByToken(id, token);
   }

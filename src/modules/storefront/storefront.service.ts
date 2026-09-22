@@ -167,33 +167,33 @@ export class StorefrontService {
       ? Prisma.sql`AND EXISTS (
           SELECT 1
           FROM "product_categories" pc
-          WHERE pc."id" = p."categoryId"
-            AND pc."merchantId" = CAST(${merchantId} AS uuid)
+          WHERE pc."id" = p."category_id"
+            AND pc."merchant_id" = CAST(${merchantId} AS uuid)
             AND pc."id" = CAST(${categoryId} AS uuid)
             AND pc."status" = 'ACTIVE'::"ProductCategoryStatus"
-            AND pc."deletedAt" IS NULL
+            AND pc."deleted_at" IS NULL
         )`
       : categorySlug
         ? Prisma.sql`AND EXISTS (
             SELECT 1
             FROM "product_categories" pc
-            WHERE pc."id" = p."categoryId"
-              AND pc."merchantId" = CAST(${merchantId} AS uuid)
+            WHERE pc."id" = p."category_id"
+              AND pc."merchant_id" = CAST(${merchantId} AS uuid)
               AND pc."slug" = ${categorySlug}
               AND pc."status" = 'ACTIVE'::"ProductCategoryStatus"
-              AND pc."deletedAt" IS NULL
+              AND pc."deleted_at" IS NULL
           )`
         : Prisma.empty;
     const baseWhere = Prisma.sql`
-      p."merchantId" = CAST(${merchantId} AS uuid)
+      p."merchant_id" = CAST(${merchantId} AS uuid)
       AND p."status" = 'ACTIVE'::"ProductStatus"
-      AND p."deletedAt" IS NULL
+      AND p."deleted_at" IS NULL
       AND EXISTS (
         SELECT 1
         FROM "product_channel_visibility" pcv
-        WHERE pcv."productId" = p."id"
+        WHERE pcv."product_id" = p."id"
           AND pcv."channel" = CAST(${channel} AS "SalesChannel")
-          AND pcv."isVisible" = true
+          AND pcv."is_visible" = true
       )
       ${searchClause}
       ${categoryClause}
@@ -203,7 +203,7 @@ export class StorefrontService {
         SELECT p."id"
         FROM "products" p
         WHERE ${baseWhere}
-        ORDER BY p."createdAt" DESC
+        ORDER BY p."created_at" DESC
         LIMIT ${query.take}
         OFFSET ${query.skip}
       `),

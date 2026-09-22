@@ -7,6 +7,7 @@ import {
   PaymentTransactionStatus,
 } from '#app/generated/prisma/enums';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
+import { LoyaltyService } from '#app/modules/loyalty/loyalty.service';
 import { OutboxService } from '#app/infrastructure/rabbitmq/outbox.service';
 import {
   KhqrAdapter,
@@ -42,6 +43,7 @@ export class PosPaymentsService {
     private readonly khqr: KhqrAdapter,
     private readonly outbox: OutboxService,
     private readonly orders: OrderService,
+    private readonly loyalty: LoyaltyService,
   ) {}
 
   async create(
@@ -469,6 +471,9 @@ export class PosPaymentsService {
         where: { id: orderId },
         data: { status: 'PAID', paymentStatus: 'PAID', paidAt: new Date() },
       });
+      // A POS sale earns too, but only when it was rung up against a known
+      // customer who holds an account — `grantForOrder` enforces that.
+      await this.loyalty.grantForOrder(tx, orderId);
     } else if (net.gt(0) && net.lt(order.totalAmount)) {
       await tx.order.update({
         where: { id: orderId },
@@ -500,10 +505,13 @@ export class PosPaymentsService {
           reservedStock: number;
         }>
       >(Prisma.sql`
-        SELECT "id", "productId", "variantId", "reservedStock"
+        SELECT "id",
+               "product_id" AS "productId",
+               "variant_id" AS "variantId",
+               "reserved_stock" AS "reservedStock"
         FROM "inventory_stocks"
         WHERE "id" = CAST(${reservation.inventoryStockId} AS uuid)
-          AND "merchantId" = CAST(${merchantId} AS uuid)
+          AND "merchant_id" = CAST(${merchantId} AS uuid)
         FOR UPDATE
       `);
       const stock = stockRows[0];

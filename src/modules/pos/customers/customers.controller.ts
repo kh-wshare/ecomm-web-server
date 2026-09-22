@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Query,
+  Req,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -13,6 +22,7 @@ import { CurrentUser } from '#app/modules/authenticated/decorators/current-user.
 import type { AuthenticatedUser } from '#app/modules/authenticated/interfaces/authenticated-user.interface';
 import { RequireMerchant } from '#app/modules/authorization/decorators/require-merchant.decorator';
 import { RequirePermission } from '#app/modules/authorization/decorators/require-permission.decorator';
+import { LoyaltyService } from '#app/modules/loyalty/loyalty.service';
 import { PosCustomersService } from './customers.service';
 import { CreateCustomerDto, CustomerQueryDto } from './dto/customer-input.dto';
 
@@ -24,7 +34,25 @@ type CurrentMerchantContext = { id: string };
 @RequireMerchant()
 @Controller('pos/customers')
 export class PosCustomersController {
-  constructor(private readonly customers: PosCustomersService) {}
+  constructor(
+    private readonly customers: PosCustomersService,
+    private readonly loyalty: LoyaltyService,
+  ) {}
+
+  @Get(':customerId/loyalty')
+  @RequirePermission('pos.customer.manage')
+  @ApiOperation({
+    summary: "A customer's points balance and recent movements",
+    description:
+      'Read-only. Points are earned automatically when an order they placed from an account is paid.',
+  })
+  @ApiOkResponse()
+  loyalty_(
+    @CurrentMerchant() merchant: CurrentMerchantContext,
+    @Param('customerId', ParseUUIDPipe) customerId: string,
+  ) {
+    return this.loyalty.balanceFor(merchant.id, customerId);
+  }
 
   @Get()
   @RequirePermission('pos.customer.manage')

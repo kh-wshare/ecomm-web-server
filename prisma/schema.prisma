@@ -222,8 +222,17 @@ enum IdempotencyKeyStatus {
 enum CartStatus {
   ACTIVE
   CONVERTED
+  /// Folded into another cart when a guest signed in and their two carts
+  /// were combined; `mergedIntoCartId` points at the survivor.
+  MERGED
   ABANDONED
   EXPIRED
+}
+
+enum LoyaltyEntryType {
+  EARNED
+  REVERSED
+  ADJUSTED
 }
 
 enum AddressType {
@@ -254,18 +263,18 @@ enum ShipmentStatus {
 
 model User {
   id                  String               @id @default(uuid()) @db.Uuid
-  fullName            String
+  fullName            String               @map("full_name")
   email               String?              @unique
   phone               String?
-  telegramId          String?              @unique
-  passwordHash        String
+  telegramId          String?              @unique @map("telegram_id")
+  passwordHash        String               @map("password_hash")
   status              UserStatus           @default(ACTIVE)
-  platformRole        PlatformRole         @default(USER)
-  mustChangePassword  Boolean              @default(false)
-  lastLoginAt         DateTime?
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
-  deletedAt           DateTime?
+  platformRole        PlatformRole         @default(USER) @map("platform_role")
+  mustChangePassword  Boolean              @default(false) @map("must_change_password")
+  lastLoginAt         DateTime?            @map("last_login_at")
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+  deletedAt           DateTime?            @map("deleted_at")
   memberships         MerchantUser[]       @relation("MembershipUser")
   invitedMemberships  MerchantUser[]       @relation("MembershipInviter")
   sessions            Session[]
@@ -274,21 +283,25 @@ model User {
   auditLogs           AuditLog[]
   inventoryMovements  InventoryMovement[]  @relation("InventoryMovementCreator")
   authIdentities      AuthIdentity[]
+  ownedAddresses      CustomerAddress[]    @relation("AddressOwner")
+  createdAddresses    CustomerAddress[]    @relation("AddressCreator")
+  ownedCarts          Cart[]               @relation("CartOwner")
+  createdCarts        Cart[]               @relation("CartCreator")
 
   @@map("users")
 }
 
 model AuthIdentity {
   id             String   @id @default(uuid()) @db.Uuid
-  userId         String   @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
   provider       String
-  providerUserId String
-  telegramId     String?  @unique
+  providerUserId String   @map("provider_user_id")
+  telegramId     String?  @unique @map("telegram_id")
   email          String?
   phone          String?
   metadata       Json?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerUserId])
@@ -303,9 +316,9 @@ model Merchant {
   email                 String?
   phone                 String?
   status                MerchantStatus         @default(ACTIVE)
-  createdAt             DateTime               @default(now())
-  updatedAt             DateTime               @updatedAt
-  deletedAt             DateTime?
+  createdAt             DateTime               @default(now()) @map("created_at")
+  updatedAt             DateTime               @updatedAt @map("updated_at")
+  deletedAt             DateTime?              @map("deleted_at")
   memberships           MerchantUser[]
   roles                 Role[]
   sessions              Session[]
@@ -318,7 +331,13 @@ model Merchant {
   theme                 MerchantTheme?
   checkoutSessions      CheckoutSession[]
   orders                Order[]
-  returnStockOnRefund   Boolean                @default(true)
+  returnStockOnRefund   Boolean                @default(true) @map("return_stock_on_refund")
+  /// Loyalty is off until a merchant turns it on, so existing merchants are
+  /// unaffected and nobody accrues a balance they never advertised.
+  loyaltyEnabled        Boolean                @default(false) @map("loyalty_enabled")
+  /// Points granted per whole currency unit of an order's paid subtotal.
+  loyaltyPointsPerUnit  Int                    @default(1) @map("loyalty_points_per_unit")
+  loyaltyEntries        LoyaltyLedgerEntry[]
   paymentProviders      PaymentProvider[]
   payments              Payment[]
   paymentWebhookEvents  PaymentWebhookEvent[]
@@ -345,22 +364,22 @@ model Merchant {
 
 model MerchantBranch {
   id               String               @id @default(uuid()) @db.Uuid
-  merchantId       String               @db.Uuid
+  merchantId       String               @map("merchant_id") @db.Uuid
   name             String
   code             String
   phone            String?
-  addressLine1     String?
-  addressLine2     String?
+  addressLine1     String?              @map("address_line1")
+  addressLine2     String?              @map("address_line2")
   city             String?
   province         String?
-  postalCode       String?
+  postalCode       String?              @map("postal_code")
   country          String?
-  registerName     String?
-  isDefault        Boolean              @default(false)
+  registerName     String?              @map("register_name")
+  isDefault        Boolean              @default(false) @map("is_default")
   status           MerchantBranchStatus @default(ACTIVE)
-  createdAt        DateTime             @default(now())
-  updatedAt        DateTime             @updatedAt
-  deletedAt        DateTime?
+  createdAt        DateTime             @default(now()) @map("created_at")
+  updatedAt        DateTime             @updatedAt @map("updated_at")
+  deletedAt        DateTime?            @map("deleted_at")
   merchant         Merchant             @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   posDevices       PosDevice[]
   posShifts        PosShift[]
@@ -377,8 +396,8 @@ model MerchantBranch {
 
 model Product {
   id                 String                     @id @default(uuid()) @db.Uuid
-  merchantId         String                     @db.Uuid
-  categoryId         String?                    @db.Uuid
+  merchantId         String                     @map("merchant_id") @db.Uuid
+  categoryId         String?                    @map("category_id") @db.Uuid
   name               String
   slug               String
   description        String?
@@ -387,11 +406,11 @@ model Product {
   currency           String                     @default("USD") @db.Char(3)
   status             ProductStatus              @default(DRAFT)
   type               ProductType                @default(SIMPLE)
-  inventoryType      ProductInventoryType       @default(NON_STOCKED)
-  trackStock         Boolean                    @default(false)
-  createdAt          DateTime                   @default(now())
-  updatedAt          DateTime                   @updatedAt
-  deletedAt          DateTime?
+  inventoryType      ProductInventoryType       @default(NON_STOCKED) @map("inventory_type")
+  trackStock         Boolean                    @default(false) @map("track_stock")
+  createdAt          DateTime                   @default(now()) @map("created_at")
+  updatedAt          DateTime                   @updatedAt @map("updated_at")
+  deletedAt          DateTime?                  @map("deleted_at")
   merchant           Merchant                   @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   category           ProductCategory?           @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   variants           ProductVariant[]
@@ -415,16 +434,16 @@ model Product {
 
 model ProductCategory {
   id          String                @id @default(uuid()) @db.Uuid
-  merchantId  String                @db.Uuid
+  merchantId  String                @map("merchant_id") @db.Uuid
   name        String
   slug        String
   description String?
-  logoUrl     String?
-  sortOrder   Int                   @default(0)
+  logoUrl     String?               @map("logo_url")
+  sortOrder   Int                   @default(0) @map("sort_order")
   status      ProductCategoryStatus @default(ACTIVE)
-  createdAt   DateTime              @default(now())
-  updatedAt   DateTime              @updatedAt
-  deletedAt   DateTime?
+  createdAt   DateTime              @default(now()) @map("created_at")
+  updatedAt   DateTime              @updatedAt @map("updated_at")
+  deletedAt   DateTime?             @map("deleted_at")
   merchant    Merchant              @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   products    Product[]
 
@@ -436,13 +455,13 @@ model ProductCategory {
 
 model MerchantTheme {
   id           String    @id @default(uuid()) @db.Uuid
-  merchantId   String    @unique @db.Uuid
-  liveConfig   Json
-  draftConfig  Json
-  customDomain String?   @unique
-  publishedAt  DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  merchantId   String    @unique @map("merchant_id") @db.Uuid
+  liveConfig   Json      @map("live_config")
+  draftConfig  Json      @map("draft_config")
+  customDomain String?   @unique @map("custom_domain")
+  publishedAt  DateTime? @map("published_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
   merchant     Merchant  @relation(fields: [merchantId], references: [id], onDelete: Cascade)
 
   @@map("merchant_themes")
@@ -450,15 +469,15 @@ model MerchantTheme {
 
 model ProductVariant {
   id                 String                 @id @default(uuid()) @db.Uuid
-  productId          String                 @db.Uuid
-  merchantId         String                 @db.Uuid
+  productId          String                 @map("product_id") @db.Uuid
+  merchantId         String                 @map("merchant_id") @db.Uuid
   sku                String
   name               String
   price              Decimal                @db.Decimal(12, 2)
   attributes         Json
   status             ProductVariantStatus   @default(ACTIVE)
-  createdAt          DateTime               @default(now())
-  updatedAt          DateTime               @updatedAt
+  createdAt          DateTime               @default(now()) @map("created_at")
+  updatedAt          DateTime               @updatedAt @map("updated_at")
   product            Product                @relation(fields: [productId, merchantId], references: [id, merchantId], onDelete: Cascade)
   inventoryStocks    InventoryStock[]
   reservations       InventoryReservation[]
@@ -475,11 +494,11 @@ model ProductVariant {
 
 model ProductMedia {
   id        String           @id @default(uuid()) @db.Uuid
-  productId String           @db.Uuid
+  productId String           @map("product_id") @db.Uuid
   url       String
   type      ProductMediaType @default(IMAGE)
-  sortOrder Int              @default(0)
-  createdAt DateTime         @default(now())
+  sortOrder Int              @default(0) @map("sort_order")
+  createdAt DateTime         @default(now()) @map("created_at")
   product   Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@index([productId, sortOrder])
@@ -488,12 +507,12 @@ model ProductMedia {
 
 model ProductChannelVisibility {
   id            String       @id @default(uuid()) @db.Uuid
-  productId     String       @db.Uuid
+  productId     String       @map("product_id") @db.Uuid
   channel       SalesChannel
-  isVisible     Boolean      @default(false)
-  isPurchasable Boolean      @default(false)
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  isVisible     Boolean      @default(false) @map("is_visible")
+  isPurchasable Boolean      @default(false) @map("is_purchasable")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
   product       Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([productId, channel])
@@ -503,16 +522,16 @@ model ProductChannelVisibility {
 
 model InventoryStock {
   id            String                 @id @default(uuid()) @db.Uuid
-  merchantId    String                 @db.Uuid
-  productId     String                 @db.Uuid
-  variantId     String?                @db.Uuid
-  stockKey      String
-  totalStock    Int                    @default(0)
-  reservedStock Int                    @default(0)
-  soldStock     Int                    @default(0)
-  safetyBuffer  Int                    @default(0)
-  createdAt     DateTime               @default(now())
-  updatedAt     DateTime               @updatedAt
+  merchantId    String                 @map("merchant_id") @db.Uuid
+  productId     String                 @map("product_id") @db.Uuid
+  variantId     String?                @map("variant_id") @db.Uuid
+  stockKey      String                 @map("stock_key")
+  totalStock    Int                    @default(0) @map("total_stock")
+  reservedStock Int                    @default(0) @map("reserved_stock")
+  soldStock     Int                    @default(0) @map("sold_stock")
+  safetyBuffer  Int                    @default(0) @map("safety_buffer")
+  createdAt     DateTime               @default(now()) @map("created_at")
+  updatedAt     DateTime               @updatedAt @map("updated_at")
   merchant      Merchant               @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   product       Product                @relation(fields: [productId], references: [id], onDelete: Restrict)
   variant       ProductVariant?        @relation(fields: [variantId], references: [id], onDelete: Restrict)
@@ -527,17 +546,17 @@ model InventoryStock {
 
 model InventoryReservation {
   id                String                     @id @default(uuid()) @db.Uuid
-  merchantId        String                     @db.Uuid
-  inventoryStockId  String                     @db.Uuid
-  productId         String                     @db.Uuid
-  variantId         String?                    @db.Uuid
-  orderId           String?                    @db.Uuid
-  checkoutSessionId String                     @db.Uuid
+  merchantId        String                     @map("merchant_id") @db.Uuid
+  inventoryStockId  String                     @map("inventory_stock_id") @db.Uuid
+  productId         String                     @map("product_id") @db.Uuid
+  variantId         String?                    @map("variant_id") @db.Uuid
+  orderId           String?                    @map("order_id") @db.Uuid
+  checkoutSessionId String                     @map("checkout_session_id") @db.Uuid
   quantity          Int
   status            InventoryReservationStatus @default(ACTIVE)
-  expiresAt         DateTime
-  createdAt         DateTime                   @default(now())
-  updatedAt         DateTime                   @updatedAt
+  expiresAt         DateTime                   @map("expires_at")
+  createdAt         DateTime                   @default(now()) @map("created_at")
+  updatedAt         DateTime                   @updatedAt @map("updated_at")
   merchant          Merchant                   @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   inventoryStock    InventoryStock             @relation(fields: [inventoryStockId], references: [id], onDelete: Restrict)
   product           Product                    @relation(fields: [productId], references: [id], onDelete: Restrict)
@@ -551,29 +570,33 @@ model InventoryReservation {
 
 model CheckoutSession {
   id                 String                @id @default(uuid()) @db.Uuid
-  merchantId         String                @db.Uuid
-  branchId           String?               @db.Uuid
-  posDeviceId        String?               @db.Uuid
-  customerId         String?               @db.Uuid
-  customerName       String?
-  customerEmail      String?
-  customerPhone      String?
-  sourceChannel      SalesChannel
+  merchantId         String                @map("merchant_id") @db.Uuid
+  branchId           String?               @map("branch_id") @db.Uuid
+  posDeviceId        String?               @map("pos_device_id") @db.Uuid
+  customerId         String?               @map("customer_id") @db.Uuid
+  /// The signed-in shopper who checked out, when there was one. Carried from
+  /// the cart onto the Order so loyalty can tell an account order from a
+  /// guest order that merely typed a known email.
+  ownerId            String?               @map("owner_id") @db.Uuid
+  customerName       String?               @map("customer_name")
+  customerEmail      String?               @map("customer_email")
+  customerPhone      String?               @map("customer_phone")
+  sourceChannel      SalesChannel          @map("source_channel")
   status             CheckoutSessionStatus @default(ACTIVE)
-  accessTokenHash    String                @unique
-  subtotalAmount     Decimal               @db.Decimal(12, 2)
-  discountAmount     Decimal               @default(0) @db.Decimal(12, 2)
-  feeAmount          Decimal               @default(0) @db.Decimal(12, 2)
-  shippingAmount     Decimal               @default(0) @db.Decimal(12, 2)
-  totalAmount        Decimal               @db.Decimal(12, 2)
+  accessTokenHash    String                @unique @map("access_token_hash")
+  subtotalAmount     Decimal               @map("subtotal_amount") @db.Decimal(12, 2)
+  discountAmount     Decimal               @default(0) @map("discount_amount") @db.Decimal(12, 2)
+  feeAmount          Decimal               @default(0) @map("fee_amount") @db.Decimal(12, 2)
+  shippingAmount     Decimal               @default(0) @map("shipping_amount") @db.Decimal(12, 2)
+  totalAmount        Decimal               @map("total_amount") @db.Decimal(12, 2)
   currency           String                @db.Char(3)
-  deliveryMethodId   String?               @db.Uuid
-  deliveryMethodName String?
-  shippingAddress    Json?
-  billingAddress     Json?
-  expiresAt          DateTime
-  createdAt          DateTime              @default(now())
-  updatedAt          DateTime              @updatedAt
+  deliveryMethodId   String?               @map("delivery_method_id") @db.Uuid
+  deliveryMethodName String?               @map("delivery_method_name")
+  shippingAddress    Json?                 @map("shipping_address")
+  billingAddress     Json?                 @map("billing_address")
+  expiresAt          DateTime              @map("expires_at")
+  createdAt          DateTime              @default(now()) @map("created_at")
+  updatedAt          DateTime              @updatedAt @map("updated_at")
   merchant           Merchant              @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   branch             MerchantBranch?       @relation(fields: [branchId], references: [id], onDelete: SetNull)
   posDevice          PosDevice?            @relation(fields: [posDeviceId], references: [id], onDelete: SetNull)
@@ -591,15 +614,15 @@ model CheckoutSession {
 
 model CheckoutItem {
   id                String          @id @default(uuid()) @db.Uuid
-  checkoutSessionId String          @db.Uuid
-  productId         String          @db.Uuid
-  variantId         String?         @db.Uuid
+  checkoutSessionId String          @map("checkout_session_id") @db.Uuid
+  productId         String          @map("product_id") @db.Uuid
+  variantId         String?         @map("variant_id") @db.Uuid
   sku               String
   name              String
   quantity          Int
-  unitPrice         Decimal         @db.Decimal(12, 2)
-  totalPrice        Decimal         @db.Decimal(12, 2)
-  createdAt         DateTime        @default(now())
+  unitPrice         Decimal         @map("unit_price") @db.Decimal(12, 2)
+  totalPrice        Decimal         @map("total_price") @db.Decimal(12, 2)
+  createdAt         DateTime        @default(now()) @map("created_at")
   checkoutSession   CheckoutSession @relation(fields: [checkoutSessionId], references: [id], onDelete: Cascade)
   product           Product         @relation(fields: [productId], references: [id], onDelete: Restrict)
   variant           ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Restrict)
@@ -611,51 +634,54 @@ model CheckoutItem {
 }
 
 model Order {
-  id                 String            @id @default(uuid()) @db.Uuid
-  merchantId         String            @db.Uuid
-  checkoutSessionId  String            @unique @db.Uuid
-  branchId           String?           @db.Uuid
-  posDeviceId        String?           @db.Uuid
-  posShiftId         String?           @db.Uuid
-  tableId            String?           @db.Uuid
-  localId            String?
-  customerId         String?           @db.Uuid
-  customerName       String?
-  customerEmail      String?
-  customerPhone      String?
-  sourceChannel      SalesChannel
-  orderNumber        String
-  status             OrderStatus       @default(PENDING_PAYMENT)
-  subtotalAmount     Decimal           @db.Decimal(12, 2)
-  discountAmount     Decimal           @default(0) @db.Decimal(12, 2)
-  feeAmount          Decimal           @default(0) @db.Decimal(12, 2)
-  shippingAmount     Decimal           @default(0) @db.Decimal(12, 2)
-  totalAmount        Decimal           @db.Decimal(12, 2)
-  currency           String            @db.Char(3)
-  deliveryMethodId   String?           @db.Uuid
-  deliveryMethodName String?
-  shippingAddress    Json?
-  billingAddress     Json?
-  paymentStatus      PaymentStatus     @default(PENDING)
-  fulfillmentStatus  FulfillmentStatus @default(UNFULFILLED)
-  paidAt             DateTime?
-  fulfilledAt        DateTime?
-  cancelledAt        DateTime?
-  refundedAt         DateTime?
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
-  merchant           Merchant          @relation(fields: [merchantId], references: [id], onDelete: Cascade)
-  checkoutSession    CheckoutSession   @relation(fields: [checkoutSessionId], references: [id], onDelete: Restrict)
-  branch             MerchantBranch?   @relation(fields: [branchId], references: [id], onDelete: Restrict)
-  posDevice          PosDevice?        @relation(fields: [posDeviceId], references: [id], onDelete: SetNull)
-  posShift           PosShift?         @relation(fields: [posShiftId], references: [id], onDelete: SetNull)
-  table              PosTable?         @relation(fields: [tableId], references: [id], onDelete: SetNull)
-  customer           Customer?         @relation(fields: [customerId], references: [id], onDelete: SetNull)
-  deliveryMethod     DeliveryMethod?   @relation(fields: [deliveryMethodId], references: [id], onDelete: SetNull)
+  id                 String               @id @default(uuid()) @db.Uuid
+  merchantId         String               @map("merchant_id") @db.Uuid
+  checkoutSessionId  String               @unique @map("checkout_session_id") @db.Uuid
+  branchId           String?              @map("branch_id") @db.Uuid
+  posDeviceId        String?              @map("pos_device_id") @db.Uuid
+  posShiftId         String?              @map("pos_shift_id") @db.Uuid
+  tableId            String?              @map("table_id") @db.Uuid
+  localId            String?              @map("local_id")
+  customerId         String?              @map("customer_id") @db.Uuid
+  /// The signed-in shopper who placed this order, when there was one.
+  ownerId            String?              @map("owner_id") @db.Uuid
+  customerName       String?              @map("customer_name")
+  customerEmail      String?              @map("customer_email")
+  customerPhone      String?              @map("customer_phone")
+  sourceChannel      SalesChannel         @map("source_channel")
+  orderNumber        String               @map("order_number")
+  status             OrderStatus          @default(PENDING_PAYMENT)
+  subtotalAmount     Decimal              @map("subtotal_amount") @db.Decimal(12, 2)
+  discountAmount     Decimal              @default(0) @map("discount_amount") @db.Decimal(12, 2)
+  feeAmount          Decimal              @default(0) @map("fee_amount") @db.Decimal(12, 2)
+  shippingAmount     Decimal              @default(0) @map("shipping_amount") @db.Decimal(12, 2)
+  totalAmount        Decimal              @map("total_amount") @db.Decimal(12, 2)
+  currency           String               @db.Char(3)
+  deliveryMethodId   String?              @map("delivery_method_id") @db.Uuid
+  deliveryMethodName String?              @map("delivery_method_name")
+  shippingAddress    Json?                @map("shipping_address")
+  billingAddress     Json?                @map("billing_address")
+  paymentStatus      PaymentStatus        @default(PENDING) @map("payment_status")
+  fulfillmentStatus  FulfillmentStatus    @default(UNFULFILLED) @map("fulfillment_status")
+  paidAt             DateTime?            @map("paid_at")
+  fulfilledAt        DateTime?            @map("fulfilled_at")
+  cancelledAt        DateTime?            @map("cancelled_at")
+  refundedAt         DateTime?            @map("refunded_at")
+  createdAt          DateTime             @default(now()) @map("created_at")
+  updatedAt          DateTime             @updatedAt @map("updated_at")
+  merchant           Merchant             @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  checkoutSession    CheckoutSession      @relation(fields: [checkoutSessionId], references: [id], onDelete: Restrict)
+  branch             MerchantBranch?      @relation(fields: [branchId], references: [id], onDelete: Restrict)
+  posDevice          PosDevice?           @relation(fields: [posDeviceId], references: [id], onDelete: SetNull)
+  posShift           PosShift?            @relation(fields: [posShiftId], references: [id], onDelete: SetNull)
+  table              PosTable?            @relation(fields: [tableId], references: [id], onDelete: SetNull)
+  customer           Customer?            @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  deliveryMethod     DeliveryMethod?      @relation(fields: [deliveryMethodId], references: [id], onDelete: SetNull)
   items              OrderItem[]
   payments           Payment[]
   kitchenOrders      KitchenOrder[]
   shipments          Shipment[]
+  loyaltyEntries     LoyaltyLedgerEntry[]
 
   @@unique([merchantId, orderNumber])
   @@unique([merchantId, posDeviceId, localId])
@@ -669,20 +695,20 @@ model Order {
 
 model OrderItem {
   id                    String             @id @default(uuid()) @db.Uuid
-  orderId               String             @db.Uuid
-  productId             String             @db.Uuid
-  variantId             String?            @db.Uuid
+  orderId               String             @map("order_id") @db.Uuid
+  productId             String             @map("product_id") @db.Uuid
+  variantId             String?            @map("variant_id") @db.Uuid
   sku                   String
   name                  String
   quantity              Int
-  unitPrice             Decimal            @db.Decimal(12, 2)
-  totalPrice            Decimal            @db.Decimal(12, 2)
+  unitPrice             Decimal            @map("unit_price") @db.Decimal(12, 2)
+  totalPrice            Decimal            @map("total_price") @db.Decimal(12, 2)
   note                  String?
-  sentToKitchenQuantity Int                @default(0)
-  preparedQuantity      Int                @default(0)
-  cancelledQuantity     Int                @default(0)
-  createdAt             DateTime           @default(now())
-  updatedAt             DateTime           @updatedAt
+  sentToKitchenQuantity Int                @default(0) @map("sent_to_kitchen_quantity")
+  preparedQuantity      Int                @default(0) @map("prepared_quantity")
+  cancelledQuantity     Int                @default(0) @map("cancelled_quantity")
+  createdAt             DateTime           @default(now()) @map("created_at")
+  updatedAt             DateTime           @updatedAt @map("updated_at")
   order                 Order              @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product               Product            @relation(fields: [productId], references: [id], onDelete: Restrict)
   variant               ProductVariant?    @relation(fields: [variantId], references: [id], onDelete: Restrict)
@@ -697,12 +723,12 @@ model OrderItem {
 
 model PaymentProvider {
   id            String                @id @default(uuid()) @db.Uuid
-  merchantId    String                @db.Uuid
+  merchantId    String                @map("merchant_id") @db.Uuid
   provider      PaymentProviderCode
   config        Json
   status        PaymentProviderStatus @default(ACTIVE)
-  createdAt     DateTime              @default(now())
-  updatedAt     DateTime              @updatedAt
+  createdAt     DateTime              @default(now()) @map("created_at")
+  updatedAt     DateTime              @updatedAt @map("updated_at")
   merchant      Merchant              @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   payments      Payment[]
   webhookEvents PaymentWebhookEvent[]
@@ -714,21 +740,21 @@ model PaymentProvider {
 
 model Payment {
   id                    String                   @id @default(uuid()) @db.Uuid
-  merchantId            String                   @db.Uuid
-  orderId               String                   @db.Uuid
-  posShiftId            String?                  @db.Uuid
-  paymentProviderId     String                   @db.Uuid
+  merchantId            String                   @map("merchant_id") @db.Uuid
+  orderId               String                   @map("order_id") @db.Uuid
+  posShiftId            String?                  @map("pos_shift_id") @db.Uuid
+  paymentProviderId     String                   @map("payment_provider_id") @db.Uuid
   provider              PaymentProviderCode
-  providerTransactionId String                   @unique
-  paymentReference      String?
-  idempotencyKey        String?                  @unique
+  providerTransactionId String                   @unique @map("provider_transaction_id")
+  paymentReference      String?                  @map("payment_reference")
+  idempotencyKey        String?                  @unique @map("idempotency_key")
   amount                Decimal                  @db.Decimal(12, 2)
   currency              String                   @db.Char(3)
   status                PaymentTransactionStatus @default(PENDING)
   metadata              Json?
-  paidAt                DateTime?
-  createdAt             DateTime                 @default(now())
-  updatedAt             DateTime                 @updatedAt
+  paidAt                DateTime?                @map("paid_at")
+  createdAt             DateTime                 @default(now()) @map("created_at")
+  updatedAt             DateTime                 @updatedAt @map("updated_at")
   merchant              Merchant                 @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   order                 Order                    @relation(fields: [orderId], references: [id], onDelete: Restrict)
   posShift              PosShift?                @relation(fields: [posShiftId], references: [id], onDelete: SetNull)
@@ -745,16 +771,16 @@ model Payment {
 
 model PaymentWebhookEvent {
   id                String               @id @default(uuid()) @db.Uuid
-  merchantId        String               @db.Uuid
-  paymentProviderId String               @db.Uuid
-  paymentId         String               @db.Uuid
+  merchantId        String               @map("merchant_id") @db.Uuid
+  paymentProviderId String               @map("payment_provider_id") @db.Uuid
+  paymentId         String               @map("payment_id") @db.Uuid
   provider          PaymentProviderCode
-  eventId           String
+  eventId           String               @map("event_id")
   payload           Json
   status            PaymentWebhookStatus @default(RECEIVED)
   error             String?
-  processedAt       DateTime?
-  createdAt         DateTime             @default(now())
+  processedAt       DateTime?            @map("processed_at")
+  createdAt         DateTime             @default(now()) @map("created_at")
   merchant          Merchant             @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   paymentProvider   PaymentProvider      @relation(fields: [paymentProviderId], references: [id], onDelete: Restrict)
   payment           Payment              @relation(fields: [paymentId], references: [id], onDelete: Restrict)
@@ -767,19 +793,19 @@ model PaymentWebhookEvent {
 
 model PaymentRefund {
   id                          String              @id @default(uuid()) @db.Uuid
-  merchantId                  String              @db.Uuid
-  paymentId                   String              @db.Uuid
-  orderId                     String              @db.Uuid
+  merchantId                  String              @map("merchant_id") @db.Uuid
+  paymentId                   String              @map("payment_id") @db.Uuid
+  orderId                     String              @map("order_id") @db.Uuid
   amount                      Decimal             @db.Decimal(12, 2)
   reason                      String?
   status                      PaymentRefundStatus @default(PENDING)
-  providerRefundTransactionId String?             @unique
-  idempotencyKey              String?             @unique
-  returnedStock               Boolean             @default(false)
-  requestedById               String              @db.Uuid
-  approvedById                String?             @db.Uuid
-  createdAt                   DateTime            @default(now())
-  updatedAt                   DateTime            @updatedAt
+  providerRefundTransactionId String?             @unique @map("provider_refund_transaction_id")
+  idempotencyKey              String?             @unique @map("idempotency_key")
+  returnedStock               Boolean             @default(false) @map("returned_stock")
+  requestedById               String              @map("requested_by_id") @db.Uuid
+  approvedById                String?             @map("approved_by_id") @db.Uuid
+  createdAt                   DateTime            @default(now()) @map("created_at")
+  updatedAt                   DateTime            @updatedAt @map("updated_at")
   merchant                    Merchant            @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   payment                     Payment             @relation(fields: [paymentId], references: [id], onDelete: Restrict)
 
@@ -790,18 +816,18 @@ model PaymentRefund {
 
 model PosDevice {
   id               String            @id @default(uuid()) @db.Uuid
-  merchantId       String            @db.Uuid
-  branchId         String            @db.Uuid
-  deviceId         String
+  merchantId       String            @map("merchant_id") @db.Uuid
+  branchId         String            @map("branch_id") @db.Uuid
+  deviceId         String            @map("device_id")
   name             String?
   platform         String?
-  appVersion       String?
+  appVersion       String?           @map("app_version")
   status           PosDeviceStatus   @default(ACTIVE)
-  lastSeenAt       DateTime?
-  registeredById   String?           @db.Uuid
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  deletedAt        DateTime?
+  lastSeenAt       DateTime?         @map("last_seen_at")
+  registeredById   String?           @map("registered_by_id") @db.Uuid
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+  deletedAt        DateTime?         @map("deleted_at")
   merchant         Merchant          @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   branch           MerchantBranch    @relation(fields: [branchId], references: [id], onDelete: Restrict)
   shifts           PosShift[]
@@ -815,21 +841,21 @@ model PosDevice {
 
 model PosShift {
   id             String         @id @default(uuid()) @db.Uuid
-  merchantId     String         @db.Uuid
-  branchId       String         @db.Uuid
-  posDeviceId    String         @db.Uuid
-  openedById     String         @db.Uuid
-  closedById     String?        @db.Uuid
+  merchantId     String         @map("merchant_id") @db.Uuid
+  branchId       String         @map("branch_id") @db.Uuid
+  posDeviceId    String         @map("pos_device_id") @db.Uuid
+  openedById     String         @map("opened_by_id") @db.Uuid
+  closedById     String?        @map("closed_by_id") @db.Uuid
   status         PosShiftStatus @default(OPEN)
-  openingCash    Decimal        @db.Decimal(12, 2)
-  closingCash    Decimal?       @db.Decimal(12, 2)
-  expectedCash   Decimal?       @db.Decimal(12, 2)
-  cashDifference Decimal?       @db.Decimal(12, 2)
+  openingCash    Decimal        @map("opening_cash") @db.Decimal(12, 2)
+  closingCash    Decimal?       @map("closing_cash") @db.Decimal(12, 2)
+  expectedCash   Decimal?       @map("expected_cash") @db.Decimal(12, 2)
+  cashDifference Decimal?       @map("cash_difference") @db.Decimal(12, 2)
   note           String?
-  openedAt       DateTime       @default(now())
-  closedAt       DateTime?
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  openedAt       DateTime       @default(now()) @map("opened_at")
+  closedAt       DateTime?      @map("closed_at")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
   merchant       Merchant       @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   branch         MerchantBranch @relation(fields: [branchId], references: [id], onDelete: Restrict)
   posDevice      PosDevice      @relation(fields: [posDeviceId], references: [id], onDelete: Restrict)
@@ -844,15 +870,15 @@ model PosShift {
 
 model PosTable {
   id         String         @id @default(uuid()) @db.Uuid
-  merchantId String         @db.Uuid
-  branchId   String         @db.Uuid
+  merchantId String         @map("merchant_id") @db.Uuid
+  branchId   String         @map("branch_id") @db.Uuid
   name       String
   code       String?
   seats      Int?
   status     PosTableStatus @default(AVAILABLE)
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
-  deletedAt  DateTime?
+  createdAt  DateTime       @default(now()) @map("created_at")
+  updatedAt  DateTime       @updatedAt @map("updated_at")
+  deletedAt  DateTime?      @map("deleted_at")
   merchant   Merchant       @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   branch     MerchantBranch @relation(fields: [branchId], references: [id], onDelete: Cascade)
   orders     Order[]
@@ -863,42 +889,74 @@ model PosTable {
 }
 
 model Customer {
-  id               String            @id @default(uuid()) @db.Uuid
-  merchantId       String            @db.Uuid
-  fullName         String
+  id               String               @id @default(uuid()) @db.Uuid
+  merchantId       String               @map("merchant_id") @db.Uuid
+  fullName         String               @map("full_name")
   phone            String?
   email            String?
   note             String?
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  deletedAt        DateTime?
-  merchant         Merchant          @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  createdAt        DateTime             @default(now()) @map("created_at")
+  updatedAt        DateTime             @updatedAt @map("updated_at")
+  deletedAt        DateTime?            @map("deleted_at")
+  merchant         Merchant             @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   checkoutSessions CheckoutSession[]
   orders           Order[]
   carts            Cart[]
   addresses        CustomerAddress[]
+  /// Denormalised running total of `loyaltyEntries`, maintained in the same
+  /// transaction as each entry so a balance read never has to sum the ledger.
+  loyaltyPoints    Int                  @default(0) @map("loyalty_points")
+  loyaltyEntries   LoyaltyLedgerEntry[]
 
   @@index([merchantId, phone])
   @@index([merchantId, email])
   @@map("customers")
 }
 
+/// One immutable loyalty movement. The balance on `Customer` is the running
+/// sum of these; the ledger exists because a refund has to reverse a specific
+/// grant, which a bare counter cannot express.
+///
+/// `@@unique([orderId, type])` is what makes earning idempotent: the paid
+/// transition can be retried (webhook redelivery, a poll racing a callback)
+/// and the second insert simply conflicts instead of granting twice.
+model LoyaltyLedgerEntry {
+  id           String           @id @default(uuid()) @db.Uuid
+  merchantId   String           @map("merchant_id") @db.Uuid
+  customerId   String           @map("customer_id") @db.Uuid
+  orderId      String?          @map("order_id") @db.Uuid
+  type         LoyaltyEntryType
+  /// Signed: positive on EARNED, negative on REVERSED.
+  points       Int
+  /// The customer's balance immediately after this entry was applied.
+  balanceAfter Int              @map("balance_after")
+  note         String?
+  createdAt    DateTime         @default(now()) @map("created_at")
+  merchant     Merchant         @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  customer     Customer         @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  order        Order?           @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@unique([orderId, type])
+  @@index([merchantId, customerId, createdAt])
+  @@map("loyalty_ledger_entries")
+}
+
 model KitchenOrder {
   id             String             @id @default(uuid()) @db.Uuid
-  merchantId     String             @db.Uuid
-  branchId       String             @db.Uuid
-  orderId        String             @db.Uuid
-  posShiftId     String?            @db.Uuid
-  tableId        String?            @db.Uuid
+  merchantId     String             @map("merchant_id") @db.Uuid
+  branchId       String             @map("branch_id") @db.Uuid
+  orderId        String             @map("order_id") @db.Uuid
+  posShiftId     String?            @map("pos_shift_id") @db.Uuid
+  tableId        String?            @map("table_id") @db.Uuid
   status         KitchenOrderStatus @default(PENDING)
-  sentById       String             @db.Uuid
-  sentAt         DateTime           @default(now())
-  acceptedAt     DateTime?
-  readyAt        DateTime?
-  completedAt    DateTime?
-  idempotencyKey String?            @unique
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
+  sentById       String             @map("sent_by_id") @db.Uuid
+  sentAt         DateTime           @default(now()) @map("sent_at")
+  acceptedAt     DateTime?          @map("accepted_at")
+  readyAt        DateTime?          @map("ready_at")
+  completedAt    DateTime?          @map("completed_at")
+  idempotencyKey String?            @unique @map("idempotency_key")
+  createdAt      DateTime           @default(now()) @map("created_at")
+  updatedAt      DateTime           @updatedAt @map("updated_at")
   merchant       Merchant           @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   order          Order              @relation(fields: [orderId], references: [id], onDelete: Cascade)
   posShift       PosShift?          @relation(fields: [posShiftId], references: [id], onDelete: SetNull)
@@ -911,13 +969,13 @@ model KitchenOrder {
 
 model KitchenOrderItem {
   id             String             @id @default(uuid()) @db.Uuid
-  kitchenOrderId String             @db.Uuid
-  orderItemId    String             @db.Uuid
+  kitchenOrderId String             @map("kitchen_order_id") @db.Uuid
+  orderItemId    String             @map("order_item_id") @db.Uuid
   quantity       Int
   status         KitchenOrderStatus @default(PENDING)
   note           String?
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
+  createdAt      DateTime           @default(now()) @map("created_at")
+  updatedAt      DateTime           @updatedAt @map("updated_at")
   kitchenOrder   KitchenOrder       @relation(fields: [kitchenOrderId], references: [id], onDelete: Cascade)
   orderItem      OrderItem          @relation(fields: [orderItemId], references: [id], onDelete: Restrict)
 
@@ -928,17 +986,17 @@ model KitchenOrderItem {
 
 model OutboxEvent {
   id            String            @id @default(uuid()) @db.Uuid
-  aggregateType String
-  aggregateId   String
-  eventType     String
+  aggregateType String            @map("aggregate_type")
+  aggregateId   String            @map("aggregate_id")
+  eventType     String            @map("event_type")
   payload       Json
-  merchantId    String?           @db.Uuid
+  merchantId    String?           @map("merchant_id") @db.Uuid
   status        OutboxEventStatus @default(PENDING)
   attempts      Int               @default(0)
-  lastError     String?
-  availableAt   DateTime          @default(now())
-  publishedAt   DateTime?
-  createdAt     DateTime          @default(now())
+  lastError     String?           @map("last_error")
+  availableAt   DateTime          @default(now()) @map("available_at")
+  publishedAt   DateTime?         @map("published_at")
+  createdAt     DateTime          @default(now()) @map("created_at")
 
   @@index([status, availableAt])
   @@index([merchantId, createdAt])
@@ -947,18 +1005,18 @@ model OutboxEvent {
 
 model IdempotencyKey {
   id             String               @id @default(uuid()) @db.Uuid
-  merchantId     String               @db.Uuid
+  merchantId     String               @map("merchant_id") @db.Uuid
   scope          String
   key            String
-  requestHash    String?
+  requestHash    String?              @map("request_hash")
   status         IdempotencyKeyStatus @default(IN_PROGRESS)
-  responseStatus Int?
-  responseBody   Json?
-  entityType     String?
-  entityId       String?
-  createdAt      DateTime             @default(now())
-  updatedAt      DateTime             @updatedAt
-  expiresAt      DateTime?
+  responseStatus Int?                 @map("response_status")
+  responseBody   Json?                @map("response_body")
+  entityType     String?              @map("entity_type")
+  entityId       String?              @map("entity_id")
+  createdAt      DateTime             @default(now()) @map("created_at")
+  updatedAt      DateTime             @updatedAt @map("updated_at")
+  expiresAt      DateTime?            @map("expires_at")
   merchant       Merchant             @relation(fields: [merchantId], references: [id], onDelete: Cascade)
 
   @@unique([merchantId, scope, key])
@@ -968,14 +1026,14 @@ model IdempotencyKey {
 
 model Notification {
   id         String    @id @default(uuid()) @db.Uuid
-  merchantId String    @db.Uuid
-  dedupeKey  String?   @unique
+  merchantId String    @map("merchant_id") @db.Uuid
+  dedupeKey  String?   @unique @map("dedupe_key")
   type       String
   title      String
   message    String
   data       Json?
-  readAt     DateTime?
-  createdAt  DateTime  @default(now())
+  readAt     DateTime? @map("read_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
   merchant   Merchant  @relation(fields: [merchantId], references: [id], onDelete: Cascade)
 
   @@index([merchantId, readAt, createdAt])
@@ -984,16 +1042,16 @@ model Notification {
 
 model SocialPost {
   id              String                 @id @default(uuid()) @db.Uuid
-  merchantId      String                 @db.Uuid
+  merchantId      String                 @map("merchant_id") @db.Uuid
   title           String
   slug            String
   content         String
-  mediaUrls       String[]
+  mediaUrls       String[]               @map("media_urls")
   status          SocialPostStatus       @default(DRAFT)
-  targetPlatforms SocialPlatform[]
-  publishedAt     DateTime?
-  createdAt       DateTime               @default(now())
-  updatedAt       DateTime               @updatedAt
+  targetPlatforms SocialPlatform[]       @map("target_platforms")
+  publishedAt     DateTime?              @map("published_at")
+  createdAt       DateTime               @default(now()) @map("created_at")
+  updatedAt       DateTime               @updatedAt @map("updated_at")
   merchant        Merchant               @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   hotspots        ShoppableHotspot[]
   publishLogs     SocialPostPublishLog[]
@@ -1006,13 +1064,13 @@ model SocialPost {
 
 model ShoppableHotspot {
   id           String          @id @default(uuid()) @db.Uuid
-  socialPostId String          @db.Uuid
-  productId    String          @db.Uuid
-  variantId    String?         @db.Uuid
-  xPercent     Decimal         @db.Decimal(5, 2)
-  yPercent     Decimal         @db.Decimal(5, 2)
+  socialPostId String          @map("social_post_id") @db.Uuid
+  productId    String          @map("product_id") @db.Uuid
+  variantId    String?         @map("variant_id") @db.Uuid
+  xPercent     Decimal         @map("x_percent") @db.Decimal(5, 2)
+  yPercent     Decimal         @map("y_percent") @db.Decimal(5, 2)
   label        String?
-  createdAt    DateTime        @default(now())
+  createdAt    DateTime        @default(now()) @map("created_at")
   socialPost   SocialPost      @relation(fields: [socialPostId], references: [id], onDelete: Cascade)
   product      Product         @relation(fields: [productId], references: [id], onDelete: Restrict)
   variant      ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Restrict)
@@ -1025,13 +1083,13 @@ model ShoppableHotspot {
 
 model SocialPostPublishLog {
   id             String              @id @default(uuid()) @db.Uuid
-  socialPostId   String              @db.Uuid
+  socialPostId   String              @map("social_post_id") @db.Uuid
   platform       SocialPlatform
   status         SocialPublishStatus
-  externalPostId String?
-  externalUrl    String?
+  externalPostId String?             @map("external_post_id")
+  externalUrl    String?             @map("external_url")
   error          String?
-  createdAt      DateTime            @default(now())
+  createdAt      DateTime            @default(now()) @map("created_at")
   socialPost     SocialPost          @relation(fields: [socialPostId], references: [id], onDelete: Cascade)
 
   @@index([socialPostId, platform, createdAt])
@@ -1040,12 +1098,12 @@ model SocialPostPublishLog {
 
 model WebsiteArticle {
   id           String     @id @default(uuid()) @db.Uuid
-  merchantId   String     @db.Uuid
-  socialPostId String     @unique @db.Uuid
+  merchantId   String     @map("merchant_id") @db.Uuid
+  socialPostId String     @unique @map("social_post_id") @db.Uuid
   slug         String
-  publishedAt  DateTime   @default(now())
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  publishedAt  DateTime   @default(now()) @map("published_at")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
   merchant     Merchant   @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   socialPost   SocialPost @relation(fields: [socialPostId], references: [id], onDelete: Cascade)
 
@@ -1056,16 +1114,16 @@ model WebsiteArticle {
 
 model InventoryMovement {
   id               String                @id @default(uuid()) @db.Uuid
-  merchantId       String                @db.Uuid
-  inventoryStockId String                @db.Uuid
-  productId        String                @db.Uuid
-  variantId        String?               @db.Uuid
+  merchantId       String                @map("merchant_id") @db.Uuid
+  inventoryStockId String                @map("inventory_stock_id") @db.Uuid
+  productId        String                @map("product_id") @db.Uuid
+  variantId        String?               @map("variant_id") @db.Uuid
   type             InventoryMovementType
   quantity         Int
-  referenceId      String?
-  referenceType    String?
-  createdById      String?               @db.Uuid
-  createdAt        DateTime              @default(now())
+  referenceId      String?               @map("reference_id")
+  referenceType    String?               @map("reference_type")
+  createdById      String?               @map("created_by_id") @db.Uuid
+  createdAt        DateTime              @default(now()) @map("created_at")
   merchant         Merchant              @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   inventoryStock   InventoryStock        @relation(fields: [inventoryStockId], references: [id], onDelete: Restrict)
   product          Product               @relation(fields: [productId], references: [id], onDelete: Restrict)
@@ -1079,14 +1137,14 @@ model InventoryMovement {
 
 model MerchantUser {
   id          String             @id @default(uuid()) @db.Uuid
-  merchantId  String             @db.Uuid
-  userId      String             @db.Uuid
-  roleId      String             @db.Uuid
+  merchantId  String             @map("merchant_id") @db.Uuid
+  userId      String             @map("user_id") @db.Uuid
+  roleId      String             @map("role_id") @db.Uuid
   status      MerchantUserStatus @default(ACTIVE)
-  invitedById String?            @db.Uuid
-  joinedAt    DateTime?
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
+  invitedById String?            @map("invited_by_id") @db.Uuid
+  joinedAt    DateTime?          @map("joined_at")
+  createdAt   DateTime           @default(now()) @map("created_at")
+  updatedAt   DateTime           @updatedAt @map("updated_at")
   merchant    Merchant           @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   user        User               @relation("MembershipUser", fields: [userId], references: [id], onDelete: Cascade)
   role        Role               @relation(fields: [roleId], references: [id], onDelete: Restrict)
@@ -1100,13 +1158,13 @@ model MerchantUser {
 
 model Role {
   id              String               @id @default(uuid()) @db.Uuid
-  merchantId      String               @db.Uuid
+  merchantId      String               @map("merchant_id") @db.Uuid
   name            String
   code            String
   description     String?
-  isSystemRole    Boolean              @default(false)
-  createdAt       DateTime             @default(now())
-  updatedAt       DateTime             @updatedAt
+  isSystemRole    Boolean              @default(false) @map("is_system_role")
+  createdAt       DateTime             @default(now()) @map("created_at")
+  updatedAt       DateTime             @updatedAt @map("updated_at")
   merchant        Merchant             @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   memberships     MerchantUser[]
   rolePermissions RolePermission[]
@@ -1130,9 +1188,9 @@ model Permission {
 
 model RolePermission {
   id           String     @id @default(uuid()) @db.Uuid
-  roleId       String     @db.Uuid
-  permissionId String     @db.Uuid
-  createdAt    DateTime   @default(now())
+  roleId       String     @map("role_id") @db.Uuid
+  permissionId String     @map("permission_id") @db.Uuid
+  createdAt    DateTime   @default(now()) @map("created_at")
   role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
   permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
@@ -1143,15 +1201,15 @@ model RolePermission {
 
 model Session {
   id               String    @id @default(uuid()) @db.Uuid
-  userId           String    @db.Uuid
-  merchantId       String?   @db.Uuid
-  refreshTokenHash String    @unique
-  userAgent        String?
-  ipAddress        String?
-  expiresAt        DateTime
-  revokedAt        DateTime?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  userId           String    @map("user_id") @db.Uuid
+  merchantId       String?   @map("merchant_id") @db.Uuid
+  refreshTokenHash String    @unique @map("refresh_token_hash")
+  userAgent        String?   @map("user_agent")
+  ipAddress        String?   @map("ip_address")
+  expiresAt        DateTime  @map("expires_at")
+  revokedAt        DateTime? @map("revoked_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
   user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   merchant         Merchant? @relation(fields: [merchantId], references: [id], onDelete: SetNull)
 
@@ -1161,11 +1219,11 @@ model Session {
 
 model PasswordResetToken {
   id        String    @id @default(uuid()) @db.Uuid
-  userId    String    @db.Uuid
-  tokenHash String    @unique
-  expiresAt DateTime
-  usedAt    DateTime?
-  createdAt DateTime  @default(now())
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @unique @map("token_hash")
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime  @default(now()) @map("created_at")
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
@@ -1174,14 +1232,14 @@ model PasswordResetToken {
 
 model MerchantInvitation {
   id          String    @id @default(uuid()) @db.Uuid
-  merchantId  String    @db.Uuid
+  merchantId  String    @map("merchant_id") @db.Uuid
   email       String
-  roleId      String    @db.Uuid
-  invitedById String    @db.Uuid
-  tokenHash   String    @unique
-  expiresAt   DateTime
-  acceptedAt  DateTime?
-  createdAt   DateTime  @default(now())
+  roleId      String    @map("role_id") @db.Uuid
+  invitedById String    @map("invited_by_id") @db.Uuid
+  tokenHash   String    @unique @map("token_hash")
+  expiresAt   DateTime  @map("expires_at")
+  acceptedAt  DateTime? @map("accepted_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
   merchant    Merchant  @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   role        Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
   invitedBy   User      @relation("InvitationInviter", fields: [invitedById], references: [id], onDelete: Cascade)
@@ -1192,16 +1250,16 @@ model MerchantInvitation {
 
 model AuditLog {
   id         String    @id @default(uuid()) @db.Uuid
-  merchantId String?   @db.Uuid
-  userId     String?   @db.Uuid
+  merchantId String?   @map("merchant_id") @db.Uuid
+  userId     String?   @map("user_id") @db.Uuid
   action     String
-  entityType String
-  entityId   String?
+  entityType String    @map("entity_type")
+  entityId   String?   @map("entity_id")
   before     Json?
   after      Json?
-  ipAddress  String?
-  userAgent  String?
-  createdAt  DateTime  @default(now())
+  ipAddress  String?   @map("ip_address")
+  userAgent  String?   @map("user_agent")
+  createdAt  DateTime  @default(now()) @map("created_at")
   merchant   Merchant? @relation(fields: [merchantId], references: [id], onDelete: SetNull)
   user       User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
 
@@ -1219,35 +1277,51 @@ model AuditLog {
 /// Deliberately stores no prices: line items are re-priced through
 /// `CartPricingService` on every read so a cart can never quote a stale price.
 model Cart {
-  id                String           @id @default(uuid()) @db.Uuid
-  merchantId        String           @db.Uuid
-  customerId        String?          @db.Uuid
-  checkoutSessionId String?          @unique @db.Uuid
-  accessTokenHash   String           @unique
-  status            CartStatus       @default(ACTIVE)
-  sourceChannel     SalesChannel     @default(WEBSITE)
-  customerName      String?
-  customerEmail     String?
-  customerPhone     String?
+  id                String            @id @default(uuid()) @db.Uuid
+  merchantId        String            @map("merchant_id") @db.Uuid
+  customerId        String?           @map("customer_id") @db.Uuid
+  /// The signed-in shopper this cart belongs to. Never a staff member — see
+  /// `createdById`, which is the staff member who built a cart for someone.
+  ownerId           String?           @map("owner_id") @db.Uuid
+  /// The staff member who built this cart on a customer's behalf (a POS
+  /// phone/walk-in order). Distinct from `ownerId`: conflating the two lets a
+  /// staff account resolve to the customer they last served.
+  createdById       String?           @map("created_by_id") @db.Uuid
+  /// Set when this cart was folded into another on sign-in.
+  mergedIntoCartId  String?           @map("merged_into_cart_id") @db.Uuid
+  checkoutSessionId String?           @unique @map("checkout_session_id") @db.Uuid
+  accessTokenHash   String            @unique @map("access_token_hash")
+  status            CartStatus        @default(ACTIVE)
+  sourceChannel     SalesChannel      @default(WEBSITE) @map("source_channel")
+  customerName      String?           @map("customer_name")
+  customerEmail     String?           @map("customer_email")
+  customerPhone     String?           @map("customer_phone")
   note              String?
-  shippingAddressId String?          @db.Uuid
-  billingAddressId  String?          @db.Uuid
-  deliveryMethodId  String?          @db.Uuid
-  deliveryZoneId    String?          @db.Uuid
-  expiresAt         DateTime
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-  merchant          Merchant         @relation(fields: [merchantId], references: [id], onDelete: Cascade)
-  customer          Customer?        @relation(fields: [customerId], references: [id], onDelete: SetNull)
-  checkoutSession   CheckoutSession? @relation(fields: [checkoutSessionId], references: [id], onDelete: SetNull)
-  shippingAddress   CustomerAddress? @relation("CartShippingAddress", fields: [shippingAddressId], references: [id], onDelete: SetNull)
-  billingAddress    CustomerAddress? @relation("CartBillingAddress", fields: [billingAddressId], references: [id], onDelete: SetNull)
-  deliveryMethod    DeliveryMethod?  @relation(fields: [deliveryMethodId], references: [id], onDelete: SetNull)
-  deliveryZone      DeliveryZone?    @relation(fields: [deliveryZoneId], references: [id], onDelete: SetNull)
+  shippingAddressId String?           @map("shipping_address_id") @db.Uuid
+  billingAddressId  String?           @map("billing_address_id") @db.Uuid
+  deliveryMethodId  String?           @map("delivery_method_id") @db.Uuid
+  deliveryZoneId    String?           @map("delivery_zone_id") @db.Uuid
+  expiresAt         DateTime          @map("expires_at")
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+  merchant          Merchant          @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  customer          Customer?         @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  owner             User?             @relation("CartOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  createdBy         User?             @relation("CartCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  mergedInto        Cart?             @relation("CartMerge", fields: [mergedIntoCartId], references: [id], onDelete: SetNull)
+  mergedFrom        Cart[]            @relation("CartMerge")
+  checkoutSession   CheckoutSession?  @relation(fields: [checkoutSessionId], references: [id], onDelete: SetNull)
+  shippingAddress   CustomerAddress?  @relation("CartShippingAddress", fields: [shippingAddressId], references: [id], onDelete: SetNull)
+  billingAddress    CustomerAddress?  @relation("CartBillingAddress", fields: [billingAddressId], references: [id], onDelete: SetNull)
+  deliveryMethod    DeliveryMethod?   @relation(fields: [deliveryMethodId], references: [id], onDelete: SetNull)
+  deliveryZone      DeliveryZone?     @relation(fields: [deliveryZoneId], references: [id], onDelete: SetNull)
   items             CartItem[]
+  savedAddresses    CustomerAddress[] @relation("CartSavedAddresses")
 
   @@index([merchantId, status, expiresAt])
   @@index([merchantId, customerId])
+  @@index([ownerId, createdAt])
+  @@index([createdById, createdAt])
   @@map("carts")
 }
 
@@ -1257,14 +1331,14 @@ model Cart {
 /// the same `product:<id>` / `variant:<id>` shape as `InventoryStock.stockKey`.
 model CartItem {
   id        String          @id @default(uuid()) @db.Uuid
-  cartId    String          @db.Uuid
-  productId String          @db.Uuid
-  variantId String?         @db.Uuid
-  lineKey   String
+  cartId    String          @map("cart_id") @db.Uuid
+  productId String          @map("product_id") @db.Uuid
+  variantId String?         @map("variant_id") @db.Uuid
+  lineKey   String          @map("line_key")
   quantity  Int
   note      String?
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
   cart      Cart            @relation(fields: [cartId], references: [id], onDelete: Cascade)
   product   Product         @relation(fields: [productId], references: [id], onDelete: Restrict)
   variant   ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Restrict)
@@ -1281,33 +1355,48 @@ model CartItem {
 /// editing or deleting an address can never rewrite delivery history.
 model CustomerAddress {
   id                String    @id @default(uuid()) @db.Uuid
-  merchantId        String    @db.Uuid
-  customerId        String    @db.Uuid
+  merchantId        String    @map("merchant_id") @db.Uuid
+  customerId        String    @map("customer_id") @db.Uuid
+  /// The signed-in shopper who owns this address. Never a staff member — an
+  /// address staff typed for a walk-in customer records them in `createdById`
+  /// instead, so a staff account is never mistaken for the shopper.
+  ownerId           String?   @map("owner_id") @db.Uuid
+  createdById       String?   @map("created_by_id") @db.Uuid
+  /// The cart this address was saved through, when a shopper saved it during
+  /// checkout. Guest carts are linked to a customer only by a matching email
+  /// or phone, which proves nothing, so they may read back only the addresses
+  /// they saved themselves rather than the customer's whole book.
+  cartId            String?   @map("cart_id") @db.Uuid
   label             String?
-  recipientName     String
+  recipientName     String    @map("recipient_name")
   phone             String?
   email             String?
   line1             String
   line2             String?
   city              String?
   province          String?
-  postalCode        String?
+  postalCode        String?   @map("postal_code")
   country           String    @db.Char(2)
   latitude          Decimal?  @db.Decimal(10, 7)
   longitude         Decimal?  @db.Decimal(10, 7)
   note              String?
-  isDefaultShipping Boolean   @default(false)
-  isDefaultBilling  Boolean   @default(false)
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-  deletedAt         DateTime?
+  isDefaultShipping Boolean   @default(false) @map("is_default_shipping")
+  isDefaultBilling  Boolean   @default(false) @map("is_default_billing")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+  deletedAt         DateTime? @map("deleted_at")
   merchant          Merchant  @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   customer          Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  owner             User?     @relation("AddressOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  createdBy         User?     @relation("AddressCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  cart              Cart?     @relation("CartSavedAddresses", fields: [cartId], references: [id], onDelete: SetNull)
   shippingCarts     Cart[]    @relation("CartShippingAddress")
   billingCarts      Cart[]    @relation("CartBillingAddress")
 
   @@index([merchantId, customerId, deletedAt])
   @@index([customerId, isDefaultShipping])
+  @@index([ownerId, createdAt])
+  @@index([cartId])
   @@map("customer_addresses")
 }
 
@@ -1316,18 +1405,18 @@ model CustomerAddress {
 /// `DeliveryZone` matches the shipping address.
 model DeliveryMethod {
   id               String               @id @default(uuid()) @db.Uuid
-  merchantId       String               @db.Uuid
-  branchId         String?              @db.Uuid
+  merchantId       String               @map("merchant_id") @db.Uuid
+  branchId         String?              @map("branch_id") @db.Uuid
   name             String
   code             String
   description      String?
   type             DeliveryMethodType   @default(DELIVERY)
   status           DeliveryMethodStatus @default(ACTIVE)
-  isDefault        Boolean              @default(false)
-  sortOrder        Int                  @default(0)
-  createdAt        DateTime             @default(now())
-  updatedAt        DateTime             @updatedAt
-  deletedAt        DateTime?
+  isDefault        Boolean              @default(false) @map("is_default")
+  sortOrder        Int                  @default(0) @map("sort_order")
+  createdAt        DateTime             @default(now()) @map("created_at")
+  updatedAt        DateTime             @updatedAt @map("updated_at")
+  deletedAt        DateTime?            @map("deleted_at")
   merchant         Merchant             @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   branch           MerchantBranch?      @relation(fields: [branchId], references: [id], onDelete: SetNull)
   zones            DeliveryZone[]
@@ -1348,25 +1437,25 @@ model DeliveryMethod {
 /// specific zone matches.
 model DeliveryZone {
   id               String         @id @default(uuid()) @db.Uuid
-  merchantId       String         @db.Uuid
-  deliveryMethodId String         @db.Uuid
+  merchantId       String         @map("merchant_id") @db.Uuid
+  deliveryMethodId String         @map("delivery_method_id") @db.Uuid
   name             String
   countries        String[]
   provinces        String[]
   cities           String[]
-  postalCodes      String[]
-  baseFee          Decimal        @default(0) @db.Decimal(12, 2)
-  perItemFee       Decimal        @default(0) @db.Decimal(12, 2)
-  freeOverSubtotal Decimal?       @db.Decimal(12, 2)
-  minSubtotal      Decimal?       @db.Decimal(12, 2)
-  maxSubtotal      Decimal?       @db.Decimal(12, 2)
-  estimatedMinDays Int?
-  estimatedMaxDays Int?
-  isFallback       Boolean        @default(false)
-  sortOrder        Int            @default(0)
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-  deletedAt        DateTime?
+  postalCodes      String[]       @map("postal_codes")
+  baseFee          Decimal        @default(0) @map("base_fee") @db.Decimal(12, 2)
+  perItemFee       Decimal        @default(0) @map("per_item_fee") @db.Decimal(12, 2)
+  freeOverSubtotal Decimal?       @map("free_over_subtotal") @db.Decimal(12, 2)
+  minSubtotal      Decimal?       @map("min_subtotal") @db.Decimal(12, 2)
+  maxSubtotal      Decimal?       @map("max_subtotal") @db.Decimal(12, 2)
+  estimatedMinDays Int?           @map("estimated_min_days")
+  estimatedMaxDays Int?           @map("estimated_max_days")
+  isFallback       Boolean        @default(false) @map("is_fallback")
+  sortOrder        Int            @default(0) @map("sort_order")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+  deletedAt        DateTime?      @map("deleted_at")
   merchant         Merchant       @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   deliveryMethod   DeliveryMethod @relation(fields: [deliveryMethodId], references: [id], onDelete: Cascade)
   carts            Cart[]
@@ -1381,24 +1470,24 @@ model DeliveryZone {
 /// quantities rather than the shipment owning the order outright.
 model Shipment {
   id               String          @id @default(uuid()) @db.Uuid
-  merchantId       String          @db.Uuid
-  orderId          String          @db.Uuid
-  deliveryMethodId String?         @db.Uuid
-  shipmentNumber   String
+  merchantId       String          @map("merchant_id") @db.Uuid
+  orderId          String          @map("order_id") @db.Uuid
+  deliveryMethodId String?         @map("delivery_method_id") @db.Uuid
+  shipmentNumber   String          @map("shipment_number")
   status           ShipmentStatus  @default(PENDING)
-  carrierName      String?
-  trackingNumber   String?
-  trackingUrl      String?
-  recipientName    String?
+  carrierName      String?         @map("carrier_name")
+  trackingNumber   String?         @map("tracking_number")
+  trackingUrl      String?         @map("tracking_url")
+  recipientName    String?         @map("recipient_name")
   phone            String?
   address          Json?
-  shippingCost     Decimal?        @db.Decimal(12, 2)
+  shippingCost     Decimal?        @map("shipping_cost") @db.Decimal(12, 2)
   note             String?
-  shippedAt        DateTime?
-  deliveredAt      DateTime?
-  cancelledAt      DateTime?
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
+  shippedAt        DateTime?       @map("shipped_at")
+  deliveredAt      DateTime?       @map("delivered_at")
+  cancelledAt      DateTime?       @map("cancelled_at")
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
   merchant         Merchant        @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   order            Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
   deliveryMethod   DeliveryMethod? @relation(fields: [deliveryMethodId], references: [id], onDelete: SetNull)
@@ -1414,10 +1503,10 @@ model Shipment {
 
 model ShipmentItem {
   id          String    @id @default(uuid()) @db.Uuid
-  shipmentId  String    @db.Uuid
-  orderItemId String    @db.Uuid
+  shipmentId  String    @map("shipment_id") @db.Uuid
+  orderItemId String    @map("order_item_id") @db.Uuid
   quantity    Int
-  createdAt   DateTime  @default(now())
+  createdAt   DateTime  @default(now()) @map("created_at")
   shipment    Shipment  @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
   orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Restrict)
 
@@ -1430,13 +1519,13 @@ model ShipmentItem {
 /// reads these rather than the shipment's current status alone.
 model ShipmentEvent {
   id          String         @id @default(uuid()) @db.Uuid
-  shipmentId  String         @db.Uuid
+  shipmentId  String         @map("shipment_id") @db.Uuid
   status      ShipmentStatus
   message     String?
   location    String?
-  occurredAt  DateTime       @default(now())
-  createdById String?        @db.Uuid
-  createdAt   DateTime       @default(now())
+  occurredAt  DateTime       @default(now()) @map("occurred_at")
+  createdById String?        @map("created_by_id") @db.Uuid
+  createdAt   DateTime       @default(now()) @map("created_at")
   shipment    Shipment       @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
 
   @@index([shipmentId, occurredAt])

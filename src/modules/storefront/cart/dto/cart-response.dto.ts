@@ -49,6 +49,14 @@ export class CartDto {
   @ApiPropertyOptional({ format: 'uuid', nullable: true })
   customerId!: string | null;
 
+  @ApiPropertyOptional({
+    format: 'uuid',
+    nullable: true,
+    description:
+      'The signed-in shopper this cart belongs to, once claimed. Null for a guest cart.',
+  })
+  ownerId!: string | null;
+
   @ApiPropertyOptional({ nullable: true })
   customerName!: string | null;
 

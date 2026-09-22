@@ -18,7 +18,8 @@ pos/orders           order create/modify/cancel/table-assign
 pos/kitchen          send-to-kitchen + kitchen ticket status workflow
 pos/payments         split cash/KHQR payments + refunds
 pos/tables           dine-in tables
-pos/customers        POS walk-in customer directory
+pos/customers        POS walk-in customer directory + their saved addresses
+pos/carts            staff-built carts for phone/walk-in orders (see note below)
 pos/sync             offline bootstrap/incremental sync + batch upload
 pos/audit            audit log query endpoint
 pos/realtime         /ws/pos WebSocket gateway
@@ -26,6 +27,16 @@ pos/realtime         /ws/pos WebSocket gateway
 
 See [`pos-backend-api.md`](./pos-backend-api.md) for the full endpoint
 reference.
+
+`pos/carts` is the one exception to "nested under `pos/` means POS owns the
+implementation": it is a thin permission-gated wrapper over `CartService`,
+reusing the storefront cart's line merging, purchasability checks and
+re-pricing rather than forking them. Its routes authorize by merchant scope
+plus a POS permission, never by the cart token — that token is issued once at
+creation and cannot be read back. Checkout hands off to `PosOrdersService`,
+because `CheckoutService` rejects the POS channel and a POS order needs a
+device, a shift and a long inventory hold. See
+[`storefront-cart-address-flow.md`](./storefront-cart-address-flow.md).
 
 ## Merchant dashboard-only — `src/modules/merchant/*`
 
@@ -53,10 +64,12 @@ children), and `swagger.ts`'s `include[]` arrays still list each by name.
 and `/docs/pos`:
 
 ```txt
+address         the customer address book: storage, normalisation, defaults
 branch          MerchantBranch CRUD
 catalog         products, product variants, channel visibility
 catalog/categories   product categories
 inventory       stock levels, reserve/confirm/release
+loyalty         points ledger + balance; granted wherever an order reaches PAID
 order           Order/OrderItem CRUD, checkout confirmation, cancel/refund
 payment         payment providers, KHQR/PayWay adapters, webhook confirmation
 ```
@@ -72,8 +85,25 @@ replacements or forks of the shared modules; don't move them under `pos/`.
 `pricing/` (top-level, not nested under either) is the same pattern at a
 smaller scale: `CartPricingService` prices a cart of items, and both
 `checkout/` (storefront) and `pos/orders` call it instead of each
-maintaining their own copy. `storefront/context` is the newest member of that
-family: one slug-to-merchant lookup shared by every public surface.
+maintaining their own copy. `storefront/context` is the same idea for the one
+slug-to-merchant lookup every public surface needs first.
+
+`storefront/customer-directory` was split out of it: resolving a public slug to
+a merchant and resolving a signed-in shopper to their `Customer` row are
+different questions, and holding both in a module named "context" meant a
+module named after neither of its services. One service per module, named to
+match, the way every other module here is arranged.
+
+`address/` is that pattern applied to the address book. `AddressService`
+owns the mechanics — the canonical select, field normalisation, the
+one-default-per-customer invariant, and the soft-delete that detaches carts —
+and the three surfaces that write an address (`storefront/address`,
+`storefront/address/guest`, `pos/customers/addresses`) each keep only their own
+access policy. It is explicitly **not** an access-control layer: who may read a
+given address differs completely per surface, and collapsing those rules would
+be a security regression. Before it existed the mechanics were copied three
+times and had already drifted — see `AddressOwnership`'s doc comment for the
+three identity columns that must not be conflated.
 
 ## Shared between Merchant dashboard and Storefront
 
@@ -94,29 +124,49 @@ storefront copy of either.
 POS does not use it: a POS sale is handed over at the counter, so it has no
 delivery method and no shipment.
 
-## Storefront-only (public, no JWT)
+## Storefront-only (public; JWT optional, not absent)
 
 ```txt
 storefront                    public catalog browsing by merchant slug
-storefront/cart               anonymous cart: lines, contact, delivery choice, convert to checkout
-storefront/address            shopper address book, reached through the cart
+storefront/cart               cart: lines, contact, delivery choice, convert to checkout
+storefront/address            shopper address book — account/ and guest/, see below
 storefront/delivery           delivery quoting for a destination + order tracking
-storefront/context            slug -> merchant lookup shared by all of the above
+storefront/loyalty            the signed-in shopper's own points balance
+storefront/context            slug -> merchant lookup
+storefront/customer-directory signed-in shopper -> merchant Customer mapping
 checkout                      public checkout session creation/confirm/cancel
 storefront/payment            public payment-intent creation + status polling
 storefront/payment-webhook    provider webhook callbacks (KHQR push, PayWay callback)
 storefront/social-post        public social post / shoppable-hotspot pages
 ```
 
-Authenticated by opaque bearer tokens, not a user JWT: `X-Cart-Token` for a
-cart and `X-Checkout-Token` for a checkout session. Both store only a SHA-256
-hash and compare in constant time — see `cart.service.ts`'s `authenticate` and
+Authenticated by opaque bearer tokens: `X-Cart-Token` for a cart and
+`X-Checkout-Token` for a checkout session. Both store only a SHA-256 hash and
+compare in constant time — see `cart.service.ts`'s `authenticate` and
 `checkout.service.ts`'s token-hash verification.
 
-Shoppers have no account, so the address book hangs off the merchant's
-`Customer` directory (the same table POS walk-in customers use) rather than a
-user. The cart's contact details identify which customer that is, which is why
+A shopper may *also* be signed in. `storefront/cart` and the guest half of
+`storefront/address` are `@Public()` plus `OptionalJwtAuthGuard`, which
+populates `request.user` when a valid JWT is present and lets the request
+through untouched when it is not — so one set of routes serves both halves of
+a shopper who logs in partway through checkout.
+
+`storefront/address` is therefore two access policies over one table, in two
+folders: `guest/` (keyed on the cart token, cart in the URL) and `account/`
+(keyed on the authenticated user, no cart anywhere, and deliberately *not*
+`@Public()` so the global `JwtAuthGuard` applies). Both resolve to the same
+merchant-side `Customer` row through `CustomerDirectoryService`, so the two
+can never start creating a second customer for the same person, and both call
+`AddressService` for storage rather than carrying their own copy.
+
+The address book hangs off that `Customer` directory — the same table POS
+walk-in customers use — rather than off a user. For a guest, the cart's contact
+details are the only thing that identifies which customer that is, which is why
 a cart needs a name plus an email or phone before an address can be saved.
+
+Full narrative, including the staff-assisted path, the guest-cart merge on
+sign-in and the loyalty grant:
+[`storefront-cart-address-flow.md`](./storefront-cart-address-flow.md).
 
 ## Platform admin-only
 

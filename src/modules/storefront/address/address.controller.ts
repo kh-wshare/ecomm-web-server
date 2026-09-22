@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   HttpCode,
   HttpStatus,
   Param,
@@ -12,116 +11,81 @@ import {
   Post,
 } from '@nestjs/common';
 import {
-  ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
-  ApiHeader,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { Public } from '#app/modules/authenticated/decorators/public.decorator';
-import { CartDto } from '#app/modules/storefront/cart/dto/cart-response.dto';
-import { StorefrontAddressService } from './address.service';
+import { CurrentUser } from '#app/modules/authenticated/decorators/current-user.decorator';
+import type { AuthenticatedUser } from '#app/modules/authenticated/interfaces/authenticated-user.interface';
 import {
-  AssignCartAddressDto,
-  CreateStorefrontAddressDto,
-  UpdateStorefrontAddressDto,
-} from './dto/address-input.dto';
-import { StorefrontAddressDto } from './dto/address-response.dto';
+  CreateAddressDto,
+  UpdateAddressDto,
+} from '#app/modules/address/dto/address-input.dto';
+import {
+  AddressResponseDto,
+  DeletedAddressDto,
+} from '#app/modules/address/dto/address-response.dto';
+import { StorefrontAddressService } from './address.service';
 
-@Public()
-@ApiTags('Storefront Addresses')
-@ApiHeader({ name: 'X-Cart-Token', required: true })
-@ApiUnauthorizedResponse({ description: 'Missing or invalid cart token' })
-@Controller('storefront/:merchantSlug/cart/:cartId/addresses')
+@ApiTags('Addresses')
+@ApiBearerAuth()
+@ApiUnauthorizedResponse({ description: 'Missing or invalid bearer token' })
+@Controller('storefront/:merchantSlug/addresses')
 export class StorefrontAddressController {
   constructor(private readonly addresses: StorefrontAddressService) {}
 
   @Get()
-  @ApiOperation({
-    summary: "List the shopper's saved addresses",
-    description:
-      'Empty until the cart has contact details and a first address is saved.',
-  })
-  @ApiOkResponse({ type: [StorefrontAddressDto] })
+  @ApiOperation({ summary: "List the signed-in shopper's saved addresses" })
+  @ApiOkResponse({ type: [AddressResponseDto] })
   findAll(
     @Param('merchantSlug') merchantSlug: string,
-    @Param('cartId', ParseUUIDPipe) cartId: string,
-    @Headers('x-cart-token') token?: string,
+    @CurrentUser() user: AuthenticatedUser,
   ) {
-    return this.addresses.findAll(merchantSlug, cartId, token);
+    return this.addresses.findAll(merchantSlug, user.id);
   }
 
   @Post()
-  @ApiOperation({ summary: 'Save an address to the shopper address book' })
-  @ApiCreatedResponse({ type: StorefrontAddressDto })
-  @ApiBadRequestResponse({
-    description: 'Cart has no contact name plus email or phone yet',
-  })
+  @ApiOperation({ summary: 'Save an address without going through a cart' })
+  @ApiCreatedResponse({ type: AddressResponseDto })
   create(
     @Param('merchantSlug') merchantSlug: string,
-    @Param('cartId', ParseUUIDPipe) cartId: string,
-    @Body() dto: CreateStorefrontAddressDto,
-    @Headers('x-cart-token') token?: string,
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: CreateAddressDto,
   ) {
-    return this.addresses.create(merchantSlug, cartId, token, dto);
+    return this.addresses.create(merchantSlug, user, dto);
   }
 
   @Patch(':addressId')
-  @ApiOperation({ summary: 'Update a saved address' })
-  @ApiOkResponse({ type: StorefrontAddressDto })
+  @ApiOperation({ summary: 'Update one of the shopper’s saved addresses' })
+  @ApiOkResponse({ type: AddressResponseDto })
   @ApiNotFoundResponse({ description: 'Address not found' })
   update(
     @Param('merchantSlug') merchantSlug: string,
-    @Param('cartId', ParseUUIDPipe) cartId: string,
     @Param('addressId', ParseUUIDPipe) addressId: string,
-    @Body() dto: UpdateStorefrontAddressDto,
-    @Headers('x-cart-token') token?: string,
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: UpdateAddressDto,
   ) {
-    return this.addresses.update(merchantSlug, cartId, token, addressId, dto);
+    return this.addresses.update(merchantSlug, user.id, addressId, dto);
   }
 
   @Delete(':addressId')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
-    summary: 'Delete a saved address',
+    summary: 'Delete one of the shopper’s saved addresses',
     description:
       'Past orders keep their own address snapshot and are unaffected.',
   })
-  @ApiOkResponse({ description: 'Address deleted' })
+  @ApiOkResponse({ type: DeletedAddressDto })
   @ApiNotFoundResponse({ description: 'Address not found' })
   remove(
     @Param('merchantSlug') merchantSlug: string,
-    @Param('cartId', ParseUUIDPipe) cartId: string,
     @Param('addressId', ParseUUIDPipe) addressId: string,
-    @Headers('x-cart-token') token?: string,
+    @CurrentUser() user: AuthenticatedUser,
   ) {
-    return this.addresses.remove(merchantSlug, cartId, token, addressId);
-  }
-
-  @Patch(':addressId/assign')
-  @ApiOperation({
-    summary: 'Use this address as the cart shipping or billing address',
-    description:
-      'Setting a shipping address clears any delivery selection, since the chosen method may not serve the new destination.',
-  })
-  @ApiOkResponse({ type: CartDto })
-  @ApiNotFoundResponse({ description: 'Address not found' })
-  assign(
-    @Param('merchantSlug') merchantSlug: string,
-    @Param('cartId', ParseUUIDPipe) cartId: string,
-    @Param('addressId', ParseUUIDPipe) addressId: string,
-    @Body() dto: AssignCartAddressDto,
-    @Headers('x-cart-token') token?: string,
-  ) {
-    return this.addresses.assignToCart(
-      merchantSlug,
-      cartId,
-      token,
-      addressId,
-      dto,
-    );
+    return this.addresses.remove(merchantSlug, user.id, addressId);
   }
 }

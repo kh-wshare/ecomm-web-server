@@ -75,6 +75,7 @@ export const ModelName = {
   PosShift: 'PosShift',
   PosTable: 'PosTable',
   Customer: 'Customer',
+  LoyaltyLedgerEntry: 'LoyaltyLedgerEntry',
   KitchenOrder: 'KitchenOrder',
   KitchenOrderItem: 'KitchenOrderItem',
   OutboxEvent: 'OutboxEvent',
@@ -164,7 +165,9 @@ export const MerchantScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt',
-  returnStockOnRefund: 'returnStockOnRefund'
+  returnStockOnRefund: 'returnStockOnRefund',
+  loyaltyEnabled: 'loyaltyEnabled',
+  loyaltyPointsPerUnit: 'loyaltyPointsPerUnit'
 } as const
 
 export type MerchantScalarFieldEnum = (typeof MerchantScalarFieldEnum)[keyof typeof MerchantScalarFieldEnum]
@@ -328,6 +331,7 @@ export const CheckoutSessionScalarFieldEnum = {
   branchId: 'branchId',
   posDeviceId: 'posDeviceId',
   customerId: 'customerId',
+  ownerId: 'ownerId',
   customerName: 'customerName',
   customerEmail: 'customerEmail',
   customerPhone: 'customerPhone',
@@ -378,6 +382,7 @@ export const OrderScalarFieldEnum = {
   tableId: 'tableId',
   localId: 'localId',
   customerId: 'customerId',
+  ownerId: 'ownerId',
   customerName: 'customerName',
   customerEmail: 'customerEmail',
   customerPhone: 'customerPhone',
@@ -566,10 +571,26 @@ export const CustomerScalarFieldEnum = {
   note: 'note',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  deletedAt: 'deletedAt'
+  deletedAt: 'deletedAt',
+  loyaltyPoints: 'loyaltyPoints'
 } as const
 
 export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
+
+
+export const LoyaltyLedgerEntryScalarFieldEnum = {
+  id: 'id',
+  merchantId: 'merchantId',
+  customerId: 'customerId',
+  orderId: 'orderId',
+  type: 'type',
+  points: 'points',
+  balanceAfter: 'balanceAfter',
+  note: 'note',
+  createdAt: 'createdAt'
+} as const
+
+export type LoyaltyLedgerEntryScalarFieldEnum = (typeof LoyaltyLedgerEntryScalarFieldEnum)[keyof typeof LoyaltyLedgerEntryScalarFieldEnum]
 
 
 export const KitchenOrderScalarFieldEnum = {
@@ -848,6 +869,9 @@ export const CartScalarFieldEnum = {
   id: 'id',
   merchantId: 'merchantId',
   customerId: 'customerId',
+  ownerId: 'ownerId',
+  createdById: 'createdById',
+  mergedIntoCartId: 'mergedIntoCartId',
   checkoutSessionId: 'checkoutSessionId',
   accessTokenHash: 'accessTokenHash',
   status: 'status',
@@ -887,6 +911,9 @@ export const CustomerAddressScalarFieldEnum = {
   id: 'id',
   merchantId: 'merchantId',
   customerId: 'customerId',
+  ownerId: 'ownerId',
+  createdById: 'createdById',
+  cartId: 'cartId',
   label: 'label',
   recipientName: 'recipientName',
   phone: 'phone',

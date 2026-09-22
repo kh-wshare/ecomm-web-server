@@ -6,6 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
+import { PaginatedResult } from '#app/common/responses/pagination.response';
 import { Prisma } from '#app/generated/prisma/client';
 import { SalesChannel } from '#app/generated/prisma/enums';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
@@ -19,6 +20,10 @@ import {
   CartPricingService,
   PricedCart,
 } from '#app/modules/pricing/cart-pricing.service';
+import {
+  CustomerDirectoryService,
+  DirectoryAccount,
+} from '#app/modules/storefront/customer-directory/customer-directory.service';
 import { StorefrontContextService } from '#app/modules/storefront/context/storefront-context.service';
 import {
   CartItemInputDto,
@@ -34,6 +39,13 @@ type AuditMetadata = {
   userAgent?: string;
 };
 
+/**
+ * The signed-in shopper a cart can belong to, when there is one. Identical to
+ * `DirectoryAccount` by design — a cart owner and an address-book owner are
+ * the same person, and the directory is what maps either to a `Customer`.
+ */
+export type CartOwner = DirectoryAccount;
+
 const CART_TTL_DAYS = 30;
 
 const cartInclude = {
@@ -43,7 +55,36 @@ const cartInclude = {
   deliveryMethod: { select: { id: true, name: true, code: true, type: true } },
 } as const satisfies Prisma.CartInclude;
 
-type LoadedCart = Prisma.CartGetPayload<{ include: typeof cartInclude }>;
+/** A cart loaded with everything the service needs to price and present it. */
+export type LoadedCart = Prisma.CartGetPayload<{ include: typeof cartInclude }>;
+
+/**
+ * Everything a cart listing may expose. Deliberately enumerated rather than
+ * spread from `cartInclude`, because the row also carries `accessTokenHash` —
+ * the verifier for the cart's credential, which must never leave the server.
+ */
+const cartListSelect = {
+  id: true,
+  merchantId: true,
+  customerId: true,
+  ownerId: true,
+  createdById: true,
+  status: true,
+  sourceChannel: true,
+  customerName: true,
+  customerEmail: true,
+  customerPhone: true,
+  note: true,
+  checkoutSessionId: true,
+  mergedIntoCartId: true,
+  expiresAt: true,
+  createdAt: true,
+  updatedAt: true,
+  items: { orderBy: { createdAt: 'asc' } },
+  shippingAddress: true,
+  billingAddress: true,
+  deliveryMethod: { select: { id: true, name: true, code: true, type: true } },
+} as const satisfies Prisma.CartSelect;
 
 /**
  * The storefront shopping cart.
@@ -65,9 +106,10 @@ export class CartService {
     private readonly pricing: CartPricingService,
     private readonly delivery: DeliveryQuoteService,
     private readonly checkout: CheckoutService,
+    private readonly directory: CustomerDirectoryService,
   ) {}
 
-  async create(merchantSlug: string, dto: CreateCartDto) {
+  async create(merchantSlug: string, dto: CreateCartDto, user?: CartOwner) {
     const sourceChannel = dto.sourceChannel ?? SalesChannel.WEBSITE;
     if (sourceChannel === SalesChannel.POS) {
       throw new BadRequestException(
@@ -76,11 +118,18 @@ export class CartService {
     }
     const merchantId = await this.context.resolveMerchantId(merchantSlug);
     const cartToken = randomBytes(32).toString('base64url');
+    // Created while signed in, so it belongs to them from the first request
+    // and their saved addresses are available straight away.
+    const customerId = user
+      ? await this.directory.resolveForUser(merchantId, user)
+      : null;
 
     const cart = await this.prisma.cart.create({
       data: {
         merchantId,
         sourceChannel,
+        ownerId: user?.id ?? null,
+        customerId,
         accessTokenHash: this.hashToken(cartToken),
         expiresAt: this.expiry(),
         items: dto.items?.length
@@ -92,9 +141,77 @@ export class CartService {
     return { ...(await this.present(cart)), cartToken };
   }
 
-  async findOne(merchantSlug: string, cartId: string, token?: string) {
-    const cart = await this.authenticate(merchantSlug, cartId, token);
+  async findOne(
+    merchantSlug: string,
+    cartId: string,
+    token?: string,
+    user?: CartOwner,
+  ) {
+    const cart = await this.authenticate(merchantSlug, cartId, token, user);
     return this.present(cart);
+  }
+
+  /**
+   * Staff builds a cart on a customer's behalf (a phone/walk-in order),
+   * tagged `sourceChannel: POS` and linked to the customer plus the staff
+   * member who built it. Distinct from `create()`, which rejects `POS` for
+   * the anonymous, public storefront entry point — this is a separate,
+   * permission-gated path, so that guard is untouched.
+   *
+   * The staff member goes in `createdById`, never `ownerId`: `ownerId` means
+   * "the shopper whose account this is", and `CustomerDirectoryService` reads
+   * it that way. Putting staff there made a cashier resolve to whichever
+   * customer they last served.
+   */
+  async createForStaff(
+    merchantId: string,
+    customerId: string,
+    createdById: string,
+    items?: CartItemInputDto[],
+  ) {
+    const cartToken = randomBytes(32).toString('base64url');
+    const cart = await this.prisma.cart.create({
+      data: {
+        merchantId,
+        customerId,
+        createdById,
+        sourceChannel: SalesChannel.POS,
+        accessTokenHash: this.hashToken(cartToken),
+        expiresAt: this.expiry(),
+        items: items?.length
+          ? { create: items.map((item) => this.toItemData(item)) }
+          : undefined,
+      },
+      include: cartInclude,
+    });
+    return { ...(await this.present(cart)), cartToken };
+  }
+
+  /**
+   * A lighter-weight listing for "carts I built" — rows with items and
+   * addresses included, not run through `present()`'s re-pricing/delivery
+   * quoting, which is reserved for viewing one live cart at a time.
+   *
+   * Uses an explicit select rather than the bare include: the row carries
+   * `accessTokenHash`, and a list endpoint must not hand that back.
+   */
+  async findManyByCreator(
+    merchantId: string,
+    createdById: string,
+    pagination: { skip: number; take: number; page: number },
+  ) {
+    const where: Prisma.CartWhereInput = { merchantId, createdById };
+    const [carts, total] = await this.prisma.$transaction([
+      this.prisma.cart.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip: pagination.skip,
+        take: pagination.take,
+        select: cartListSelect,
+      }),
+      this.prisma.cart.count({ where }),
+    ]);
+    return new PaginatedResult(carts, pagination.take, pagination.page, total);
   }
 
   /**
@@ -107,8 +224,24 @@ export class CartService {
     cartId: string,
     token: string | undefined,
     dto: CartItemInputDto,
+    user?: CartOwner,
   ) {
-    const cart = await this.authenticateActive(merchantSlug, cartId, token);
+    const cart = await this.authenticateActive(
+      merchantSlug,
+      cartId,
+      token,
+      user,
+    );
+    return this.addItemTo(cart, dto);
+  }
+
+  /**
+   * The add-a-line operation itself, on a cart the caller has already
+   * authorized. POS reaches a staff-built cart through a merchant-scoped
+   * permission check rather than the cart token, and must not have to
+   * reimplement line merging or the purchasability check to do it.
+   */
+  async addItemTo(cart: LoadedCart, dto: CartItemInputDto) {
     const lineKey = this.lineKey(dto.productId, dto.variantId);
 
     // Prices the line on its own first so an unknown or unpurchasable product
@@ -124,14 +257,14 @@ export class CartService {
     const existing = cart.items.find((item) => item.lineKey === lineKey);
     const quantity = Math.min((existing?.quantity ?? 0) + dto.quantity, 100);
     await this.prisma.cartItem.upsert({
-      where: { cartId_lineKey: { cartId, lineKey } },
-      create: { cartId, ...this.toItemData(dto) },
+      where: { cartId_lineKey: { cartId: cart.id, lineKey } },
+      create: { cartId: cart.id, ...this.toItemData(dto) },
       update: {
         quantity,
         ...(dto.note !== undefined ? { note: this.optional(dto.note) } : {}),
       },
     });
-    return this.reload(cartId);
+    return this.reload(cart.id);
   }
 
   async updateItem(
@@ -140,14 +273,25 @@ export class CartService {
     token: string | undefined,
     itemId: string,
     dto: UpdateCartItemDto,
+    user?: CartOwner,
   ) {
-    const cart = await this.authenticateActive(merchantSlug, cartId, token);
+    const cart = await this.authenticateActive(
+      merchantSlug,
+      cartId,
+      token,
+      user,
+    );
+    return this.updateItemOn(cart, itemId, dto);
+  }
+
+  /** As `updateItem`, on a cart the caller has already authorized. */
+  async updateItemOn(cart: LoadedCart, itemId: string, dto: UpdateCartItemDto) {
     const item = cart.items.find((line) => line.id === itemId);
     if (!item) throw new NotFoundException('Cart item not found');
 
     if (dto.quantity === 0) {
       await this.prisma.cartItem.delete({ where: { id: itemId } });
-      return this.reload(cartId);
+      return this.reload(cart.id);
     }
     await this.prisma.cartItem.update({
       where: { id: itemId },
@@ -156,7 +300,7 @@ export class CartService {
         ...(dto.note !== undefined ? { note: this.optional(dto.note) } : {}),
       },
     });
-    return this.reload(cartId);
+    return this.reload(cart.id);
   }
 
   async removeItem(
@@ -164,17 +308,38 @@ export class CartService {
     cartId: string,
     token: string | undefined,
     itemId: string,
+    user?: CartOwner,
   ) {
-    const cart = await this.authenticateActive(merchantSlug, cartId, token);
+    const cart = await this.authenticateActive(
+      merchantSlug,
+      cartId,
+      token,
+      user,
+    );
+    return this.removeItemFrom(cart, itemId);
+  }
+
+  /** As `removeItem`, on a cart the caller has already authorized. */
+  async removeItemFrom(cart: LoadedCart, itemId: string) {
     if (!cart.items.some((line) => line.id === itemId)) {
       throw new NotFoundException('Cart item not found');
     }
     await this.prisma.cartItem.delete({ where: { id: itemId } });
-    return this.reload(cartId);
+    return this.reload(cart.id);
   }
 
-  async clear(merchantSlug: string, cartId: string, token?: string) {
-    await this.authenticateActive(merchantSlug, cartId, token);
+  async clear(
+    merchantSlug: string,
+    cartId: string,
+    token?: string,
+    user?: CartOwner,
+  ) {
+    await this.authenticateActive(merchantSlug, cartId, token, user);
+    return this.clearCart(cartId);
+  }
+
+  /** As `clear`, on a cart the caller has already authorized. */
+  async clearCart(cartId: string) {
     await this.prisma.cartItem.deleteMany({ where: { cartId } });
     return this.reload(cartId);
   }
@@ -184,8 +349,9 @@ export class CartService {
     cartId: string,
     token: string | undefined,
     dto: UpdateCartContactDto,
+    user?: CartOwner,
   ) {
-    await this.authenticateActive(merchantSlug, cartId, token);
+    await this.authenticateActive(merchantSlug, cartId, token, user);
     await this.prisma.cart.update({
       where: { id: cartId },
       data: {
@@ -205,8 +371,13 @@ export class CartService {
   }
 
   /** The delivery options available for this cart's current address. */
-  async deliveryOptions(merchantSlug: string, cartId: string, token?: string) {
-    const cart = await this.authenticate(merchantSlug, cartId, token);
+  async deliveryOptions(
+    merchantSlug: string,
+    cartId: string,
+    token?: string,
+    user?: CartOwner,
+  ) {
+    const cart = await this.authenticate(merchantSlug, cartId, token, user);
     const priced = await this.price(cart);
     const quotes = await this.delivery.quote(
       cart.merchantId,
@@ -221,8 +392,14 @@ export class CartService {
     cartId: string,
     token: string | undefined,
     dto: SelectCartDeliveryDto,
+    user?: CartOwner,
   ) {
-    const cart = await this.authenticateActive(merchantSlug, cartId, token);
+    const cart = await this.authenticateActive(
+      merchantSlug,
+      cartId,
+      token,
+      user,
+    );
     const priced = await this.price(cart);
     const quote = await this.delivery.quoteMethod(
       cart.merchantId,
@@ -258,10 +435,24 @@ export class CartService {
     token: string | undefined,
     dto: CheckoutCartDto,
     metadata: AuditMetadata,
+    user?: CartOwner,
   ) {
-    const cart = await this.authenticateActive(merchantSlug, cartId, token);
+    const cart = await this.authenticateActive(
+      merchantSlug,
+      cartId,
+      token,
+      user,
+    );
     if (cart.items.length === 0) {
       throw new ConflictException('Cart is empty');
+    }
+    // An order nobody can be contacted about is not a useful order. A
+    // signed-in shopper never trips this: `bindOwner` fills both from their
+    // account. A guest has to have filled the contact form.
+    if (!cart.customerName || !(cart.customerEmail || cart.customerPhone)) {
+      throw new ConflictException(
+        'Set the cart contact name and an email or phone before checking out',
+      );
     }
 
     const priced = await this.price(cart);
@@ -288,6 +479,7 @@ export class CartService {
       {
         merchantSlug,
         customerId: cart.customerId ?? undefined,
+        ownerId: cart.ownerId ?? undefined,
         customerName: cart.customerName ?? undefined,
         customerEmail: cart.customerEmail ?? undefined,
         customerPhone: cart.customerPhone ?? undefined,
@@ -315,16 +507,25 @@ export class CartService {
   // ---------------------------------------------------------------- internals
 
   /**
-   * Shared with `StorefrontAddressService`: verifies the cart token in
-   * constant time and confirms the cart belongs to the storefront in the URL,
-   * so a token for merchant A cannot read a cart under merchant B's slug.
+   * Shared with `GuestAddressService`. A cart accepts **either** of two
+   * independent credentials, and needs only one:
+   *
+   * - the opaque `X-Cart-Token`, verified in constant time — what a guest has;
+   * - a bearer JWT whose user is the cart's `ownerId` — what a signed-in
+   *   shopper has on a device that never held the token.
+   *
+   * Either way the cart must belong to the storefront named in the URL, so a
+   * credential for merchant A cannot reach a cart under merchant B's slug.
    */
   async authenticate(
     merchantSlug: string,
     cartId: string,
     token: string | undefined,
+    user?: CartOwner,
   ): Promise<LoadedCart> {
-    if (!token) throw new UnauthorizedException('Cart token is required');
+    if (!token && !user) {
+      throw new UnauthorizedException('Cart token is required');
+    }
     const merchantId = await this.context.resolveMerchantId(merchantSlug);
     const cart = await this.prisma.cart.findFirst({
       where: { id: cartId, merchantId },
@@ -332,15 +533,215 @@ export class CartService {
     });
     if (!cart) throw new NotFoundException('Cart not found');
 
-    const actual = Buffer.from(cart.accessTokenHash, 'hex');
-    const supplied = Buffer.from(this.hashToken(token), 'hex');
-    if (
-      actual.length !== supplied.length ||
-      !timingSafeEqual(actual, supplied)
-    ) {
-      throw new UnauthorizedException('Invalid cart token');
+    const holdsToken = token ? this.tokenMatches(cart, token) : false;
+    const isOwner = !!user && cart.ownerId === user.id;
+    if (!holdsToken && !isOwner) {
+      throw new UnauthorizedException(
+        token ? 'Invalid cart token' : 'Cart does not belong to this account',
+      );
+    }
+    // Once a cart belongs to an account it stops being transferable: a shared
+    // cart link opened by a *different* signed-in shopper would otherwise let
+    // them read that account's saved addresses through the cart. An anonymous
+    // holder of the token is still fine — that is the owner's own browser
+    // before it signed in.
+    if (user && cart.ownerId && !isOwner) {
+      throw new UnauthorizedException('Cart belongs to another account');
+    }
+
+    // A shopper who started as a guest and signed in partway through: the
+    // first authenticated request claims the cart they already hold, and folds
+    // in anything still sitting in a cart from an earlier session.
+    //
+    // Only an ACTIVE cart is claimed. A CONVERTED or EXPIRED one is finished
+    // business, and re-pointing its `customerId` would rewrite history.
+    if (user && !cart.ownerId && holdsToken && cart.status === 'ACTIVE') {
+      return this.bindOwner(cart, user);
     }
     return cart;
+  }
+
+  /**
+   * The signed-in shopper's current cart, reachable without the cart token —
+   * the one cart lookup that works on a device that never held it.
+   */
+  async findMine(merchantSlug: string, user: CartOwner) {
+    const merchantId = await this.context.resolveMerchantId(merchantSlug);
+    const cart = await this.prisma.cart.findFirst({
+      where: {
+        merchantId,
+        ownerId: user.id,
+        status: 'ACTIVE',
+        expiresAt: { gt: new Date() },
+      },
+      orderBy: { createdAt: 'desc' },
+      include: cartInclude,
+    });
+    if (!cart) throw new NotFoundException('No active cart for this account');
+    return this.present(cart);
+  }
+
+  /**
+   * Loads a staff-built cart by merchant, with no cart token involved.
+   *
+   * This is the POS counterpart to `authenticate`: the caller has already been
+   * through `RequireMerchant` plus a POS permission, which is a stronger claim
+   * than holding a cart token. Scoped to the merchant rather than to the staff
+   * member who created it, so a colleague can pick up a phone order mid-call.
+   */
+  async loadStaffCart(merchantId: string, cartId: string): Promise<LoadedCart> {
+    const cart = await this.prisma.cart.findFirst({
+      where: { id: cartId, merchantId, sourceChannel: SalesChannel.POS },
+      include: cartInclude,
+    });
+    if (!cart) throw new NotFoundException('Cart not found');
+    return cart;
+  }
+
+  /** As `loadStaffCart`, but rejects a cart that is no longer workable. */
+  async loadActiveStaffCart(
+    merchantId: string,
+    cartId: string,
+  ): Promise<LoadedCart> {
+    const cart = await this.loadStaffCart(merchantId, cartId);
+    if (cart.status !== 'ACTIVE') {
+      throw new ConflictException(`Cart is ${cart.status.toLowerCase()}`);
+    }
+    if (cart.expiresAt.getTime() <= Date.now()) {
+      await this.prisma.cart.update({
+        where: { id: cart.id },
+        data: { status: 'EXPIRED' },
+      });
+      throw new ConflictException('Cart is expired');
+    }
+    return cart;
+  }
+
+  /** Marks a staff cart converted once POS has turned it into an order. */
+  async markConverted(cartId: string, checkoutSessionId?: string | null) {
+    await this.prisma.cart.update({
+      where: { id: cartId },
+      data: {
+        status: 'CONVERTED',
+        ...(checkoutSessionId ? { checkoutSessionId } : {}),
+      },
+    });
+  }
+
+  private tokenMatches(cart: { accessTokenHash: string }, token: string) {
+    const actual = Buffer.from(cart.accessTokenHash, 'hex');
+    const supplied = Buffer.from(this.hashToken(token), 'hex');
+    return (
+      actual.length === supplied.length && timingSafeEqual(actual, supplied)
+    );
+  }
+
+  /**
+   * Claims a guest cart for the shopper who just proved who they are, and
+   * folds any cart they left behind in an earlier session into it.
+   *
+   * `customerId` is overwritten rather than preserved on purpose: a guest cart
+   * may have been linked to some `Customer` purely because someone typed that
+   * email into the contact form, and a signed-in shopper must end up on their
+   * own customer record, not whoever that was. Addresses saved through this
+   * cart come with them, so nothing typed as a guest is lost.
+   *
+   * The cart the shopper is *holding* survives the merge, and the older ones
+   * are marked `MERGED`. It has to be that way round: only the held cart's
+   * token is in the client's hands, and the older cart's token was never
+   * stored in a form anyone can recover.
+   */
+  private async bindOwner(
+    cart: LoadedCart,
+    user: CartOwner,
+  ): Promise<LoadedCart> {
+    const customerId = await this.directory.resolveForUser(
+      cart.merchantId,
+      user,
+    );
+
+    return this.prisma.$transaction(async (tx) => {
+      await tx.customerAddress.updateMany({
+        where: { cartId: cart.id, ownerId: null },
+        data: { ownerId: user.id, customerId },
+      });
+      await tx.cart.update({
+        where: { id: cart.id },
+        data: {
+          ownerId: user.id,
+          customerId,
+          // A guest who never filled the contact form still needs a name and
+          // a contact channel to check out; their account already has both.
+          customerName: cart.customerName ?? user.fullName,
+          customerEmail: cart.customerEmail ?? user.email,
+        },
+      });
+      await this.mergeAbandonedCarts(tx, cart, user.id, customerId);
+      return tx.cart.findFirstOrThrow({
+        where: { id: cart.id },
+        include: cartInclude,
+      });
+    });
+  }
+
+  /**
+   * Folds every other live cart this shopper owns into `survivor`, summing
+   * quantities on matching lines rather than stacking duplicates, exactly as
+   * `addItem` does. POS carts are excluded: a cart staff built for someone is
+   * not the shopper's own to absorb.
+   */
+  private async mergeAbandonedCarts(
+    tx: Prisma.TransactionClient,
+    survivor: LoadedCart,
+    ownerId: string,
+    customerId: string | null,
+  ) {
+    const stale = await tx.cart.findMany({
+      where: {
+        merchantId: survivor.merchantId,
+        ownerId,
+        status: 'ACTIVE',
+        id: { not: survivor.id },
+        sourceChannel: { not: SalesChannel.POS },
+      },
+      include: { items: true },
+    });
+    if (stale.length === 0) return;
+
+    const quantities = new Map(
+      survivor.items.map((item) => [item.lineKey, item.quantity]),
+    );
+    for (const old of stale) {
+      for (const item of old.items) {
+        const merged = Math.min(
+          (quantities.get(item.lineKey) ?? 0) + item.quantity,
+          100,
+        );
+        quantities.set(item.lineKey, merged);
+        await tx.cartItem.upsert({
+          where: {
+            cartId_lineKey: { cartId: survivor.id, lineKey: item.lineKey },
+          },
+          create: {
+            cartId: survivor.id,
+            productId: item.productId,
+            variantId: item.variantId,
+            lineKey: item.lineKey,
+            quantity: merged,
+            note: item.note,
+          },
+          update: { quantity: merged },
+        });
+      }
+      await tx.cart.update({
+        where: { id: old.id },
+        data: {
+          status: 'MERGED',
+          mergedIntoCartId: survivor.id,
+          customerId: customerId ?? old.customerId,
+        },
+      });
+    }
   }
 
   /** As `authenticate`, but also rejects a converted or expired cart. */
@@ -348,8 +749,9 @@ export class CartService {
     merchantSlug: string,
     cartId: string,
     token: string | undefined,
+    user?: CartOwner,
   ): Promise<LoadedCart> {
-    const cart = await this.authenticate(merchantSlug, cartId, token);
+    const cart = await this.authenticate(merchantSlug, cartId, token, user);
     if (cart.status !== 'ACTIVE') {
       throw new ConflictException(`Cart is ${cart.status.toLowerCase()}`);
     }
@@ -392,6 +794,11 @@ export class CartService {
     );
   }
 
+  /** Presents a cart the caller has already authorized (the POS path). */
+  presentCart(cart: LoadedCart) {
+    return this.present(cart);
+  }
+
   private async present(cart: LoadedCart) {
     const priced = await this.price(cart);
     const quote = cart.deliveryMethodId
@@ -416,6 +823,7 @@ export class CartService {
       status: cart.status,
       sourceChannel: cart.sourceChannel,
       customerId: cart.customerId,
+      ownerId: cart.ownerId,
       customerName: cart.customerName,
       customerEmail: cart.customerEmail,
       customerPhone: cart.customerPhone,

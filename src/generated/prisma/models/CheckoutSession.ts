@@ -48,6 +48,7 @@ export type CheckoutSessionMinAggregateOutputType = {
   branchId: string | null
   posDeviceId: string | null
   customerId: string | null
+  ownerId: string | null
   customerName: string | null
   customerEmail: string | null
   customerPhone: string | null
@@ -73,6 +74,7 @@ export type CheckoutSessionMaxAggregateOutputType = {
   branchId: string | null
   posDeviceId: string | null
   customerId: string | null
+  ownerId: string | null
   customerName: string | null
   customerEmail: string | null
   customerPhone: string | null
@@ -98,6 +100,7 @@ export type CheckoutSessionCountAggregateOutputType = {
   branchId: number
   posDeviceId: number
   customerId: number
+  ownerId: number
   customerName: number
   customerEmail: number
   customerPhone: number
@@ -143,6 +146,7 @@ export type CheckoutSessionMinAggregateInputType = {
   branchId?: true
   posDeviceId?: true
   customerId?: true
+  ownerId?: true
   customerName?: true
   customerEmail?: true
   customerPhone?: true
@@ -168,6 +172,7 @@ export type CheckoutSessionMaxAggregateInputType = {
   branchId?: true
   posDeviceId?: true
   customerId?: true
+  ownerId?: true
   customerName?: true
   customerEmail?: true
   customerPhone?: true
@@ -193,6 +198,7 @@ export type CheckoutSessionCountAggregateInputType = {
   branchId?: true
   posDeviceId?: true
   customerId?: true
+  ownerId?: true
   customerName?: true
   customerEmail?: true
   customerPhone?: true
@@ -307,6 +313,7 @@ export type CheckoutSessionGroupByOutputType = {
   branchId: string | null
   posDeviceId: string | null
   customerId: string | null
+  ownerId: string | null
   customerName: string | null
   customerEmail: string | null
   customerPhone: string | null
@@ -357,6 +364,7 @@ export type CheckoutSessionWhereInput = {
   branchId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
   posDeviceId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
   customerId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
+  ownerId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
   customerName?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
   customerEmail?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
   customerPhone?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
@@ -392,6 +400,7 @@ export type CheckoutSessionOrderByWithRelationInput = {
   branchId?: Prisma.SortOrderInput | Prisma.SortOrder
   posDeviceId?: Prisma.SortOrderInput | Prisma.SortOrder
   customerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
   customerName?: Prisma.SortOrderInput | Prisma.SortOrder
   customerEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   customerPhone?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -431,6 +440,7 @@ export type CheckoutSessionWhereUniqueInput = Prisma.AtLeast<{
   branchId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
   posDeviceId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
   customerId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
+  ownerId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
   customerName?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
   customerEmail?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
   customerPhone?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
@@ -465,6 +475,7 @@ export type CheckoutSessionOrderByWithAggregationInput = {
   branchId?: Prisma.SortOrderInput | Prisma.SortOrder
   posDeviceId?: Prisma.SortOrderInput | Prisma.SortOrder
   customerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
   customerName?: Prisma.SortOrderInput | Prisma.SortOrder
   customerEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   customerPhone?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -500,6 +511,7 @@ export type CheckoutSessionScalarWhereWithAggregatesInput = {
   branchId?: Prisma.UuidNullableWithAggregatesFilter<"CheckoutSession"> | string | null
   posDeviceId?: Prisma.UuidNullableWithAggregatesFilter<"CheckoutSession"> | string | null
   customerId?: Prisma.UuidNullableWithAggregatesFilter<"CheckoutSession"> | string | null
+  ownerId?: Prisma.UuidNullableWithAggregatesFilter<"CheckoutSession"> | string | null
   customerName?: Prisma.StringNullableWithAggregatesFilter<"CheckoutSession"> | string | null
   customerEmail?: Prisma.StringNullableWithAggregatesFilter<"CheckoutSession"> | string | null
   customerPhone?: Prisma.StringNullableWithAggregatesFilter<"CheckoutSession"> | string | null
@@ -523,6 +535,7 @@ export type CheckoutSessionScalarWhereWithAggregatesInput = {
 
 export type CheckoutSessionCreateInput = {
   id?: string
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -557,6 +570,7 @@ export type CheckoutSessionUncheckedCreateInput = {
   branchId?: string | null
   posDeviceId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -583,6 +597,7 @@ export type CheckoutSessionUncheckedCreateInput = {
 
 export type CheckoutSessionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -617,6 +632,7 @@ export type CheckoutSessionUncheckedUpdateInput = {
   branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -647,6 +663,7 @@ export type CheckoutSessionCreateManyInput = {
   branchId?: string | null
   posDeviceId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -670,6 +687,7 @@ export type CheckoutSessionCreateManyInput = {
 
 export type CheckoutSessionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -696,6 +714,7 @@ export type CheckoutSessionUncheckedUpdateManyInput = {
   branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -733,6 +752,7 @@ export type CheckoutSessionCountOrderByAggregateInput = {
   branchId?: Prisma.SortOrder
   posDeviceId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
   customerEmail?: Prisma.SortOrder
   customerPhone?: Prisma.SortOrder
@@ -768,6 +788,7 @@ export type CheckoutSessionMaxOrderByAggregateInput = {
   branchId?: Prisma.SortOrder
   posDeviceId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
   customerEmail?: Prisma.SortOrder
   customerPhone?: Prisma.SortOrder
@@ -793,6 +814,7 @@ export type CheckoutSessionMinOrderByAggregateInput = {
   branchId?: Prisma.SortOrder
   posDeviceId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
   customerEmail?: Prisma.SortOrder
   customerPhone?: Prisma.SortOrder
@@ -1090,6 +1112,7 @@ export type CheckoutSessionUncheckedUpdateManyWithoutDeliveryMethodNestedInput =
 
 export type CheckoutSessionCreateWithoutMerchantInput = {
   id?: string
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1122,6 +1145,7 @@ export type CheckoutSessionUncheckedCreateWithoutMerchantInput = {
   branchId?: string | null
   posDeviceId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1181,6 +1205,7 @@ export type CheckoutSessionScalarWhereInput = {
   branchId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
   posDeviceId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
   customerId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
+  ownerId?: Prisma.UuidNullableFilter<"CheckoutSession"> | string | null
   customerName?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
   customerEmail?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
   customerPhone?: Prisma.StringNullableFilter<"CheckoutSession"> | string | null
@@ -1204,6 +1229,7 @@ export type CheckoutSessionScalarWhereInput = {
 
 export type CheckoutSessionCreateWithoutBranchInput = {
   id?: string
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1236,6 +1262,7 @@ export type CheckoutSessionUncheckedCreateWithoutBranchInput = {
   merchantId: string
   posDeviceId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1288,6 +1315,7 @@ export type CheckoutSessionUpdateManyWithWhereWithoutBranchInput = {
 
 export type CheckoutSessionCreateWithoutItemsInput = {
   id?: string
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1321,6 +1349,7 @@ export type CheckoutSessionUncheckedCreateWithoutItemsInput = {
   branchId?: string | null
   posDeviceId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1362,6 +1391,7 @@ export type CheckoutSessionUpdateToOneWithWhereWithoutItemsInput = {
 
 export type CheckoutSessionUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1395,6 +1425,7 @@ export type CheckoutSessionUncheckedUpdateWithoutItemsInput = {
   branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1420,6 +1451,7 @@ export type CheckoutSessionUncheckedUpdateWithoutItemsInput = {
 
 export type CheckoutSessionCreateWithoutOrderInput = {
   id?: string
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1453,6 +1485,7 @@ export type CheckoutSessionUncheckedCreateWithoutOrderInput = {
   branchId?: string | null
   posDeviceId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1494,6 +1527,7 @@ export type CheckoutSessionUpdateToOneWithWhereWithoutOrderInput = {
 
 export type CheckoutSessionUpdateWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1527,6 +1561,7 @@ export type CheckoutSessionUncheckedUpdateWithoutOrderInput = {
   branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1552,6 +1587,7 @@ export type CheckoutSessionUncheckedUpdateWithoutOrderInput = {
 
 export type CheckoutSessionCreateWithoutPosDeviceInput = {
   id?: string
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1584,6 +1620,7 @@ export type CheckoutSessionUncheckedCreateWithoutPosDeviceInput = {
   merchantId: string
   branchId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1636,6 +1673,7 @@ export type CheckoutSessionUpdateManyWithWhereWithoutPosDeviceInput = {
 
 export type CheckoutSessionCreateWithoutCustomerInput = {
   id?: string
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1668,6 +1706,7 @@ export type CheckoutSessionUncheckedCreateWithoutCustomerInput = {
   merchantId: string
   branchId?: string | null
   posDeviceId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1720,6 +1759,7 @@ export type CheckoutSessionUpdateManyWithWhereWithoutCustomerInput = {
 
 export type CheckoutSessionCreateWithoutCartInput = {
   id?: string
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1753,6 +1793,7 @@ export type CheckoutSessionUncheckedCreateWithoutCartInput = {
   branchId?: string | null
   posDeviceId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1794,6 +1835,7 @@ export type CheckoutSessionUpdateToOneWithWhereWithoutCartInput = {
 
 export type CheckoutSessionUpdateWithoutCartInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1827,6 +1869,7 @@ export type CheckoutSessionUncheckedUpdateWithoutCartInput = {
   branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1852,6 +1895,7 @@ export type CheckoutSessionUncheckedUpdateWithoutCartInput = {
 
 export type CheckoutSessionCreateWithoutDeliveryMethodInput = {
   id?: string
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1885,6 +1929,7 @@ export type CheckoutSessionUncheckedCreateWithoutDeliveryMethodInput = {
   branchId?: string | null
   posDeviceId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1939,6 +1984,7 @@ export type CheckoutSessionCreateManyMerchantInput = {
   branchId?: string | null
   posDeviceId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1962,6 +2008,7 @@ export type CheckoutSessionCreateManyMerchantInput = {
 
 export type CheckoutSessionUpdateWithoutMerchantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1994,6 +2041,7 @@ export type CheckoutSessionUncheckedUpdateWithoutMerchantInput = {
   branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2023,6 +2071,7 @@ export type CheckoutSessionUncheckedUpdateManyWithoutMerchantInput = {
   branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2049,6 +2098,7 @@ export type CheckoutSessionCreateManyBranchInput = {
   merchantId: string
   posDeviceId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2072,6 +2122,7 @@ export type CheckoutSessionCreateManyBranchInput = {
 
 export type CheckoutSessionUpdateWithoutBranchInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2104,6 +2155,7 @@ export type CheckoutSessionUncheckedUpdateWithoutBranchInput = {
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2133,6 +2185,7 @@ export type CheckoutSessionUncheckedUpdateManyWithoutBranchInput = {
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2159,6 +2212,7 @@ export type CheckoutSessionCreateManyPosDeviceInput = {
   merchantId: string
   branchId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2182,6 +2236,7 @@ export type CheckoutSessionCreateManyPosDeviceInput = {
 
 export type CheckoutSessionUpdateWithoutPosDeviceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2214,6 +2269,7 @@ export type CheckoutSessionUncheckedUpdateWithoutPosDeviceInput = {
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2243,6 +2299,7 @@ export type CheckoutSessionUncheckedUpdateManyWithoutPosDeviceInput = {
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2269,6 +2326,7 @@ export type CheckoutSessionCreateManyCustomerInput = {
   merchantId: string
   branchId?: string | null
   posDeviceId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2292,6 +2350,7 @@ export type CheckoutSessionCreateManyCustomerInput = {
 
 export type CheckoutSessionUpdateWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2324,6 +2383,7 @@ export type CheckoutSessionUncheckedUpdateWithoutCustomerInput = {
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2353,6 +2413,7 @@ export type CheckoutSessionUncheckedUpdateManyWithoutCustomerInput = {
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2380,6 +2441,7 @@ export type CheckoutSessionCreateManyDeliveryMethodInput = {
   branchId?: string | null
   posDeviceId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2402,6 +2464,7 @@ export type CheckoutSessionCreateManyDeliveryMethodInput = {
 
 export type CheckoutSessionUpdateWithoutDeliveryMethodInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2435,6 +2498,7 @@ export type CheckoutSessionUncheckedUpdateWithoutDeliveryMethodInput = {
   branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2464,6 +2528,7 @@ export type CheckoutSessionUncheckedUpdateManyWithoutDeliveryMethodInput = {
   branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2521,6 +2586,7 @@ export type CheckoutSessionSelect<ExtArgs extends runtime.Types.Extensions.Inter
   branchId?: boolean
   posDeviceId?: boolean
   customerId?: boolean
+  ownerId?: boolean
   customerName?: boolean
   customerEmail?: boolean
   customerPhone?: boolean
@@ -2557,6 +2623,7 @@ export type CheckoutSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   branchId?: boolean
   posDeviceId?: boolean
   customerId?: boolean
+  ownerId?: boolean
   customerName?: boolean
   customerEmail?: boolean
   customerPhone?: boolean
@@ -2589,6 +2656,7 @@ export type CheckoutSessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   branchId?: boolean
   posDeviceId?: boolean
   customerId?: boolean
+  ownerId?: boolean
   customerName?: boolean
   customerEmail?: boolean
   customerPhone?: boolean
@@ -2621,6 +2689,7 @@ export type CheckoutSessionSelectScalar = {
   branchId?: boolean
   posDeviceId?: boolean
   customerId?: boolean
+  ownerId?: boolean
   customerName?: boolean
   customerEmail?: boolean
   customerPhone?: boolean
@@ -2642,7 +2711,7 @@ export type CheckoutSessionSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CheckoutSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "merchantId" | "branchId" | "posDeviceId" | "customerId" | "customerName" | "customerEmail" | "customerPhone" | "sourceChannel" | "status" | "accessTokenHash" | "subtotalAmount" | "discountAmount" | "feeAmount" | "shippingAmount" | "totalAmount" | "currency" | "deliveryMethodId" | "deliveryMethodName" | "shippingAddress" | "billingAddress" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["checkoutSession"]>
+export type CheckoutSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "merchantId" | "branchId" | "posDeviceId" | "customerId" | "ownerId" | "customerName" | "customerEmail" | "customerPhone" | "sourceChannel" | "status" | "accessTokenHash" | "subtotalAmount" | "discountAmount" | "feeAmount" | "shippingAmount" | "totalAmount" | "currency" | "deliveryMethodId" | "deliveryMethodName" | "shippingAddress" | "billingAddress" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["checkoutSession"]>
 export type CheckoutSessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
   branch?: boolean | Prisma.CheckoutSession$branchArgs<ExtArgs>
@@ -2687,6 +2756,12 @@ export type $CheckoutSessionPayload<ExtArgs extends runtime.Types.Extensions.Int
     branchId: string | null
     posDeviceId: string | null
     customerId: string | null
+    /**
+     * The signed-in shopper who checked out, when there was one. Carried from
+     * the cart onto the Order so loyalty can tell an account order from a
+     * guest order that merely typed a known email.
+     */
+    ownerId: string | null
     customerName: string | null
     customerEmail: string | null
     customerPhone: string | null
@@ -3142,6 +3217,7 @@ export interface CheckoutSessionFieldRefs {
   readonly branchId: Prisma.FieldRef<"CheckoutSession", 'String'>
   readonly posDeviceId: Prisma.FieldRef<"CheckoutSession", 'String'>
   readonly customerId: Prisma.FieldRef<"CheckoutSession", 'String'>
+  readonly ownerId: Prisma.FieldRef<"CheckoutSession", 'String'>
   readonly customerName: Prisma.FieldRef<"CheckoutSession", 'String'>
   readonly customerEmail: Prisma.FieldRef<"CheckoutSession", 'String'>
   readonly customerPhone: Prisma.FieldRef<"CheckoutSession", 'String'>

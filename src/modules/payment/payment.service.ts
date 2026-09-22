@@ -13,6 +13,7 @@ import {
 } from '#app/generated/prisma/enums';
 import { PaginatedResult } from '#app/common/responses/pagination.response';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
+import { LoyaltyService } from '#app/modules/loyalty/loyalty.service';
 import { EventBusService } from '#app/infrastructure/events/event-bus.service';
 import { NotificationService } from '#app/modules/merchant/notification/notification.service';
 import {
@@ -46,6 +47,20 @@ type LockedStock = {
   soldStock: number;
 };
 
+/**
+ * Columns are snake_case in the database; alias them back so raw rows arrive
+ * shaped like `LockedStock`. A bare `SELECT *` would hand back snake_case keys
+ * that no longer match the type, and `$queryRaw` casts without checking.
+ */
+const LOCKED_STOCK_COLUMNS = Prisma.sql`
+  "id",
+  "merchant_id" AS "merchantId",
+  "product_id" AS "productId",
+  "variant_id" AS "variantId",
+  "reserved_stock" AS "reservedStock",
+  "sold_stock" AS "soldStock"
+`;
+
 type StoredProviderConfig = {
   settings: Record<string, unknown>;
   webhookSecret?: EncryptedSecret;
@@ -73,6 +88,7 @@ export class PaymentService {
     private readonly notifications: NotificationService,
     private readonly payway: PayWayAdapter,
     private readonly khqr: KhqrAdapter,
+    private readonly loyalty: LoyaltyService,
   ) {}
 
   async connectProvider(
@@ -728,6 +744,7 @@ export class PaymentService {
         where: { id: payment.orderId },
         data: { status: 'PAID', paymentStatus: 'PAID', paidAt },
       });
+      await this.loyalty.grantForOrder(tx, payment.orderId);
       await tx.paymentWebhookEvent.update({
         where: { id: eventRecordId },
         data: { status: 'PROCESSED', processedAt: paidAt, error: null },
@@ -1424,7 +1441,7 @@ export class PaymentService {
       SELECT "id"
       FROM "orders"
       WHERE "id" = CAST(${orderId} AS uuid)
-        AND "merchantId" = CAST(${merchantId} AS uuid)
+        AND "merchant_id" = CAST(${merchantId} AS uuid)
       FOR UPDATE
     `);
     if (!rows[0]) throw new NotFoundException('Order not found');
@@ -1446,10 +1463,10 @@ export class PaymentService {
     stockId: string,
   ) {
     const rows = await tx.$queryRaw<LockedStock[]>(Prisma.sql`
-      SELECT *
+      SELECT ${LOCKED_STOCK_COLUMNS}
       FROM "inventory_stocks"
       WHERE "id" = CAST(${stockId} AS uuid)
-        AND "merchantId" = CAST(${merchantId} AS uuid)
+        AND "merchant_id" = CAST(${merchantId} AS uuid)
       FOR UPDATE
     `);
     if (!rows[0]) throw new NotFoundException('Inventory stock not found');

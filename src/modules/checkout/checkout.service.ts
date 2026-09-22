@@ -42,6 +42,12 @@ export type CreateCheckoutSessionInput = Omit<
 > & {
   shippingAddress?: AddressLike | null;
   billingAddress?: AddressLike | null;
+  /**
+   * The signed-in shopper, when the cart was bound to an account. Set by
+   * `CartService`, never accepted from the wire — it is what tells the
+   * loyalty grant an account order from a guest who typed a known email.
+   */
+  ownerId?: string;
 };
 
 @Injectable()
@@ -102,6 +108,7 @@ export class CheckoutService {
           id: sessionId,
           merchantId,
           customerId: dto.customerId,
+          ownerId: dto.ownerId,
           customerName: dto.customerName?.trim(),
           customerEmail: dto.customerEmail?.trim().toLowerCase(),
           customerPhone: dto.customerPhone?.trim(),

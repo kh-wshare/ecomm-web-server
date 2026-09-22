@@ -29,6 +29,7 @@ import { LogisticsModule } from '@modules/logistics/logistics.module';
 import { MerchantModule } from '@modules/merchant/merchant.module';
 import { MetricsModule } from '@modules/metrics/metrics.module';
 import { NotificationModule } from '@modules/merchant/notification/notification.module';
+import { LoyaltyModule } from '@modules/loyalty/loyalty.module';
 import { OrderModule } from '@modules/order/order.module';
 import { PaymentModule } from '@modules/payment/payment.module';
 import { PermissionsModule } from '@modules/permissions/permissions.module';
@@ -45,6 +46,7 @@ import { StorefrontSocialPostModule } from '@/modules/storefront/social-post/pub
 import { CartModule } from '@/modules/storefront/cart/cart.module';
 import { StorefrontAddressModule } from '@/modules/storefront/address/address.module';
 import { StorefrontDeliveryModule } from '@/modules/storefront/delivery/storefront-delivery.module';
+import { StorefrontLoyaltyModule } from '@/modules/storefront/loyalty/storefront-loyalty.module';
 
 @Module({
   imports: [
@@ -71,6 +73,7 @@ import { StorefrontDeliveryModule } from '@/modules/storefront/delivery/storefro
     CheckoutModule,
     PaymentModule,
     PosModule,
+    LoyaltyModule,
     OrderModule,
     LogisticsModule,
     SocialPostModule,
@@ -79,6 +82,7 @@ import { StorefrontDeliveryModule } from '@/modules/storefront/delivery/storefro
     CartModule,
     StorefrontAddressModule,
     StorefrontDeliveryModule,
+    StorefrontLoyaltyModule,
     StorefrontPaymentModule,
     StorefrontPaymentWebhookModule,
     StorefrontSocialPostModule,

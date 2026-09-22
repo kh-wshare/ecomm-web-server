@@ -2883,6 +2883,44 @@
         ]
       }
     },
+    "/pos/customers/{customerId}/loyalty": {
+      "get": {
+        "description": "Read-only. Points are earned automatically when an order they placed from an account is paid.",
+        "operationId": "PosCustomersController_loyalty_",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "A customer's points balance and recent movements",
+        "tags": [
+          "POS Customers"
+        ]
+      }
+    },
     "/pos/customers": {
       "get": {
         "operationId": "PosCustomersController_findAll",
@@ -2976,6 +3014,610 @@
         "summary": "Create a POS customer",
         "tags": [
           "POS Customers"
+        ]
+      }
+    },
+    "/pos/customers/{customerId}/addresses": {
+      "post": {
+        "operationId": "PosAddressesController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAddressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Customer not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Save an address for a POS customer",
+        "tags": [
+          "POS Customer Addresses"
+        ]
+      }
+    },
+    "/pos/addresses": {
+      "get": {
+        "description": "Scoped to the authenticated staff user; there is no owner filter.",
+        "operationId": "PosAddressesController_findAllByCreator",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List addresses saved by the current staff member",
+        "tags": [
+          "POS Customer Addresses"
+        ]
+      }
+    },
+    "/pos/customers/{customerId}/carts": {
+      "post": {
+        "operationId": "PosCartsController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePosCartDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Customer not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Build a cart for a customer (an assisted phone/walk-in order)",
+        "tags": [
+          "POS Carts"
+        ]
+      }
+    },
+    "/pos/carts": {
+      "get": {
+        "description": "Scoped to the authenticated staff user; there is no creator filter.",
+        "operationId": "PosCartsController_findAllByCreator",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by keyword",
+            "schema": {
+              "example": "MacBook",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List carts built by the current staff member",
+        "tags": [
+          "POS Carts"
+        ]
+      }
+    },
+    "/pos/carts/{cartId}": {
+      "get": {
+        "description": "Any staff member in the merchant may open it, so a colleague can pick up a phone order mid-call.",
+        "operationId": "PosCartsController_findOne",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Cart not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get one staff-built cart, re-priced at current POS prices",
+        "tags": [
+          "POS Carts"
+        ]
+      }
+    },
+    "/pos/carts/{cartId}/items": {
+      "post": {
+        "operationId": "PosCartsController_addItem",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CartItemInputDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Product is not purchasable here"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Add an item, merging onto the matching line if present",
+        "tags": [
+          "POS Carts"
+        ]
+      },
+      "delete": {
+        "operationId": "PosCartsController_clear",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Empty the cart",
+        "tags": [
+          "POS Carts"
+        ]
+      }
+    },
+    "/pos/carts/{cartId}/items/{itemId}": {
+      "patch": {
+        "operationId": "PosCartsController_updateItem",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "itemId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCartItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Cart item not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Set a line quantity; zero removes the line",
+        "tags": [
+          "POS Carts"
+        ]
+      },
+      "delete": {
+        "operationId": "PosCartsController_removeItem",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "itemId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Cart item not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remove a line",
+        "tags": [
+          "POS Carts"
+        ]
+      }
+    },
+    "/pos/carts/{cartId}/contact": {
+      "patch": {
+        "operationId": "PosCartsController_updateContact",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePosCartContactDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Set the name, phone or note carried onto the order",
+        "tags": [
+          "POS Carts"
+        ]
+      }
+    },
+    "/pos/carts/{cartId}/checkout": {
+      "post": {
+        "description": "Creates a POS order on the given register and reserves stock; the cart is then CONVERTED.",
+        "operationId": "PosCartsController_checkout",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cartId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutPosCartDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          },
+          "409": {
+            "description": "Cart is empty, converted or expired"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Ring the cart up as a POS order",
+        "tags": [
+          "POS Carts"
         ]
       }
     },
@@ -5478,6 +6120,583 @@
         },
         "required": [
           "fullName"
+        ]
+      },
+      "CreateAddressDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 60,
+            "example": "Home"
+          },
+          "recipientName": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 30
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "line1": {
+            "type": "string",
+            "maxLength": 200,
+            "example": "12 Street 240"
+          },
+          "line2": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 100,
+            "example": "Phnom Penh"
+          },
+          "province": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "postalCode": {
+            "type": "string",
+            "maxLength": 20
+          },
+          "country": {
+            "type": "string",
+            "example": "KH",
+            "description": "ISO 3166-1 alpha-2 code"
+          },
+          "latitude": {
+            "type": "number",
+            "example": 11.5564
+          },
+          "longitude": {
+            "type": "number",
+            "example": 104.9282
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "isDefaultShipping": {
+            "type": "boolean",
+            "description": "Use as the customer's default shipping address. Omitted on their first address means yes."
+          },
+          "isDefaultBilling": {
+            "type": "boolean",
+            "description": "Use as the customer's default billing address."
+          }
+        },
+        "required": [
+          "recipientName",
+          "line1",
+          "country"
+        ]
+      },
+      "AddressResponseDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "object",
+            "nullable": true
+          },
+          "recipientName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "object",
+            "nullable": true
+          },
+          "email": {
+            "type": "object",
+            "nullable": true
+          },
+          "line1": {
+            "type": "string"
+          },
+          "line2": {
+            "type": "object",
+            "nullable": true
+          },
+          "city": {
+            "type": "object",
+            "nullable": true
+          },
+          "province": {
+            "type": "object",
+            "nullable": true
+          },
+          "postalCode": {
+            "type": "object",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "example": "KH"
+          },
+          "latitude": {
+            "type": "object",
+            "nullable": true,
+            "example": "11.5564000"
+          },
+          "longitude": {
+            "type": "object",
+            "nullable": true,
+            "example": "104.9282000"
+          },
+          "note": {
+            "type": "object",
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ownerId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true,
+            "description": "The signed-in shopper who owns this address. Null for a walk-in customer, who has no account."
+          },
+          "createdById": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true,
+            "description": "The staff member who saved it on the customer behalf, if any"
+          },
+          "isDefaultShipping": {
+            "type": "boolean"
+          },
+          "isDefaultBilling": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "recipientName",
+          "line1",
+          "country",
+          "id",
+          "customerId",
+          "isDefaultShipping",
+          "isDefaultBilling",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CartItemInputDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "productId",
+          "quantity"
+        ]
+      },
+      "CreatePosCartDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Optional seed lines, so a cart can be created pre-filled",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CartItemInputDto"
+            }
+          }
+        }
+      },
+      "CartLineDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true,
+            "description": "The cart item id, used to update or remove the line"
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "sku": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unitPrice": {
+            "type": "string",
+            "example": "19.99"
+          },
+          "totalPrice": {
+            "type": "string",
+            "example": "39.98"
+          },
+          "note": {
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "required": [
+          "productId",
+          "sku",
+          "name",
+          "quantity",
+          "unitPrice",
+          "totalPrice"
+        ]
+      },
+      "AddressDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "object",
+            "nullable": true
+          },
+          "recipientName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "object",
+            "nullable": true
+          },
+          "email": {
+            "type": "object",
+            "nullable": true
+          },
+          "line1": {
+            "type": "string"
+          },
+          "line2": {
+            "type": "object",
+            "nullable": true
+          },
+          "city": {
+            "type": "object",
+            "nullable": true
+          },
+          "province": {
+            "type": "object",
+            "nullable": true
+          },
+          "postalCode": {
+            "type": "object",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "example": "KH"
+          },
+          "latitude": {
+            "type": "object",
+            "nullable": true,
+            "example": "11.5564000"
+          },
+          "longitude": {
+            "type": "object",
+            "nullable": true,
+            "example": "104.9282000"
+          },
+          "note": {
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "required": [
+          "recipientName",
+          "line1",
+          "country"
+        ]
+      },
+      "DeliveryOptionDto": {
+        "type": "object",
+        "properties": {
+          "methodId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "example": "STANDARD"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "object",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "PICKUP",
+              "DELIVERY"
+            ]
+          },
+          "branchId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "zoneId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "zoneName": {
+            "type": "object",
+            "nullable": true
+          },
+          "fee": {
+            "type": "string",
+            "example": "2.50"
+          },
+          "estimatedMinDays": {
+            "type": "object",
+            "nullable": true
+          },
+          "estimatedMaxDays": {
+            "type": "object",
+            "nullable": true
+          }
+        },
+        "required": [
+          "methodId",
+          "code",
+          "name",
+          "type",
+          "isDefault",
+          "fee"
+        ]
+      },
+      "CartDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "CONVERTED",
+              "MERGED",
+              "ABANDONED",
+              "EXPIRED"
+            ]
+          },
+          "sourceChannel": {
+            "type": "string",
+            "enum": [
+              "POS",
+              "WEBSITE",
+              "FACEBOOK",
+              "INSTAGRAM",
+              "TIKTOK"
+            ]
+          },
+          "customerId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "ownerId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true,
+            "description": "The signed-in shopper this cart belongs to, once claimed. Null for a guest cart."
+          },
+          "customerName": {
+            "type": "object",
+            "nullable": true
+          },
+          "customerEmail": {
+            "type": "object",
+            "nullable": true
+          },
+          "customerPhone": {
+            "type": "object",
+            "nullable": true
+          },
+          "note": {
+            "type": "object",
+            "nullable": true
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "subtotalAmount": {
+            "type": "string",
+            "example": "39.98"
+          },
+          "shippingAmount": {
+            "type": "string",
+            "example": "2.50"
+          },
+          "totalAmount": {
+            "type": "string",
+            "example": "42.48"
+          },
+          "itemCount": {
+            "type": "number",
+            "example": 2
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CartLineDto"
+            }
+          },
+          "shippingAddress": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AddressDto"
+              }
+            ]
+          },
+          "billingAddress": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AddressDto"
+              }
+            ]
+          },
+          "delivery": {
+            "nullable": true,
+            "description": "The chosen delivery method, re-quoted at read time",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeliveryOptionDto"
+              }
+            ]
+          },
+          "checkoutSessionId": {
+            "type": "object",
+            "format": "uuid",
+            "nullable": true
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "sourceChannel",
+          "currency",
+          "subtotalAmount",
+          "shippingAmount",
+          "totalAmount",
+          "itemCount",
+          "items",
+          "expiresAt"
+        ]
+      },
+      "UpdateCartItemDto": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Zero removes the line"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "quantity"
+        ]
+      },
+      "UpdatePosCartContactDto": {
+        "type": "object",
+        "properties": {
+          "customerName": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "customerPhone": {
+            "type": "string",
+            "maxLength": 30
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      },
+      "CheckoutPosCartDto": {
+        "type": "object",
+        "properties": {
+          "deviceId": {
+            "type": "string",
+            "example": "POS-DEVICE-001",
+            "description": "The register ringing the cart up; its branch and open shift are used"
+          },
+          "tableId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "discountAmount": {
+            "type": "number",
+            "example": 0,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "deviceId"
         ]
       },
       "SyncOperationDto": {

@@ -666,7 +666,7 @@ export class SocialPostService {
       SELECT "id"
       FROM "social_posts"
       WHERE "id" = CAST(${postId} AS uuid)
-        AND "merchantId" = CAST(${merchantId} AS uuid)
+        AND "merchant_id" = CAST(${merchantId} AS uuid)
       FOR UPDATE
     `);
     if (!rows[0]) throw new NotFoundException('Social post not found');

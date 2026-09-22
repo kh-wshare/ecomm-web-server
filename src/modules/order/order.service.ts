@@ -7,6 +7,7 @@ import { randomBytes } from 'node:crypto';
 import { PaginatedResult } from '#app/common/responses/pagination.response';
 import { Prisma } from '#app/generated/prisma/client';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
+import { LoyaltyService } from '#app/modules/loyalty/loyalty.service';
 import { EventBusService } from '#app/infrastructure/events/event-bus.service';
 import { NotificationService } from '#app/modules/merchant/notification/notification.service';
 import {
@@ -39,12 +40,28 @@ type LockedStock = {
   soldStock: number;
 };
 
+/**
+ * Columns are snake_case in the database; alias them back so raw rows arrive
+ * shaped like `LockedStock`. A bare `SELECT *` would hand back snake_case keys
+ * that no longer match the type, and `$queryRaw` casts without checking.
+ */
+const LOCKED_STOCK_COLUMNS = Prisma.sql`
+  "id",
+  "merchant_id" AS "merchantId",
+  "product_id" AS "productId",
+  "variant_id" AS "variantId",
+  "total_stock" AS "totalStock",
+  "reserved_stock" AS "reservedStock",
+  "sold_stock" AS "soldStock"
+`;
+
 @Injectable()
 export class OrderService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notifications: NotificationService,
     private readonly events: EventBusService,
+    private readonly loyalty: LoyaltyService,
   ) {}
 
   async findAll(merchantId: string, query: OrderQueryDto) {
@@ -218,6 +235,7 @@ export class OrderService {
           merchantId: checkout.merchantId,
           checkoutSessionId: checkout.id,
           customerId: checkout.customerId,
+          ownerId: checkout.ownerId,
           customerName: checkout.customerName,
           customerEmail: checkout.customerEmail,
           customerPhone: checkout.customerPhone,
@@ -632,6 +650,9 @@ export class OrderService {
         },
         metadata,
       );
+      // Points the refunded order earned go back out in the same commit, so a
+      // balance can never outlive the purchase that created it.
+      await this.loyalty.reverseForOrder(tx, order.id);
       return updated;
     });
     await this.notifications.syncOrderStockAlerts(merchantId, orderId);
@@ -752,7 +773,7 @@ export class OrderService {
       SELECT "id"
       FROM "orders"
       WHERE "id" = CAST(${orderId} AS uuid)
-        AND "merchantId" = CAST(${merchantId} AS uuid)
+        AND "merchant_id" = CAST(${merchantId} AS uuid)
       FOR UPDATE
     `);
     if (!rows[0]) throw new NotFoundException('Order not found');
@@ -764,10 +785,10 @@ export class OrderService {
     stockId: string,
   ) {
     const rows = await tx.$queryRaw<LockedStock[]>(Prisma.sql`
-      SELECT *
+      SELECT ${LOCKED_STOCK_COLUMNS}
       FROM "inventory_stocks"
       WHERE "id" = CAST(${stockId} AS uuid)
-        AND "merchantId" = CAST(${merchantId} AS uuid)
+        AND "merchant_id" = CAST(${merchantId} AS uuid)
       FOR UPDATE
     `);
     if (!rows[0]) throw new NotFoundException('Inventory stock not found');

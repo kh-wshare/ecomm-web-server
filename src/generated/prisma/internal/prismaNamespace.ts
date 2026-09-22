@@ -408,6 +408,7 @@ export const ModelName = {
   PosShift: 'PosShift',
   PosTable: 'PosTable',
   Customer: 'Customer',
+  LoyaltyLedgerEntry: 'LoyaltyLedgerEntry',
   KitchenOrder: 'KitchenOrder',
   KitchenOrderItem: 'KitchenOrderItem',
   OutboxEvent: 'OutboxEvent',
@@ -449,7 +450,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "authIdentity" | "merchant" | "merchantBranch" | "product" | "productCategory" | "merchantTheme" | "productVariant" | "productMedia" | "productChannelVisibility" | "inventoryStock" | "inventoryReservation" | "checkoutSession" | "checkoutItem" | "order" | "orderItem" | "paymentProvider" | "payment" | "paymentWebhookEvent" | "paymentRefund" | "posDevice" | "posShift" | "posTable" | "customer" | "kitchenOrder" | "kitchenOrderItem" | "outboxEvent" | "idempotencyKey" | "notification" | "socialPost" | "shoppableHotspot" | "socialPostPublishLog" | "websiteArticle" | "inventoryMovement" | "merchantUser" | "role" | "permission" | "rolePermission" | "session" | "passwordResetToken" | "merchantInvitation" | "auditLog" | "cart" | "cartItem" | "customerAddress" | "deliveryMethod" | "deliveryZone" | "shipment" | "shipmentItem" | "shipmentEvent"
+    modelProps: "user" | "authIdentity" | "merchant" | "merchantBranch" | "product" | "productCategory" | "merchantTheme" | "productVariant" | "productMedia" | "productChannelVisibility" | "inventoryStock" | "inventoryReservation" | "checkoutSession" | "checkoutItem" | "order" | "orderItem" | "paymentProvider" | "payment" | "paymentWebhookEvent" | "paymentRefund" | "posDevice" | "posShift" | "posTable" | "customer" | "loyaltyLedgerEntry" | "kitchenOrder" | "kitchenOrderItem" | "outboxEvent" | "idempotencyKey" | "notification" | "socialPost" | "shoppableHotspot" | "socialPostPublishLog" | "websiteArticle" | "inventoryMovement" | "merchantUser" | "role" | "permission" | "rolePermission" | "session" | "passwordResetToken" | "merchantInvitation" | "auditLog" | "cart" | "cartItem" | "customerAddress" | "deliveryMethod" | "deliveryZone" | "shipment" | "shipmentItem" | "shipmentEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2226,6 +2227,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.CustomerCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.CustomerCountAggregateOutputType> | number
+        }
+      }
+    }
+    LoyaltyLedgerEntry: {
+      payload: Prisma.$LoyaltyLedgerEntryPayload<ExtArgs>
+      fields: Prisma.LoyaltyLedgerEntryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LoyaltyLedgerEntryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyLedgerEntryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LoyaltyLedgerEntryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyLedgerEntryPayload>
+        }
+        findFirst: {
+          args: Prisma.LoyaltyLedgerEntryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyLedgerEntryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LoyaltyLedgerEntryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyLedgerEntryPayload>
+        }
+        findMany: {
+          args: Prisma.LoyaltyLedgerEntryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyLedgerEntryPayload>[]
+        }
+        create: {
+          args: Prisma.LoyaltyLedgerEntryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyLedgerEntryPayload>
+        }
+        createMany: {
+          args: Prisma.LoyaltyLedgerEntryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LoyaltyLedgerEntryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyLedgerEntryPayload>[]
+        }
+        delete: {
+          args: Prisma.LoyaltyLedgerEntryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyLedgerEntryPayload>
+        }
+        update: {
+          args: Prisma.LoyaltyLedgerEntryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyLedgerEntryPayload>
+        }
+        deleteMany: {
+          args: Prisma.LoyaltyLedgerEntryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LoyaltyLedgerEntryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LoyaltyLedgerEntryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyLedgerEntryPayload>[]
+        }
+        upsert: {
+          args: Prisma.LoyaltyLedgerEntryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoyaltyLedgerEntryPayload>
+        }
+        aggregate: {
+          args: Prisma.LoyaltyLedgerEntryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLoyaltyLedgerEntry>
+        }
+        groupBy: {
+          args: Prisma.LoyaltyLedgerEntryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LoyaltyLedgerEntryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LoyaltyLedgerEntryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LoyaltyLedgerEntryCountAggregateOutputType> | number
         }
       }
     }
@@ -4237,7 +4312,9 @@ export const MerchantScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt',
-  returnStockOnRefund: 'returnStockOnRefund'
+  returnStockOnRefund: 'returnStockOnRefund',
+  loyaltyEnabled: 'loyaltyEnabled',
+  loyaltyPointsPerUnit: 'loyaltyPointsPerUnit'
 } as const
 
 export type MerchantScalarFieldEnum = (typeof MerchantScalarFieldEnum)[keyof typeof MerchantScalarFieldEnum]
@@ -4401,6 +4478,7 @@ export const CheckoutSessionScalarFieldEnum = {
   branchId: 'branchId',
   posDeviceId: 'posDeviceId',
   customerId: 'customerId',
+  ownerId: 'ownerId',
   customerName: 'customerName',
   customerEmail: 'customerEmail',
   customerPhone: 'customerPhone',
@@ -4451,6 +4529,7 @@ export const OrderScalarFieldEnum = {
   tableId: 'tableId',
   localId: 'localId',
   customerId: 'customerId',
+  ownerId: 'ownerId',
   customerName: 'customerName',
   customerEmail: 'customerEmail',
   customerPhone: 'customerPhone',
@@ -4639,10 +4718,26 @@ export const CustomerScalarFieldEnum = {
   note: 'note',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  deletedAt: 'deletedAt'
+  deletedAt: 'deletedAt',
+  loyaltyPoints: 'loyaltyPoints'
 } as const
 
 export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
+
+
+export const LoyaltyLedgerEntryScalarFieldEnum = {
+  id: 'id',
+  merchantId: 'merchantId',
+  customerId: 'customerId',
+  orderId: 'orderId',
+  type: 'type',
+  points: 'points',
+  balanceAfter: 'balanceAfter',
+  note: 'note',
+  createdAt: 'createdAt'
+} as const
+
+export type LoyaltyLedgerEntryScalarFieldEnum = (typeof LoyaltyLedgerEntryScalarFieldEnum)[keyof typeof LoyaltyLedgerEntryScalarFieldEnum]
 
 
 export const KitchenOrderScalarFieldEnum = {
@@ -4921,6 +5016,9 @@ export const CartScalarFieldEnum = {
   id: 'id',
   merchantId: 'merchantId',
   customerId: 'customerId',
+  ownerId: 'ownerId',
+  createdById: 'createdById',
+  mergedIntoCartId: 'mergedIntoCartId',
   checkoutSessionId: 'checkoutSessionId',
   accessTokenHash: 'accessTokenHash',
   status: 'status',
@@ -4960,6 +5058,9 @@ export const CustomerAddressScalarFieldEnum = {
   id: 'id',
   merchantId: 'merchantId',
   customerId: 'customerId',
+  ownerId: 'ownerId',
+  createdById: 'createdById',
+  cartId: 'cartId',
   label: 'label',
   recipientName: 'recipientName',
   phone: 'phone',
@@ -5224,6 +5325,20 @@ export type ListEnumMerchantStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
  * Reference to a field of type 'MerchantBranchStatus'
  */
 export type EnumMerchantBranchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MerchantBranchStatus'>
@@ -5290,20 +5405,6 @@ export type EnumProductInventoryTypeFieldRefInput<$PrismaModel> = FieldRefInputT
  * Reference to a field of type 'ProductInventoryType[]'
  */
 export type ListEnumProductInventoryTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductInventoryType[]'>
-    
-
-
-/**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -5542,6 +5643,20 @@ export type EnumPosTableStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'PosTableStatus[]'
  */
 export type ListEnumPosTableStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PosTableStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'LoyaltyEntryType'
+ */
+export type EnumLoyaltyEntryTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LoyaltyEntryType'>
+    
+
+
+/**
+ * Reference to a field of type 'LoyaltyEntryType[]'
+ */
+export type ListEnumLoyaltyEntryTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LoyaltyEntryType[]'>
     
 
 
@@ -5860,6 +5975,7 @@ export type GlobalOmitConfig = {
   posShift?: Prisma.PosShiftOmit
   posTable?: Prisma.PosTableOmit
   customer?: Prisma.CustomerOmit
+  loyaltyLedgerEntry?: Prisma.LoyaltyLedgerEntryOmit
   kitchenOrder?: Prisma.KitchenOrderOmit
   kitchenOrderItem?: Prisma.KitchenOrderItemOmit
   outboxEvent?: Prisma.OutboxEventOmit

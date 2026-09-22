@@ -52,6 +52,7 @@ export type OrderMinAggregateOutputType = {
   tableId: string | null
   localId: string | null
   customerId: string | null
+  ownerId: string | null
   customerName: string | null
   customerEmail: string | null
   customerPhone: string | null
@@ -86,6 +87,7 @@ export type OrderMaxAggregateOutputType = {
   tableId: string | null
   localId: string | null
   customerId: string | null
+  ownerId: string | null
   customerName: string | null
   customerEmail: string | null
   customerPhone: string | null
@@ -120,6 +122,7 @@ export type OrderCountAggregateOutputType = {
   tableId: number
   localId: number
   customerId: number
+  ownerId: number
   customerName: number
   customerEmail: number
   customerPhone: number
@@ -174,6 +177,7 @@ export type OrderMinAggregateInputType = {
   tableId?: true
   localId?: true
   customerId?: true
+  ownerId?: true
   customerName?: true
   customerEmail?: true
   customerPhone?: true
@@ -208,6 +212,7 @@ export type OrderMaxAggregateInputType = {
   tableId?: true
   localId?: true
   customerId?: true
+  ownerId?: true
   customerName?: true
   customerEmail?: true
   customerPhone?: true
@@ -242,6 +247,7 @@ export type OrderCountAggregateInputType = {
   tableId?: true
   localId?: true
   customerId?: true
+  ownerId?: true
   customerName?: true
   customerEmail?: true
   customerPhone?: true
@@ -365,6 +371,7 @@ export type OrderGroupByOutputType = {
   tableId: string | null
   localId: string | null
   customerId: string | null
+  ownerId: string | null
   customerName: string | null
   customerEmail: string | null
   customerPhone: string | null
@@ -424,6 +431,7 @@ export type OrderWhereInput = {
   tableId?: Prisma.UuidNullableFilter<"Order"> | string | null
   localId?: Prisma.StringNullableFilter<"Order"> | string | null
   customerId?: Prisma.UuidNullableFilter<"Order"> | string | null
+  ownerId?: Prisma.UuidNullableFilter<"Order"> | string | null
   customerName?: Prisma.StringNullableFilter<"Order"> | string | null
   customerEmail?: Prisma.StringNullableFilter<"Order"> | string | null
   customerPhone?: Prisma.StringNullableFilter<"Order"> | string | null
@@ -460,6 +468,7 @@ export type OrderWhereInput = {
   payments?: Prisma.PaymentListRelationFilter
   kitchenOrders?: Prisma.KitchenOrderListRelationFilter
   shipments?: Prisma.ShipmentListRelationFilter
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryListRelationFilter
 }
 
 export type OrderOrderByWithRelationInput = {
@@ -472,6 +481,7 @@ export type OrderOrderByWithRelationInput = {
   tableId?: Prisma.SortOrderInput | Prisma.SortOrder
   localId?: Prisma.SortOrderInput | Prisma.SortOrder
   customerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
   customerName?: Prisma.SortOrderInput | Prisma.SortOrder
   customerEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   customerPhone?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -508,6 +518,7 @@ export type OrderOrderByWithRelationInput = {
   payments?: Prisma.PaymentOrderByRelationAggregateInput
   kitchenOrders?: Prisma.KitchenOrderOrderByRelationAggregateInput
   shipments?: Prisma.ShipmentOrderByRelationAggregateInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryOrderByRelationAggregateInput
 }
 
 export type OrderWhereUniqueInput = Prisma.AtLeast<{
@@ -525,6 +536,7 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   tableId?: Prisma.UuidNullableFilter<"Order"> | string | null
   localId?: Prisma.StringNullableFilter<"Order"> | string | null
   customerId?: Prisma.UuidNullableFilter<"Order"> | string | null
+  ownerId?: Prisma.UuidNullableFilter<"Order"> | string | null
   customerName?: Prisma.StringNullableFilter<"Order"> | string | null
   customerEmail?: Prisma.StringNullableFilter<"Order"> | string | null
   customerPhone?: Prisma.StringNullableFilter<"Order"> | string | null
@@ -561,6 +573,7 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   payments?: Prisma.PaymentListRelationFilter
   kitchenOrders?: Prisma.KitchenOrderListRelationFilter
   shipments?: Prisma.ShipmentListRelationFilter
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryListRelationFilter
 }, "id" | "checkoutSessionId" | "merchantId_orderNumber" | "merchantId_posDeviceId_localId">
 
 export type OrderOrderByWithAggregationInput = {
@@ -573,6 +586,7 @@ export type OrderOrderByWithAggregationInput = {
   tableId?: Prisma.SortOrderInput | Prisma.SortOrder
   localId?: Prisma.SortOrderInput | Prisma.SortOrder
   customerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
   customerName?: Prisma.SortOrderInput | Prisma.SortOrder
   customerEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   customerPhone?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -617,6 +631,7 @@ export type OrderScalarWhereWithAggregatesInput = {
   tableId?: Prisma.UuidNullableWithAggregatesFilter<"Order"> | string | null
   localId?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   customerId?: Prisma.UuidNullableWithAggregatesFilter<"Order"> | string | null
+  ownerId?: Prisma.UuidNullableWithAggregatesFilter<"Order"> | string | null
   customerName?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   customerEmail?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   customerPhone?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
@@ -646,6 +661,7 @@ export type OrderScalarWhereWithAggregatesInput = {
 export type OrderCreateInput = {
   id?: string
   localId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -681,6 +697,7 @@ export type OrderCreateInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateInput = {
@@ -693,6 +710,7 @@ export type OrderUncheckedCreateInput = {
   tableId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -721,11 +739,13 @@ export type OrderUncheckedCreateInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -761,6 +781,7 @@ export type OrderUpdateInput = {
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateInput = {
@@ -773,6 +794,7 @@ export type OrderUncheckedUpdateInput = {
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -801,6 +823,7 @@ export type OrderUncheckedUpdateInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateManyInput = {
@@ -813,6 +836,7 @@ export type OrderCreateManyInput = {
   tableId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -842,6 +866,7 @@ export type OrderCreateManyInput = {
 export type OrderUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -877,6 +902,7 @@ export type OrderUncheckedUpdateManyInput = {
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -939,6 +965,7 @@ export type OrderCountOrderByAggregateInput = {
   tableId?: Prisma.SortOrder
   localId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
   customerEmail?: Prisma.SortOrder
   customerPhone?: Prisma.SortOrder
@@ -983,6 +1010,7 @@ export type OrderMaxOrderByAggregateInput = {
   tableId?: Prisma.SortOrder
   localId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
   customerEmail?: Prisma.SortOrder
   customerPhone?: Prisma.SortOrder
@@ -1017,6 +1045,7 @@ export type OrderMinOrderByAggregateInput = {
   tableId?: Prisma.SortOrder
   localId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
   customerEmail?: Prisma.SortOrder
   customerPhone?: Prisma.SortOrder
@@ -1378,6 +1407,22 @@ export type OrderUncheckedUpdateManyWithoutCustomerNestedInput = {
   deleteMany?: Prisma.OrderScalarWhereInput | Prisma.OrderScalarWhereInput[]
 }
 
+export type OrderCreateNestedOneWithoutLoyaltyEntriesInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutLoyaltyEntriesInput, Prisma.OrderUncheckedCreateWithoutLoyaltyEntriesInput>
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutLoyaltyEntriesInput
+  connect?: Prisma.OrderWhereUniqueInput
+}
+
+export type OrderUpdateOneWithoutLoyaltyEntriesNestedInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutLoyaltyEntriesInput, Prisma.OrderUncheckedCreateWithoutLoyaltyEntriesInput>
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutLoyaltyEntriesInput
+  upsert?: Prisma.OrderUpsertWithoutLoyaltyEntriesInput
+  disconnect?: Prisma.OrderWhereInput | boolean
+  delete?: Prisma.OrderWhereInput | boolean
+  connect?: Prisma.OrderWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrderUpdateToOneWithWhereWithoutLoyaltyEntriesInput, Prisma.OrderUpdateWithoutLoyaltyEntriesInput>, Prisma.OrderUncheckedUpdateWithoutLoyaltyEntriesInput>
+}
+
 export type OrderCreateNestedOneWithoutKitchenOrdersInput = {
   create?: Prisma.XOR<Prisma.OrderCreateWithoutKitchenOrdersInput, Prisma.OrderUncheckedCreateWithoutKitchenOrdersInput>
   connectOrCreate?: Prisma.OrderCreateOrConnectWithoutKitchenOrdersInput
@@ -1451,6 +1496,7 @@ export type OrderUpdateOneRequiredWithoutShipmentsNestedInput = {
 export type OrderCreateWithoutMerchantInput = {
   id?: string
   localId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1485,6 +1531,7 @@ export type OrderCreateWithoutMerchantInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutMerchantInput = {
@@ -1496,6 +1543,7 @@ export type OrderUncheckedCreateWithoutMerchantInput = {
   tableId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1524,6 +1572,7 @@ export type OrderUncheckedCreateWithoutMerchantInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutMerchantInput = {
@@ -1565,6 +1614,7 @@ export type OrderScalarWhereInput = {
   tableId?: Prisma.UuidNullableFilter<"Order"> | string | null
   localId?: Prisma.StringNullableFilter<"Order"> | string | null
   customerId?: Prisma.UuidNullableFilter<"Order"> | string | null
+  ownerId?: Prisma.UuidNullableFilter<"Order"> | string | null
   customerName?: Prisma.StringNullableFilter<"Order"> | string | null
   customerEmail?: Prisma.StringNullableFilter<"Order"> | string | null
   customerPhone?: Prisma.StringNullableFilter<"Order"> | string | null
@@ -1594,6 +1644,7 @@ export type OrderScalarWhereInput = {
 export type OrderCreateWithoutBranchInput = {
   id?: string
   localId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1628,6 +1679,7 @@ export type OrderCreateWithoutBranchInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutBranchInput = {
@@ -1639,6 +1691,7 @@ export type OrderUncheckedCreateWithoutBranchInput = {
   tableId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1667,6 +1720,7 @@ export type OrderUncheckedCreateWithoutBranchInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutBranchInput = {
@@ -1698,6 +1752,7 @@ export type OrderUpdateManyWithWhereWithoutBranchInput = {
 export type OrderCreateWithoutCheckoutSessionInput = {
   id?: string
   localId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1732,6 +1787,7 @@ export type OrderCreateWithoutCheckoutSessionInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutCheckoutSessionInput = {
@@ -1743,6 +1799,7 @@ export type OrderUncheckedCreateWithoutCheckoutSessionInput = {
   tableId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1771,6 +1828,7 @@ export type OrderUncheckedCreateWithoutCheckoutSessionInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutCheckoutSessionInput = {
@@ -1792,6 +1850,7 @@ export type OrderUpdateToOneWithWhereWithoutCheckoutSessionInput = {
 export type OrderUpdateWithoutCheckoutSessionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1826,6 +1885,7 @@ export type OrderUpdateWithoutCheckoutSessionInput = {
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutCheckoutSessionInput = {
@@ -1837,6 +1897,7 @@ export type OrderUncheckedUpdateWithoutCheckoutSessionInput = {
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1865,11 +1926,13 @@ export type OrderUncheckedUpdateWithoutCheckoutSessionInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateWithoutItemsInput = {
   id?: string
   localId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1904,6 +1967,7 @@ export type OrderCreateWithoutItemsInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutItemsInput = {
@@ -1916,6 +1980,7 @@ export type OrderUncheckedCreateWithoutItemsInput = {
   tableId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -1943,6 +2008,7 @@ export type OrderUncheckedCreateWithoutItemsInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutItemsInput = {
@@ -1964,6 +2030,7 @@ export type OrderUpdateToOneWithWhereWithoutItemsInput = {
 export type OrderUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1998,6 +2065,7 @@ export type OrderUpdateWithoutItemsInput = {
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutItemsInput = {
@@ -2010,6 +2078,7 @@ export type OrderUncheckedUpdateWithoutItemsInput = {
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2037,11 +2106,13 @@ export type OrderUncheckedUpdateWithoutItemsInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateWithoutPaymentsInput = {
   id?: string
   localId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2076,6 +2147,7 @@ export type OrderCreateWithoutPaymentsInput = {
   items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutPaymentsInput = {
@@ -2088,6 +2160,7 @@ export type OrderUncheckedCreateWithoutPaymentsInput = {
   tableId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2115,6 +2188,7 @@ export type OrderUncheckedCreateWithoutPaymentsInput = {
   items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutPaymentsInput = {
@@ -2136,6 +2210,7 @@ export type OrderUpdateToOneWithWhereWithoutPaymentsInput = {
 export type OrderUpdateWithoutPaymentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2170,6 +2245,7 @@ export type OrderUpdateWithoutPaymentsInput = {
   items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutPaymentsInput = {
@@ -2182,6 +2258,7 @@ export type OrderUncheckedUpdateWithoutPaymentsInput = {
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2209,11 +2286,13 @@ export type OrderUncheckedUpdateWithoutPaymentsInput = {
   items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateWithoutPosDeviceInput = {
   id?: string
   localId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2248,6 +2327,7 @@ export type OrderCreateWithoutPosDeviceInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutPosDeviceInput = {
@@ -2259,6 +2339,7 @@ export type OrderUncheckedCreateWithoutPosDeviceInput = {
   tableId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2287,6 +2368,7 @@ export type OrderUncheckedCreateWithoutPosDeviceInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutPosDeviceInput = {
@@ -2318,6 +2400,7 @@ export type OrderUpdateManyWithWhereWithoutPosDeviceInput = {
 export type OrderCreateWithoutPosShiftInput = {
   id?: string
   localId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2352,6 +2435,7 @@ export type OrderCreateWithoutPosShiftInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutPosShiftInput = {
@@ -2363,6 +2447,7 @@ export type OrderUncheckedCreateWithoutPosShiftInput = {
   tableId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2391,6 +2476,7 @@ export type OrderUncheckedCreateWithoutPosShiftInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutPosShiftInput = {
@@ -2422,6 +2508,7 @@ export type OrderUpdateManyWithWhereWithoutPosShiftInput = {
 export type OrderCreateWithoutTableInput = {
   id?: string
   localId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2456,6 +2543,7 @@ export type OrderCreateWithoutTableInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutTableInput = {
@@ -2467,6 +2555,7 @@ export type OrderUncheckedCreateWithoutTableInput = {
   posShiftId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2495,6 +2584,7 @@ export type OrderUncheckedCreateWithoutTableInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutTableInput = {
@@ -2526,6 +2616,7 @@ export type OrderUpdateManyWithWhereWithoutTableInput = {
 export type OrderCreateWithoutCustomerInput = {
   id?: string
   localId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2560,6 +2651,7 @@ export type OrderCreateWithoutCustomerInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutCustomerInput = {
@@ -2571,6 +2663,116 @@ export type OrderUncheckedCreateWithoutCustomerInput = {
   posShiftId?: string | null
   tableId?: string | null
   localId?: string | null
+  ownerId?: string | null
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  sourceChannel: $Enums.SalesChannel
+  orderNumber: string
+  status?: $Enums.OrderStatus
+  subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  deliveryMethodId?: string | null
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  paymentStatus?: $Enums.PaymentStatus
+  fulfillmentStatus?: $Enums.FulfillmentStatus
+  paidAt?: Date | string | null
+  fulfilledAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  refundedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
+  kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutOrderInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedCreateNestedManyWithoutOrderInput
+}
+
+export type OrderCreateOrConnectWithoutCustomerInput = {
+  where: Prisma.OrderWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrderCreateWithoutCustomerInput, Prisma.OrderUncheckedCreateWithoutCustomerInput>
+}
+
+export type OrderCreateManyCustomerInputEnvelope = {
+  data: Prisma.OrderCreateManyCustomerInput | Prisma.OrderCreateManyCustomerInput[]
+  skipDuplicates?: boolean
+}
+
+export type OrderUpsertWithWhereUniqueWithoutCustomerInput = {
+  where: Prisma.OrderWhereUniqueInput
+  update: Prisma.XOR<Prisma.OrderUpdateWithoutCustomerInput, Prisma.OrderUncheckedUpdateWithoutCustomerInput>
+  create: Prisma.XOR<Prisma.OrderCreateWithoutCustomerInput, Prisma.OrderUncheckedCreateWithoutCustomerInput>
+}
+
+export type OrderUpdateWithWhereUniqueWithoutCustomerInput = {
+  where: Prisma.OrderWhereUniqueInput
+  data: Prisma.XOR<Prisma.OrderUpdateWithoutCustomerInput, Prisma.OrderUncheckedUpdateWithoutCustomerInput>
+}
+
+export type OrderUpdateManyWithWhereWithoutCustomerInput = {
+  where: Prisma.OrderScalarWhereInput
+  data: Prisma.XOR<Prisma.OrderUpdateManyMutationInput, Prisma.OrderUncheckedUpdateManyWithoutCustomerInput>
+}
+
+export type OrderCreateWithoutLoyaltyEntriesInput = {
+  id?: string
+  localId?: string | null
+  ownerId?: string | null
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  sourceChannel: $Enums.SalesChannel
+  orderNumber: string
+  status?: $Enums.OrderStatus
+  subtotalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  deliveryMethodName?: string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  paymentStatus?: $Enums.PaymentStatus
+  fulfillmentStatus?: $Enums.FulfillmentStatus
+  paidAt?: Date | string | null
+  fulfilledAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  refundedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  merchant: Prisma.MerchantCreateNestedOneWithoutOrdersInput
+  checkoutSession: Prisma.CheckoutSessionCreateNestedOneWithoutOrderInput
+  branch?: Prisma.MerchantBranchCreateNestedOneWithoutOrdersInput
+  posDevice?: Prisma.PosDeviceCreateNestedOneWithoutOrdersInput
+  posShift?: Prisma.PosShiftCreateNestedOneWithoutOrdersInput
+  table?: Prisma.PosTableCreateNestedOneWithoutOrdersInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutOrdersInput
+  deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutOrdersInput
+  items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
+  kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutOrderInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutOrderInput
+}
+
+export type OrderUncheckedCreateWithoutLoyaltyEntriesInput = {
+  id?: string
+  merchantId: string
+  checkoutSessionId: string
+  branchId?: string | null
+  posDeviceId?: string | null
+  posShiftId?: string | null
+  tableId?: string | null
+  localId?: string | null
+  customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2601,35 +2803,108 @@ export type OrderUncheckedCreateWithoutCustomerInput = {
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutOrderInput
 }
 
-export type OrderCreateOrConnectWithoutCustomerInput = {
+export type OrderCreateOrConnectWithoutLoyaltyEntriesInput = {
   where: Prisma.OrderWhereUniqueInput
-  create: Prisma.XOR<Prisma.OrderCreateWithoutCustomerInput, Prisma.OrderUncheckedCreateWithoutCustomerInput>
+  create: Prisma.XOR<Prisma.OrderCreateWithoutLoyaltyEntriesInput, Prisma.OrderUncheckedCreateWithoutLoyaltyEntriesInput>
 }
 
-export type OrderCreateManyCustomerInputEnvelope = {
-  data: Prisma.OrderCreateManyCustomerInput | Prisma.OrderCreateManyCustomerInput[]
-  skipDuplicates?: boolean
+export type OrderUpsertWithoutLoyaltyEntriesInput = {
+  update: Prisma.XOR<Prisma.OrderUpdateWithoutLoyaltyEntriesInput, Prisma.OrderUncheckedUpdateWithoutLoyaltyEntriesInput>
+  create: Prisma.XOR<Prisma.OrderCreateWithoutLoyaltyEntriesInput, Prisma.OrderUncheckedCreateWithoutLoyaltyEntriesInput>
+  where?: Prisma.OrderWhereInput
 }
 
-export type OrderUpsertWithWhereUniqueWithoutCustomerInput = {
-  where: Prisma.OrderWhereUniqueInput
-  update: Prisma.XOR<Prisma.OrderUpdateWithoutCustomerInput, Prisma.OrderUncheckedUpdateWithoutCustomerInput>
-  create: Prisma.XOR<Prisma.OrderCreateWithoutCustomerInput, Prisma.OrderUncheckedCreateWithoutCustomerInput>
+export type OrderUpdateToOneWithWhereWithoutLoyaltyEntriesInput = {
+  where?: Prisma.OrderWhereInput
+  data: Prisma.XOR<Prisma.OrderUpdateWithoutLoyaltyEntriesInput, Prisma.OrderUncheckedUpdateWithoutLoyaltyEntriesInput>
 }
 
-export type OrderUpdateWithWhereUniqueWithoutCustomerInput = {
-  where: Prisma.OrderWhereUniqueInput
-  data: Prisma.XOR<Prisma.OrderUpdateWithoutCustomerInput, Prisma.OrderUncheckedUpdateWithoutCustomerInput>
+export type OrderUpdateWithoutLoyaltyEntriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  fulfillmentStatus?: Prisma.EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
+  paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fulfilledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refundedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  merchant?: Prisma.MerchantUpdateOneRequiredWithoutOrdersNestedInput
+  checkoutSession?: Prisma.CheckoutSessionUpdateOneRequiredWithoutOrderNestedInput
+  branch?: Prisma.MerchantBranchUpdateOneWithoutOrdersNestedInput
+  posDevice?: Prisma.PosDeviceUpdateOneWithoutOrdersNestedInput
+  posShift?: Prisma.PosShiftUpdateOneWithoutOrdersNestedInput
+  table?: Prisma.PosTableUpdateOneWithoutOrdersNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutOrdersNestedInput
+  deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutOrdersNestedInput
+  items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
+  kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutOrderNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutOrderNestedInput
 }
 
-export type OrderUpdateManyWithWhereWithoutCustomerInput = {
-  where: Prisma.OrderScalarWhereInput
-  data: Prisma.XOR<Prisma.OrderUpdateManyMutationInput, Prisma.OrderUncheckedUpdateManyWithoutCustomerInput>
+export type OrderUncheckedUpdateWithoutLoyaltyEntriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  checkoutSessionId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  posShiftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  subtotalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discountAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  feeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shippingAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  billingAddress?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  fulfillmentStatus?: Prisma.EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
+  paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fulfilledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refundedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
+  kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutOrderNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateWithoutKitchenOrdersInput = {
   id?: string
   localId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2664,6 +2939,7 @@ export type OrderCreateWithoutKitchenOrdersInput = {
   items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutKitchenOrdersInput = {
@@ -2676,6 +2952,7 @@ export type OrderUncheckedCreateWithoutKitchenOrdersInput = {
   tableId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2703,6 +2980,7 @@ export type OrderUncheckedCreateWithoutKitchenOrdersInput = {
   items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutKitchenOrdersInput = {
@@ -2724,6 +3002,7 @@ export type OrderUpdateToOneWithWhereWithoutKitchenOrdersInput = {
 export type OrderUpdateWithoutKitchenOrdersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2758,6 +3037,7 @@ export type OrderUpdateWithoutKitchenOrdersInput = {
   items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutKitchenOrdersInput = {
@@ -2770,6 +3050,7 @@ export type OrderUncheckedUpdateWithoutKitchenOrdersInput = {
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2797,11 +3078,13 @@ export type OrderUncheckedUpdateWithoutKitchenOrdersInput = {
   items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateWithoutDeliveryMethodInput = {
   id?: string
   localId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2836,6 +3119,7 @@ export type OrderCreateWithoutDeliveryMethodInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutDeliveryMethodInput = {
@@ -2848,6 +3132,7 @@ export type OrderUncheckedCreateWithoutDeliveryMethodInput = {
   tableId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2875,6 +3160,7 @@ export type OrderUncheckedCreateWithoutDeliveryMethodInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutOrderInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutDeliveryMethodInput = {
@@ -2906,6 +3192,7 @@ export type OrderUpdateManyWithWhereWithoutDeliveryMethodInput = {
 export type OrderCreateWithoutShipmentsInput = {
   id?: string
   localId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2940,6 +3227,7 @@ export type OrderCreateWithoutShipmentsInput = {
   items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutShipmentsInput = {
@@ -2952,6 +3240,7 @@ export type OrderUncheckedCreateWithoutShipmentsInput = {
   tableId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -2979,6 +3268,7 @@ export type OrderUncheckedCreateWithoutShipmentsInput = {
   items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutOrderInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutShipmentsInput = {
@@ -3000,6 +3290,7 @@ export type OrderUpdateToOneWithWhereWithoutShipmentsInput = {
 export type OrderUpdateWithoutShipmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3034,6 +3325,7 @@ export type OrderUpdateWithoutShipmentsInput = {
   items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutShipmentsInput = {
@@ -3046,6 +3338,7 @@ export type OrderUncheckedUpdateWithoutShipmentsInput = {
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3073,6 +3366,7 @@ export type OrderUncheckedUpdateWithoutShipmentsInput = {
   items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateManyMerchantInput = {
@@ -3084,6 +3378,7 @@ export type OrderCreateManyMerchantInput = {
   tableId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -3113,6 +3408,7 @@ export type OrderCreateManyMerchantInput = {
 export type OrderUpdateWithoutMerchantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3147,6 +3443,7 @@ export type OrderUpdateWithoutMerchantInput = {
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutMerchantInput = {
@@ -3158,6 +3455,7 @@ export type OrderUncheckedUpdateWithoutMerchantInput = {
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3186,6 +3484,7 @@ export type OrderUncheckedUpdateWithoutMerchantInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateManyWithoutMerchantInput = {
@@ -3197,6 +3496,7 @@ export type OrderUncheckedUpdateManyWithoutMerchantInput = {
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3232,6 +3532,7 @@ export type OrderCreateManyBranchInput = {
   tableId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -3261,6 +3562,7 @@ export type OrderCreateManyBranchInput = {
 export type OrderUpdateWithoutBranchInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3295,6 +3597,7 @@ export type OrderUpdateWithoutBranchInput = {
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutBranchInput = {
@@ -3306,6 +3609,7 @@ export type OrderUncheckedUpdateWithoutBranchInput = {
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3334,6 +3638,7 @@ export type OrderUncheckedUpdateWithoutBranchInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateManyWithoutBranchInput = {
@@ -3345,6 +3650,7 @@ export type OrderUncheckedUpdateManyWithoutBranchInput = {
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3380,6 +3686,7 @@ export type OrderCreateManyPosDeviceInput = {
   tableId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -3409,6 +3716,7 @@ export type OrderCreateManyPosDeviceInput = {
 export type OrderUpdateWithoutPosDeviceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3443,6 +3751,7 @@ export type OrderUpdateWithoutPosDeviceInput = {
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutPosDeviceInput = {
@@ -3454,6 +3763,7 @@ export type OrderUncheckedUpdateWithoutPosDeviceInput = {
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3482,6 +3792,7 @@ export type OrderUncheckedUpdateWithoutPosDeviceInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateManyWithoutPosDeviceInput = {
@@ -3493,6 +3804,7 @@ export type OrderUncheckedUpdateManyWithoutPosDeviceInput = {
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3528,6 +3840,7 @@ export type OrderCreateManyPosShiftInput = {
   tableId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -3557,6 +3870,7 @@ export type OrderCreateManyPosShiftInput = {
 export type OrderUpdateWithoutPosShiftInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3591,6 +3905,7 @@ export type OrderUpdateWithoutPosShiftInput = {
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutPosShiftInput = {
@@ -3602,6 +3917,7 @@ export type OrderUncheckedUpdateWithoutPosShiftInput = {
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3630,6 +3946,7 @@ export type OrderUncheckedUpdateWithoutPosShiftInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateManyWithoutPosShiftInput = {
@@ -3641,6 +3958,7 @@ export type OrderUncheckedUpdateManyWithoutPosShiftInput = {
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3676,6 +3994,7 @@ export type OrderCreateManyTableInput = {
   posShiftId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -3705,6 +4024,7 @@ export type OrderCreateManyTableInput = {
 export type OrderUpdateWithoutTableInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3739,6 +4059,7 @@ export type OrderUpdateWithoutTableInput = {
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutTableInput = {
@@ -3750,6 +4071,7 @@ export type OrderUncheckedUpdateWithoutTableInput = {
   posShiftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3778,6 +4100,7 @@ export type OrderUncheckedUpdateWithoutTableInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateManyWithoutTableInput = {
@@ -3789,6 +4112,7 @@ export type OrderUncheckedUpdateManyWithoutTableInput = {
   posShiftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3824,6 +4148,7 @@ export type OrderCreateManyCustomerInput = {
   posShiftId?: string | null
   tableId?: string | null
   localId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -3853,6 +4178,7 @@ export type OrderCreateManyCustomerInput = {
 export type OrderUpdateWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3887,6 +4213,7 @@ export type OrderUpdateWithoutCustomerInput = {
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutCustomerInput = {
@@ -3898,6 +4225,7 @@ export type OrderUncheckedUpdateWithoutCustomerInput = {
   posShiftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3926,6 +4254,7 @@ export type OrderUncheckedUpdateWithoutCustomerInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateManyWithoutCustomerInput = {
@@ -3937,6 +4266,7 @@ export type OrderUncheckedUpdateManyWithoutCustomerInput = {
   posShiftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3973,6 +4303,7 @@ export type OrderCreateManyDeliveryMethodInput = {
   tableId?: string | null
   localId?: string | null
   customerId?: string | null
+  ownerId?: string | null
   customerName?: string | null
   customerEmail?: string | null
   customerPhone?: string | null
@@ -4001,6 +4332,7 @@ export type OrderCreateManyDeliveryMethodInput = {
 export type OrderUpdateWithoutDeliveryMethodInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4035,6 +4367,7 @@ export type OrderUpdateWithoutDeliveryMethodInput = {
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutDeliveryMethodInput = {
@@ -4047,6 +4380,7 @@ export type OrderUncheckedUpdateWithoutDeliveryMethodInput = {
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4074,6 +4408,7 @@ export type OrderUncheckedUpdateWithoutDeliveryMethodInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutOrderNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutOrderNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateManyWithoutDeliveryMethodInput = {
@@ -4086,6 +4421,7 @@ export type OrderUncheckedUpdateManyWithoutDeliveryMethodInput = {
   tableId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   localId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4121,6 +4457,7 @@ export type OrderCountOutputType = {
   payments: number
   kitchenOrders: number
   shipments: number
+  loyaltyEntries: number
 }
 
 export type OrderCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4128,6 +4465,7 @@ export type OrderCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   payments?: boolean | OrderCountOutputTypeCountPaymentsArgs
   kitchenOrders?: boolean | OrderCountOutputTypeCountKitchenOrdersArgs
   shipments?: boolean | OrderCountOutputTypeCountShipmentsArgs
+  loyaltyEntries?: boolean | OrderCountOutputTypeCountLoyaltyEntriesArgs
 }
 
 /**
@@ -4168,6 +4506,13 @@ export type OrderCountOutputTypeCountShipmentsArgs<ExtArgs extends runtime.Types
   where?: Prisma.ShipmentWhereInput
 }
 
+/**
+ * OrderCountOutputType without action
+ */
+export type OrderCountOutputTypeCountLoyaltyEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LoyaltyLedgerEntryWhereInput
+}
+
 
 export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -4179,6 +4524,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   tableId?: boolean
   localId?: boolean
   customerId?: boolean
+  ownerId?: boolean
   customerName?: boolean
   customerEmail?: boolean
   customerPhone?: boolean
@@ -4215,6 +4561,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   payments?: boolean | Prisma.Order$paymentsArgs<ExtArgs>
   kitchenOrders?: boolean | Prisma.Order$kitchenOrdersArgs<ExtArgs>
   shipments?: boolean | Prisma.Order$shipmentsArgs<ExtArgs>
+  loyaltyEntries?: boolean | Prisma.Order$loyaltyEntriesArgs<ExtArgs>
   _count?: boolean | Prisma.OrderCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["order"]>
 
@@ -4228,6 +4575,7 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   tableId?: boolean
   localId?: boolean
   customerId?: boolean
+  ownerId?: boolean
   customerName?: boolean
   customerEmail?: boolean
   customerPhone?: boolean
@@ -4272,6 +4620,7 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   tableId?: boolean
   localId?: boolean
   customerId?: boolean
+  ownerId?: boolean
   customerName?: boolean
   customerEmail?: boolean
   customerPhone?: boolean
@@ -4316,6 +4665,7 @@ export type OrderSelectScalar = {
   tableId?: boolean
   localId?: boolean
   customerId?: boolean
+  ownerId?: boolean
   customerName?: boolean
   customerEmail?: boolean
   customerPhone?: boolean
@@ -4342,7 +4692,7 @@ export type OrderSelectScalar = {
   updatedAt?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "merchantId" | "checkoutSessionId" | "branchId" | "posDeviceId" | "posShiftId" | "tableId" | "localId" | "customerId" | "customerName" | "customerEmail" | "customerPhone" | "sourceChannel" | "orderNumber" | "status" | "subtotalAmount" | "discountAmount" | "feeAmount" | "shippingAmount" | "totalAmount" | "currency" | "deliveryMethodId" | "deliveryMethodName" | "shippingAddress" | "billingAddress" | "paymentStatus" | "fulfillmentStatus" | "paidAt" | "fulfilledAt" | "cancelledAt" | "refundedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "merchantId" | "checkoutSessionId" | "branchId" | "posDeviceId" | "posShiftId" | "tableId" | "localId" | "customerId" | "ownerId" | "customerName" | "customerEmail" | "customerPhone" | "sourceChannel" | "orderNumber" | "status" | "subtotalAmount" | "discountAmount" | "feeAmount" | "shippingAmount" | "totalAmount" | "currency" | "deliveryMethodId" | "deliveryMethodName" | "shippingAddress" | "billingAddress" | "paymentStatus" | "fulfillmentStatus" | "paidAt" | "fulfilledAt" | "cancelledAt" | "refundedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
   checkoutSession?: boolean | Prisma.CheckoutSessionDefaultArgs<ExtArgs>
@@ -4356,6 +4706,7 @@ export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   payments?: boolean | Prisma.Order$paymentsArgs<ExtArgs>
   kitchenOrders?: boolean | Prisma.Order$kitchenOrdersArgs<ExtArgs>
   shipments?: boolean | Prisma.Order$shipmentsArgs<ExtArgs>
+  loyaltyEntries?: boolean | Prisma.Order$loyaltyEntriesArgs<ExtArgs>
   _count?: boolean | Prisma.OrderCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrderIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4394,6 +4745,7 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     payments: Prisma.$PaymentPayload<ExtArgs>[]
     kitchenOrders: Prisma.$KitchenOrderPayload<ExtArgs>[]
     shipments: Prisma.$ShipmentPayload<ExtArgs>[]
+    loyaltyEntries: Prisma.$LoyaltyLedgerEntryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4405,6 +4757,10 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     tableId: string | null
     localId: string | null
     customerId: string | null
+    /**
+     * The signed-in shopper who placed this order, when there was one.
+     */
+    ownerId: string | null
     customerName: string | null
     customerEmail: string | null
     customerPhone: string | null
@@ -4835,6 +5191,7 @@ export interface Prisma__OrderClient<T, Null = never, ExtArgs extends runtime.Ty
   payments<T extends Prisma.Order$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   kitchenOrders<T extends Prisma.Order$kitchenOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$kitchenOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KitchenOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   shipments<T extends Prisma.Order$shipmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$shipmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  loyaltyEntries<T extends Prisma.Order$loyaltyEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$loyaltyEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoyaltyLedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4873,6 +5230,7 @@ export interface OrderFieldRefs {
   readonly tableId: Prisma.FieldRef<"Order", 'String'>
   readonly localId: Prisma.FieldRef<"Order", 'String'>
   readonly customerId: Prisma.FieldRef<"Order", 'String'>
+  readonly ownerId: Prisma.FieldRef<"Order", 'String'>
   readonly customerName: Prisma.FieldRef<"Order", 'String'>
   readonly customerEmail: Prisma.FieldRef<"Order", 'String'>
   readonly customerPhone: Prisma.FieldRef<"Order", 'String'>
@@ -5505,6 +5863,30 @@ export type Order$shipmentsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.ShipmentScalarFieldEnum | Prisma.ShipmentScalarFieldEnum[]
+}
+
+/**
+ * Order.loyaltyEntries
+ */
+export type Order$loyaltyEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LoyaltyLedgerEntry
+   */
+  select?: Prisma.LoyaltyLedgerEntrySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LoyaltyLedgerEntry
+   */
+  omit?: Prisma.LoyaltyLedgerEntryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LoyaltyLedgerEntryInclude<ExtArgs> | null
+  where?: Prisma.LoyaltyLedgerEntryWhereInput
+  orderBy?: Prisma.LoyaltyLedgerEntryOrderByWithRelationInput | Prisma.LoyaltyLedgerEntryOrderByWithRelationInput[]
+  cursor?: Prisma.LoyaltyLedgerEntryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LoyaltyLedgerEntryScalarFieldEnum | Prisma.LoyaltyLedgerEntryScalarFieldEnum[]
 }
 
 /**

@@ -35,6 +35,9 @@ export type CartMinAggregateOutputType = {
   id: string | null
   merchantId: string | null
   customerId: string | null
+  ownerId: string | null
+  createdById: string | null
+  mergedIntoCartId: string | null
   checkoutSessionId: string | null
   accessTokenHash: string | null
   status: $Enums.CartStatus | null
@@ -56,6 +59,9 @@ export type CartMaxAggregateOutputType = {
   id: string | null
   merchantId: string | null
   customerId: string | null
+  ownerId: string | null
+  createdById: string | null
+  mergedIntoCartId: string | null
   checkoutSessionId: string | null
   accessTokenHash: string | null
   status: $Enums.CartStatus | null
@@ -77,6 +83,9 @@ export type CartCountAggregateOutputType = {
   id: number
   merchantId: number
   customerId: number
+  ownerId: number
+  createdById: number
+  mergedIntoCartId: number
   checkoutSessionId: number
   accessTokenHash: number
   status: number
@@ -100,6 +109,9 @@ export type CartMinAggregateInputType = {
   id?: true
   merchantId?: true
   customerId?: true
+  ownerId?: true
+  createdById?: true
+  mergedIntoCartId?: true
   checkoutSessionId?: true
   accessTokenHash?: true
   status?: true
@@ -121,6 +133,9 @@ export type CartMaxAggregateInputType = {
   id?: true
   merchantId?: true
   customerId?: true
+  ownerId?: true
+  createdById?: true
+  mergedIntoCartId?: true
   checkoutSessionId?: true
   accessTokenHash?: true
   status?: true
@@ -142,6 +157,9 @@ export type CartCountAggregateInputType = {
   id?: true
   merchantId?: true
   customerId?: true
+  ownerId?: true
+  createdById?: true
+  mergedIntoCartId?: true
   checkoutSessionId?: true
   accessTokenHash?: true
   status?: true
@@ -236,6 +254,9 @@ export type CartGroupByOutputType = {
   id: string
   merchantId: string
   customerId: string | null
+  ownerId: string | null
+  createdById: string | null
+  mergedIntoCartId: string | null
   checkoutSessionId: string | null
   accessTokenHash: string
   status: $Enums.CartStatus
@@ -278,6 +299,9 @@ export type CartWhereInput = {
   id?: Prisma.UuidFilter<"Cart"> | string
   merchantId?: Prisma.UuidFilter<"Cart"> | string
   customerId?: Prisma.UuidNullableFilter<"Cart"> | string | null
+  ownerId?: Prisma.UuidNullableFilter<"Cart"> | string | null
+  createdById?: Prisma.UuidNullableFilter<"Cart"> | string | null
+  mergedIntoCartId?: Prisma.UuidNullableFilter<"Cart"> | string | null
   checkoutSessionId?: Prisma.UuidNullableFilter<"Cart"> | string | null
   accessTokenHash?: Prisma.StringFilter<"Cart"> | string
   status?: Prisma.EnumCartStatusFilter<"Cart"> | $Enums.CartStatus
@@ -295,18 +319,26 @@ export type CartWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Cart"> | Date | string
   merchant?: Prisma.XOR<Prisma.MerchantScalarRelationFilter, Prisma.MerchantWhereInput>
   customer?: Prisma.XOR<Prisma.CustomerNullableScalarRelationFilter, Prisma.CustomerWhereInput> | null
+  owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  mergedInto?: Prisma.XOR<Prisma.CartNullableScalarRelationFilter, Prisma.CartWhereInput> | null
+  mergedFrom?: Prisma.CartListRelationFilter
   checkoutSession?: Prisma.XOR<Prisma.CheckoutSessionNullableScalarRelationFilter, Prisma.CheckoutSessionWhereInput> | null
   shippingAddress?: Prisma.XOR<Prisma.CustomerAddressNullableScalarRelationFilter, Prisma.CustomerAddressWhereInput> | null
   billingAddress?: Prisma.XOR<Prisma.CustomerAddressNullableScalarRelationFilter, Prisma.CustomerAddressWhereInput> | null
   deliveryMethod?: Prisma.XOR<Prisma.DeliveryMethodNullableScalarRelationFilter, Prisma.DeliveryMethodWhereInput> | null
   deliveryZone?: Prisma.XOR<Prisma.DeliveryZoneNullableScalarRelationFilter, Prisma.DeliveryZoneWhereInput> | null
   items?: Prisma.CartItemListRelationFilter
+  savedAddresses?: Prisma.CustomerAddressListRelationFilter
 }
 
 export type CartOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   merchantId?: Prisma.SortOrder
   customerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
+  mergedIntoCartId?: Prisma.SortOrderInput | Prisma.SortOrder
   checkoutSessionId?: Prisma.SortOrderInput | Prisma.SortOrder
   accessTokenHash?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -324,12 +356,17 @@ export type CartOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   merchant?: Prisma.MerchantOrderByWithRelationInput
   customer?: Prisma.CustomerOrderByWithRelationInput
+  owner?: Prisma.UserOrderByWithRelationInput
+  createdBy?: Prisma.UserOrderByWithRelationInput
+  mergedInto?: Prisma.CartOrderByWithRelationInput
+  mergedFrom?: Prisma.CartOrderByRelationAggregateInput
   checkoutSession?: Prisma.CheckoutSessionOrderByWithRelationInput
   shippingAddress?: Prisma.CustomerAddressOrderByWithRelationInput
   billingAddress?: Prisma.CustomerAddressOrderByWithRelationInput
   deliveryMethod?: Prisma.DeliveryMethodOrderByWithRelationInput
   deliveryZone?: Prisma.DeliveryZoneOrderByWithRelationInput
   items?: Prisma.CartItemOrderByRelationAggregateInput
+  savedAddresses?: Prisma.CustomerAddressOrderByRelationAggregateInput
 }
 
 export type CartWhereUniqueInput = Prisma.AtLeast<{
@@ -341,6 +378,9 @@ export type CartWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.CartWhereInput | Prisma.CartWhereInput[]
   merchantId?: Prisma.UuidFilter<"Cart"> | string
   customerId?: Prisma.UuidNullableFilter<"Cart"> | string | null
+  ownerId?: Prisma.UuidNullableFilter<"Cart"> | string | null
+  createdById?: Prisma.UuidNullableFilter<"Cart"> | string | null
+  mergedIntoCartId?: Prisma.UuidNullableFilter<"Cart"> | string | null
   status?: Prisma.EnumCartStatusFilter<"Cart"> | $Enums.CartStatus
   sourceChannel?: Prisma.EnumSalesChannelFilter<"Cart"> | $Enums.SalesChannel
   customerName?: Prisma.StringNullableFilter<"Cart"> | string | null
@@ -356,18 +396,26 @@ export type CartWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Cart"> | Date | string
   merchant?: Prisma.XOR<Prisma.MerchantScalarRelationFilter, Prisma.MerchantWhereInput>
   customer?: Prisma.XOR<Prisma.CustomerNullableScalarRelationFilter, Prisma.CustomerWhereInput> | null
+  owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  mergedInto?: Prisma.XOR<Prisma.CartNullableScalarRelationFilter, Prisma.CartWhereInput> | null
+  mergedFrom?: Prisma.CartListRelationFilter
   checkoutSession?: Prisma.XOR<Prisma.CheckoutSessionNullableScalarRelationFilter, Prisma.CheckoutSessionWhereInput> | null
   shippingAddress?: Prisma.XOR<Prisma.CustomerAddressNullableScalarRelationFilter, Prisma.CustomerAddressWhereInput> | null
   billingAddress?: Prisma.XOR<Prisma.CustomerAddressNullableScalarRelationFilter, Prisma.CustomerAddressWhereInput> | null
   deliveryMethod?: Prisma.XOR<Prisma.DeliveryMethodNullableScalarRelationFilter, Prisma.DeliveryMethodWhereInput> | null
   deliveryZone?: Prisma.XOR<Prisma.DeliveryZoneNullableScalarRelationFilter, Prisma.DeliveryZoneWhereInput> | null
   items?: Prisma.CartItemListRelationFilter
+  savedAddresses?: Prisma.CustomerAddressListRelationFilter
 }, "id" | "checkoutSessionId" | "accessTokenHash">
 
 export type CartOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   merchantId?: Prisma.SortOrder
   customerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
+  mergedIntoCartId?: Prisma.SortOrderInput | Prisma.SortOrder
   checkoutSessionId?: Prisma.SortOrderInput | Prisma.SortOrder
   accessTokenHash?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -395,6 +443,9 @@ export type CartScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"Cart"> | string
   merchantId?: Prisma.UuidWithAggregatesFilter<"Cart"> | string
   customerId?: Prisma.UuidNullableWithAggregatesFilter<"Cart"> | string | null
+  ownerId?: Prisma.UuidNullableWithAggregatesFilter<"Cart"> | string | null
+  createdById?: Prisma.UuidNullableWithAggregatesFilter<"Cart"> | string | null
+  mergedIntoCartId?: Prisma.UuidNullableWithAggregatesFilter<"Cart"> | string | null
   checkoutSessionId?: Prisma.UuidNullableWithAggregatesFilter<"Cart"> | string | null
   accessTokenHash?: Prisma.StringWithAggregatesFilter<"Cart"> | string
   status?: Prisma.EnumCartStatusWithAggregatesFilter<"Cart"> | $Enums.CartStatus
@@ -426,18 +477,26 @@ export type CartCreateInput = {
   updatedAt?: Date | string
   merchant: Prisma.MerchantCreateNestedOneWithoutCartsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutCartsInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedCartsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedCartsInput
+  mergedInto?: Prisma.CartCreateNestedOneWithoutMergedFromInput
+  mergedFrom?: Prisma.CartCreateNestedManyWithoutMergedIntoInput
   checkoutSession?: Prisma.CheckoutSessionCreateNestedOneWithoutCartInput
   shippingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutShippingCartsInput
   billingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutBillingCartsInput
   deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCartsInput
   deliveryZone?: Prisma.DeliveryZoneCreateNestedOneWithoutCartsInput
   items?: Prisma.CartItemCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutCartInput
 }
 
 export type CartUncheckedCreateInput = {
   id?: string
   merchantId: string
   customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
   checkoutSessionId?: string | null
   accessTokenHash: string
   status?: $Enums.CartStatus
@@ -453,7 +512,9 @@ export type CartUncheckedCreateInput = {
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  mergedFrom?: Prisma.CartUncheckedCreateNestedManyWithoutMergedIntoInput
   items?: Prisma.CartItemUncheckedCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutCartInput
 }
 
 export type CartUpdateInput = {
@@ -470,18 +531,26 @@ export type CartUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   merchant?: Prisma.MerchantUpdateOneRequiredWithoutCartsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutCartsNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedCartsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedCartsNestedInput
+  mergedInto?: Prisma.CartUpdateOneWithoutMergedFromNestedInput
+  mergedFrom?: Prisma.CartUpdateManyWithoutMergedIntoNestedInput
   checkoutSession?: Prisma.CheckoutSessionUpdateOneWithoutCartNestedInput
   shippingAddress?: Prisma.CustomerAddressUpdateOneWithoutShippingCartsNestedInput
   billingAddress?: Prisma.CustomerAddressUpdateOneWithoutBillingCartsNestedInput
   deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCartsNestedInput
   deliveryZone?: Prisma.DeliveryZoneUpdateOneWithoutCartsNestedInput
   items?: Prisma.CartItemUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUpdateManyWithoutCartNestedInput
 }
 
 export type CartUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
@@ -497,13 +566,18 @@ export type CartUncheckedUpdateInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mergedFrom?: Prisma.CartUncheckedUpdateManyWithoutMergedIntoNestedInput
   items?: Prisma.CartItemUncheckedUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutCartNestedInput
 }
 
 export type CartCreateManyInput = {
   id?: string
   merchantId: string
   customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
   checkoutSessionId?: string | null
   accessTokenHash: string
   status?: $Enums.CartStatus
@@ -539,6 +613,9 @@ export type CartUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
@@ -575,6 +652,9 @@ export type CartCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   merchantId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
+  mergedIntoCartId?: Prisma.SortOrder
   checkoutSessionId?: Prisma.SortOrder
   accessTokenHash?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -596,6 +676,9 @@ export type CartMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   merchantId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
+  mergedIntoCartId?: Prisma.SortOrder
   checkoutSessionId?: Prisma.SortOrder
   accessTokenHash?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -617,6 +700,9 @@ export type CartMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   merchantId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
+  mergedIntoCartId?: Prisma.SortOrder
   checkoutSessionId?: Prisma.SortOrder
   accessTokenHash?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -637,6 +723,90 @@ export type CartMinOrderByAggregateInput = {
 export type CartScalarRelationFilter = {
   is?: Prisma.CartWhereInput
   isNot?: Prisma.CartWhereInput
+}
+
+export type CartCreateNestedManyWithoutOwnerInput = {
+  create?: Prisma.XOR<Prisma.CartCreateWithoutOwnerInput, Prisma.CartUncheckedCreateWithoutOwnerInput> | Prisma.CartCreateWithoutOwnerInput[] | Prisma.CartUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.CartCreateOrConnectWithoutOwnerInput | Prisma.CartCreateOrConnectWithoutOwnerInput[]
+  createMany?: Prisma.CartCreateManyOwnerInputEnvelope
+  connect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+}
+
+export type CartCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.CartCreateWithoutCreatedByInput, Prisma.CartUncheckedCreateWithoutCreatedByInput> | Prisma.CartCreateWithoutCreatedByInput[] | Prisma.CartUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.CartCreateOrConnectWithoutCreatedByInput | Prisma.CartCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.CartCreateManyCreatedByInputEnvelope
+  connect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+}
+
+export type CartUncheckedCreateNestedManyWithoutOwnerInput = {
+  create?: Prisma.XOR<Prisma.CartCreateWithoutOwnerInput, Prisma.CartUncheckedCreateWithoutOwnerInput> | Prisma.CartCreateWithoutOwnerInput[] | Prisma.CartUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.CartCreateOrConnectWithoutOwnerInput | Prisma.CartCreateOrConnectWithoutOwnerInput[]
+  createMany?: Prisma.CartCreateManyOwnerInputEnvelope
+  connect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+}
+
+export type CartUncheckedCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.CartCreateWithoutCreatedByInput, Prisma.CartUncheckedCreateWithoutCreatedByInput> | Prisma.CartCreateWithoutCreatedByInput[] | Prisma.CartUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.CartCreateOrConnectWithoutCreatedByInput | Prisma.CartCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.CartCreateManyCreatedByInputEnvelope
+  connect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+}
+
+export type CartUpdateManyWithoutOwnerNestedInput = {
+  create?: Prisma.XOR<Prisma.CartCreateWithoutOwnerInput, Prisma.CartUncheckedCreateWithoutOwnerInput> | Prisma.CartCreateWithoutOwnerInput[] | Prisma.CartUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.CartCreateOrConnectWithoutOwnerInput | Prisma.CartCreateOrConnectWithoutOwnerInput[]
+  upsert?: Prisma.CartUpsertWithWhereUniqueWithoutOwnerInput | Prisma.CartUpsertWithWhereUniqueWithoutOwnerInput[]
+  createMany?: Prisma.CartCreateManyOwnerInputEnvelope
+  set?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  disconnect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  delete?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  connect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  update?: Prisma.CartUpdateWithWhereUniqueWithoutOwnerInput | Prisma.CartUpdateWithWhereUniqueWithoutOwnerInput[]
+  updateMany?: Prisma.CartUpdateManyWithWhereWithoutOwnerInput | Prisma.CartUpdateManyWithWhereWithoutOwnerInput[]
+  deleteMany?: Prisma.CartScalarWhereInput | Prisma.CartScalarWhereInput[]
+}
+
+export type CartUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.CartCreateWithoutCreatedByInput, Prisma.CartUncheckedCreateWithoutCreatedByInput> | Prisma.CartCreateWithoutCreatedByInput[] | Prisma.CartUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.CartCreateOrConnectWithoutCreatedByInput | Prisma.CartCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.CartUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.CartUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.CartCreateManyCreatedByInputEnvelope
+  set?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  disconnect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  delete?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  connect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  update?: Prisma.CartUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.CartUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.CartUpdateManyWithWhereWithoutCreatedByInput | Prisma.CartUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.CartScalarWhereInput | Prisma.CartScalarWhereInput[]
+}
+
+export type CartUncheckedUpdateManyWithoutOwnerNestedInput = {
+  create?: Prisma.XOR<Prisma.CartCreateWithoutOwnerInput, Prisma.CartUncheckedCreateWithoutOwnerInput> | Prisma.CartCreateWithoutOwnerInput[] | Prisma.CartUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.CartCreateOrConnectWithoutOwnerInput | Prisma.CartCreateOrConnectWithoutOwnerInput[]
+  upsert?: Prisma.CartUpsertWithWhereUniqueWithoutOwnerInput | Prisma.CartUpsertWithWhereUniqueWithoutOwnerInput[]
+  createMany?: Prisma.CartCreateManyOwnerInputEnvelope
+  set?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  disconnect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  delete?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  connect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  update?: Prisma.CartUpdateWithWhereUniqueWithoutOwnerInput | Prisma.CartUpdateWithWhereUniqueWithoutOwnerInput[]
+  updateMany?: Prisma.CartUpdateManyWithWhereWithoutOwnerInput | Prisma.CartUpdateManyWithWhereWithoutOwnerInput[]
+  deleteMany?: Prisma.CartScalarWhereInput | Prisma.CartScalarWhereInput[]
+}
+
+export type CartUncheckedUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.CartCreateWithoutCreatedByInput, Prisma.CartUncheckedCreateWithoutCreatedByInput> | Prisma.CartCreateWithoutCreatedByInput[] | Prisma.CartUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.CartCreateOrConnectWithoutCreatedByInput | Prisma.CartCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.CartUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.CartUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.CartCreateManyCreatedByInputEnvelope
+  set?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  disconnect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  delete?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  connect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  update?: Prisma.CartUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.CartUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.CartUpdateManyWithWhereWithoutCreatedByInput | Prisma.CartUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.CartScalarWhereInput | Prisma.CartScalarWhereInput[]
 }
 
 export type CartCreateNestedManyWithoutMerchantInput = {
@@ -755,8 +925,66 @@ export type CartUncheckedUpdateManyWithoutCustomerNestedInput = {
   deleteMany?: Prisma.CartScalarWhereInput | Prisma.CartScalarWhereInput[]
 }
 
+export type CartCreateNestedOneWithoutMergedFromInput = {
+  create?: Prisma.XOR<Prisma.CartCreateWithoutMergedFromInput, Prisma.CartUncheckedCreateWithoutMergedFromInput>
+  connectOrCreate?: Prisma.CartCreateOrConnectWithoutMergedFromInput
+  connect?: Prisma.CartWhereUniqueInput
+}
+
+export type CartCreateNestedManyWithoutMergedIntoInput = {
+  create?: Prisma.XOR<Prisma.CartCreateWithoutMergedIntoInput, Prisma.CartUncheckedCreateWithoutMergedIntoInput> | Prisma.CartCreateWithoutMergedIntoInput[] | Prisma.CartUncheckedCreateWithoutMergedIntoInput[]
+  connectOrCreate?: Prisma.CartCreateOrConnectWithoutMergedIntoInput | Prisma.CartCreateOrConnectWithoutMergedIntoInput[]
+  createMany?: Prisma.CartCreateManyMergedIntoInputEnvelope
+  connect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+}
+
+export type CartUncheckedCreateNestedManyWithoutMergedIntoInput = {
+  create?: Prisma.XOR<Prisma.CartCreateWithoutMergedIntoInput, Prisma.CartUncheckedCreateWithoutMergedIntoInput> | Prisma.CartCreateWithoutMergedIntoInput[] | Prisma.CartUncheckedCreateWithoutMergedIntoInput[]
+  connectOrCreate?: Prisma.CartCreateOrConnectWithoutMergedIntoInput | Prisma.CartCreateOrConnectWithoutMergedIntoInput[]
+  createMany?: Prisma.CartCreateManyMergedIntoInputEnvelope
+  connect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+}
+
 export type EnumCartStatusFieldUpdateOperationsInput = {
   set?: $Enums.CartStatus
+}
+
+export type CartUpdateOneWithoutMergedFromNestedInput = {
+  create?: Prisma.XOR<Prisma.CartCreateWithoutMergedFromInput, Prisma.CartUncheckedCreateWithoutMergedFromInput>
+  connectOrCreate?: Prisma.CartCreateOrConnectWithoutMergedFromInput
+  upsert?: Prisma.CartUpsertWithoutMergedFromInput
+  disconnect?: Prisma.CartWhereInput | boolean
+  delete?: Prisma.CartWhereInput | boolean
+  connect?: Prisma.CartWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CartUpdateToOneWithWhereWithoutMergedFromInput, Prisma.CartUpdateWithoutMergedFromInput>, Prisma.CartUncheckedUpdateWithoutMergedFromInput>
+}
+
+export type CartUpdateManyWithoutMergedIntoNestedInput = {
+  create?: Prisma.XOR<Prisma.CartCreateWithoutMergedIntoInput, Prisma.CartUncheckedCreateWithoutMergedIntoInput> | Prisma.CartCreateWithoutMergedIntoInput[] | Prisma.CartUncheckedCreateWithoutMergedIntoInput[]
+  connectOrCreate?: Prisma.CartCreateOrConnectWithoutMergedIntoInput | Prisma.CartCreateOrConnectWithoutMergedIntoInput[]
+  upsert?: Prisma.CartUpsertWithWhereUniqueWithoutMergedIntoInput | Prisma.CartUpsertWithWhereUniqueWithoutMergedIntoInput[]
+  createMany?: Prisma.CartCreateManyMergedIntoInputEnvelope
+  set?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  disconnect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  delete?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  connect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  update?: Prisma.CartUpdateWithWhereUniqueWithoutMergedIntoInput | Prisma.CartUpdateWithWhereUniqueWithoutMergedIntoInput[]
+  updateMany?: Prisma.CartUpdateManyWithWhereWithoutMergedIntoInput | Prisma.CartUpdateManyWithWhereWithoutMergedIntoInput[]
+  deleteMany?: Prisma.CartScalarWhereInput | Prisma.CartScalarWhereInput[]
+}
+
+export type CartUncheckedUpdateManyWithoutMergedIntoNestedInput = {
+  create?: Prisma.XOR<Prisma.CartCreateWithoutMergedIntoInput, Prisma.CartUncheckedCreateWithoutMergedIntoInput> | Prisma.CartCreateWithoutMergedIntoInput[] | Prisma.CartUncheckedCreateWithoutMergedIntoInput[]
+  connectOrCreate?: Prisma.CartCreateOrConnectWithoutMergedIntoInput | Prisma.CartCreateOrConnectWithoutMergedIntoInput[]
+  upsert?: Prisma.CartUpsertWithWhereUniqueWithoutMergedIntoInput | Prisma.CartUpsertWithWhereUniqueWithoutMergedIntoInput[]
+  createMany?: Prisma.CartCreateManyMergedIntoInputEnvelope
+  set?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  disconnect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  delete?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  connect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+  update?: Prisma.CartUpdateWithWhereUniqueWithoutMergedIntoInput | Prisma.CartUpdateWithWhereUniqueWithoutMergedIntoInput[]
+  updateMany?: Prisma.CartUpdateManyWithWhereWithoutMergedIntoInput | Prisma.CartUpdateManyWithWhereWithoutMergedIntoInput[]
+  deleteMany?: Prisma.CartScalarWhereInput | Prisma.CartScalarWhereInput[]
 }
 
 export type CartCreateNestedOneWithoutItemsInput = {
@@ -771,6 +999,12 @@ export type CartUpdateOneRequiredWithoutItemsNestedInput = {
   upsert?: Prisma.CartUpsertWithoutItemsInput
   connect?: Prisma.CartWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.CartUpdateToOneWithWhereWithoutItemsInput, Prisma.CartUpdateWithoutItemsInput>, Prisma.CartUncheckedUpdateWithoutItemsInput>
+}
+
+export type CartCreateNestedOneWithoutSavedAddressesInput = {
+  create?: Prisma.XOR<Prisma.CartCreateWithoutSavedAddressesInput, Prisma.CartUncheckedCreateWithoutSavedAddressesInput>
+  connectOrCreate?: Prisma.CartCreateOrConnectWithoutSavedAddressesInput
+  connect?: Prisma.CartWhereUniqueInput
 }
 
 export type CartCreateNestedManyWithoutShippingAddressInput = {
@@ -799,6 +1033,16 @@ export type CartUncheckedCreateNestedManyWithoutBillingAddressInput = {
   connectOrCreate?: Prisma.CartCreateOrConnectWithoutBillingAddressInput | Prisma.CartCreateOrConnectWithoutBillingAddressInput[]
   createMany?: Prisma.CartCreateManyBillingAddressInputEnvelope
   connect?: Prisma.CartWhereUniqueInput | Prisma.CartWhereUniqueInput[]
+}
+
+export type CartUpdateOneWithoutSavedAddressesNestedInput = {
+  create?: Prisma.XOR<Prisma.CartCreateWithoutSavedAddressesInput, Prisma.CartUncheckedCreateWithoutSavedAddressesInput>
+  connectOrCreate?: Prisma.CartCreateOrConnectWithoutSavedAddressesInput
+  upsert?: Prisma.CartUpsertWithoutSavedAddressesInput
+  disconnect?: Prisma.CartWhereInput | boolean
+  delete?: Prisma.CartWhereInput | boolean
+  connect?: Prisma.CartWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CartUpdateToOneWithWhereWithoutSavedAddressesInput, Prisma.CartUpdateWithoutSavedAddressesInput>, Prisma.CartUncheckedUpdateWithoutSavedAddressesInput>
 }
 
 export type CartUpdateManyWithoutShippingAddressNestedInput = {
@@ -941,7 +1185,7 @@ export type CartUncheckedUpdateManyWithoutDeliveryZoneNestedInput = {
   deleteMany?: Prisma.CartScalarWhereInput | Prisma.CartScalarWhereInput[]
 }
 
-export type CartCreateWithoutMerchantInput = {
+export type CartCreateWithoutOwnerInput = {
   id?: string
   accessTokenHash: string
   status?: $Enums.CartStatus
@@ -953,18 +1197,26 @@ export type CartCreateWithoutMerchantInput = {
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  merchant: Prisma.MerchantCreateNestedOneWithoutCartsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutCartsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedCartsInput
+  mergedInto?: Prisma.CartCreateNestedOneWithoutMergedFromInput
+  mergedFrom?: Prisma.CartCreateNestedManyWithoutMergedIntoInput
   checkoutSession?: Prisma.CheckoutSessionCreateNestedOneWithoutCartInput
   shippingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutShippingCartsInput
   billingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutBillingCartsInput
   deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCartsInput
   deliveryZone?: Prisma.DeliveryZoneCreateNestedOneWithoutCartsInput
   items?: Prisma.CartItemCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutCartInput
 }
 
-export type CartUncheckedCreateWithoutMerchantInput = {
+export type CartUncheckedCreateWithoutOwnerInput = {
   id?: string
+  merchantId: string
   customerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
   checkoutSessionId?: string | null
   accessTokenHash: string
   status?: $Enums.CartStatus
@@ -980,7 +1232,192 @@ export type CartUncheckedCreateWithoutMerchantInput = {
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  mergedFrom?: Prisma.CartUncheckedCreateNestedManyWithoutMergedIntoInput
   items?: Prisma.CartItemUncheckedCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutCartInput
+}
+
+export type CartCreateOrConnectWithoutOwnerInput = {
+  where: Prisma.CartWhereUniqueInput
+  create: Prisma.XOR<Prisma.CartCreateWithoutOwnerInput, Prisma.CartUncheckedCreateWithoutOwnerInput>
+}
+
+export type CartCreateManyOwnerInputEnvelope = {
+  data: Prisma.CartCreateManyOwnerInput | Prisma.CartCreateManyOwnerInput[]
+  skipDuplicates?: boolean
+}
+
+export type CartCreateWithoutCreatedByInput = {
+  id?: string
+  accessTokenHash: string
+  status?: $Enums.CartStatus
+  sourceChannel?: $Enums.SalesChannel
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  note?: string | null
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  merchant: Prisma.MerchantCreateNestedOneWithoutCartsInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutCartsInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedCartsInput
+  mergedInto?: Prisma.CartCreateNestedOneWithoutMergedFromInput
+  mergedFrom?: Prisma.CartCreateNestedManyWithoutMergedIntoInput
+  checkoutSession?: Prisma.CheckoutSessionCreateNestedOneWithoutCartInput
+  shippingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutShippingCartsInput
+  billingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutBillingCartsInput
+  deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCartsInput
+  deliveryZone?: Prisma.DeliveryZoneCreateNestedOneWithoutCartsInput
+  items?: Prisma.CartItemCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutCartInput
+}
+
+export type CartUncheckedCreateWithoutCreatedByInput = {
+  id?: string
+  merchantId: string
+  customerId?: string | null
+  ownerId?: string | null
+  mergedIntoCartId?: string | null
+  checkoutSessionId?: string | null
+  accessTokenHash: string
+  status?: $Enums.CartStatus
+  sourceChannel?: $Enums.SalesChannel
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  note?: string | null
+  shippingAddressId?: string | null
+  billingAddressId?: string | null
+  deliveryMethodId?: string | null
+  deliveryZoneId?: string | null
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  mergedFrom?: Prisma.CartUncheckedCreateNestedManyWithoutMergedIntoInput
+  items?: Prisma.CartItemUncheckedCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutCartInput
+}
+
+export type CartCreateOrConnectWithoutCreatedByInput = {
+  where: Prisma.CartWhereUniqueInput
+  create: Prisma.XOR<Prisma.CartCreateWithoutCreatedByInput, Prisma.CartUncheckedCreateWithoutCreatedByInput>
+}
+
+export type CartCreateManyCreatedByInputEnvelope = {
+  data: Prisma.CartCreateManyCreatedByInput | Prisma.CartCreateManyCreatedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type CartUpsertWithWhereUniqueWithoutOwnerInput = {
+  where: Prisma.CartWhereUniqueInput
+  update: Prisma.XOR<Prisma.CartUpdateWithoutOwnerInput, Prisma.CartUncheckedUpdateWithoutOwnerInput>
+  create: Prisma.XOR<Prisma.CartCreateWithoutOwnerInput, Prisma.CartUncheckedCreateWithoutOwnerInput>
+}
+
+export type CartUpdateWithWhereUniqueWithoutOwnerInput = {
+  where: Prisma.CartWhereUniqueInput
+  data: Prisma.XOR<Prisma.CartUpdateWithoutOwnerInput, Prisma.CartUncheckedUpdateWithoutOwnerInput>
+}
+
+export type CartUpdateManyWithWhereWithoutOwnerInput = {
+  where: Prisma.CartScalarWhereInput
+  data: Prisma.XOR<Prisma.CartUpdateManyMutationInput, Prisma.CartUncheckedUpdateManyWithoutOwnerInput>
+}
+
+export type CartScalarWhereInput = {
+  AND?: Prisma.CartScalarWhereInput | Prisma.CartScalarWhereInput[]
+  OR?: Prisma.CartScalarWhereInput[]
+  NOT?: Prisma.CartScalarWhereInput | Prisma.CartScalarWhereInput[]
+  id?: Prisma.UuidFilter<"Cart"> | string
+  merchantId?: Prisma.UuidFilter<"Cart"> | string
+  customerId?: Prisma.UuidNullableFilter<"Cart"> | string | null
+  ownerId?: Prisma.UuidNullableFilter<"Cart"> | string | null
+  createdById?: Prisma.UuidNullableFilter<"Cart"> | string | null
+  mergedIntoCartId?: Prisma.UuidNullableFilter<"Cart"> | string | null
+  checkoutSessionId?: Prisma.UuidNullableFilter<"Cart"> | string | null
+  accessTokenHash?: Prisma.StringFilter<"Cart"> | string
+  status?: Prisma.EnumCartStatusFilter<"Cart"> | $Enums.CartStatus
+  sourceChannel?: Prisma.EnumSalesChannelFilter<"Cart"> | $Enums.SalesChannel
+  customerName?: Prisma.StringNullableFilter<"Cart"> | string | null
+  customerEmail?: Prisma.StringNullableFilter<"Cart"> | string | null
+  customerPhone?: Prisma.StringNullableFilter<"Cart"> | string | null
+  note?: Prisma.StringNullableFilter<"Cart"> | string | null
+  shippingAddressId?: Prisma.UuidNullableFilter<"Cart"> | string | null
+  billingAddressId?: Prisma.UuidNullableFilter<"Cart"> | string | null
+  deliveryMethodId?: Prisma.UuidNullableFilter<"Cart"> | string | null
+  deliveryZoneId?: Prisma.UuidNullableFilter<"Cart"> | string | null
+  expiresAt?: Prisma.DateTimeFilter<"Cart"> | Date | string
+  createdAt?: Prisma.DateTimeFilter<"Cart"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Cart"> | Date | string
+}
+
+export type CartUpsertWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.CartWhereUniqueInput
+  update: Prisma.XOR<Prisma.CartUpdateWithoutCreatedByInput, Prisma.CartUncheckedUpdateWithoutCreatedByInput>
+  create: Prisma.XOR<Prisma.CartCreateWithoutCreatedByInput, Prisma.CartUncheckedCreateWithoutCreatedByInput>
+}
+
+export type CartUpdateWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.CartWhereUniqueInput
+  data: Prisma.XOR<Prisma.CartUpdateWithoutCreatedByInput, Prisma.CartUncheckedUpdateWithoutCreatedByInput>
+}
+
+export type CartUpdateManyWithWhereWithoutCreatedByInput = {
+  where: Prisma.CartScalarWhereInput
+  data: Prisma.XOR<Prisma.CartUpdateManyMutationInput, Prisma.CartUncheckedUpdateManyWithoutCreatedByInput>
+}
+
+export type CartCreateWithoutMerchantInput = {
+  id?: string
+  accessTokenHash: string
+  status?: $Enums.CartStatus
+  sourceChannel?: $Enums.SalesChannel
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  note?: string | null
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  customer?: Prisma.CustomerCreateNestedOneWithoutCartsInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedCartsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedCartsInput
+  mergedInto?: Prisma.CartCreateNestedOneWithoutMergedFromInput
+  mergedFrom?: Prisma.CartCreateNestedManyWithoutMergedIntoInput
+  checkoutSession?: Prisma.CheckoutSessionCreateNestedOneWithoutCartInput
+  shippingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutShippingCartsInput
+  billingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutBillingCartsInput
+  deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCartsInput
+  deliveryZone?: Prisma.DeliveryZoneCreateNestedOneWithoutCartsInput
+  items?: Prisma.CartItemCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutCartInput
+}
+
+export type CartUncheckedCreateWithoutMerchantInput = {
+  id?: string
+  customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
+  checkoutSessionId?: string | null
+  accessTokenHash: string
+  status?: $Enums.CartStatus
+  sourceChannel?: $Enums.SalesChannel
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  note?: string | null
+  shippingAddressId?: string | null
+  billingAddressId?: string | null
+  deliveryMethodId?: string | null
+  deliveryZoneId?: string | null
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  mergedFrom?: Prisma.CartUncheckedCreateNestedManyWithoutMergedIntoInput
+  items?: Prisma.CartItemUncheckedCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutCartInput
 }
 
 export type CartCreateOrConnectWithoutMerchantInput = {
@@ -1009,30 +1446,6 @@ export type CartUpdateManyWithWhereWithoutMerchantInput = {
   data: Prisma.XOR<Prisma.CartUpdateManyMutationInput, Prisma.CartUncheckedUpdateManyWithoutMerchantInput>
 }
 
-export type CartScalarWhereInput = {
-  AND?: Prisma.CartScalarWhereInput | Prisma.CartScalarWhereInput[]
-  OR?: Prisma.CartScalarWhereInput[]
-  NOT?: Prisma.CartScalarWhereInput | Prisma.CartScalarWhereInput[]
-  id?: Prisma.UuidFilter<"Cart"> | string
-  merchantId?: Prisma.UuidFilter<"Cart"> | string
-  customerId?: Prisma.UuidNullableFilter<"Cart"> | string | null
-  checkoutSessionId?: Prisma.UuidNullableFilter<"Cart"> | string | null
-  accessTokenHash?: Prisma.StringFilter<"Cart"> | string
-  status?: Prisma.EnumCartStatusFilter<"Cart"> | $Enums.CartStatus
-  sourceChannel?: Prisma.EnumSalesChannelFilter<"Cart"> | $Enums.SalesChannel
-  customerName?: Prisma.StringNullableFilter<"Cart"> | string | null
-  customerEmail?: Prisma.StringNullableFilter<"Cart"> | string | null
-  customerPhone?: Prisma.StringNullableFilter<"Cart"> | string | null
-  note?: Prisma.StringNullableFilter<"Cart"> | string | null
-  shippingAddressId?: Prisma.UuidNullableFilter<"Cart"> | string | null
-  billingAddressId?: Prisma.UuidNullableFilter<"Cart"> | string | null
-  deliveryMethodId?: Prisma.UuidNullableFilter<"Cart"> | string | null
-  deliveryZoneId?: Prisma.UuidNullableFilter<"Cart"> | string | null
-  expiresAt?: Prisma.DateTimeFilter<"Cart"> | Date | string
-  createdAt?: Prisma.DateTimeFilter<"Cart"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Cart"> | Date | string
-}
-
 export type CartCreateWithoutCheckoutSessionInput = {
   id?: string
   accessTokenHash: string
@@ -1047,17 +1460,25 @@ export type CartCreateWithoutCheckoutSessionInput = {
   updatedAt?: Date | string
   merchant: Prisma.MerchantCreateNestedOneWithoutCartsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutCartsInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedCartsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedCartsInput
+  mergedInto?: Prisma.CartCreateNestedOneWithoutMergedFromInput
+  mergedFrom?: Prisma.CartCreateNestedManyWithoutMergedIntoInput
   shippingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutShippingCartsInput
   billingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutBillingCartsInput
   deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCartsInput
   deliveryZone?: Prisma.DeliveryZoneCreateNestedOneWithoutCartsInput
   items?: Prisma.CartItemCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutCartInput
 }
 
 export type CartUncheckedCreateWithoutCheckoutSessionInput = {
   id?: string
   merchantId: string
   customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
   accessTokenHash: string
   status?: $Enums.CartStatus
   sourceChannel?: $Enums.SalesChannel
@@ -1072,7 +1493,9 @@ export type CartUncheckedCreateWithoutCheckoutSessionInput = {
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  mergedFrom?: Prisma.CartUncheckedCreateNestedManyWithoutMergedIntoInput
   items?: Prisma.CartItemUncheckedCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutCartInput
 }
 
 export type CartCreateOrConnectWithoutCheckoutSessionInput = {
@@ -1105,17 +1528,25 @@ export type CartUpdateWithoutCheckoutSessionInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   merchant?: Prisma.MerchantUpdateOneRequiredWithoutCartsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutCartsNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedCartsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedCartsNestedInput
+  mergedInto?: Prisma.CartUpdateOneWithoutMergedFromNestedInput
+  mergedFrom?: Prisma.CartUpdateManyWithoutMergedIntoNestedInput
   shippingAddress?: Prisma.CustomerAddressUpdateOneWithoutShippingCartsNestedInput
   billingAddress?: Prisma.CustomerAddressUpdateOneWithoutBillingCartsNestedInput
   deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCartsNestedInput
   deliveryZone?: Prisma.DeliveryZoneUpdateOneWithoutCartsNestedInput
   items?: Prisma.CartItemUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUpdateManyWithoutCartNestedInput
 }
 
 export type CartUncheckedUpdateWithoutCheckoutSessionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
   sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
@@ -1130,7 +1561,9 @@ export type CartUncheckedUpdateWithoutCheckoutSessionInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mergedFrom?: Prisma.CartUncheckedUpdateManyWithoutMergedIntoNestedInput
   items?: Prisma.CartItemUncheckedUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutCartNestedInput
 }
 
 export type CartCreateWithoutCustomerInput = {
@@ -1146,17 +1579,25 @@ export type CartCreateWithoutCustomerInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   merchant: Prisma.MerchantCreateNestedOneWithoutCartsInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedCartsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedCartsInput
+  mergedInto?: Prisma.CartCreateNestedOneWithoutMergedFromInput
+  mergedFrom?: Prisma.CartCreateNestedManyWithoutMergedIntoInput
   checkoutSession?: Prisma.CheckoutSessionCreateNestedOneWithoutCartInput
   shippingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutShippingCartsInput
   billingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutBillingCartsInput
   deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCartsInput
   deliveryZone?: Prisma.DeliveryZoneCreateNestedOneWithoutCartsInput
   items?: Prisma.CartItemCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutCartInput
 }
 
 export type CartUncheckedCreateWithoutCustomerInput = {
   id?: string
   merchantId: string
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
   checkoutSessionId?: string | null
   accessTokenHash: string
   status?: $Enums.CartStatus
@@ -1172,7 +1613,9 @@ export type CartUncheckedCreateWithoutCustomerInput = {
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  mergedFrom?: Prisma.CartUncheckedCreateNestedManyWithoutMergedIntoInput
   items?: Prisma.CartItemUncheckedCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutCartInput
 }
 
 export type CartCreateOrConnectWithoutCustomerInput = {
@@ -1201,7 +1644,7 @@ export type CartUpdateManyWithWhereWithoutCustomerInput = {
   data: Prisma.XOR<Prisma.CartUpdateManyMutationInput, Prisma.CartUncheckedUpdateManyWithoutCustomerInput>
 }
 
-export type CartCreateWithoutItemsInput = {
+export type CartCreateWithoutMergedFromInput = {
   id?: string
   accessTokenHash: string
   status?: $Enums.CartStatus
@@ -1215,17 +1658,25 @@ export type CartCreateWithoutItemsInput = {
   updatedAt?: Date | string
   merchant: Prisma.MerchantCreateNestedOneWithoutCartsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutCartsInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedCartsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedCartsInput
+  mergedInto?: Prisma.CartCreateNestedOneWithoutMergedFromInput
   checkoutSession?: Prisma.CheckoutSessionCreateNestedOneWithoutCartInput
   shippingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutShippingCartsInput
   billingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutBillingCartsInput
   deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCartsInput
   deliveryZone?: Prisma.DeliveryZoneCreateNestedOneWithoutCartsInput
+  items?: Prisma.CartItemCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutCartInput
 }
 
-export type CartUncheckedCreateWithoutItemsInput = {
+export type CartUncheckedCreateWithoutMergedFromInput = {
   id?: string
   merchantId: string
   customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
   checkoutSessionId?: string | null
   accessTokenHash: string
   status?: $Enums.CartStatus
@@ -1241,6 +1692,206 @@ export type CartUncheckedCreateWithoutItemsInput = {
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  items?: Prisma.CartItemUncheckedCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutCartInput
+}
+
+export type CartCreateOrConnectWithoutMergedFromInput = {
+  where: Prisma.CartWhereUniqueInput
+  create: Prisma.XOR<Prisma.CartCreateWithoutMergedFromInput, Prisma.CartUncheckedCreateWithoutMergedFromInput>
+}
+
+export type CartCreateWithoutMergedIntoInput = {
+  id?: string
+  accessTokenHash: string
+  status?: $Enums.CartStatus
+  sourceChannel?: $Enums.SalesChannel
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  note?: string | null
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  merchant: Prisma.MerchantCreateNestedOneWithoutCartsInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutCartsInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedCartsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedCartsInput
+  mergedFrom?: Prisma.CartCreateNestedManyWithoutMergedIntoInput
+  checkoutSession?: Prisma.CheckoutSessionCreateNestedOneWithoutCartInput
+  shippingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutShippingCartsInput
+  billingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutBillingCartsInput
+  deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCartsInput
+  deliveryZone?: Prisma.DeliveryZoneCreateNestedOneWithoutCartsInput
+  items?: Prisma.CartItemCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutCartInput
+}
+
+export type CartUncheckedCreateWithoutMergedIntoInput = {
+  id?: string
+  merchantId: string
+  customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  checkoutSessionId?: string | null
+  accessTokenHash: string
+  status?: $Enums.CartStatus
+  sourceChannel?: $Enums.SalesChannel
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  note?: string | null
+  shippingAddressId?: string | null
+  billingAddressId?: string | null
+  deliveryMethodId?: string | null
+  deliveryZoneId?: string | null
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  mergedFrom?: Prisma.CartUncheckedCreateNestedManyWithoutMergedIntoInput
+  items?: Prisma.CartItemUncheckedCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutCartInput
+}
+
+export type CartCreateOrConnectWithoutMergedIntoInput = {
+  where: Prisma.CartWhereUniqueInput
+  create: Prisma.XOR<Prisma.CartCreateWithoutMergedIntoInput, Prisma.CartUncheckedCreateWithoutMergedIntoInput>
+}
+
+export type CartCreateManyMergedIntoInputEnvelope = {
+  data: Prisma.CartCreateManyMergedIntoInput | Prisma.CartCreateManyMergedIntoInput[]
+  skipDuplicates?: boolean
+}
+
+export type CartUpsertWithoutMergedFromInput = {
+  update: Prisma.XOR<Prisma.CartUpdateWithoutMergedFromInput, Prisma.CartUncheckedUpdateWithoutMergedFromInput>
+  create: Prisma.XOR<Prisma.CartCreateWithoutMergedFromInput, Prisma.CartUncheckedCreateWithoutMergedFromInput>
+  where?: Prisma.CartWhereInput
+}
+
+export type CartUpdateToOneWithWhereWithoutMergedFromInput = {
+  where?: Prisma.CartWhereInput
+  data: Prisma.XOR<Prisma.CartUpdateWithoutMergedFromInput, Prisma.CartUncheckedUpdateWithoutMergedFromInput>
+}
+
+export type CartUpdateWithoutMergedFromInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  merchant?: Prisma.MerchantUpdateOneRequiredWithoutCartsNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutCartsNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedCartsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedCartsNestedInput
+  mergedInto?: Prisma.CartUpdateOneWithoutMergedFromNestedInput
+  checkoutSession?: Prisma.CheckoutSessionUpdateOneWithoutCartNestedInput
+  shippingAddress?: Prisma.CustomerAddressUpdateOneWithoutShippingCartsNestedInput
+  billingAddress?: Prisma.CustomerAddressUpdateOneWithoutBillingCartsNestedInput
+  deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCartsNestedInput
+  deliveryZone?: Prisma.DeliveryZoneUpdateOneWithoutCartsNestedInput
+  items?: Prisma.CartItemUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUpdateManyWithoutCartNestedInput
+}
+
+export type CartUncheckedUpdateWithoutMergedFromInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryZoneId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.CartItemUncheckedUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutCartNestedInput
+}
+
+export type CartUpsertWithWhereUniqueWithoutMergedIntoInput = {
+  where: Prisma.CartWhereUniqueInput
+  update: Prisma.XOR<Prisma.CartUpdateWithoutMergedIntoInput, Prisma.CartUncheckedUpdateWithoutMergedIntoInput>
+  create: Prisma.XOR<Prisma.CartCreateWithoutMergedIntoInput, Prisma.CartUncheckedCreateWithoutMergedIntoInput>
+}
+
+export type CartUpdateWithWhereUniqueWithoutMergedIntoInput = {
+  where: Prisma.CartWhereUniqueInput
+  data: Prisma.XOR<Prisma.CartUpdateWithoutMergedIntoInput, Prisma.CartUncheckedUpdateWithoutMergedIntoInput>
+}
+
+export type CartUpdateManyWithWhereWithoutMergedIntoInput = {
+  where: Prisma.CartScalarWhereInput
+  data: Prisma.XOR<Prisma.CartUpdateManyMutationInput, Prisma.CartUncheckedUpdateManyWithoutMergedIntoInput>
+}
+
+export type CartCreateWithoutItemsInput = {
+  id?: string
+  accessTokenHash: string
+  status?: $Enums.CartStatus
+  sourceChannel?: $Enums.SalesChannel
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  note?: string | null
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  merchant: Prisma.MerchantCreateNestedOneWithoutCartsInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutCartsInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedCartsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedCartsInput
+  mergedInto?: Prisma.CartCreateNestedOneWithoutMergedFromInput
+  mergedFrom?: Prisma.CartCreateNestedManyWithoutMergedIntoInput
+  checkoutSession?: Prisma.CheckoutSessionCreateNestedOneWithoutCartInput
+  shippingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutShippingCartsInput
+  billingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutBillingCartsInput
+  deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCartsInput
+  deliveryZone?: Prisma.DeliveryZoneCreateNestedOneWithoutCartsInput
+  savedAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutCartInput
+}
+
+export type CartUncheckedCreateWithoutItemsInput = {
+  id?: string
+  merchantId: string
+  customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
+  checkoutSessionId?: string | null
+  accessTokenHash: string
+  status?: $Enums.CartStatus
+  sourceChannel?: $Enums.SalesChannel
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  note?: string | null
+  shippingAddressId?: string | null
+  billingAddressId?: string | null
+  deliveryMethodId?: string | null
+  deliveryZoneId?: string | null
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  mergedFrom?: Prisma.CartUncheckedCreateNestedManyWithoutMergedIntoInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutCartInput
 }
 
 export type CartCreateOrConnectWithoutItemsInput = {
@@ -1273,17 +1924,25 @@ export type CartUpdateWithoutItemsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   merchant?: Prisma.MerchantUpdateOneRequiredWithoutCartsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutCartsNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedCartsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedCartsNestedInput
+  mergedInto?: Prisma.CartUpdateOneWithoutMergedFromNestedInput
+  mergedFrom?: Prisma.CartUpdateManyWithoutMergedIntoNestedInput
   checkoutSession?: Prisma.CheckoutSessionUpdateOneWithoutCartNestedInput
   shippingAddress?: Prisma.CustomerAddressUpdateOneWithoutShippingCartsNestedInput
   billingAddress?: Prisma.CustomerAddressUpdateOneWithoutBillingCartsNestedInput
   deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCartsNestedInput
   deliveryZone?: Prisma.DeliveryZoneUpdateOneWithoutCartsNestedInput
+  savedAddresses?: Prisma.CustomerAddressUpdateManyWithoutCartNestedInput
 }
 
 export type CartUncheckedUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
@@ -1299,6 +1958,65 @@ export type CartUncheckedUpdateWithoutItemsInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mergedFrom?: Prisma.CartUncheckedUpdateManyWithoutMergedIntoNestedInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutCartNestedInput
+}
+
+export type CartCreateWithoutSavedAddressesInput = {
+  id?: string
+  accessTokenHash: string
+  status?: $Enums.CartStatus
+  sourceChannel?: $Enums.SalesChannel
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  note?: string | null
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  merchant: Prisma.MerchantCreateNestedOneWithoutCartsInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutCartsInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedCartsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedCartsInput
+  mergedInto?: Prisma.CartCreateNestedOneWithoutMergedFromInput
+  mergedFrom?: Prisma.CartCreateNestedManyWithoutMergedIntoInput
+  checkoutSession?: Prisma.CheckoutSessionCreateNestedOneWithoutCartInput
+  shippingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutShippingCartsInput
+  billingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutBillingCartsInput
+  deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCartsInput
+  deliveryZone?: Prisma.DeliveryZoneCreateNestedOneWithoutCartsInput
+  items?: Prisma.CartItemCreateNestedManyWithoutCartInput
+}
+
+export type CartUncheckedCreateWithoutSavedAddressesInput = {
+  id?: string
+  merchantId: string
+  customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
+  checkoutSessionId?: string | null
+  accessTokenHash: string
+  status?: $Enums.CartStatus
+  sourceChannel?: $Enums.SalesChannel
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  note?: string | null
+  shippingAddressId?: string | null
+  billingAddressId?: string | null
+  deliveryMethodId?: string | null
+  deliveryZoneId?: string | null
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  mergedFrom?: Prisma.CartUncheckedCreateNestedManyWithoutMergedIntoInput
+  items?: Prisma.CartItemUncheckedCreateNestedManyWithoutCartInput
+}
+
+export type CartCreateOrConnectWithoutSavedAddressesInput = {
+  where: Prisma.CartWhereUniqueInput
+  create: Prisma.XOR<Prisma.CartCreateWithoutSavedAddressesInput, Prisma.CartUncheckedCreateWithoutSavedAddressesInput>
 }
 
 export type CartCreateWithoutShippingAddressInput = {
@@ -1315,17 +2033,25 @@ export type CartCreateWithoutShippingAddressInput = {
   updatedAt?: Date | string
   merchant: Prisma.MerchantCreateNestedOneWithoutCartsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutCartsInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedCartsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedCartsInput
+  mergedInto?: Prisma.CartCreateNestedOneWithoutMergedFromInput
+  mergedFrom?: Prisma.CartCreateNestedManyWithoutMergedIntoInput
   checkoutSession?: Prisma.CheckoutSessionCreateNestedOneWithoutCartInput
   billingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutBillingCartsInput
   deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCartsInput
   deliveryZone?: Prisma.DeliveryZoneCreateNestedOneWithoutCartsInput
   items?: Prisma.CartItemCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutCartInput
 }
 
 export type CartUncheckedCreateWithoutShippingAddressInput = {
   id?: string
   merchantId: string
   customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
   checkoutSessionId?: string | null
   accessTokenHash: string
   status?: $Enums.CartStatus
@@ -1340,7 +2066,9 @@ export type CartUncheckedCreateWithoutShippingAddressInput = {
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  mergedFrom?: Prisma.CartUncheckedCreateNestedManyWithoutMergedIntoInput
   items?: Prisma.CartItemUncheckedCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutCartInput
 }
 
 export type CartCreateOrConnectWithoutShippingAddressInput = {
@@ -1367,17 +2095,25 @@ export type CartCreateWithoutBillingAddressInput = {
   updatedAt?: Date | string
   merchant: Prisma.MerchantCreateNestedOneWithoutCartsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutCartsInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedCartsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedCartsInput
+  mergedInto?: Prisma.CartCreateNestedOneWithoutMergedFromInput
+  mergedFrom?: Prisma.CartCreateNestedManyWithoutMergedIntoInput
   checkoutSession?: Prisma.CheckoutSessionCreateNestedOneWithoutCartInput
   shippingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutShippingCartsInput
   deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCartsInput
   deliveryZone?: Prisma.DeliveryZoneCreateNestedOneWithoutCartsInput
   items?: Prisma.CartItemCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutCartInput
 }
 
 export type CartUncheckedCreateWithoutBillingAddressInput = {
   id?: string
   merchantId: string
   customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
   checkoutSessionId?: string | null
   accessTokenHash: string
   status?: $Enums.CartStatus
@@ -1392,7 +2128,9 @@ export type CartUncheckedCreateWithoutBillingAddressInput = {
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  mergedFrom?: Prisma.CartUncheckedCreateNestedManyWithoutMergedIntoInput
   items?: Prisma.CartItemUncheckedCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutCartInput
 }
 
 export type CartCreateOrConnectWithoutBillingAddressInput = {
@@ -1403,6 +2141,69 @@ export type CartCreateOrConnectWithoutBillingAddressInput = {
 export type CartCreateManyBillingAddressInputEnvelope = {
   data: Prisma.CartCreateManyBillingAddressInput | Prisma.CartCreateManyBillingAddressInput[]
   skipDuplicates?: boolean
+}
+
+export type CartUpsertWithoutSavedAddressesInput = {
+  update: Prisma.XOR<Prisma.CartUpdateWithoutSavedAddressesInput, Prisma.CartUncheckedUpdateWithoutSavedAddressesInput>
+  create: Prisma.XOR<Prisma.CartCreateWithoutSavedAddressesInput, Prisma.CartUncheckedCreateWithoutSavedAddressesInput>
+  where?: Prisma.CartWhereInput
+}
+
+export type CartUpdateToOneWithWhereWithoutSavedAddressesInput = {
+  where?: Prisma.CartWhereInput
+  data: Prisma.XOR<Prisma.CartUpdateWithoutSavedAddressesInput, Prisma.CartUncheckedUpdateWithoutSavedAddressesInput>
+}
+
+export type CartUpdateWithoutSavedAddressesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  merchant?: Prisma.MerchantUpdateOneRequiredWithoutCartsNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutCartsNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedCartsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedCartsNestedInput
+  mergedInto?: Prisma.CartUpdateOneWithoutMergedFromNestedInput
+  mergedFrom?: Prisma.CartUpdateManyWithoutMergedIntoNestedInput
+  checkoutSession?: Prisma.CheckoutSessionUpdateOneWithoutCartNestedInput
+  shippingAddress?: Prisma.CustomerAddressUpdateOneWithoutShippingCartsNestedInput
+  billingAddress?: Prisma.CustomerAddressUpdateOneWithoutBillingCartsNestedInput
+  deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCartsNestedInput
+  deliveryZone?: Prisma.DeliveryZoneUpdateOneWithoutCartsNestedInput
+  items?: Prisma.CartItemUpdateManyWithoutCartNestedInput
+}
+
+export type CartUncheckedUpdateWithoutSavedAddressesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryZoneId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mergedFrom?: Prisma.CartUncheckedUpdateManyWithoutMergedIntoNestedInput
+  items?: Prisma.CartItemUncheckedUpdateManyWithoutCartNestedInput
 }
 
 export type CartUpsertWithWhereUniqueWithoutShippingAddressInput = {
@@ -1451,17 +2252,25 @@ export type CartCreateWithoutDeliveryMethodInput = {
   updatedAt?: Date | string
   merchant: Prisma.MerchantCreateNestedOneWithoutCartsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutCartsInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedCartsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedCartsInput
+  mergedInto?: Prisma.CartCreateNestedOneWithoutMergedFromInput
+  mergedFrom?: Prisma.CartCreateNestedManyWithoutMergedIntoInput
   checkoutSession?: Prisma.CheckoutSessionCreateNestedOneWithoutCartInput
   shippingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutShippingCartsInput
   billingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutBillingCartsInput
   deliveryZone?: Prisma.DeliveryZoneCreateNestedOneWithoutCartsInput
   items?: Prisma.CartItemCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutCartInput
 }
 
 export type CartUncheckedCreateWithoutDeliveryMethodInput = {
   id?: string
   merchantId: string
   customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
   checkoutSessionId?: string | null
   accessTokenHash: string
   status?: $Enums.CartStatus
@@ -1476,7 +2285,9 @@ export type CartUncheckedCreateWithoutDeliveryMethodInput = {
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  mergedFrom?: Prisma.CartUncheckedCreateNestedManyWithoutMergedIntoInput
   items?: Prisma.CartItemUncheckedCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutCartInput
 }
 
 export type CartCreateOrConnectWithoutDeliveryMethodInput = {
@@ -1519,17 +2330,25 @@ export type CartCreateWithoutDeliveryZoneInput = {
   updatedAt?: Date | string
   merchant: Prisma.MerchantCreateNestedOneWithoutCartsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutCartsInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedCartsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedCartsInput
+  mergedInto?: Prisma.CartCreateNestedOneWithoutMergedFromInput
+  mergedFrom?: Prisma.CartCreateNestedManyWithoutMergedIntoInput
   checkoutSession?: Prisma.CheckoutSessionCreateNestedOneWithoutCartInput
   shippingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutShippingCartsInput
   billingAddress?: Prisma.CustomerAddressCreateNestedOneWithoutBillingCartsInput
   deliveryMethod?: Prisma.DeliveryMethodCreateNestedOneWithoutCartsInput
   items?: Prisma.CartItemCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutCartInput
 }
 
 export type CartUncheckedCreateWithoutDeliveryZoneInput = {
   id?: string
   merchantId: string
   customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
   checkoutSessionId?: string | null
   accessTokenHash: string
   status?: $Enums.CartStatus
@@ -1544,7 +2363,9 @@ export type CartUncheckedCreateWithoutDeliveryZoneInput = {
   expiresAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  mergedFrom?: Prisma.CartUncheckedCreateNestedManyWithoutMergedIntoInput
   items?: Prisma.CartItemUncheckedCreateNestedManyWithoutCartInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutCartInput
 }
 
 export type CartCreateOrConnectWithoutDeliveryZoneInput = {
@@ -1573,9 +2394,208 @@ export type CartUpdateManyWithWhereWithoutDeliveryZoneInput = {
   data: Prisma.XOR<Prisma.CartUpdateManyMutationInput, Prisma.CartUncheckedUpdateManyWithoutDeliveryZoneInput>
 }
 
+export type CartCreateManyOwnerInput = {
+  id?: string
+  merchantId: string
+  customerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
+  checkoutSessionId?: string | null
+  accessTokenHash: string
+  status?: $Enums.CartStatus
+  sourceChannel?: $Enums.SalesChannel
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  note?: string | null
+  shippingAddressId?: string | null
+  billingAddressId?: string | null
+  deliveryMethodId?: string | null
+  deliveryZoneId?: string | null
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CartCreateManyCreatedByInput = {
+  id?: string
+  merchantId: string
+  customerId?: string | null
+  ownerId?: string | null
+  mergedIntoCartId?: string | null
+  checkoutSessionId?: string | null
+  accessTokenHash: string
+  status?: $Enums.CartStatus
+  sourceChannel?: $Enums.SalesChannel
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  note?: string | null
+  shippingAddressId?: string | null
+  billingAddressId?: string | null
+  deliveryMethodId?: string | null
+  deliveryZoneId?: string | null
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CartUpdateWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  merchant?: Prisma.MerchantUpdateOneRequiredWithoutCartsNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutCartsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedCartsNestedInput
+  mergedInto?: Prisma.CartUpdateOneWithoutMergedFromNestedInput
+  mergedFrom?: Prisma.CartUpdateManyWithoutMergedIntoNestedInput
+  checkoutSession?: Prisma.CheckoutSessionUpdateOneWithoutCartNestedInput
+  shippingAddress?: Prisma.CustomerAddressUpdateOneWithoutShippingCartsNestedInput
+  billingAddress?: Prisma.CustomerAddressUpdateOneWithoutBillingCartsNestedInput
+  deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCartsNestedInput
+  deliveryZone?: Prisma.DeliveryZoneUpdateOneWithoutCartsNestedInput
+  items?: Prisma.CartItemUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUpdateManyWithoutCartNestedInput
+}
+
+export type CartUncheckedUpdateWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryZoneId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mergedFrom?: Prisma.CartUncheckedUpdateManyWithoutMergedIntoNestedInput
+  items?: Prisma.CartItemUncheckedUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutCartNestedInput
+}
+
+export type CartUncheckedUpdateManyWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryZoneId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CartUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  merchant?: Prisma.MerchantUpdateOneRequiredWithoutCartsNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutCartsNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedCartsNestedInput
+  mergedInto?: Prisma.CartUpdateOneWithoutMergedFromNestedInput
+  mergedFrom?: Prisma.CartUpdateManyWithoutMergedIntoNestedInput
+  checkoutSession?: Prisma.CheckoutSessionUpdateOneWithoutCartNestedInput
+  shippingAddress?: Prisma.CustomerAddressUpdateOneWithoutShippingCartsNestedInput
+  billingAddress?: Prisma.CustomerAddressUpdateOneWithoutBillingCartsNestedInput
+  deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCartsNestedInput
+  deliveryZone?: Prisma.DeliveryZoneUpdateOneWithoutCartsNestedInput
+  items?: Prisma.CartItemUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUpdateManyWithoutCartNestedInput
+}
+
+export type CartUncheckedUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryZoneId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mergedFrom?: Prisma.CartUncheckedUpdateManyWithoutMergedIntoNestedInput
+  items?: Prisma.CartItemUncheckedUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutCartNestedInput
+}
+
+export type CartUncheckedUpdateManyWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryZoneId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type CartCreateManyMerchantInput = {
   id?: string
   customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
   checkoutSessionId?: string | null
   accessTokenHash: string
   status?: $Enums.CartStatus
@@ -1606,17 +2626,25 @@ export type CartUpdateWithoutMerchantInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneWithoutCartsNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedCartsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedCartsNestedInput
+  mergedInto?: Prisma.CartUpdateOneWithoutMergedFromNestedInput
+  mergedFrom?: Prisma.CartUpdateManyWithoutMergedIntoNestedInput
   checkoutSession?: Prisma.CheckoutSessionUpdateOneWithoutCartNestedInput
   shippingAddress?: Prisma.CustomerAddressUpdateOneWithoutShippingCartsNestedInput
   billingAddress?: Prisma.CustomerAddressUpdateOneWithoutBillingCartsNestedInput
   deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCartsNestedInput
   deliveryZone?: Prisma.DeliveryZoneUpdateOneWithoutCartsNestedInput
   items?: Prisma.CartItemUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUpdateManyWithoutCartNestedInput
 }
 
 export type CartUncheckedUpdateWithoutMerchantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
@@ -1632,12 +2660,17 @@ export type CartUncheckedUpdateWithoutMerchantInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mergedFrom?: Prisma.CartUncheckedUpdateManyWithoutMergedIntoNestedInput
   items?: Prisma.CartItemUncheckedUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutCartNestedInput
 }
 
 export type CartUncheckedUpdateManyWithoutMerchantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
@@ -1658,6 +2691,9 @@ export type CartUncheckedUpdateManyWithoutMerchantInput = {
 export type CartCreateManyCustomerInput = {
   id?: string
   merchantId: string
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
   checkoutSessionId?: string | null
   accessTokenHash: string
   status?: $Enums.CartStatus
@@ -1688,17 +2724,25 @@ export type CartUpdateWithoutCustomerInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   merchant?: Prisma.MerchantUpdateOneRequiredWithoutCartsNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedCartsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedCartsNestedInput
+  mergedInto?: Prisma.CartUpdateOneWithoutMergedFromNestedInput
+  mergedFrom?: Prisma.CartUpdateManyWithoutMergedIntoNestedInput
   checkoutSession?: Prisma.CheckoutSessionUpdateOneWithoutCartNestedInput
   shippingAddress?: Prisma.CustomerAddressUpdateOneWithoutShippingCartsNestedInput
   billingAddress?: Prisma.CustomerAddressUpdateOneWithoutBillingCartsNestedInput
   deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCartsNestedInput
   deliveryZone?: Prisma.DeliveryZoneUpdateOneWithoutCartsNestedInput
   items?: Prisma.CartItemUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUpdateManyWithoutCartNestedInput
 }
 
 export type CartUncheckedUpdateWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
@@ -1714,12 +2758,115 @@ export type CartUncheckedUpdateWithoutCustomerInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mergedFrom?: Prisma.CartUncheckedUpdateManyWithoutMergedIntoNestedInput
   items?: Prisma.CartItemUncheckedUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutCartNestedInput
 }
 
 export type CartUncheckedUpdateManyWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryZoneId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CartCreateManyMergedIntoInput = {
+  id?: string
+  merchantId: string
+  customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  checkoutSessionId?: string | null
+  accessTokenHash: string
+  status?: $Enums.CartStatus
+  sourceChannel?: $Enums.SalesChannel
+  customerName?: string | null
+  customerEmail?: string | null
+  customerPhone?: string | null
+  note?: string | null
+  shippingAddressId?: string | null
+  billingAddressId?: string | null
+  deliveryMethodId?: string | null
+  deliveryZoneId?: string | null
+  expiresAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CartUpdateWithoutMergedIntoInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  merchant?: Prisma.MerchantUpdateOneRequiredWithoutCartsNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutCartsNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedCartsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedCartsNestedInput
+  mergedFrom?: Prisma.CartUpdateManyWithoutMergedIntoNestedInput
+  checkoutSession?: Prisma.CheckoutSessionUpdateOneWithoutCartNestedInput
+  shippingAddress?: Prisma.CustomerAddressUpdateOneWithoutShippingCartsNestedInput
+  billingAddress?: Prisma.CustomerAddressUpdateOneWithoutBillingCartsNestedInput
+  deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCartsNestedInput
+  deliveryZone?: Prisma.DeliveryZoneUpdateOneWithoutCartsNestedInput
+  items?: Prisma.CartItemUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUpdateManyWithoutCartNestedInput
+}
+
+export type CartUncheckedUpdateWithoutMergedIntoInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
+  sourceChannel?: Prisma.EnumSalesChannelFieldUpdateOperationsInput | $Enums.SalesChannel
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingAddressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddressId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryMethodId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryZoneId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mergedFrom?: Prisma.CartUncheckedUpdateManyWithoutMergedIntoNestedInput
+  items?: Prisma.CartItemUncheckedUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutCartNestedInput
+}
+
+export type CartUncheckedUpdateManyWithoutMergedIntoInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  merchantId?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
@@ -1741,6 +2888,9 @@ export type CartCreateManyShippingAddressInput = {
   id?: string
   merchantId: string
   customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
   checkoutSessionId?: string | null
   accessTokenHash: string
   status?: $Enums.CartStatus
@@ -1761,6 +2911,9 @@ export type CartCreateManyBillingAddressInput = {
   id?: string
   merchantId: string
   customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
   checkoutSessionId?: string | null
   accessTokenHash: string
   status?: $Enums.CartStatus
@@ -1791,17 +2944,25 @@ export type CartUpdateWithoutShippingAddressInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   merchant?: Prisma.MerchantUpdateOneRequiredWithoutCartsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutCartsNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedCartsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedCartsNestedInput
+  mergedInto?: Prisma.CartUpdateOneWithoutMergedFromNestedInput
+  mergedFrom?: Prisma.CartUpdateManyWithoutMergedIntoNestedInput
   checkoutSession?: Prisma.CheckoutSessionUpdateOneWithoutCartNestedInput
   billingAddress?: Prisma.CustomerAddressUpdateOneWithoutBillingCartsNestedInput
   deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCartsNestedInput
   deliveryZone?: Prisma.DeliveryZoneUpdateOneWithoutCartsNestedInput
   items?: Prisma.CartItemUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUpdateManyWithoutCartNestedInput
 }
 
 export type CartUncheckedUpdateWithoutShippingAddressInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
@@ -1816,13 +2977,18 @@ export type CartUncheckedUpdateWithoutShippingAddressInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mergedFrom?: Prisma.CartUncheckedUpdateManyWithoutMergedIntoNestedInput
   items?: Prisma.CartItemUncheckedUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutCartNestedInput
 }
 
 export type CartUncheckedUpdateManyWithoutShippingAddressInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
@@ -1853,17 +3019,25 @@ export type CartUpdateWithoutBillingAddressInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   merchant?: Prisma.MerchantUpdateOneRequiredWithoutCartsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutCartsNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedCartsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedCartsNestedInput
+  mergedInto?: Prisma.CartUpdateOneWithoutMergedFromNestedInput
+  mergedFrom?: Prisma.CartUpdateManyWithoutMergedIntoNestedInput
   checkoutSession?: Prisma.CheckoutSessionUpdateOneWithoutCartNestedInput
   shippingAddress?: Prisma.CustomerAddressUpdateOneWithoutShippingCartsNestedInput
   deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCartsNestedInput
   deliveryZone?: Prisma.DeliveryZoneUpdateOneWithoutCartsNestedInput
   items?: Prisma.CartItemUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUpdateManyWithoutCartNestedInput
 }
 
 export type CartUncheckedUpdateWithoutBillingAddressInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
@@ -1878,13 +3052,18 @@ export type CartUncheckedUpdateWithoutBillingAddressInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mergedFrom?: Prisma.CartUncheckedUpdateManyWithoutMergedIntoNestedInput
   items?: Prisma.CartItemUncheckedUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutCartNestedInput
 }
 
 export type CartUncheckedUpdateManyWithoutBillingAddressInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
@@ -1905,6 +3084,9 @@ export type CartCreateManyDeliveryMethodInput = {
   id?: string
   merchantId: string
   customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
   checkoutSessionId?: string | null
   accessTokenHash: string
   status?: $Enums.CartStatus
@@ -1935,17 +3117,25 @@ export type CartUpdateWithoutDeliveryMethodInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   merchant?: Prisma.MerchantUpdateOneRequiredWithoutCartsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutCartsNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedCartsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedCartsNestedInput
+  mergedInto?: Prisma.CartUpdateOneWithoutMergedFromNestedInput
+  mergedFrom?: Prisma.CartUpdateManyWithoutMergedIntoNestedInput
   checkoutSession?: Prisma.CheckoutSessionUpdateOneWithoutCartNestedInput
   shippingAddress?: Prisma.CustomerAddressUpdateOneWithoutShippingCartsNestedInput
   billingAddress?: Prisma.CustomerAddressUpdateOneWithoutBillingCartsNestedInput
   deliveryZone?: Prisma.DeliveryZoneUpdateOneWithoutCartsNestedInput
   items?: Prisma.CartItemUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUpdateManyWithoutCartNestedInput
 }
 
 export type CartUncheckedUpdateWithoutDeliveryMethodInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
@@ -1960,13 +3150,18 @@ export type CartUncheckedUpdateWithoutDeliveryMethodInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mergedFrom?: Prisma.CartUncheckedUpdateManyWithoutMergedIntoNestedInput
   items?: Prisma.CartItemUncheckedUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutCartNestedInput
 }
 
 export type CartUncheckedUpdateManyWithoutDeliveryMethodInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
@@ -1987,6 +3182,9 @@ export type CartCreateManyDeliveryZoneInput = {
   id?: string
   merchantId: string
   customerId?: string | null
+  ownerId?: string | null
+  createdById?: string | null
+  mergedIntoCartId?: string | null
   checkoutSessionId?: string | null
   accessTokenHash: string
   status?: $Enums.CartStatus
@@ -2017,17 +3215,25 @@ export type CartUpdateWithoutDeliveryZoneInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   merchant?: Prisma.MerchantUpdateOneRequiredWithoutCartsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutCartsNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedCartsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedCartsNestedInput
+  mergedInto?: Prisma.CartUpdateOneWithoutMergedFromNestedInput
+  mergedFrom?: Prisma.CartUpdateManyWithoutMergedIntoNestedInput
   checkoutSession?: Prisma.CheckoutSessionUpdateOneWithoutCartNestedInput
   shippingAddress?: Prisma.CustomerAddressUpdateOneWithoutShippingCartsNestedInput
   billingAddress?: Prisma.CustomerAddressUpdateOneWithoutBillingCartsNestedInput
   deliveryMethod?: Prisma.DeliveryMethodUpdateOneWithoutCartsNestedInput
   items?: Prisma.CartItemUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUpdateManyWithoutCartNestedInput
 }
 
 export type CartUncheckedUpdateWithoutDeliveryZoneInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
@@ -2042,13 +3248,18 @@ export type CartUncheckedUpdateWithoutDeliveryZoneInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mergedFrom?: Prisma.CartUncheckedUpdateManyWithoutMergedIntoNestedInput
   items?: Prisma.CartItemUncheckedUpdateManyWithoutCartNestedInput
+  savedAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutCartNestedInput
 }
 
 export type CartUncheckedUpdateManyWithoutDeliveryZoneInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   merchantId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoCartId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checkoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCartStatusFieldUpdateOperationsInput | $Enums.CartStatus
@@ -2071,11 +3282,15 @@ export type CartUncheckedUpdateManyWithoutDeliveryZoneInput = {
  */
 
 export type CartCountOutputType = {
+  mergedFrom: number
   items: number
+  savedAddresses: number
 }
 
 export type CartCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  mergedFrom?: boolean | CartCountOutputTypeCountMergedFromArgs
   items?: boolean | CartCountOutputTypeCountItemsArgs
+  savedAddresses?: boolean | CartCountOutputTypeCountSavedAddressesArgs
 }
 
 /**
@@ -2091,8 +3306,22 @@ export type CartCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * CartCountOutputType without action
  */
+export type CartCountOutputTypeCountMergedFromArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CartWhereInput
+}
+
+/**
+ * CartCountOutputType without action
+ */
 export type CartCountOutputTypeCountItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.CartItemWhereInput
+}
+
+/**
+ * CartCountOutputType without action
+ */
+export type CartCountOutputTypeCountSavedAddressesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CustomerAddressWhereInput
 }
 
 
@@ -2100,6 +3329,9 @@ export type CartSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   id?: boolean
   merchantId?: boolean
   customerId?: boolean
+  ownerId?: boolean
+  createdById?: boolean
+  mergedIntoCartId?: boolean
   checkoutSessionId?: boolean
   accessTokenHash?: boolean
   status?: boolean
@@ -2117,12 +3349,17 @@ export type CartSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
   customer?: boolean | Prisma.Cart$customerArgs<ExtArgs>
+  owner?: boolean | Prisma.Cart$ownerArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Cart$createdByArgs<ExtArgs>
+  mergedInto?: boolean | Prisma.Cart$mergedIntoArgs<ExtArgs>
+  mergedFrom?: boolean | Prisma.Cart$mergedFromArgs<ExtArgs>
   checkoutSession?: boolean | Prisma.Cart$checkoutSessionArgs<ExtArgs>
   shippingAddress?: boolean | Prisma.Cart$shippingAddressArgs<ExtArgs>
   billingAddress?: boolean | Prisma.Cart$billingAddressArgs<ExtArgs>
   deliveryMethod?: boolean | Prisma.Cart$deliveryMethodArgs<ExtArgs>
   deliveryZone?: boolean | Prisma.Cart$deliveryZoneArgs<ExtArgs>
   items?: boolean | Prisma.Cart$itemsArgs<ExtArgs>
+  savedAddresses?: boolean | Prisma.Cart$savedAddressesArgs<ExtArgs>
   _count?: boolean | Prisma.CartCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cart"]>
 
@@ -2130,6 +3367,9 @@ export type CartSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   merchantId?: boolean
   customerId?: boolean
+  ownerId?: boolean
+  createdById?: boolean
+  mergedIntoCartId?: boolean
   checkoutSessionId?: boolean
   accessTokenHash?: boolean
   status?: boolean
@@ -2147,6 +3387,9 @@ export type CartSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   updatedAt?: boolean
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
   customer?: boolean | Prisma.Cart$customerArgs<ExtArgs>
+  owner?: boolean | Prisma.Cart$ownerArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Cart$createdByArgs<ExtArgs>
+  mergedInto?: boolean | Prisma.Cart$mergedIntoArgs<ExtArgs>
   checkoutSession?: boolean | Prisma.Cart$checkoutSessionArgs<ExtArgs>
   shippingAddress?: boolean | Prisma.Cart$shippingAddressArgs<ExtArgs>
   billingAddress?: boolean | Prisma.Cart$billingAddressArgs<ExtArgs>
@@ -2158,6 +3401,9 @@ export type CartSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   merchantId?: boolean
   customerId?: boolean
+  ownerId?: boolean
+  createdById?: boolean
+  mergedIntoCartId?: boolean
   checkoutSessionId?: boolean
   accessTokenHash?: boolean
   status?: boolean
@@ -2175,6 +3421,9 @@ export type CartSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   updatedAt?: boolean
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
   customer?: boolean | Prisma.Cart$customerArgs<ExtArgs>
+  owner?: boolean | Prisma.Cart$ownerArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Cart$createdByArgs<ExtArgs>
+  mergedInto?: boolean | Prisma.Cart$mergedIntoArgs<ExtArgs>
   checkoutSession?: boolean | Prisma.Cart$checkoutSessionArgs<ExtArgs>
   shippingAddress?: boolean | Prisma.Cart$shippingAddressArgs<ExtArgs>
   billingAddress?: boolean | Prisma.Cart$billingAddressArgs<ExtArgs>
@@ -2186,6 +3435,9 @@ export type CartSelectScalar = {
   id?: boolean
   merchantId?: boolean
   customerId?: boolean
+  ownerId?: boolean
+  createdById?: boolean
+  mergedIntoCartId?: boolean
   checkoutSessionId?: boolean
   accessTokenHash?: boolean
   status?: boolean
@@ -2203,21 +3455,29 @@ export type CartSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CartOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "merchantId" | "customerId" | "checkoutSessionId" | "accessTokenHash" | "status" | "sourceChannel" | "customerName" | "customerEmail" | "customerPhone" | "note" | "shippingAddressId" | "billingAddressId" | "deliveryMethodId" | "deliveryZoneId" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["cart"]>
+export type CartOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "merchantId" | "customerId" | "ownerId" | "createdById" | "mergedIntoCartId" | "checkoutSessionId" | "accessTokenHash" | "status" | "sourceChannel" | "customerName" | "customerEmail" | "customerPhone" | "note" | "shippingAddressId" | "billingAddressId" | "deliveryMethodId" | "deliveryZoneId" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["cart"]>
 export type CartInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
   customer?: boolean | Prisma.Cart$customerArgs<ExtArgs>
+  owner?: boolean | Prisma.Cart$ownerArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Cart$createdByArgs<ExtArgs>
+  mergedInto?: boolean | Prisma.Cart$mergedIntoArgs<ExtArgs>
+  mergedFrom?: boolean | Prisma.Cart$mergedFromArgs<ExtArgs>
   checkoutSession?: boolean | Prisma.Cart$checkoutSessionArgs<ExtArgs>
   shippingAddress?: boolean | Prisma.Cart$shippingAddressArgs<ExtArgs>
   billingAddress?: boolean | Prisma.Cart$billingAddressArgs<ExtArgs>
   deliveryMethod?: boolean | Prisma.Cart$deliveryMethodArgs<ExtArgs>
   deliveryZone?: boolean | Prisma.Cart$deliveryZoneArgs<ExtArgs>
   items?: boolean | Prisma.Cart$itemsArgs<ExtArgs>
+  savedAddresses?: boolean | Prisma.Cart$savedAddressesArgs<ExtArgs>
   _count?: boolean | Prisma.CartCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CartIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
   customer?: boolean | Prisma.Cart$customerArgs<ExtArgs>
+  owner?: boolean | Prisma.Cart$ownerArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Cart$createdByArgs<ExtArgs>
+  mergedInto?: boolean | Prisma.Cart$mergedIntoArgs<ExtArgs>
   checkoutSession?: boolean | Prisma.Cart$checkoutSessionArgs<ExtArgs>
   shippingAddress?: boolean | Prisma.Cart$shippingAddressArgs<ExtArgs>
   billingAddress?: boolean | Prisma.Cart$billingAddressArgs<ExtArgs>
@@ -2227,6 +3487,9 @@ export type CartIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type CartIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   merchant?: boolean | Prisma.MerchantDefaultArgs<ExtArgs>
   customer?: boolean | Prisma.Cart$customerArgs<ExtArgs>
+  owner?: boolean | Prisma.Cart$ownerArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Cart$createdByArgs<ExtArgs>
+  mergedInto?: boolean | Prisma.Cart$mergedIntoArgs<ExtArgs>
   checkoutSession?: boolean | Prisma.Cart$checkoutSessionArgs<ExtArgs>
   shippingAddress?: boolean | Prisma.Cart$shippingAddressArgs<ExtArgs>
   billingAddress?: boolean | Prisma.Cart$billingAddressArgs<ExtArgs>
@@ -2239,17 +3502,37 @@ export type $CartPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     merchant: Prisma.$MerchantPayload<ExtArgs>
     customer: Prisma.$CustomerPayload<ExtArgs> | null
+    owner: Prisma.$UserPayload<ExtArgs> | null
+    createdBy: Prisma.$UserPayload<ExtArgs> | null
+    mergedInto: Prisma.$CartPayload<ExtArgs> | null
+    mergedFrom: Prisma.$CartPayload<ExtArgs>[]
     checkoutSession: Prisma.$CheckoutSessionPayload<ExtArgs> | null
     shippingAddress: Prisma.$CustomerAddressPayload<ExtArgs> | null
     billingAddress: Prisma.$CustomerAddressPayload<ExtArgs> | null
     deliveryMethod: Prisma.$DeliveryMethodPayload<ExtArgs> | null
     deliveryZone: Prisma.$DeliveryZonePayload<ExtArgs> | null
     items: Prisma.$CartItemPayload<ExtArgs>[]
+    savedAddresses: Prisma.$CustomerAddressPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     merchantId: string
     customerId: string | null
+    /**
+     * The signed-in shopper this cart belongs to. Never a staff member — see
+     * `createdById`, which is the staff member who built a cart for someone.
+     */
+    ownerId: string | null
+    /**
+     * The staff member who built this cart on a customer's behalf (a POS
+     * phone/walk-in order). Distinct from `ownerId`: conflating the two lets a
+     * staff account resolve to the customer they last served.
+     */
+    createdById: string | null
+    /**
+     * Set when this cart was folded into another on sign-in.
+     */
+    mergedIntoCartId: string | null
     checkoutSessionId: string | null
     accessTokenHash: string
     status: $Enums.CartStatus
@@ -2661,12 +3944,17 @@ export interface Prisma__CartClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   merchant<T extends Prisma.MerchantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MerchantDefaultArgs<ExtArgs>>): Prisma.Prisma__MerchantClient<runtime.Types.Result.GetResult<Prisma.$MerchantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   customer<T extends Prisma.Cart$customerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cart$customerArgs<ExtArgs>>): Prisma.Prisma__CustomerClient<runtime.Types.Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  owner<T extends Prisma.Cart$ownerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cart$ownerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  createdBy<T extends Prisma.Cart$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cart$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  mergedInto<T extends Prisma.Cart$mergedIntoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cart$mergedIntoArgs<ExtArgs>>): Prisma.Prisma__CartClient<runtime.Types.Result.GetResult<Prisma.$CartPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  mergedFrom<T extends Prisma.Cart$mergedFromArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cart$mergedFromArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CartPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   checkoutSession<T extends Prisma.Cart$checkoutSessionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cart$checkoutSessionArgs<ExtArgs>>): Prisma.Prisma__CheckoutSessionClient<runtime.Types.Result.GetResult<Prisma.$CheckoutSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   shippingAddress<T extends Prisma.Cart$shippingAddressArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cart$shippingAddressArgs<ExtArgs>>): Prisma.Prisma__CustomerAddressClient<runtime.Types.Result.GetResult<Prisma.$CustomerAddressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   billingAddress<T extends Prisma.Cart$billingAddressArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cart$billingAddressArgs<ExtArgs>>): Prisma.Prisma__CustomerAddressClient<runtime.Types.Result.GetResult<Prisma.$CustomerAddressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   deliveryMethod<T extends Prisma.Cart$deliveryMethodArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cart$deliveryMethodArgs<ExtArgs>>): Prisma.Prisma__DeliveryMethodClient<runtime.Types.Result.GetResult<Prisma.$DeliveryMethodPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   deliveryZone<T extends Prisma.Cart$deliveryZoneArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cart$deliveryZoneArgs<ExtArgs>>): Prisma.Prisma__DeliveryZoneClient<runtime.Types.Result.GetResult<Prisma.$DeliveryZonePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   items<T extends Prisma.Cart$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cart$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CartItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  savedAddresses<T extends Prisma.Cart$savedAddressesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cart$savedAddressesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CustomerAddressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2699,6 +3987,9 @@ export interface CartFieldRefs {
   readonly id: Prisma.FieldRef<"Cart", 'String'>
   readonly merchantId: Prisma.FieldRef<"Cart", 'String'>
   readonly customerId: Prisma.FieldRef<"Cart", 'String'>
+  readonly ownerId: Prisma.FieldRef<"Cart", 'String'>
+  readonly createdById: Prisma.FieldRef<"Cart", 'String'>
+  readonly mergedIntoCartId: Prisma.FieldRef<"Cart", 'String'>
   readonly checkoutSessionId: Prisma.FieldRef<"Cart", 'String'>
   readonly accessTokenHash: Prisma.FieldRef<"Cart", 'String'>
   readonly status: Prisma.FieldRef<"Cart", 'CartStatus'>
@@ -3134,6 +4425,87 @@ export type Cart$customerArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
+ * Cart.owner
+ */
+export type Cart$ownerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * Cart.createdBy
+ */
+export type Cart$createdByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * Cart.mergedInto
+ */
+export type Cart$mergedIntoArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Cart
+   */
+  select?: Prisma.CartSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Cart
+   */
+  omit?: Prisma.CartOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CartInclude<ExtArgs> | null
+  where?: Prisma.CartWhereInput
+}
+
+/**
+ * Cart.mergedFrom
+ */
+export type Cart$mergedFromArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Cart
+   */
+  select?: Prisma.CartSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Cart
+   */
+  omit?: Prisma.CartOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CartInclude<ExtArgs> | null
+  where?: Prisma.CartWhereInput
+  orderBy?: Prisma.CartOrderByWithRelationInput | Prisma.CartOrderByWithRelationInput[]
+  cursor?: Prisma.CartWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CartScalarFieldEnum | Prisma.CartScalarFieldEnum[]
+}
+
+/**
  * Cart.checkoutSession
  */
 export type Cart$checkoutSessionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3250,6 +4622,30 @@ export type Cart$itemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
   take?: number
   skip?: number
   distinct?: Prisma.CartItemScalarFieldEnum | Prisma.CartItemScalarFieldEnum[]
+}
+
+/**
+ * Cart.savedAddresses
+ */
+export type Cart$savedAddressesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CustomerAddress
+   */
+  select?: Prisma.CustomerAddressSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CustomerAddress
+   */
+  omit?: Prisma.CustomerAddressOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerAddressInclude<ExtArgs> | null
+  where?: Prisma.CustomerAddressWhereInput
+  orderBy?: Prisma.CustomerAddressOrderByWithRelationInput | Prisma.CustomerAddressOrderByWithRelationInput[]
+  cursor?: Prisma.CustomerAddressWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CustomerAddressScalarFieldEnum | Prisma.CustomerAddressScalarFieldEnum[]
 }
 
 /**
