@@ -5,17 +5,15 @@ import {
   UpdateAddressDto,
 } from '#app/modules/address/dto/address-input.dto';
 import {
-  CustomerDirectoryService,
-  DirectoryAccount,
-} from '#app/modules/storefront/customer-directory/customer-directory.service';
-import { StorefrontContextService } from '#app/modules/storefront/context/storefront-context.service';
+  ShopperAccount,
+  StorefrontContextService,
+} from '#app/modules/storefront/context/storefront-context.service';
 
 @Injectable()
 export class StorefrontAddressService {
   constructor(
     private readonly addresses: AddressService,
     private readonly context: StorefrontContextService,
-    private readonly directory: CustomerDirectoryService,
   ) {}
 
   async findAll(merchantSlug: string, userId: string) {
@@ -25,11 +23,14 @@ export class StorefrontAddressService {
 
   async create(
     merchantSlug: string,
-    account: DirectoryAccount,
+    account: ShopperAccount,
     dto: CreateAddressDto,
   ) {
     const merchantId = await this.context.resolveMerchantId(merchantSlug);
-    const customerId = await this.directory.resolveForUser(merchantId, account);
+    const customerId = await this.context.resolveCustomerForUser(
+      merchantId,
+      account,
+    );
     return this.addresses.create(
       { merchantId, customerId, ownerId: account.id },
       dto,

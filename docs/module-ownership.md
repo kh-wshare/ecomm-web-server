@@ -88,11 +88,12 @@ smaller scale: `CartPricingService` prices a cart of items, and both
 maintaining their own copy. `storefront/context` is the same idea for the one
 slug-to-merchant lookup every public surface needs first.
 
-`storefront/customer-directory` was split out of it: resolving a public slug to
-a merchant and resolving a signed-in shopper to their `Customer` row are
-different questions, and holding both in a module named "context" meant a
-module named after neither of its services. One service per module, named to
-match, the way every other module here is arranged.
+`StorefrontContextService` answers both halves of "who and what is this
+storefront request about": the merchant behind a public slug, and the
+`Customer` behind a signed-in shopper (`resolveCustomerForUser`). The cart, the
+account address book and the loyalty balance all resolve the customer through
+it, so the three cannot drift apart and start creating a second customer row
+for the same person.
 
 `address/` is that pattern applied to the address book. `AddressService`
 owns the mechanics — the canonical select, field normalisation, the
@@ -132,8 +133,7 @@ storefront/cart               cart: lines, contact, delivery choice, convert to 
 storefront/address            shopper address book — account/ and guest/, see below
 storefront/delivery           delivery quoting for a destination + order tracking
 storefront/loyalty            the signed-in shopper's own points balance
-storefront/context            slug -> merchant lookup
-storefront/customer-directory signed-in shopper -> merchant Customer mapping
+storefront/context            slug -> merchant, and signed-in shopper -> Customer
 checkout                      public checkout session creation/confirm/cancel
 storefront/payment            public payment-intent creation + status polling
 storefront/payment-webhook    provider webhook callbacks (KHQR push, PayWay callback)
@@ -155,7 +155,7 @@ a shopper who logs in partway through checkout.
 folders: `guest/` (keyed on the cart token, cart in the URL) and `account/`
 (keyed on the authenticated user, no cart anywhere, and deliberately *not*
 `@Public()` so the global `JwtAuthGuard` applies). Both resolve to the same
-merchant-side `Customer` row through `CustomerDirectoryService`, so the two
+merchant-side `Customer` row through `StorefrontContextService`, so the two
 can never start creating a second customer for the same person, and both call
 `AddressService` for storage rather than carrying their own copy.
 

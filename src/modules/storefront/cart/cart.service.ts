@@ -21,10 +21,9 @@ import {
   PricedCart,
 } from '#app/modules/pricing/cart-pricing.service';
 import {
-  CustomerDirectoryService,
-  DirectoryAccount,
-} from '#app/modules/storefront/customer-directory/customer-directory.service';
-import { StorefrontContextService } from '#app/modules/storefront/context/storefront-context.service';
+  ShopperAccount,
+  StorefrontContextService,
+} from '#app/modules/storefront/context/storefront-context.service';
 import {
   CartItemInputDto,
   CheckoutCartDto,
@@ -41,10 +40,10 @@ type AuditMetadata = {
 
 /**
  * The signed-in shopper a cart can belong to, when there is one. Identical to
- * `DirectoryAccount` by design — a cart owner and an address-book owner are
- * the same person, and the directory is what maps either to a `Customer`.
+ * `ShopperAccount` by design — a cart owner and an address-book owner are the
+ * same person, and `StorefrontContextService` maps either to a `Customer`.
  */
-export type CartOwner = DirectoryAccount;
+export type CartOwner = ShopperAccount;
 
 const CART_TTL_DAYS = 30;
 
@@ -106,7 +105,6 @@ export class CartService {
     private readonly pricing: CartPricingService,
     private readonly delivery: DeliveryQuoteService,
     private readonly checkout: CheckoutService,
-    private readonly directory: CustomerDirectoryService,
   ) {}
 
   async create(merchantSlug: string, dto: CreateCartDto, user?: CartOwner) {
@@ -121,7 +119,7 @@ export class CartService {
     // Created while signed in, so it belongs to them from the first request
     // and their saved addresses are available straight away.
     const customerId = user
-      ? await this.directory.resolveForUser(merchantId, user)
+      ? await this.context.resolveCustomerForUser(merchantId, user)
       : null;
 
     const cart = await this.prisma.cart.create({
@@ -159,7 +157,7 @@ export class CartService {
    * permission-gated path, so that guard is untouched.
    *
    * The staff member goes in `createdById`, never `ownerId`: `ownerId` means
-   * "the shopper whose account this is", and `CustomerDirectoryService` reads
+   * "the shopper whose account this is", and `StorefrontContextService` reads
    * it that way. Putting staff there made a cashier resolve to whichever
    * customer they last served.
    */
@@ -655,7 +653,7 @@ export class CartService {
     cart: LoadedCart,
     user: CartOwner,
   ): Promise<LoadedCart> {
-    const customerId = await this.directory.resolveForUser(
+    const customerId = await this.context.resolveCustomerForUser(
       cart.merchantId,
       user,
     );

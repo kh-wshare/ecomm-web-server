@@ -48,7 +48,7 @@ export const addressOrder = [
  * once, here, rather than spelled out at each call site:
  *
  * - `ownerId` — the signed-in shopper whose account this address is. Proof of
- *   an account link; `CustomerDirectoryService` reads it as exactly that.
+ *   an account link; `StorefrontContextService` reads it as exactly that.
  * - `createdById` — the staff member who typed it for someone else. Never an
  *   account link: a walk-in customer has no account.
  * - `cartId` — the cart it was saved through, which is what lets a guest cart

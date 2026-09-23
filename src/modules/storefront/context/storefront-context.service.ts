@@ -1,6 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
 
+/** A signed-in shopper, as the storefront knows them. */
+export type ShopperAccount = {
+  id: string;
+  email: string | null;
+  fullName: string;
+};
+
 export interface StorefrontMerchant {
   id: string;
   name: string;
@@ -9,15 +16,6 @@ export interface StorefrontMerchant {
   phone: string | null;
 }
 
-/**
- * Resolves a public `:merchantSlug` path segment to the merchant behind it.
- *
- * Every storefront surface needs this first — catalog, cart, addresses,
- * delivery quoting and checkout — and each used to carry its own copy of the
- * slug lookup, which meant the "is this storefront actually live?" rule
- * (ACTIVE and not soft-deleted) was restated in several places. One copy here,
- * following the same extraction as `CartPricingService`.
- */
 @Injectable()
 export class StorefrontContextService {
   constructor(private readonly prisma: PrismaService) {}
@@ -45,5 +43,37 @@ export class StorefrontContextService {
   async resolveMerchantId(slug: string): Promise<string> {
     const merchant = await this.resolveMerchant(slug);
     return merchant.id;
+  }
+
+  async resolveCustomerForUser(
+    merchantId: string,
+    account: ShopperAccount,
+  ): Promise<string> {
+    const owned = await this.prisma.customerAddress.findFirst({
+      where: { merchantId, ownerId: account.id, deletedAt: null },
+      orderBy: { createdAt: 'asc' },
+      select: { customerId: true },
+    });
+    if (owned) return owned.customerId;
+
+    const email = account.email?.trim().toLowerCase();
+    const matched = email
+      ? await this.prisma.customer.findFirst({
+          where: {
+            merchantId,
+            deletedAt: null,
+            email: { equals: email, mode: 'insensitive' },
+          },
+          orderBy: { createdAt: 'asc' },
+          select: { id: true },
+        })
+      : null;
+    if (matched) return matched.id;
+
+    const created = await this.prisma.customer.create({
+      data: { merchantId, fullName: account.fullName, email: email ?? null },
+      select: { id: true },
+    });
+    return created.id;
   }
 }

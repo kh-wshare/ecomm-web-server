@@ -9,7 +9,6 @@ import {
 import { CurrentUser } from '#app/modules/authenticated/decorators/current-user.decorator';
 import type { AuthenticatedUser } from '#app/modules/authenticated/interfaces/authenticated-user.interface';
 import { LoyaltyService } from '#app/modules/loyalty/loyalty.service';
-import { CustomerDirectoryService } from '#app/modules/storefront/customer-directory/customer-directory.service';
 import { StorefrontContextService } from '#app/modules/storefront/context/storefront-context.service';
 import { LoyaltyBalanceDto } from './dto/loyalty-response.dto';
 
@@ -28,7 +27,6 @@ export class StorefrontLoyaltyController {
   constructor(
     private readonly loyalty: LoyaltyService,
     private readonly context: StorefrontContextService,
-    private readonly directory: CustomerDirectoryService,
   ) {}
 
   @Get()
@@ -42,7 +40,10 @@ export class StorefrontLoyaltyController {
   ) {
     if (!user) throw new UnauthorizedException('Sign in to see your points');
     const merchantId = await this.context.resolveMerchantId(merchantSlug);
-    const customerId = await this.directory.resolveForUser(merchantId, user);
+    const customerId = await this.context.resolveCustomerForUser(
+      merchantId,
+      user,
+    );
     return this.loyalty.balanceFor(merchantId, customerId);
   }
 }

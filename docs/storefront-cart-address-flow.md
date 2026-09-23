@@ -7,7 +7,6 @@ account earns.
 The code lives in [`src/modules/storefront/cart`](../src/modules/storefront/cart),
 [`src/modules/storefront/address`](../src/modules/storefront/address),
 [`src/modules/storefront/context`](../src/modules/storefront/context),
-[`src/modules/storefront/customer-directory`](../src/modules/storefront/customer-directory),
 [`src/modules/address`](../src/modules/address),
 [`src/modules/pos/carts`](../src/modules/pos/carts) and
 [`src/modules/loyalty`](../src/modules/loyalty). This doc is the narrative map;
@@ -74,12 +73,12 @@ customer_addresses.cart_id     the cart an address was saved through. Exists
 ```
 
 `customer_addresses` carries the same `owner_id` / `created_by_id` split, for
-the same reason. Keeping them apart is not cosmetic: `CustomerDirectoryService`
+the same reason. Keeping them apart is not cosmetic: `StorefrontContextService`
 treats a non-null `owner_id` as proof that a user account belongs to that
 customer, so a staff id sitting in that column made a cashier resolve to
 whichever customer they last served. See TODO-A.
 
-[`CustomerDirectoryService.resolveForUser`](../src/modules/storefront/customer-directory/customer-directory.service.ts)
+[`StorefrontContextService.resolveCustomerForUser`](../src/modules/storefront/context/storefront-context.service.ts)
 is the one place that maps a signed-in shopper to their `Customer` row. Both
 the account address book and cart binding call it, so the two cannot drift
 apart and start creating a second customer row for the same person. Its
@@ -142,7 +141,7 @@ GET    /storefront/:slug/loyalty                 points balance + ledger
 
 Those addresses are assignable to a cart through the same
 `PATCH /cart/:id/addresses/:addressId/assign` route, because both surfaces
-resolve to the same `customer_id` via `CustomerDirectoryService`.
+resolve to the same `customer_id` via `StorefrontContextService`.
 
 ### 3c. Staff-assisted (POS)
 
@@ -265,7 +264,7 @@ each change was for, because several of them look arbitrary without it.
 > **Was: high — live data-integrity and disclosure bug.**
 
 `PosAddressesService` wrote the **staff** `user.id` into
-`customer_addresses.owner_id`, while `CustomerDirectoryService` read that
+`customer_addresses.owner_id`, while `StorefrontContextService` read that
 column as "the **shopper's** account". Staff member Sara saves an address for
 walk-in customer Bob; Sara later signs into the storefront and her cart,
 orders and address book attach to **Bob's** customer record, and

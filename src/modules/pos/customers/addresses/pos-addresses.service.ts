@@ -12,7 +12,7 @@ import { PosAddressQueryDto } from './dto/pos-address-query.dto';
  *
  * These rows record the staff member in `createdById` and leave `ownerId`
  * null. A walk-in customer has no account, so nothing here may claim to be
- * one: `CustomerDirectoryService` treats a non-null `ownerId` as proof that a
+ * one: `StorefrontContextService` treats a non-null `ownerId` as proof that a
  * user account belongs to that customer.
  */
 @Injectable()

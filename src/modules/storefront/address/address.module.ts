@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AddressModule } from '#app/modules/address/address.module';
 import { CartModule } from '#app/modules/storefront/cart/cart.module';
 import { StorefrontContextModule } from '#app/modules/storefront/context/storefront-context.module';
-import { CustomerDirectoryModule } from '#app/modules/storefront/customer-directory/customer-directory.module';
 import { StorefrontAddressController } from './address.controller';
 import { StorefrontAddressService } from './address.service';
 import { GuestAddressController } from './guest/guest-address.controller';
@@ -21,12 +20,7 @@ import { GuestAddressService } from './guest/guest-address.service';
  * allowed to see what*, which is the only thing that actually differs.
  */
 @Module({
-  imports: [
-    AddressModule,
-    CartModule,
-    CustomerDirectoryModule,
-    StorefrontContextModule,
-  ],
+  imports: [AddressModule, CartModule, StorefrontContextModule],
   controllers: [StorefrontAddressController, GuestAddressController],
   providers: [StorefrontAddressService, GuestAddressService],
   exports: [StorefrontAddressService, GuestAddressService],
