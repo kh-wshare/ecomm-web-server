@@ -16,17 +16,15 @@ export class StorefrontAddressService {
     private readonly context: StorefrontContextService,
   ) {}
 
-  async findAll(merchantSlug: string, userId: string) {
-    const merchantId = await this.context.resolveMerchantId(merchantSlug);
+  async findAll(merchantId: string, userId: string) {
     return this.addresses.findMany({ merchantId, ownerId: userId });
   }
 
   async create(
-    merchantSlug: string,
+    merchantId: string,
     account: ShopperAccount,
     dto: CreateAddressDto,
   ) {
-    const merchantId = await this.context.resolveMerchantId(merchantSlug);
     const customerId = await this.context.resolveCustomerForUser(
       merchantId,
       account,
@@ -38,22 +36,21 @@ export class StorefrontAddressService {
   }
 
   async update(
-    merchantSlug: string,
+    merchantId: string,
     userId: string,
     addressId: string,
     dto: UpdateAddressDto,
   ) {
-    const address = await this.load(merchantSlug, userId, addressId);
+    const address = await this.load(merchantId, userId, addressId);
     return this.addresses.update(addressId, address.customerId, dto);
   }
 
-  async remove(merchantSlug: string, userId: string, addressId: string) {
-    await this.load(merchantSlug, userId, addressId);
+  async remove(merchantId: string, userId: string, addressId: string) {
+    await this.load(merchantId, userId, addressId);
     return this.addresses.softDelete(addressId);
   }
 
-  private async load(merchantSlug: string, userId: string, addressId: string) {
-    const merchantId = await this.context.resolveMerchantId(merchantSlug);
+  private async load(merchantId: string, userId: string, addressId: string) {
     return this.addresses.requireOne({
       id: addressId,
       merchantId,

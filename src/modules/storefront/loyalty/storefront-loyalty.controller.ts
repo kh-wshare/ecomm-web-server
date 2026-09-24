@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, UnauthorizedException } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOkResponse,
@@ -9,6 +9,10 @@ import {
 import { CurrentUser } from '#app/modules/authenticated/decorators/current-user.decorator';
 import type { AuthenticatedUser } from '#app/modules/authenticated/interfaces/authenticated-user.interface';
 import { LoyaltyService } from '#app/modules/loyalty/loyalty.service';
+import {
+  CurrentStorefrontMerchant,
+  StorefrontScoped,
+} from '#app/modules/storefront/context/current-storefront-merchant.decorator';
 import { StorefrontContextService } from '#app/modules/storefront/context/storefront-context.service';
 import { LoyaltyBalanceDto } from './dto/loyalty-response.dto';
 
@@ -17,12 +21,13 @@ import { LoyaltyBalanceDto } from './dto/loyalty-response.dto';
  *
  * Deliberately not `@Public()`: points belong to an account, and a guest cart
  * token proves only that someone holds a cart. Balances are per-merchant, so
- * the slug picks which one.
+ * the `X-Merchant-Slug` header picks which one.
  */
 @ApiTags('Loyalty')
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({ description: 'Missing or invalid bearer token' })
-@Controller('storefront/:merchantSlug/loyalty')
+@StorefrontScoped()
+@Controller('storefront/loyalty')
 export class StorefrontLoyaltyController {
   constructor(
     private readonly loyalty: LoyaltyService,
@@ -35,11 +40,10 @@ export class StorefrontLoyaltyController {
   })
   @ApiOkResponse({ type: LoyaltyBalanceDto })
   async findMine(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @CurrentUser() user: AuthenticatedUser,
   ) {
     if (!user) throw new UnauthorizedException('Sign in to see your points');
-    const merchantId = await this.context.resolveMerchantId(merchantSlug);
     const customerId = await this.context.resolveCustomerForUser(
       merchantId,
       user,

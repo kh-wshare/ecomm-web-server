@@ -50,17 +50,12 @@ export class GuestAddressService {
   ) {}
 
   async findAll(
-    merchantSlug: string,
+    merchantId: string,
     cartId: string,
     token?: string,
     user?: CartOwner,
   ) {
-    const cart = await this.carts.authenticate(
-      merchantSlug,
-      cartId,
-      token,
-      user,
-    );
+    const cart = await this.carts.authenticate(merchantId, cartId, token, user);
     if (!cart.customerId) return [];
     return this.addresses.findMany({
       merchantId: cart.merchantId,
@@ -70,14 +65,14 @@ export class GuestAddressService {
   }
 
   async create(
-    merchantSlug: string,
+    merchantId: string,
     cartId: string,
     token: string | undefined,
     dto: CreateAddressDto,
     user?: CartOwner,
   ) {
     const cart = await this.carts.authenticateActive(
-      merchantSlug,
+      merchantId,
       cartId,
       token,
       user,
@@ -97,7 +92,7 @@ export class GuestAddressService {
   }
 
   async update(
-    merchantSlug: string,
+    merchantId: string,
     cartId: string,
     token: string | undefined,
     addressId: string,
@@ -105,7 +100,7 @@ export class GuestAddressService {
     user?: CartOwner,
   ) {
     const cart = await this.carts.authenticateActive(
-      merchantSlug,
+      merchantId,
       cartId,
       token,
       user,
@@ -115,14 +110,14 @@ export class GuestAddressService {
   }
 
   async remove(
-    merchantSlug: string,
+    merchantId: string,
     cartId: string,
     token: string | undefined,
     addressId: string,
     user?: CartOwner,
   ) {
     const cart = await this.carts.authenticateActive(
-      merchantSlug,
+      merchantId,
       cartId,
       token,
       user,
@@ -138,7 +133,7 @@ export class GuestAddressService {
    * freshly quoted options.
    */
   async assignToCart(
-    merchantSlug: string,
+    merchantId: string,
     cartId: string,
     token: string | undefined,
     addressId: string,
@@ -146,7 +141,7 @@ export class GuestAddressService {
     user?: CartOwner,
   ) {
     const cart = await this.carts.authenticateActive(
-      merchantSlug,
+      merchantId,
       cartId,
       token,
       user,
@@ -164,7 +159,7 @@ export class GuestAddressService {
             }
           : { billingAddressId: addressId },
     });
-    return this.carts.findOne(merchantSlug, cartId, token, user);
+    return this.carts.findOne(merchantId, cartId, token, user);
   }
 
   private async load(cart: CartIdentity, addressId: string) {

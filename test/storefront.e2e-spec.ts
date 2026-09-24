@@ -115,7 +115,8 @@ describe('Public storefront (e2e)', () => {
     const merchantSlug = account.activeMerchant.merchant.slug;
 
     const storefront = await request(app.getHttpServer())
-      .get(`/storefront/${merchantSlug}`)
+      .get('/storefront')
+      .set('X-Merchant-Slug', merchantSlug)
       .expect(200);
     expect(storefront.body.data).toMatchObject({
       merchant: { id: account.activeMerchant.merchant.id, slug: merchantSlug },
@@ -128,14 +129,16 @@ describe('Public storefront (e2e)', () => {
     );
 
     const list = await request(app.getHttpServer())
-      .get(`/storefront/${merchantSlug}/products`)
+      .get('/storefront/products')
+      .set('X-Merchant-Slug', merchantSlug)
       .query({ search: product.sku, page: 1, limit: 5 })
       .expect(200);
     expect(list.body.data).toHaveLength(1);
     expect(list.body.meta).toMatchObject({ total: 1, page: 1, limit: 5 });
 
     const detail = await request(app.getHttpServer())
-      .get(`/storefront/${merchantSlug}/products/${product.slug}`)
+      .get(`/storefront/products/${product.slug}`)
+      .set('X-Merchant-Slug', merchantSlug)
       .expect(200);
     expect(detail.body.data).toMatchObject({
       id: product.id,
@@ -152,7 +155,8 @@ describe('Public storefront (e2e)', () => {
     expect(detail.body.data).not.toHaveProperty('deletedAt');
 
     const theme = await request(app.getHttpServer())
-      .get(`/storefront/${merchantSlug}/theme`)
+      .get('/storefront/theme')
+      .set('X-Merchant-Slug', merchantSlug)
       .expect(200);
     expect(theme.body.data).toMatchObject({
       version: 1,
@@ -178,7 +182,8 @@ describe('Public storefront (e2e)', () => {
     const unstocked = await createProduct(token);
 
     const website = await request(app.getHttpServer())
-      .get(`/storefront/${merchantSlug}/products`)
+      .get('/storefront/products')
+      .set('X-Merchant-Slug', merchantSlug)
       .expect(200);
     expect(website.body.data.map(({ id }: { id: string }) => id)).toEqual(
       expect.arrayContaining([buffered.id, unstocked.id]),
@@ -194,7 +199,8 @@ describe('Public storefront (e2e)', () => {
     ).toMatchObject({ isAvailable: false, isPurchasable: false });
 
     const pos = await request(app.getHttpServer())
-      .get(`/storefront/${merchantSlug}/products`)
+      .get('/storefront/products')
+      .set('X-Merchant-Slug', merchantSlug)
       .query({ channel: 'POS' })
       .expect(200);
     expect(pos.body.data.map(({ id }: { id: string }) => id)).toEqual(
@@ -206,7 +212,8 @@ describe('Public storefront (e2e)', () => {
 
     await adjust(token, buffered.id, 1, 2).expect(201);
     const available = await request(app.getHttpServer())
-      .get(`/storefront/${merchantSlug}/products`)
+      .get('/storefront/products')
+      .set('X-Merchant-Slug', merchantSlug)
       .expect(200);
     expect(
       available.body.data.find(({ id }: { id: string }) => id === buffered.id),
@@ -217,11 +224,13 @@ describe('Public storefront (e2e)', () => {
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
     await request(app.getHttpServer())
-      .get(`/storefront/${merchantSlug}/products/${buffered.slug}`)
+      .get(`/storefront/products/${buffered.slug}`)
+      .set('X-Merchant-Slug', merchantSlug)
       .expect(404);
 
     await request(app.getHttpServer())
-      .get(`/storefront/${merchantSlug}/products`)
+      .get('/storefront/products')
+      .set('X-Merchant-Slug', merchantSlug)
       .query({ channel: 'not-a-channel' })
       .expect(400);
   });
@@ -234,7 +243,8 @@ describe('Public storefront (e2e)', () => {
     await adjust(token, product.id, 3).expect(201);
 
     const detail = await request(app.getHttpServer())
-      .get(`/storefront/${merchantSlug}/products/${product.slug}`)
+      .get(`/storefront/products/${product.slug}`)
+      .set('X-Merchant-Slug', merchantSlug)
       .expect(200);
     expect(detail.body.data).toMatchObject({
       id: product.id,
@@ -273,13 +283,16 @@ describe('Public storefront (e2e)', () => {
     });
 
     await request(app.getHttpServer())
-      .get(`/storefront/${merchant.slug}`)
+      .get('/storefront')
+      .set('X-Merchant-Slug', merchant.slug)
       .expect(404);
     await request(app.getHttpServer())
-      .get(`/storefront/${merchant.slug}/products`)
+      .get('/storefront/products')
+      .set('X-Merchant-Slug', merchant.slug)
       .expect(404);
     await request(app.getHttpServer())
-      .get(`/storefront/${merchant.slug}/theme`)
+      .get('/storefront/theme')
+      .set('X-Merchant-Slug', merchant.slug)
       .expect(404);
   });
 });

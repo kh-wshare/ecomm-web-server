@@ -471,10 +471,9 @@ export class SocialPostService {
     };
   }
 
-  async listWebsiteArticles(merchantSlug: string) {
-    const merchant = await this.publicMerchant(merchantSlug);
+  async listWebsiteArticles(merchantId: string) {
     const articles = await this.prisma.websiteArticle.findMany({
-      where: { merchantId: merchant.id },
+      where: { merchantId },
       include: {
         socialPost: {
           include: { hotspots: { orderBy: { createdAt: 'asc' } } },
@@ -486,10 +485,9 @@ export class SocialPostService {
     return articles.map((article) => this.articleView(article));
   }
 
-  async getWebsiteArticle(merchantSlug: string, slug: string) {
-    const merchant = await this.publicMerchant(merchantSlug);
+  async getWebsiteArticle(merchantId: string, slug: string) {
     const article = await this.prisma.websiteArticle.findFirst({
-      where: { merchantId: merchant.id, slug: slug.trim().toLowerCase() },
+      where: { merchantId, slug: slug.trim().toLowerCase() },
       include: {
         socialPost: {
           include: { hotspots: { orderBy: { createdAt: 'asc' } } },
@@ -586,19 +584,6 @@ export class SocialPostService {
         socialLink: `/social-links/${hotspot.id}?platform=WEBSITE`,
       })),
     };
-  }
-
-  private async publicMerchant(slug: string) {
-    const merchant = await this.prisma.merchant.findFirst({
-      where: {
-        slug: slug.trim().toLowerCase(),
-        status: 'ACTIVE',
-        deletedAt: null,
-      },
-      select: { id: true },
-    });
-    if (!merchant) throw new NotFoundException('Storefront not found');
-    return merchant;
   }
 
   private salesChannel(platform: SocialPlatform) {

@@ -90,14 +90,14 @@ matching email → create one.
 ### 3a. Guest
 
 ```txt
-POST   /storefront/:slug/cart                    -> cart + cartToken (once)
-POST   /storefront/:slug/cart/:id/items          (X-Cart-Token)
-PATCH  /storefront/:slug/cart/:id/contact        name + email or phone
-POST   /storefront/:slug/cart/:id/addresses      -> resolves/creates Customer
+POST   /storefront/cart                    -> cart + cartToken (once)
+POST   /storefront/cart/:id/items          (X-Cart-Token)
+PATCH  /storefront/cart/:id/contact        name + email or phone
+POST   /storefront/cart/:id/addresses      -> resolves/creates Customer
 PATCH  .../addresses/:addressId/assign           SHIPPING or BILLING
-GET    /storefront/:slug/cart/:id/delivery-options
-PATCH  /storefront/:slug/cart/:id/delivery
-POST   /storefront/:slug/cart/:id/checkout       -> checkout session + token
+GET    /storefront/cart/:id/delivery-options
+PATCH  /storefront/cart/:id/delivery
+POST   /storefront/cart/:id/checkout       -> checkout session + token
 ```
 
 The contact step is mandatory before the first address: a guest has no
@@ -126,17 +126,17 @@ Same routes, with `Authorization: Bearer <jwt>` added. Two things change:
   recoverable form. Only an `ACTIVE` cart is ever claimed — re-pointing a
   `CONVERTED` cart's `customer_id` would rewrite history.
 
-- **A token-free lookup.** `GET /storefront/:slug/cart/mine` returns the
+- **A token-free lookup.** `GET /storefront/cart/mine` returns the
   account's current cart with no `X-Cart-Token` at all.
 - **An account address book**, independent of any cart:
 
 ```txt
-GET    /storefront/:slug/cart/mine               (JWT, no cart token)
-GET    /storefront/:slug/addresses               (JWT, no cart anywhere)
-POST   /storefront/:slug/addresses
-PATCH  /storefront/:slug/addresses/:addressId
-DELETE /storefront/:slug/addresses/:addressId
-GET    /storefront/:slug/loyalty                 points balance + ledger
+GET    /storefront/cart/mine               (JWT, no cart token)
+GET    /storefront/addresses               (JWT, no cart anywhere)
+POST   /storefront/addresses
+PATCH  /storefront/addresses/:addressId
+DELETE /storefront/addresses/:addressId
+GET    /storefront/loyalty                 points balance + ledger
 ```
 
 Those addresses are assignable to a cart through the same

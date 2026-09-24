@@ -87,7 +87,8 @@ describe('Theme Builder (e2e)', () => {
     const customDomain = `shop-${unique()}.theme-example.com`;
 
     const cachedDefault = await request(app.getHttpServer())
-      .get(`/storefront/${merchant.slug}/theme`)
+      .get('/storefront/theme')
+      .set('X-Merchant-Slug', merchant.slug)
       .expect(200);
     expect(cachedDefault.body.data.config.colors.accent).toBe('#2563eb');
 
@@ -122,7 +123,8 @@ describe('Theme Builder (e2e)', () => {
     });
 
     const publicBeforePublish = await request(app.getHttpServer())
-      .get(`/storefront/${merchant.slug}/theme`)
+      .get('/storefront/theme')
+      .set('X-Merchant-Slug', merchant.slug)
       .expect(200);
     expect(publicBeforePublish.body.data.config.colors.accent).toBe('#2563eb');
     expect(publicBeforePublish.body.data).not.toHaveProperty('draftConfig');
@@ -149,7 +151,8 @@ describe('Theme Builder (e2e)', () => {
     });
 
     const publicAfterPublish = await request(app.getHttpServer())
-      .get(`/storefront/${merchant.slug}/theme`)
+      .get('/storefront/theme')
+      .set('X-Merchant-Slug', merchant.slug)
       .expect(200);
     expect(publicAfterPublish.body.data.config.colors.accent).toBe('#dc2626');
 

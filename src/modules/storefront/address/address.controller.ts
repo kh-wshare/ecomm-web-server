@@ -29,12 +29,17 @@ import {
   AddressResponseDto,
   DeletedAddressDto,
 } from '#app/modules/address/dto/address-response.dto';
+import {
+  CurrentStorefrontMerchant,
+  StorefrontScoped,
+} from '#app/modules/storefront/context/current-storefront-merchant.decorator';
 import { StorefrontAddressService } from './address.service';
 
 @ApiTags('Addresses')
 @ApiBearerAuth()
 @ApiUnauthorizedResponse({ description: 'Missing or invalid bearer token' })
-@Controller('storefront/:merchantSlug/addresses')
+@StorefrontScoped()
+@Controller('storefront/addresses')
 export class StorefrontAddressController {
   constructor(private readonly addresses: StorefrontAddressService) {}
 
@@ -42,21 +47,21 @@ export class StorefrontAddressController {
   @ApiOperation({ summary: "List the signed-in shopper's saved addresses" })
   @ApiOkResponse({ type: [AddressResponseDto] })
   findAll(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @CurrentUser() user: AuthenticatedUser,
   ) {
-    return this.addresses.findAll(merchantSlug, user.id);
+    return this.addresses.findAll(merchantId, user.id);
   }
 
   @Post()
   @ApiOperation({ summary: 'Save an address without going through a cart' })
   @ApiCreatedResponse({ type: AddressResponseDto })
   create(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: CreateAddressDto,
   ) {
-    return this.addresses.create(merchantSlug, user, dto);
+    return this.addresses.create(merchantId, user, dto);
   }
 
   @Patch(':addressId')
@@ -64,12 +69,12 @@ export class StorefrontAddressController {
   @ApiOkResponse({ type: AddressResponseDto })
   @ApiNotFoundResponse({ description: 'Address not found' })
   update(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('addressId', ParseUUIDPipe) addressId: string,
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: UpdateAddressDto,
   ) {
-    return this.addresses.update(merchantSlug, user.id, addressId, dto);
+    return this.addresses.update(merchantId, user.id, addressId, dto);
   }
 
   @Delete(':addressId')
@@ -82,10 +87,10 @@ export class StorefrontAddressController {
   @ApiOkResponse({ type: DeletedAddressDto })
   @ApiNotFoundResponse({ description: 'Address not found' })
   remove(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('addressId', ParseUUIDPipe) addressId: string,
     @CurrentUser() user: AuthenticatedUser,
   ) {
-    return this.addresses.remove(merchantSlug, user.id, addressId);
+    return this.addresses.remove(merchantId, user.id, addressId);
   }
 }

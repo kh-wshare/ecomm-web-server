@@ -122,7 +122,8 @@ describe('Redis commerce caching (e2e)', () => {
 
     const cacheKey = `merchant:${merchant.id}:products:public`;
     const first = await request(app.getHttpServer())
-      .get(`/storefront/${merchant.slug}/products`)
+      .get('/storefront/products')
+      .set('X-Merchant-Slug', merchant.slug)
       .expect(200);
     expect(first.body.data[0]).toMatchObject({
       id: product.id,
@@ -135,7 +136,8 @@ describe('Redis commerce caching (e2e)', () => {
       data: { price: '88.88' },
     });
     const cached = await request(app.getHttpServer())
-      .get(`/storefront/${merchant.slug}/products`)
+      .get('/storefront/products')
+      .set('X-Merchant-Slug', merchant.slug)
       .expect(200);
     expect(cached.body.data[0].price).toBe('24.99');
 
@@ -146,7 +148,8 @@ describe('Redis commerce caching (e2e)', () => {
       .expect(200);
     await expect(redis.exists(cacheKey)).resolves.toBe(false);
     const refreshed = await request(app.getHttpServer())
-      .get(`/storefront/${merchant.slug}/products`)
+      .get('/storefront/products')
+      .set('X-Merchant-Slug', merchant.slug)
       .expect(200);
     expect(refreshed.body.data[0].price).toBe('29.99');
 
@@ -165,7 +168,8 @@ describe('Redis commerce caching (e2e)', () => {
       .expect(200);
     await expect(redis.exists(cacheKey)).resolves.toBe(false);
     const hidden = await request(app.getHttpServer())
-      .get(`/storefront/${merchant.slug}/products`)
+      .get('/storefront/products')
+      .set('X-Merchant-Slug', merchant.slug)
       .expect(200);
     expect(hidden.body.data).toHaveLength(0);
 
@@ -183,7 +187,8 @@ describe('Redis commerce caching (e2e)', () => {
       })
       .expect(200);
     await request(app.getHttpServer())
-      .get(`/storefront/${merchant.slug}/products`)
+      .get('/storefront/products')
+      .set('X-Merchant-Slug', merchant.slug)
       .expect(200);
     expect(redis.hashSize(cacheKey)).toBe(1);
 
@@ -194,7 +199,8 @@ describe('Redis commerce caching (e2e)', () => {
       .expect(201);
     await expect(redis.exists(cacheKey)).resolves.toBe(false);
     const outOfStock = await request(app.getHttpServer())
-      .get(`/storefront/${merchant.slug}/products`)
+      .get('/storefront/products')
+      .set('X-Merchant-Slug', merchant.slug)
       .expect(200);
     expect(outOfStock.body.data).toHaveLength(0);
   });

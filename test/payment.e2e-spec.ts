@@ -35,6 +35,7 @@ describe('Payments (e2e)', () => {
   const createOrder = async (
     account: Awaited<ReturnType<typeof register>>,
     quantity = 2,
+    trackStock = true,
   ) => {
     const suffix = unique();
     const productResponse = await request(app.getHttpServer())
@@ -46,17 +47,20 @@ describe('Payments (e2e)', () => {
         price: '24.50',
         currency: 'USD',
         status: 'ACTIVE',
+        trackStock,
         channelVisibility: [
           { channel: 'WEBSITE', isVisible: true, isPurchasable: true },
         ],
       })
       .expect(201);
     const product = productResponse.body.data;
-    await request(app.getHttpServer())
-      .post('/inventory/adjust')
-      .set('Authorization', `Bearer ${account.accessToken}`)
-      .send({ productId: product.id, quantityDelta: 10 })
-      .expect(201);
+    if (trackStock) {
+      await request(app.getHttpServer())
+        .post('/inventory/adjust')
+        .set('Authorization', `Bearer ${account.accessToken}`)
+        .send({ productId: product.id, quantityDelta: 10 })
+        .expect(201);
+    }
     const checkoutResponse = await request(app.getHttpServer())
       .post('/checkout/session')
       .send({
@@ -315,5 +319,33 @@ describe('Payments (e2e)', () => {
     });
     expect(reservation.status).toBe('RELEASED');
     expect(stock).toMatchObject({ reservedStock: 0, soldStock: 0 });
+  });
+
+  it('takes payment for an order of non-stocked products, which holds no reservation', async () => {
+    const owner = await register();
+    await connectProvider(owner);
+    const { checkout, order } = await createOrder(owner, 2, false);
+    expect(
+      await prisma.inventoryReservation.count({ where: { orderId: order.id } }),
+    ).toBe(0);
+
+    const payment = await createIntent(order.id, checkout.checkoutToken);
+    const payload = {
+      eventId: `paid-${unique()}`,
+      paymentId: payment.id,
+      providerTransactionId: payment.providerTransactionId,
+      status: 'CONFIRMED',
+      amount: '49.00',
+      currency: 'USD',
+    };
+    await request(app.getHttpServer())
+      .post('/payments/webhook/HMAC')
+      .set('X-Payment-Signature', sign(payload))
+      .send(payload)
+      .expect(200);
+
+    expect(
+      await prisma.order.findUniqueOrThrow({ where: { id: order.id } }),
+    ).toMatchObject({ status: 'PAID', paymentStatus: 'PAID' });
   });
 });

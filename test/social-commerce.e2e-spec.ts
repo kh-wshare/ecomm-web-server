@@ -163,7 +163,8 @@ describe('Social Commerce (e2e)', () => {
 
     const merchantSlug = owner.activeMerchant.merchant.slug;
     const articles = await request(app.getHttpServer())
-      .get(`/storefront/${merchantSlug}/posts`)
+      .get('/storefront/posts')
+      .set('X-Merchant-Slug', merchantSlug)
       .expect(200);
     expect(articles.body.data).toHaveLength(1);
     expect(articles.body.data[0]).toMatchObject({
@@ -176,7 +177,8 @@ describe('Social Commerce (e2e)', () => {
       ],
     });
     await request(app.getHttpServer())
-      .get(`/storefront/${merchantSlug}/posts/${post.slug}`)
+      .get(`/storefront/posts/${post.slug}`)
+      .set('X-Merchant-Slug', merchantSlug)
       .expect(200);
 
     const liveLink = await request(app.getHttpServer())

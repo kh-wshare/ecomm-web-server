@@ -9,7 +9,6 @@ import {
   IsOptional,
   IsString,
   IsUUID,
-  Matches,
   Max,
   MaxLength,
   Min,
@@ -122,12 +121,4 @@ export class CheckoutCartDto {
   @Min(1)
   @Max(120)
   expiresInMinutes?: number;
-}
-
-export class MerchantSlugParamDto {
-  @ApiProperty({ example: 'acme-store' })
-  @IsString()
-  @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
-  @MaxLength(100)
-  merchantSlug!: string;
 }

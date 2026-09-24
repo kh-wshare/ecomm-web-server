@@ -31,6 +31,11 @@ import { OptionalJwtAuthGuard } from '#app/modules/authenticated/guards/optional
 import type { AuthenticatedUser } from '#app/modules/authenticated/interfaces/authenticated-user.interface';
 import { CheckoutSessionDto } from '#app/modules/checkout/dto/checkout-response.dto';
 import { DeliveryOptionDto } from '#app/modules/logistics/dto/delivery-method-response.dto';
+import {
+  CurrentStorefrontMerchant,
+  StorefrontScoped,
+} from '#app/modules/storefront/context/current-storefront-merchant.decorator';
+import type { StorefrontMerchant } from '#app/modules/storefront/context/storefront-context.service';
 import { CartService } from './cart.service';
 import {
   CartItemInputDto,
@@ -47,7 +52,8 @@ import { CartDto, CreatedCartDto } from './dto/cart-response.dto';
 @ApiBearerAuth()
 @ApiTags('Cart')
 @ApiUnauthorizedResponse({ description: 'Missing or invalid cart token' })
-@Controller('storefront/:merchantSlug/cart')
+@StorefrontScoped()
+@Controller('storefront/cart')
 export class CartController {
   constructor(private readonly carts: CartService) {}
 
@@ -59,11 +65,11 @@ export class CartController {
   })
   @ApiCreatedResponse({ type: CreatedCartDto })
   create(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Body() dto: CreateCartDto,
     @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.create(merchantSlug, dto, user);
+    return this.carts.create(merchantId, dto, user);
   }
 
   @Get('mine')
@@ -75,11 +81,11 @@ export class CartController {
   @ApiOkResponse({ type: CartDto })
   @ApiNotFoundResponse({ description: 'No active cart for this account' })
   findMine(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @CurrentUser() user?: AuthenticatedUser,
   ) {
     if (!user) throw new UnauthorizedException('Sign in to load your cart');
-    return this.carts.findMine(merchantSlug, user);
+    return this.carts.findMine(merchantId, user);
   }
 
   @Get(':cartId')
@@ -91,12 +97,12 @@ export class CartController {
   @ApiOkResponse({ type: CartDto })
   @ApiNotFoundResponse({ description: 'Cart not found' })
   findOne(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Headers('X-Cart-Token') token?: string,
     @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.findOne(merchantSlug, cartId, token, user);
+    return this.carts.findOne(merchantId, cartId, token, user);
   }
 
   @Post(':cartId/items')
@@ -107,13 +113,13 @@ export class CartController {
   @ApiOkResponse({ type: CartDto })
   @ApiConflictResponse({ description: 'Product is not purchasable here' })
   addItem(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Body() dto: CartItemInputDto,
     @Headers('X-Cart-Token') token?: string,
     @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.addItem(merchantSlug, cartId, token, dto, user);
+    return this.carts.addItem(merchantId, cartId, token, dto, user);
   }
 
   @Patch(':cartId/items/:itemId')
@@ -121,21 +127,14 @@ export class CartController {
   @ApiOkResponse({ type: CartDto })
   @ApiNotFoundResponse({ description: 'Cart item not found' })
   updateItem(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Param('itemId', ParseUUIDPipe) itemId: string,
     @Body() dto: UpdateCartItemDto,
     @Headers('X-Cart-Token') token?: string,
     @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.updateItem(
-      merchantSlug,
-      cartId,
-      token,
-      itemId,
-      dto,
-      user,
-    );
+    return this.carts.updateItem(merchantId, cartId, token, itemId, dto, user);
   }
 
   @Delete(':cartId/items/:itemId')
@@ -144,13 +143,13 @@ export class CartController {
   @ApiOkResponse({ type: CartDto })
   @ApiNotFoundResponse({ description: 'Cart item not found' })
   removeItem(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Param('itemId', ParseUUIDPipe) itemId: string,
     @Headers('X-Cart-Token') token?: string,
     @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.removeItem(merchantSlug, cartId, token, itemId, user);
+    return this.carts.removeItem(merchantId, cartId, token, itemId, user);
   }
 
   @Delete(':cartId/items')
@@ -158,25 +157,25 @@ export class CartController {
   @ApiOperation({ summary: 'Empty the cart' })
   @ApiOkResponse({ type: CartDto })
   clear(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Headers('X-Cart-Token') token?: string,
     @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.clear(merchantSlug, cartId, token, user);
+    return this.carts.clear(merchantId, cartId, token, user);
   }
 
   @Patch(':cartId/contact')
   @ApiOperation({ summary: 'Set the shopper name, email, phone or order note' })
   @ApiOkResponse({ type: CartDto })
   updateContact(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Body() dto: UpdateCartContactDto,
     @Headers('X-Cart-Token') token?: string,
     @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.updateContact(merchantSlug, cartId, token, dto, user);
+    return this.carts.updateContact(merchantId, cartId, token, dto, user);
   }
 
   @Get(':cartId/delivery-options')
@@ -185,12 +184,12 @@ export class CartController {
   })
   @ApiOkResponse({ type: [DeliveryOptionDto] })
   deliveryOptions(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Headers('X-Cart-Token') token?: string,
     @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.deliveryOptions(merchantSlug, cartId, token, user);
+    return this.carts.deliveryOptions(merchantId, cartId, token, user);
   }
 
   @Patch(':cartId/delivery')
@@ -200,13 +199,13 @@ export class CartController {
     description: 'Method is not available for this cart or address',
   })
   selectDelivery(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Body() dto: SelectCartDeliveryDto,
     @Headers('X-Cart-Token') token?: string,
     @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.carts.selectDelivery(merchantSlug, cartId, token, dto, user);
+    return this.carts.selectDelivery(merchantId, cartId, token, dto, user);
   }
 
   @Post(':cartId/checkout')
@@ -222,7 +221,7 @@ export class CartController {
       'Cart is empty, has no contact details, or its delivery selection is no longer valid',
   })
   checkout(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant() merchant: StorefrontMerchant,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Body() dto: CheckoutCartDto,
     @Req() request: Request,
@@ -230,7 +229,7 @@ export class CartController {
     @CurrentUser() user?: AuthenticatedUser,
   ) {
     return this.carts.checkoutCart(
-      merchantSlug,
+      merchant,
       cartId,
       token,
       dto,

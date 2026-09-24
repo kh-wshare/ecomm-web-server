@@ -40,6 +40,7 @@ describe('Orders (e2e)', () => {
         price: '19.99',
         currency: 'USD',
         status: 'ACTIVE',
+        trackStock: true,
         channelVisibility: [
           { channel: 'WEBSITE', isVisible: true, isPurchasable: true },
         ],

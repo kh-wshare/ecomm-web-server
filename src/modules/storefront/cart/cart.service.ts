@@ -23,6 +23,7 @@ import {
 import {
   ShopperAccount,
   StorefrontContextService,
+  StorefrontMerchant,
 } from '#app/modules/storefront/context/storefront-context.service';
 import {
   CartItemInputDto,
@@ -107,14 +108,13 @@ export class CartService {
     private readonly checkout: CheckoutService,
   ) {}
 
-  async create(merchantSlug: string, dto: CreateCartDto, user?: CartOwner) {
+  async create(merchantId: string, dto: CreateCartDto, user?: CartOwner) {
     const sourceChannel = dto.sourceChannel ?? SalesChannel.WEBSITE;
     if (sourceChannel === SalesChannel.POS) {
       throw new BadRequestException(
         'POS sells through its own flow, not a storefront cart',
       );
     }
-    const merchantId = await this.context.resolveMerchantId(merchantSlug);
     const cartToken = randomBytes(32).toString('base64url');
     // Created while signed in, so it belongs to them from the first request
     // and their saved addresses are available straight away.
@@ -140,12 +140,12 @@ export class CartService {
   }
 
   async findOne(
-    merchantSlug: string,
+    merchantId: string,
     cartId: string,
     token?: string,
     user?: CartOwner,
   ) {
-    const cart = await this.authenticate(merchantSlug, cartId, token, user);
+    const cart = await this.authenticate(merchantId, cartId, token, user);
     return this.present(cart);
   }
 
@@ -218,18 +218,13 @@ export class CartService {
    * rather than stacking duplicate rows.
    */
   async addItem(
-    merchantSlug: string,
+    merchantId: string,
     cartId: string,
     token: string | undefined,
     dto: CartItemInputDto,
     user?: CartOwner,
   ) {
-    const cart = await this.authenticateActive(
-      merchantSlug,
-      cartId,
-      token,
-      user,
-    );
+    const cart = await this.authenticateActive(merchantId, cartId, token, user);
     return this.addItemTo(cart, dto);
   }
 
@@ -266,19 +261,14 @@ export class CartService {
   }
 
   async updateItem(
-    merchantSlug: string,
+    merchantId: string,
     cartId: string,
     token: string | undefined,
     itemId: string,
     dto: UpdateCartItemDto,
     user?: CartOwner,
   ) {
-    const cart = await this.authenticateActive(
-      merchantSlug,
-      cartId,
-      token,
-      user,
-    );
+    const cart = await this.authenticateActive(merchantId, cartId, token, user);
     return this.updateItemOn(cart, itemId, dto);
   }
 
@@ -302,18 +292,13 @@ export class CartService {
   }
 
   async removeItem(
-    merchantSlug: string,
+    merchantId: string,
     cartId: string,
     token: string | undefined,
     itemId: string,
     user?: CartOwner,
   ) {
-    const cart = await this.authenticateActive(
-      merchantSlug,
-      cartId,
-      token,
-      user,
-    );
+    const cart = await this.authenticateActive(merchantId, cartId, token, user);
     return this.removeItemFrom(cart, itemId);
   }
 
@@ -327,12 +312,12 @@ export class CartService {
   }
 
   async clear(
-    merchantSlug: string,
+    merchantId: string,
     cartId: string,
     token?: string,
     user?: CartOwner,
   ) {
-    await this.authenticateActive(merchantSlug, cartId, token, user);
+    await this.authenticateActive(merchantId, cartId, token, user);
     return this.clearCart(cartId);
   }
 
@@ -343,13 +328,13 @@ export class CartService {
   }
 
   async updateContact(
-    merchantSlug: string,
+    merchantId: string,
     cartId: string,
     token: string | undefined,
     dto: UpdateCartContactDto,
     user?: CartOwner,
   ) {
-    await this.authenticateActive(merchantSlug, cartId, token, user);
+    await this.authenticateActive(merchantId, cartId, token, user);
     await this.prisma.cart.update({
       where: { id: cartId },
       data: {
@@ -370,12 +355,12 @@ export class CartService {
 
   /** The delivery options available for this cart's current address. */
   async deliveryOptions(
-    merchantSlug: string,
+    merchantId: string,
     cartId: string,
     token?: string,
     user?: CartOwner,
   ) {
-    const cart = await this.authenticate(merchantSlug, cartId, token, user);
+    const cart = await this.authenticate(merchantId, cartId, token, user);
     const priced = await this.price(cart);
     const quotes = await this.delivery.quote(
       cart.merchantId,
@@ -386,18 +371,13 @@ export class CartService {
   }
 
   async selectDelivery(
-    merchantSlug: string,
+    merchantId: string,
     cartId: string,
     token: string | undefined,
     dto: SelectCartDeliveryDto,
     user?: CartOwner,
   ) {
-    const cart = await this.authenticateActive(
-      merchantSlug,
-      cartId,
-      token,
-      user,
-    );
+    const cart = await this.authenticateActive(merchantId, cartId, token, user);
     const priced = await this.price(cart);
     const quote = await this.delivery.quoteMethod(
       cart.merchantId,
@@ -428,7 +408,7 @@ export class CartService {
    * in-flight checkout instead of a second one.
    */
   async checkoutCart(
-    merchantSlug: string,
+    merchant: StorefrontMerchant,
     cartId: string,
     token: string | undefined,
     dto: CheckoutCartDto,
@@ -436,7 +416,7 @@ export class CartService {
     user?: CartOwner,
   ) {
     const cart = await this.authenticateActive(
-      merchantSlug,
+      merchant.id,
       cartId,
       token,
       user,
@@ -475,7 +455,7 @@ export class CartService {
 
     const session = await this.checkout.create(
       {
-        merchantSlug,
+        merchantSlug: merchant.slug,
         customerId: cart.customerId ?? undefined,
         ownerId: cart.ownerId ?? undefined,
         customerName: cart.customerName ?? undefined,
@@ -512,11 +492,12 @@ export class CartService {
    * - a bearer JWT whose user is the cart's `ownerId` — what a signed-in
    *   shopper has on a device that never held the token.
    *
-   * Either way the cart must belong to the storefront named in the URL, so a
-   * credential for merchant A cannot reach a cart under merchant B's slug.
+   * Either way the cart must belong to the storefront named in the
+   * `X-Merchant-Slug` header, so a credential for merchant A cannot reach a
+   * cart under merchant B's slug.
    */
   async authenticate(
-    merchantSlug: string,
+    merchantId: string,
     cartId: string,
     token: string | undefined,
     user?: CartOwner,
@@ -524,7 +505,6 @@ export class CartService {
     if (!token && !user) {
       throw new UnauthorizedException('Cart token is required');
     }
-    const merchantId = await this.context.resolveMerchantId(merchantSlug);
     const cart = await this.prisma.cart.findFirst({
       where: { id: cartId, merchantId },
       include: cartInclude,
@@ -563,8 +543,7 @@ export class CartService {
    * The signed-in shopper's current cart, reachable without the cart token —
    * the one cart lookup that works on a device that never held it.
    */
-  async findMine(merchantSlug: string, user: CartOwner) {
-    const merchantId = await this.context.resolveMerchantId(merchantSlug);
+  async findMine(merchantId: string, user: CartOwner) {
     const cart = await this.prisma.cart.findFirst({
       where: {
         merchantId,
@@ -744,12 +723,12 @@ export class CartService {
 
   /** As `authenticate`, but also rejects a converted or expired cart. */
   async authenticateActive(
-    merchantSlug: string,
+    merchantId: string,
     cartId: string,
     token: string | undefined,
     user?: CartOwner,
   ): Promise<LoadedCart> {
-    const cart = await this.authenticate(merchantSlug, cartId, token, user);
+    const cart = await this.authenticate(merchantId, cartId, token, user);
     if (cart.status !== 'ACTIVE') {
       throw new ConflictException(`Cart is ${cart.status.toLowerCase()}`);
     }

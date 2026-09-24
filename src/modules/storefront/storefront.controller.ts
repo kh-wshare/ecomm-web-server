@@ -12,41 +12,47 @@ import {
   PublicProductDto,
   PublicStorefrontDto,
 } from './dto/storefront-response.dto';
+import {
+  CurrentStorefrontMerchant,
+  StorefrontScoped,
+} from './context/current-storefront-merchant.decorator';
+import type { StorefrontMerchant } from './context/storefront-context.service';
 import { StorefrontService } from './storefront.service';
 
 @Public()
 @ApiTags('Storefront')
-@Controller('storefront/:merchantSlug')
+@StorefrontScoped()
+@Controller('storefront')
 export class StorefrontController {
   constructor(private readonly storefrontService: StorefrontService) {}
 
   @Get()
   @ApiOperation({ summary: 'Get public storefront data' })
   @ApiOkResponse({ type: PublicStorefrontDto })
-  getStorefront(@Param('merchantSlug') merchantSlug: string) {
-    return this.storefrontService.getStorefront(merchantSlug);
+  getStorefront(@CurrentStorefrontMerchant() merchant: StorefrontMerchant) {
+    return this.storefrontService.getStorefront(merchant);
   }
 
   @Get('products')
   @ApiOperation({ summary: 'List publicly visible products' })
   @ApiOkResponse({ type: [PublicProductDto] })
   listProducts(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Query() query: StorefrontProductQueryDto,
   ) {
-    return this.storefrontService.listProducts(merchantSlug, query);
+    return this.storefrontService.listProducts(merchantId, query);
   }
 
   @Get('products/:productSlug')
   @ApiOperation({ summary: 'Get a publicly visible product' })
   @ApiOkResponse({ type: PublicProductDto })
   getProduct(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('productSlug') productSlug: string,
     @Query() query: StorefrontProductQueryDto,
   ) {
     return this.storefrontService.getProduct(
-      merchantSlug,
+      merchantId,
       productSlug,
       query.channel,
     );
@@ -55,8 +61,8 @@ export class StorefrontController {
   @Get('theme')
   @ApiOperation({ summary: 'Get the live storefront theme' })
   @ApiOkResponse({ type: LiveThemeDto })
-  getTheme(@Param('merchantSlug') merchantSlug: string) {
-    return this.storefrontService.getTheme(merchantSlug);
+  getTheme(@CurrentStorefrontMerchant('id') merchantId: string) {
+    return this.storefrontService.getTheme(merchantId);
   }
 
   @Get('orders')
@@ -65,10 +71,10 @@ export class StorefrontController {
   })
   @ApiOkResponse({ type: [OrderDto] })
   listOrders(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Query() query: StorefrontOrderQueryDto,
   ) {
-    return this.storefrontService.listOrders(merchantSlug, query);
+    return this.storefrontService.listOrders(merchantId, query);
   }
 
   @Get('orders/:orderNumber')
@@ -78,12 +84,12 @@ export class StorefrontController {
   })
   @ApiOkResponse({ type: OrderDto })
   getOrder(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('orderNumber') orderNumber: string,
     @Query() query: StorefrontOrderLookupQueryDto,
   ) {
     return this.storefrontService.getOrder(
-      merchantSlug,
+      merchantId,
       orderNumber,
       query.customerEmail,
     );

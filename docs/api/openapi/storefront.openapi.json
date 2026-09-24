@@ -162,17 +162,19 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/cart": {
+    "/storefront/cart": {
       "post": {
         "description": "Returns a one-time cart token. No shopper account is involved — whoever holds the token holds the cart.",
         "operationId": "CartController_create",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           }
         ],
@@ -197,8 +199,14 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [
@@ -213,17 +221,19 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/cart/mine": {
+    "/storefront/cart/mine": {
       "get": {
         "description": "The one cart lookup that needs no X-Cart-Token, so a shopper who signs in on a new device can pick up where they left off. Requires a bearer token.",
         "operationId": "CartController_findMine",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           }
         ],
@@ -237,6 +247,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
           },
           "401": {
             "description": "Missing or invalid cart token"
@@ -257,17 +270,19 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/cart/{cartId}": {
+    "/storefront/cart/{cartId}": {
       "get": {
         "description": "Accepts either the X-Cart-Token or a bearer token for the shopper who owns the cart.",
         "operationId": "CartController_findOne",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -298,6 +313,9 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid cart token"
           },
@@ -317,16 +335,18 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/cart/{cartId}/items": {
+    "/storefront/cart/{cartId}/items": {
       "post": {
         "operationId": "CartController_addItem",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -367,8 +387,14 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Storefront not found"
           },
           "409": {
             "description": "Product is not purchasable here"
@@ -389,11 +415,13 @@
         "operationId": "CartController_clear",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -424,8 +452,14 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [
@@ -440,16 +474,18 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/cart/{cartId}/items/{itemId}": {
+    "/storefront/cart/{cartId}/items/{itemId}": {
       "patch": {
         "operationId": "CartController_updateItem",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -498,6 +534,9 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid cart token"
           },
@@ -520,11 +559,13 @@
         "operationId": "CartController_removeItem",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -563,6 +604,9 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid cart token"
           },
@@ -582,16 +626,18 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/cart/{cartId}/contact": {
+    "/storefront/cart/{cartId}/contact": {
       "patch": {
         "operationId": "CartController_updateContact",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -632,8 +678,14 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [
@@ -648,16 +700,18 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/cart/{cartId}/delivery-options": {
+    "/storefront/cart/{cartId}/delivery-options": {
       "get": {
         "operationId": "CartController_deliveryOptions",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -691,8 +745,14 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [
@@ -707,16 +767,18 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/cart/{cartId}/delivery": {
+    "/storefront/cart/{cartId}/delivery": {
       "patch": {
         "operationId": "CartController_selectDelivery",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -757,8 +819,14 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Storefront not found"
           },
           "409": {
             "description": "Method is not available for this cart or address"
@@ -776,17 +844,19 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/cart/{cartId}/checkout": {
+    "/storefront/cart/{cartId}/checkout": {
       "post": {
         "description": "Returns a checkout session plus its X-Checkout-Token; the cart is then CONVERTED.",
         "operationId": "CartController_checkout",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -827,8 +897,14 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Storefront not found"
           },
           "409": {
             "description": "Cart is empty, has no contact details, or its delivery selection is no longer valid"
@@ -846,16 +922,18 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}": {
+    "/storefront": {
       "get": {
         "operationId": "StorefrontController_getStorefront",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           }
         ],
@@ -869,6 +947,12 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [
@@ -880,16 +964,18 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/products": {
+    "/storefront/products": {
       "get": {
         "operationId": "StorefrontController_listProducts",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -971,6 +1057,12 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [
@@ -982,16 +1074,18 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/products/{productSlug}": {
+    "/storefront/products/{productSlug}": {
       "get": {
         "operationId": "StorefrontController_getProduct",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -1078,6 +1172,12 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [
@@ -1089,16 +1189,18 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/theme": {
+    "/storefront/theme": {
       "get": {
         "operationId": "StorefrontController_getTheme",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           }
         ],
@@ -1112,6 +1214,12 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [
@@ -1123,16 +1231,18 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/orders": {
+    "/storefront/orders": {
       "get": {
         "operationId": "StorefrontController_listOrders",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -1209,6 +1319,12 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [
@@ -1220,16 +1336,18 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/orders/{orderNumber}": {
+    "/storefront/orders/{orderNumber}": {
       "get": {
         "operationId": "StorefrontController_getOrder",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -1260,6 +1378,12 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [
@@ -1271,16 +1395,18 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/addresses": {
+    "/storefront/addresses": {
       "get": {
         "operationId": "StorefrontAddressController_findAll",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           }
         ],
@@ -1298,8 +1424,14 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid bearer token"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [
@@ -1316,11 +1448,13 @@
         "operationId": "StorefrontAddressController_create",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           }
         ],
@@ -1345,8 +1479,14 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid bearer token"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [
@@ -1360,16 +1500,18 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/addresses/{addressId}": {
+    "/storefront/addresses/{addressId}": {
       "patch": {
         "operationId": "StorefrontAddressController_update",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -1402,6 +1544,9 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid bearer token"
           },
@@ -1424,11 +1569,13 @@
         "operationId": "StorefrontAddressController_remove",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -1451,6 +1598,9 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid bearer token"
           },
@@ -1469,17 +1619,19 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/cart/{cartId}/addresses": {
+    "/storefront/cart/{cartId}/addresses": {
       "get": {
         "description": "Empty until the cart has contact details and a first address is saved.",
         "operationId": "GuestAddressController_findAll",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -1513,8 +1665,14 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [
@@ -1532,11 +1690,13 @@
         "operationId": "GuestAddressController_create",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -1582,6 +1742,9 @@
           },
           "401": {
             "description": "Missing or invalid cart token"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [
@@ -1596,16 +1759,18 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/cart/{cartId}/addresses/{addressId}": {
+    "/storefront/cart/{cartId}/addresses/{addressId}": {
       "patch": {
         "operationId": "GuestAddressController_update",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -1654,6 +1819,9 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid cart token"
           },
@@ -1677,11 +1845,13 @@
         "operationId": "GuestAddressController_remove",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -1720,6 +1890,9 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid cart token"
           },
@@ -1739,17 +1912,19 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/cart/{cartId}/addresses/{addressId}/assign": {
+    "/storefront/cart/{cartId}/addresses/{addressId}/assign": {
       "patch": {
         "description": "Setting a shipping address clears any delivery selection, since the chosen method may not serve the new destination.",
         "operationId": "GuestAddressController_assign",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -1798,6 +1973,9 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid cart token"
           },
@@ -1817,17 +1995,19 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/delivery-options": {
+    "/storefront/delivery-options": {
       "get": {
         "description": "For a shipping calculator before a cart exists. With no address, only pickup methods can be priced.",
         "operationId": "StorefrontDeliveryController_quote",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -1903,6 +2083,12 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [
@@ -1914,16 +2100,18 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/orders/{orderNumber}/tracking": {
+    "/storefront/orders/{orderNumber}/tracking": {
       "get": {
         "operationId": "StorefrontDeliveryController_track",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           },
           {
@@ -1946,6 +2134,9 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "404": {
             "description": "Order not found"
           }
@@ -1959,16 +2150,18 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/loyalty": {
+    "/storefront/loyalty": {
       "get": {
         "operationId": "StorefrontLoyaltyController_findMine",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           }
         ],
@@ -1983,8 +2176,14 @@
               }
             }
           },
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
           "401": {
             "description": "Missing or invalid bearer token"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [
@@ -2178,22 +2377,27 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/posts": {
+    "/storefront/posts": {
       "get": {
         "operationId": "PublicSocialController_listArticles",
         "parameters": [
           {
-            "name": "merchantSlug",
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
             "required": true,
-            "in": "path",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "acme-store"
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": ""
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [
@@ -2205,18 +2409,10 @@
         ]
       }
     },
-    "/storefront/{merchantSlug}/posts/{slug}": {
+    "/storefront/posts/{slug}": {
       "get": {
         "operationId": "PublicSocialController_getArticle",
         "parameters": [
-          {
-            "name": "merchantSlug",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "slug",
             "required": true,
@@ -2224,11 +2420,24 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "X-Merchant-Slug",
+            "in": "header",
+            "description": "Slug of the storefront being browsed",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "acme-store"
+            }
           }
         ],
         "responses": {
-          "200": {
-            "description": ""
+          "400": {
+            "description": "Missing or malformed X-Merchant-Slug header"
+          },
+          "404": {
+            "description": "Storefront not found"
           }
         },
         "security": [

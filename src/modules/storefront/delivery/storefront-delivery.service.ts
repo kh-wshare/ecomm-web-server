@@ -3,14 +3,12 @@ import { Prisma } from '#app/generated/prisma/client';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
 import { DeliveryQuoteService } from '#app/modules/logistics/delivery-quote.service';
 import { ShipmentsService } from '#app/modules/logistics/shipments.service';
-import { StorefrontContextService } from '#app/modules/storefront/context/storefront-context.service';
 import { QuoteDeliveryDto } from './dto/storefront-delivery.dto';
 
 @Injectable()
 export class StorefrontDeliveryService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly context: StorefrontContextService,
     private readonly delivery: DeliveryQuoteService,
     private readonly shipments: ShipmentsService,
   ) {}
@@ -19,8 +17,7 @@ export class StorefrontDeliveryService {
    * Quote delivery before a cart exists — for a shipping calculator on a
    * product page, say. Without an address only pickup methods can be priced.
    */
-  async quote(merchantSlug: string, query: QuoteDeliveryDto) {
-    const merchantId = await this.context.resolveMerchantId(merchantSlug);
+  async quote(merchantId: string, query: QuoteDeliveryDto) {
     const hasAddress = Boolean(query.country ?? query.city ?? query.province);
     const quotes = await this.delivery.quote(
       merchantId,
@@ -59,11 +56,10 @@ export class StorefrontDeliveryService {
    * not expose a shopper's delivery address or movements.
    */
   async trackOrder(
-    merchantSlug: string,
+    merchantId: string,
     orderNumber: string,
     customerEmail: string,
   ) {
-    const merchantId = await this.context.resolveMerchantId(merchantSlug);
     const order = await this.prisma.order.findFirst({
       where: {
         merchantId,

@@ -302,7 +302,7 @@ export class PaymentService {
         where: { orderId: order.id },
       });
       if (
-        !reservations.length ||
+        (!reservations.length && (await this.orderTracksStock(tx, order.id))) ||
         reservations.some(
           (reservation) =>
             reservation.status !== 'ACTIVE' ||
@@ -687,7 +687,10 @@ export class PaymentService {
         where: { orderId: payment.orderId },
         orderBy: { inventoryStockId: 'asc' },
       });
-      if (!reservations.length) {
+      if (
+        !reservations.length &&
+        (await this.orderTracksStock(tx, payment.orderId))
+      ) {
         throw new ConflictException('Order has no inventory reservation');
       }
       for (const candidateReservation of reservations) {
@@ -1014,6 +1017,21 @@ export class PaymentService {
       paymentId: payment.id,
       error,
     });
+  }
+
+  /**
+   * Whether any line on the order holds stock. NON_STOCKED products are never
+   * reserved at checkout, so an order made up only of them legitimately has
+   * no reservations to check or settle.
+   */
+  private async orderTracksStock(
+    tx: Prisma.TransactionClient,
+    orderId: string,
+  ) {
+    const tracked = await tx.orderItem.count({
+      where: { orderId, product: { trackStock: true } },
+    });
+    return tracked > 0;
   }
 
   private async writeWebhookFailureNotification(

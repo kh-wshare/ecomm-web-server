@@ -1,6 +1,10 @@
 import { Controller, Get, Param, ParseUUIDPipe, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Public } from '#app/modules/authenticated/decorators/public.decorator';
+import {
+  CurrentStorefrontMerchant,
+  StorefrontScoped,
+} from '#app/modules/storefront/context/current-storefront-merchant.decorator';
 import { SocialPostService } from '@modules/merchant/social-post/social-post.service';
 import { SocialLinkDto } from '@modules/merchant/social-post/dto/social-post-response.dto';
 import { SocialLinkQueryDto } from '@modules/merchant/social-post/dto/social-post-input.dto';
@@ -23,18 +27,20 @@ export class PublicSocialController {
     return this.socialPosts.resolveSocialLink(hotspotId, query.platform);
   }
 
-  @Get('storefront/:merchantSlug/posts')
+  @Get('storefront/posts')
+  @StorefrontScoped()
   @ApiOperation({ summary: 'List published website articles' })
-  listArticles(@Param('merchantSlug') merchantSlug: string) {
-    return this.socialPosts.listWebsiteArticles(merchantSlug);
+  listArticles(@CurrentStorefrontMerchant('id') merchantId: string) {
+    return this.socialPosts.listWebsiteArticles(merchantId);
   }
 
-  @Get('storefront/:merchantSlug/posts/:slug')
+  @Get('storefront/posts/:slug')
+  @StorefrontScoped()
   @ApiOperation({ summary: 'Get a published website article' })
   getArticle(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('slug') slug: string,
   ) {
-    return this.socialPosts.getWebsiteArticle(merchantSlug, slug);
+    return this.socialPosts.getWebsiteArticle(merchantId, slug);
   }
 }

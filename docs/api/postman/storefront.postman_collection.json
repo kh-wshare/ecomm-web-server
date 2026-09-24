@@ -1446,26 +1446,26 @@
               "name": "List the signed-in shopper's saved addresses",
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  }
+                ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/addresses",
+                  "raw": "{{baseUrl}}/storefront/addresses",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "addresses"
-                  ],
-                  "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    }
                   ]
                 },
-                "description": "`GET /storefront/{merchantSlug}/addresses`\n\nOperation id: `StorefrontAddressController_findAll`\n\nDocumented responses: **200** · **401** Missing or invalid bearer token"
+                "description": "`GET /storefront/addresses`\n\nOperation id: `StorefrontAddressController_findAll`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid bearer token · **404** Storefront not found"
               },
               "response": [],
               "event": [
@@ -1531,6 +1531,13 @@
                     "key": "Content-Type",
                     "value": "application/json",
                     "type": "text"
+                  },
+                  {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
                   }
                 ],
                 "body": {
@@ -1543,24 +1550,16 @@
                   }
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/addresses",
+                  "raw": "{{baseUrl}}/storefront/addresses",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "addresses"
-                  ],
-                  "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    }
                   ]
                 },
-                "description": "`POST /storefront/{merchantSlug}/addresses`\n\nOperation id: `StorefrontAddressController_create`\n\nDocumented responses: **201** · **401** Missing or invalid bearer token"
+                "description": "`POST /storefront/addresses`\n\nOperation id: `StorefrontAddressController_create`\n\nDocumented responses: **201** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid bearer token · **404** Storefront not found"
               },
               "response": [],
               "event": [
@@ -1621,6 +1620,13 @@
                     "key": "Content-Type",
                     "value": "application/json",
                     "type": "text"
+                  },
+                  {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
                   }
                 ],
                 "body": {
@@ -1633,22 +1639,16 @@
                   }
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/addresses/:addressId",
+                  "raw": "{{baseUrl}}/storefront/addresses/:addressId",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "addresses",
                     ":addressId"
                   ],
                   "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
                     {
                       "key": "addressId",
                       "value": "{{addressId}}",
@@ -1656,7 +1656,7 @@
                     }
                   ]
                 },
-                "description": "`PATCH /storefront/{merchantSlug}/addresses/{addressId}`\n\nOperation id: `StorefrontAddressController_update`\n\nDocumented responses: **200** · **401** Missing or invalid bearer token · **404** Address not found"
+                "description": "`PATCH /storefront/addresses/{addressId}`\n\nOperation id: `StorefrontAddressController_update`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid bearer token · **404** Address not found"
               },
               "response": [],
               "event": [
@@ -1711,24 +1711,26 @@
               "name": "Delete one of the shopper’s saved addresses",
               "request": {
                 "method": "DELETE",
-                "header": [],
+                "header": [
+                  {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  }
+                ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/addresses/:addressId",
+                  "raw": "{{baseUrl}}/storefront/addresses/:addressId",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "addresses",
                     ":addressId"
                   ],
                   "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
                     {
                       "key": "addressId",
                       "value": "{{addressId}}",
@@ -1736,7 +1738,7 @@
                     }
                   ]
                 },
-                "description": "Past orders keep their own address snapshot and are unaffected.\n\n`DELETE /storefront/{merchantSlug}/addresses/{addressId}`\n\nOperation id: `StorefrontAddressController_remove`\n\nDocumented responses: **200** · **401** Missing or invalid bearer token · **404** Address not found"
+                "description": "Past orders keep their own address snapshot and are unaffected.\n\n`DELETE /storefront/addresses/{addressId}`\n\nOperation id: `StorefrontAddressController_remove`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid bearer token · **404** Address not found"
               },
               "response": [],
               "event": [
@@ -1801,6 +1803,13 @@
                     "key": "Content-Type",
                     "value": "application/json",
                     "type": "text"
+                  },
+                  {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
                   }
                 ],
                 "body": {
@@ -1813,24 +1822,16 @@
                   }
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/cart",
+                  "raw": "{{baseUrl}}/storefront/cart",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "cart"
-                  ],
-                  "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    }
                   ]
                 },
-                "description": "Returns a one-time cart token. No shopper account is involved — whoever holds the token holds the cart.\n\n`POST /storefront/{merchantSlug}/cart`\n\nOperation id: `CartController_create`\n\nDocumented responses: **201** · **401** Missing or invalid cart token"
+                "description": "Returns a one-time cart token. No shopper account is involved — whoever holds the token holds the cart.\n\n`POST /storefront/cart`\n\nOperation id: `CartController_create`\n\nDocumented responses: **201** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid cart token · **404** Storefront not found"
               },
               "response": [],
               "event": [
@@ -1886,27 +1887,27 @@
               "name": "The signed-in shopper's current cart",
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  }
+                ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/cart/mine",
+                  "raw": "{{baseUrl}}/storefront/cart/mine",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "cart",
                     "mine"
-                  ],
-                  "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    }
                   ]
                 },
-                "description": "The one cart lookup that needs no X-Cart-Token, so a shopper who signs in on a new device can pick up where they left off. Requires a bearer token.\n\n`GET /storefront/{merchantSlug}/cart/mine`\n\nOperation id: `CartController_findMine`\n\nDocumented responses: **200** · **401** Missing or invalid cart token · **404** No active cart for this account"
+                "description": "The one cart lookup that needs no X-Cart-Token, so a shopper who signs in on a new device can pick up where they left off. Requires a bearer token.\n\n`GET /storefront/cart/mine`\n\nOperation id: `CartController_findMine`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid cart token · **404** No active cart for this account"
               },
               "response": [],
               "event": [
@@ -1969,29 +1970,30 @@
                 "method": "GET",
                 "header": [
                   {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  },
+                  {
                     "key": "X-Cart-Token",
-                    "value": "sample-XCartToken",
+                    "value": "{{cartToken}}",
                     "type": "text",
                     "disabled": false
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/cart/:cartId",
+                  "raw": "{{baseUrl}}/storefront/cart/:cartId",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "cart",
                     ":cartId"
                   ],
                   "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
                     {
                       "key": "cartId",
                       "value": "{{cartId}}",
@@ -1999,7 +2001,7 @@
                     }
                   ]
                 },
-                "description": "Accepts either the X-Cart-Token or a bearer token for the shopper who owns the cart.\n\n`GET /storefront/{merchantSlug}/cart/{cartId}`\n\nOperation id: `CartController_findOne`\n\nDocumented responses: **200** · **401** Missing or invalid cart token · **404** Cart not found"
+                "description": "Accepts either the X-Cart-Token or a bearer token for the shopper who owns the cart.\n\n`GET /storefront/cart/{cartId}`\n\nOperation id: `CartController_findOne`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid cart token · **404** Cart not found"
               },
               "response": [],
               "event": [
@@ -2061,8 +2063,15 @@
                     "type": "text"
                   },
                   {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  },
+                  {
                     "key": "X-Cart-Token",
-                    "value": "sample-XCartToken",
+                    "value": "{{cartToken}}",
                     "type": "text",
                     "disabled": false
                   }
@@ -2077,23 +2086,17 @@
                   }
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/cart/:cartId/items",
+                  "raw": "{{baseUrl}}/storefront/cart/:cartId/items",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "cart",
                     ":cartId",
                     "items"
                   ],
                   "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
                     {
                       "key": "cartId",
                       "value": "{{cartId}}",
@@ -2101,7 +2104,7 @@
                     }
                   ]
                 },
-                "description": "`POST /storefront/{merchantSlug}/cart/{cartId}/items`\n\nOperation id: `CartController_addItem`\n\nDocumented responses: **200** · **401** Missing or invalid cart token · **409** Product is not purchasable here"
+                "description": "`POST /storefront/cart/{cartId}/items`\n\nOperation id: `CartController_addItem`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid cart token · **404** Storefront not found · **409** Product is not purchasable here"
               },
               "response": [],
               "event": [
@@ -2159,30 +2162,31 @@
                 "method": "DELETE",
                 "header": [
                   {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  },
+                  {
                     "key": "X-Cart-Token",
-                    "value": "sample-XCartToken",
+                    "value": "{{cartToken}}",
                     "type": "text",
                     "disabled": false
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/cart/:cartId/items",
+                  "raw": "{{baseUrl}}/storefront/cart/:cartId/items",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "cart",
                     ":cartId",
                     "items"
                   ],
                   "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
                     {
                       "key": "cartId",
                       "value": "{{cartId}}",
@@ -2190,7 +2194,7 @@
                     }
                   ]
                 },
-                "description": "`DELETE /storefront/{merchantSlug}/cart/{cartId}/items`\n\nOperation id: `CartController_clear`\n\nDocumented responses: **200** · **401** Missing or invalid cart token"
+                "description": "`DELETE /storefront/cart/{cartId}/items`\n\nOperation id: `CartController_clear`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid cart token · **404** Storefront not found"
               },
               "response": [],
               "event": [
@@ -2252,8 +2256,15 @@
                     "type": "text"
                   },
                   {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  },
+                  {
                     "key": "X-Cart-Token",
-                    "value": "sample-XCartToken",
+                    "value": "{{cartToken}}",
                     "type": "text",
                     "disabled": false
                   }
@@ -2268,24 +2279,18 @@
                   }
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/cart/:cartId/items/:itemId",
+                  "raw": "{{baseUrl}}/storefront/cart/:cartId/items/:itemId",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "cart",
                     ":cartId",
                     "items",
                     ":itemId"
                   ],
                   "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
                     {
                       "key": "cartId",
                       "value": "{{cartId}}",
@@ -2298,7 +2303,7 @@
                     }
                   ]
                 },
-                "description": "`PATCH /storefront/{merchantSlug}/cart/{cartId}/items/{itemId}`\n\nOperation id: `CartController_updateItem`\n\nDocumented responses: **200** · **401** Missing or invalid cart token · **404** Cart item not found"
+                "description": "`PATCH /storefront/cart/{cartId}/items/{itemId}`\n\nOperation id: `CartController_updateItem`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid cart token · **404** Cart item not found"
               },
               "response": [],
               "event": [
@@ -2355,31 +2360,32 @@
                 "method": "DELETE",
                 "header": [
                   {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  },
+                  {
                     "key": "X-Cart-Token",
-                    "value": "sample-XCartToken",
+                    "value": "{{cartToken}}",
                     "type": "text",
                     "disabled": false
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/cart/:cartId/items/:itemId",
+                  "raw": "{{baseUrl}}/storefront/cart/:cartId/items/:itemId",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "cart",
                     ":cartId",
                     "items",
                     ":itemId"
                   ],
                   "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
                     {
                       "key": "cartId",
                       "value": "{{cartId}}",
@@ -2392,7 +2398,7 @@
                     }
                   ]
                 },
-                "description": "`DELETE /storefront/{merchantSlug}/cart/{cartId}/items/{itemId}`\n\nOperation id: `CartController_removeItem`\n\nDocumented responses: **200** · **401** Missing or invalid cart token · **404** Cart item not found"
+                "description": "`DELETE /storefront/cart/{cartId}/items/{itemId}`\n\nOperation id: `CartController_removeItem`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid cart token · **404** Cart item not found"
               },
               "response": [],
               "event": [
@@ -2454,8 +2460,15 @@
                     "type": "text"
                   },
                   {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  },
+                  {
                     "key": "X-Cart-Token",
-                    "value": "sample-XCartToken",
+                    "value": "{{cartToken}}",
                     "type": "text",
                     "disabled": false
                   }
@@ -2470,23 +2483,17 @@
                   }
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/cart/:cartId/contact",
+                  "raw": "{{baseUrl}}/storefront/cart/:cartId/contact",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "cart",
                     ":cartId",
                     "contact"
                   ],
                   "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
                     {
                       "key": "cartId",
                       "value": "{{cartId}}",
@@ -2494,7 +2501,7 @@
                     }
                   ]
                 },
-                "description": "`PATCH /storefront/{merchantSlug}/cart/{cartId}/contact`\n\nOperation id: `CartController_updateContact`\n\nDocumented responses: **200** · **401** Missing or invalid cart token"
+                "description": "`PATCH /storefront/cart/{cartId}/contact`\n\nOperation id: `CartController_updateContact`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid cart token · **404** Storefront not found"
               },
               "response": [],
               "event": [
@@ -2551,30 +2558,31 @@
                 "method": "GET",
                 "header": [
                   {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  },
+                  {
                     "key": "X-Cart-Token",
-                    "value": "sample-XCartToken",
+                    "value": "{{cartToken}}",
                     "type": "text",
                     "disabled": false
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/cart/:cartId/delivery-options",
+                  "raw": "{{baseUrl}}/storefront/cart/:cartId/delivery-options",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "cart",
                     ":cartId",
                     "delivery-options"
                   ],
                   "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
                     {
                       "key": "cartId",
                       "value": "{{cartId}}",
@@ -2582,7 +2590,7 @@
                     }
                   ]
                 },
-                "description": "`GET /storefront/{merchantSlug}/cart/{cartId}/delivery-options`\n\nOperation id: `CartController_deliveryOptions`\n\nDocumented responses: **200** · **401** Missing or invalid cart token"
+                "description": "`GET /storefront/cart/{cartId}/delivery-options`\n\nOperation id: `CartController_deliveryOptions`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid cart token · **404** Storefront not found"
               },
               "response": [],
               "event": [
@@ -2650,8 +2658,15 @@
                     "type": "text"
                   },
                   {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  },
+                  {
                     "key": "X-Cart-Token",
-                    "value": "sample-XCartToken",
+                    "value": "{{cartToken}}",
                     "type": "text",
                     "disabled": false
                   }
@@ -2666,23 +2681,17 @@
                   }
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/cart/:cartId/delivery",
+                  "raw": "{{baseUrl}}/storefront/cart/:cartId/delivery",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "cart",
                     ":cartId",
                     "delivery"
                   ],
                   "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
                     {
                       "key": "cartId",
                       "value": "{{cartId}}",
@@ -2690,7 +2699,7 @@
                     }
                   ]
                 },
-                "description": "`PATCH /storefront/{merchantSlug}/cart/{cartId}/delivery`\n\nOperation id: `CartController_selectDelivery`\n\nDocumented responses: **200** · **401** Missing or invalid cart token · **409** Method is not available for this cart or address"
+                "description": "`PATCH /storefront/cart/{cartId}/delivery`\n\nOperation id: `CartController_selectDelivery`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid cart token · **404** Storefront not found · **409** Method is not available for this cart or address"
               },
               "response": [],
               "event": [
@@ -2752,8 +2761,15 @@
                     "type": "text"
                   },
                   {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  },
+                  {
                     "key": "X-Cart-Token",
-                    "value": "sample-XCartToken",
+                    "value": "{{cartToken}}",
                     "type": "text",
                     "disabled": false
                   }
@@ -2768,23 +2784,17 @@
                   }
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/cart/:cartId/checkout",
+                  "raw": "{{baseUrl}}/storefront/cart/:cartId/checkout",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "cart",
                     ":cartId",
                     "checkout"
                   ],
                   "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
                     {
                       "key": "cartId",
                       "value": "{{cartId}}",
@@ -2792,7 +2802,7 @@
                     }
                   ]
                 },
-                "description": "Returns a checkout session plus its X-Checkout-Token; the cart is then CONVERTED.\n\n`POST /storefront/{merchantSlug}/cart/{cartId}/checkout`\n\nOperation id: `CartController_checkout`\n\nDocumented responses: **201** · **401** Missing or invalid cart token · **409** Cart is empty, has no contact details, or its delivery selection is no longer valid"
+                "description": "Returns a checkout session plus its X-Checkout-Token; the cart is then CONVERTED.\n\n`POST /storefront/cart/{cartId}/checkout`\n\nOperation id: `CartController_checkout`\n\nDocumented responses: **201** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid cart token · **404** Storefront not found · **409** Cart is empty, has no contact details, or its delivery selection is no longer valid"
               },
               "response": [],
               "event": [
@@ -2850,30 +2860,31 @@
                 "method": "GET",
                 "header": [
                   {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  },
+                  {
                     "key": "X-Cart-Token",
-                    "value": "sample-XCartToken",
+                    "value": "{{cartToken}}",
                     "type": "text",
                     "disabled": false
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/cart/:cartId/addresses",
+                  "raw": "{{baseUrl}}/storefront/cart/:cartId/addresses",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "cart",
                     ":cartId",
                     "addresses"
                   ],
                   "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
                     {
                       "key": "cartId",
                       "value": "{{cartId}}",
@@ -2881,7 +2892,7 @@
                     }
                   ]
                 },
-                "description": "Empty until the cart has contact details and a first address is saved.\n\n`GET /storefront/{merchantSlug}/cart/{cartId}/addresses`\n\nOperation id: `GuestAddressController_findAll`\n\nDocumented responses: **200** · **401** Missing or invalid cart token"
+                "description": "Empty until the cart has contact details and a first address is saved.\n\n`GET /storefront/cart/{cartId}/addresses`\n\nOperation id: `GuestAddressController_findAll`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid cart token · **404** Storefront not found"
               },
               "response": [],
               "event": [
@@ -2949,8 +2960,15 @@
                     "type": "text"
                   },
                   {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  },
+                  {
                     "key": "X-Cart-Token",
-                    "value": "sample-XCartToken",
+                    "value": "{{cartToken}}",
                     "type": "text",
                     "disabled": false
                   }
@@ -2965,23 +2983,17 @@
                   }
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/cart/:cartId/addresses",
+                  "raw": "{{baseUrl}}/storefront/cart/:cartId/addresses",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "cart",
                     ":cartId",
                     "addresses"
                   ],
                   "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
                     {
                       "key": "cartId",
                       "value": "{{cartId}}",
@@ -2989,7 +3001,7 @@
                     }
                   ]
                 },
-                "description": "`POST /storefront/{merchantSlug}/cart/{cartId}/addresses`\n\nOperation id: `GuestAddressController_create`\n\nDocumented responses: **201** · **400** Cart has no contact name plus email or phone yet · **401** Missing or invalid cart token"
+                "description": "`POST /storefront/cart/{cartId}/addresses`\n\nOperation id: `GuestAddressController_create`\n\nDocumented responses: **201** · **400** Cart has no contact name plus email or phone yet · **401** Missing or invalid cart token · **404** Storefront not found"
               },
               "response": [],
               "event": [
@@ -3052,8 +3064,15 @@
                     "type": "text"
                   },
                   {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  },
+                  {
                     "key": "X-Cart-Token",
-                    "value": "sample-XCartToken",
+                    "value": "{{cartToken}}",
                     "type": "text",
                     "disabled": false
                   }
@@ -3068,24 +3087,18 @@
                   }
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/cart/:cartId/addresses/:addressId",
+                  "raw": "{{baseUrl}}/storefront/cart/:cartId/addresses/:addressId",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "cart",
                     ":cartId",
                     "addresses",
                     ":addressId"
                   ],
                   "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
                     {
                       "key": "cartId",
                       "value": "{{cartId}}",
@@ -3098,7 +3111,7 @@
                     }
                   ]
                 },
-                "description": "`PATCH /storefront/{merchantSlug}/cart/{cartId}/addresses/{addressId}`\n\nOperation id: `GuestAddressController_update`\n\nDocumented responses: **200** · **401** Missing or invalid cart token · **404** Address not found"
+                "description": "`PATCH /storefront/cart/{cartId}/addresses/{addressId}`\n\nOperation id: `GuestAddressController_update`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid cart token · **404** Address not found"
               },
               "response": [],
               "event": [
@@ -3155,31 +3168,32 @@
                 "method": "DELETE",
                 "header": [
                   {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  },
+                  {
                     "key": "X-Cart-Token",
-                    "value": "sample-XCartToken",
+                    "value": "{{cartToken}}",
                     "type": "text",
                     "disabled": false
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/cart/:cartId/addresses/:addressId",
+                  "raw": "{{baseUrl}}/storefront/cart/:cartId/addresses/:addressId",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "cart",
                     ":cartId",
                     "addresses",
                     ":addressId"
                   ],
                   "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
                     {
                       "key": "cartId",
                       "value": "{{cartId}}",
@@ -3192,7 +3206,7 @@
                     }
                   ]
                 },
-                "description": "Past orders keep their own address snapshot and are unaffected.\n\n`DELETE /storefront/{merchantSlug}/cart/{cartId}/addresses/{addressId}`\n\nOperation id: `GuestAddressController_remove`\n\nDocumented responses: **200** · **401** Missing or invalid cart token · **404** Address not found"
+                "description": "Past orders keep their own address snapshot and are unaffected.\n\n`DELETE /storefront/cart/{cartId}/addresses/{addressId}`\n\nOperation id: `GuestAddressController_remove`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid cart token · **404** Address not found"
               },
               "response": [],
               "event": [
@@ -3254,8 +3268,15 @@
                     "type": "text"
                   },
                   {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  },
+                  {
                     "key": "X-Cart-Token",
-                    "value": "sample-XCartToken",
+                    "value": "{{cartToken}}",
                     "type": "text",
                     "disabled": false
                   }
@@ -3270,13 +3291,12 @@
                   }
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/cart/:cartId/addresses/:addressId/assign",
+                  "raw": "{{baseUrl}}/storefront/cart/:cartId/addresses/:addressId/assign",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "cart",
                     ":cartId",
                     "addresses",
@@ -3284,11 +3304,6 @@
                     "assign"
                   ],
                   "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
                     {
                       "key": "cartId",
                       "value": "{{cartId}}",
@@ -3301,7 +3316,7 @@
                     }
                   ]
                 },
-                "description": "Setting a shipping address clears any delivery selection, since the chosen method may not serve the new destination.\n\n`PATCH /storefront/{merchantSlug}/cart/{cartId}/addresses/{addressId}/assign`\n\nOperation id: `GuestAddressController_assign`\n\nDocumented responses: **200** · **401** Missing or invalid cart token · **404** Address not found"
+                "description": "Setting a shipping address clears any delivery selection, since the chosen method may not serve the new destination.\n\n`PATCH /storefront/cart/{cartId}/addresses/{addressId}/assign`\n\nOperation id: `GuestAddressController_assign`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid cart token · **404** Address not found"
               },
               "response": [],
               "event": [
@@ -3446,7 +3461,7 @@
                 "header": [
                   {
                     "key": "X-Checkout-Token",
-                    "value": "sample-XCheckoutToken",
+                    "value": "{{checkoutToken}}",
                     "type": "text",
                     "disabled": false
                   }
@@ -3527,7 +3542,7 @@
                 "header": [
                   {
                     "key": "X-Checkout-Token",
-                    "value": "sample-XCheckoutToken",
+                    "value": "{{checkoutToken}}",
                     "type": "text",
                     "disabled": false
                   }
@@ -3610,7 +3625,7 @@
                 "header": [
                   {
                     "key": "X-Checkout-Token",
-                    "value": "sample-XCheckoutToken",
+                    "value": "{{checkoutToken}}",
                     "type": "text",
                     "disabled": false
                   }
@@ -3695,15 +3710,22 @@
               "name": "Quote delivery options for a destination",
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  }
+                ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/delivery-options?country=KH&province=Phnom Penh&city=Phnom Penh&postalCode=12000&subtotal=49.99&itemCount=1",
+                  "raw": "{{baseUrl}}/storefront/delivery-options?country=KH&province=Phnom Penh&city=Phnom Penh&postalCode=12000&subtotal=49.99&itemCount=1",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "delivery-options"
                   ],
                   "query": [
@@ -3739,16 +3761,9 @@
                       "value": "1",
                       "disabled": true
                     }
-                  ],
-                  "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    }
                   ]
                 },
-                "description": "For a shipping calculator before a cart exists. With no address, only pickup methods can be priced.\n\n`GET /storefront/{merchantSlug}/delivery-options`\n\nOperation id: `StorefrontDeliveryController_quote`\n\nDocumented responses: **200**"
+                "description": "For a shipping calculator before a cart exists. With no address, only pickup methods can be priced.\n\n`GET /storefront/delivery-options`\n\nOperation id: `StorefrontDeliveryController_quote`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **404** Storefront not found"
               },
               "response": [],
               "event": [
@@ -3809,15 +3824,22 @@
               "name": "Track an order, verified against the customer email",
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  }
+                ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/orders/:orderNumber/tracking?customerEmail=shopper@example.com",
+                  "raw": "{{baseUrl}}/storefront/orders/:orderNumber/tracking?customerEmail=shopper@example.com",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "orders",
                     ":orderNumber",
                     "tracking"
@@ -3832,18 +3854,13 @@
                   ],
                   "variable": [
                     {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
-                    {
                       "key": "orderNumber",
                       "value": "{{orderNumber}}",
                       "description": "Path parameter `orderNumber`"
                     }
                   ]
                 },
-                "description": "`GET /storefront/{merchantSlug}/orders/{orderNumber}/tracking`\n\nOperation id: `StorefrontDeliveryController_track`\n\nDocumented responses: **404** Order not found"
+                "description": "`GET /storefront/orders/{orderNumber}/tracking`\n\nOperation id: `StorefrontDeliveryController_track`\n\nDocumented responses: **400** Missing or malformed X-Merchant-Slug header · **404** Order not found"
               },
               "response": [],
               "event": [
@@ -3909,26 +3926,26 @@
               "name": "The signed-in shopper's points balance and recent movements",
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  }
+                ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/loyalty",
+                  "raw": "{{baseUrl}}/storefront/loyalty",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "loyalty"
-                  ],
-                  "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    }
                   ]
                 },
-                "description": "`GET /storefront/{merchantSlug}/loyalty`\n\nOperation id: `StorefrontLoyaltyController_findMine`\n\nDocumented responses: **200** · **401** Missing or invalid bearer token"
+                "description": "`GET /storefront/loyalty`\n\nOperation id: `StorefrontLoyaltyController_findMine`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **401** Missing or invalid bearer token · **404** Storefront not found"
               },
               "response": [],
               "event": [
@@ -4404,26 +4421,192 @@
               "name": "List published website articles",
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  }
+                ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/posts",
+                  "raw": "{{baseUrl}}/storefront/posts",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "posts"
+                  ]
+                },
+                "description": "`GET /storefront/posts`\n\nOperation id: `PublicSocialController_listArticles`\n\nDocumented responses: **400** Missing or malformed X-Merchant-Slug header · **404** Storefront not found"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200,201];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"List payloads carry pagination meta when paginated\", function () {",
+                      "    if (Array.isArray(body.data) && body.meta) {",
+                      "      pm.expect(body.meta).to.include.all.keys(\"limit\", \"page\", \"total\");",
+                      "    }",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Get a published website article",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/storefront/posts/:slug",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "storefront",
+                    "posts",
+                    ":slug"
                   ],
                   "variable": [
                     {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
+                      "key": "slug",
+                      "value": "{{slug}}",
+                      "description": "Path parameter `slug`"
                     }
                   ]
                 },
-                "description": "`GET /storefront/{merchantSlug}/posts`\n\nOperation id: `PublicSocialController_listArticles`\n\nDocumented responses: **200**"
+                "description": "`GET /storefront/posts/{slug}`\n\nOperation id: `PublicSocialController_getArticle`\n\nDocumented responses: **400** Missing or malformed X-Merchant-Slug header · **404** Storefront not found"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200,201];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Storefront",
+          "item": [
+            {
+              "name": "Get public storefront data",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/storefront",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "storefront"
+                  ]
+                },
+                "description": "`GET /storefront`\n\nOperation id: `StorefrontController_getStorefront`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **404** Storefront not found"
               },
               "response": [],
               "event": [
@@ -4481,176 +4664,25 @@
               ]
             },
             {
-              "name": "Get a published website article",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/posts/:slug",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "storefront",
-                    ":merchantSlug",
-                    "posts",
-                    ":slug"
-                  ],
-                  "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
-                    {
-                      "key": "slug",
-                      "value": "{{slug}}",
-                      "description": "Path parameter `slug`"
-                    }
-                  ]
-                },
-                "description": "`GET /storefront/{merchantSlug}/posts/{slug}`\n\nOperation id: `PublicSocialController_getArticle`\n\nDocumented responses: **200**"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const setVar = (key, value) => {",
-                      "  if (value === undefined || value === null) return;",
-                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
-                      "  else pm.collectionVariables.set(key, value);",
-                      "};",
-                      "",
-                      "const expected = [200];",
-                      "",
-                      "pm.test(\"Responds with a documented success code\", function () {",
-                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
-                      "    pm.response.code,",
-                      "  );",
-                      "});",
-                      "",
-                      "pm.test(\"Responds within 2000ms\", function () {",
-                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
-                      "});",
-                      "",
-                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
-                      "  const body = pm.response.json();",
-                      "",
-                      "  pm.test(\"Uses the standard response envelope\", function () {",
-                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
-                      "    pm.expect(body).to.have.property(\"data\");",
-                      "    pm.expect(body).to.have.property(\"timestamp\");",
-                      "    pm.expect(body).to.have.property(\"path\");",
-                      "  });",
-                      "",
-                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
-                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
-                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
-                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
-                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
-                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
-                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
-                      "  });",
-                      "}"
-                    ]
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "Storefront",
-          "item": [
-            {
-              "name": "Get public storefront data",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "storefront",
-                    ":merchantSlug"
-                  ],
-                  "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    }
-                  ]
-                },
-                "description": "`GET /storefront/{merchantSlug}`\n\nOperation id: `StorefrontController_getStorefront`\n\nDocumented responses: **200**"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const setVar = (key, value) => {",
-                      "  if (value === undefined || value === null) return;",
-                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
-                      "  else pm.collectionVariables.set(key, value);",
-                      "};",
-                      "",
-                      "const expected = [200];",
-                      "",
-                      "pm.test(\"Responds with a documented success code\", function () {",
-                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
-                      "    pm.response.code,",
-                      "  );",
-                      "});",
-                      "",
-                      "pm.test(\"Responds within 2000ms\", function () {",
-                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
-                      "});",
-                      "",
-                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
-                      "  const body = pm.response.json();",
-                      "",
-                      "  pm.test(\"Uses the standard response envelope\", function () {",
-                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
-                      "    pm.expect(body).to.have.property(\"data\");",
-                      "    pm.expect(body).to.have.property(\"timestamp\");",
-                      "    pm.expect(body).to.have.property(\"path\");",
-                      "  });",
-                      "",
-                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
-                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
-                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
-                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
-                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
-                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
-                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
-                      "  });",
-                      "}"
-                    ]
-                  }
-                }
-              ]
-            },
-            {
               "name": "List publicly visible products",
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  }
+                ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/products?search=MacBook&page=1&limit=10&channel=WEBSITE&categoryId={{categoryId}}&categorySlug=coffee",
+                  "raw": "{{baseUrl}}/storefront/products?search=MacBook&page=1&limit=10&channel=WEBSITE&categoryId={{categoryId}}&categorySlug=coffee",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "products"
                   ],
                   "query": [
@@ -4685,16 +4717,9 @@
                       "value": "coffee",
                       "disabled": true
                     }
-                  ],
-                  "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    }
                   ]
                 },
-                "description": "`GET /storefront/{merchantSlug}/products`\n\nOperation id: `StorefrontController_listProducts`\n\nDocumented responses: **200**"
+                "description": "`GET /storefront/products`\n\nOperation id: `StorefrontController_listProducts`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **404** Storefront not found"
               },
               "response": [],
               "event": [
@@ -4755,15 +4780,22 @@
               "name": "Get a publicly visible product",
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  }
+                ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/products/:productSlug?search=MacBook&page=1&limit=10&channel=WEBSITE&categoryId={{categoryId}}&categorySlug=coffee",
+                  "raw": "{{baseUrl}}/storefront/products/:productSlug?search=MacBook&page=1&limit=10&channel=WEBSITE&categoryId={{categoryId}}&categorySlug=coffee",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "products",
                     ":productSlug"
                   ],
@@ -4802,18 +4834,13 @@
                   ],
                   "variable": [
                     {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
-                    {
                       "key": "productSlug",
                       "value": "{{productSlug}}",
                       "description": "Path parameter `productSlug`"
                     }
                   ]
                 },
-                "description": "`GET /storefront/{merchantSlug}/products/{productSlug}`\n\nOperation id: `StorefrontController_getProduct`\n\nDocumented responses: **200**"
+                "description": "`GET /storefront/products/{productSlug}`\n\nOperation id: `StorefrontController_getProduct`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **404** Storefront not found"
               },
               "response": [],
               "event": [
@@ -4868,26 +4895,26 @@
               "name": "Get the live storefront theme",
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  }
+                ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/theme",
+                  "raw": "{{baseUrl}}/storefront/theme",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "theme"
-                  ],
-                  "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    }
                   ]
                 },
-                "description": "`GET /storefront/{merchantSlug}/theme`\n\nOperation id: `StorefrontController_getTheme`\n\nDocumented responses: **200**"
+                "description": "`GET /storefront/theme`\n\nOperation id: `StorefrontController_getTheme`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **404** Storefront not found"
               },
               "response": [],
               "event": [
@@ -4948,15 +4975,22 @@
               "name": "List a customer's orders by email, optionally filtered by status",
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  }
+                ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/orders?search=MacBook&page=1&limit=10&customerEmail=jane@example.com&status=DRAFT",
+                  "raw": "{{baseUrl}}/storefront/orders?search=MacBook&page=1&limit=10&customerEmail=jane@example.com&status=DRAFT",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "orders"
                   ],
                   "query": [
@@ -4986,16 +5020,9 @@
                       "value": "DRAFT",
                       "disabled": true
                     }
-                  ],
-                  "variable": [
-                    {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    }
                   ]
                 },
-                "description": "`GET /storefront/{merchantSlug}/orders`\n\nOperation id: `StorefrontController_listOrders`\n\nDocumented responses: **200**"
+                "description": "`GET /storefront/orders`\n\nOperation id: `StorefrontController_listOrders`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **404** Storefront not found"
               },
               "response": [],
               "event": [
@@ -5056,15 +5083,22 @@
               "name": "Get order detail by order number, verified against the customer email",
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "X-Merchant-Slug",
+                    "value": "{{merchantSlug}}",
+                    "type": "text",
+                    "disabled": false,
+                    "description": "Slug of the storefront being browsed"
+                  }
+                ],
                 "url": {
-                  "raw": "{{baseUrl}}/storefront/:merchantSlug/orders/:orderNumber?customerEmail=jane@example.com",
+                  "raw": "{{baseUrl}}/storefront/orders/:orderNumber?customerEmail=jane@example.com",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "storefront",
-                    ":merchantSlug",
                     "orders",
                     ":orderNumber"
                   ],
@@ -5077,18 +5111,13 @@
                   ],
                   "variable": [
                     {
-                      "key": "merchantSlug",
-                      "value": "{{merchantSlug}}",
-                      "description": "Path parameter `merchantSlug`"
-                    },
-                    {
                       "key": "orderNumber",
                       "value": "{{orderNumber}}",
                       "description": "Path parameter `orderNumber`"
                     }
                   ]
                 },
-                "description": "`GET /storefront/{merchantSlug}/orders/{orderNumber}`\n\nOperation id: `StorefrontController_getOrder`\n\nDocumented responses: **200**"
+                "description": "`GET /storefront/orders/{orderNumber}`\n\nOperation id: `StorefrontController_getOrder`\n\nDocumented responses: **200** · **400** Missing or malformed X-Merchant-Slug header · **404** Storefront not found"
               },
               "response": [],
               "event": [
@@ -5221,8 +5250,15 @@
                 "type": "text"
               },
               {
+                "key": "X-Merchant-Slug",
+                "value": "{{merchantSlug}}",
+                "type": "text",
+                "disabled": false,
+                "description": "Slug of the storefront being browsed"
+              },
+              {
                 "key": "X-Cart-Token",
-                "value": "sample-XCartToken",
+                "value": "{{cartToken}}",
                 "type": "text",
                 "disabled": false
               }
@@ -5237,31 +5273,25 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/storefront/:merchantSlug/cart/:cartId/items",
+              "raw": "{{baseUrl}}/storefront/cart/:cartId/items",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "storefront",
-                ":merchantSlug",
                 "cart",
                 ":cartId",
                 "items"
               ],
               "variable": [
                 {
-                  "key": "merchantSlug",
-                  "value": "sample-merchantSlug",
-                  "description": "Path parameter `merchantSlug`"
-                },
-                {
                   "key": "cartId",
-                  "value": "sample-merchantSlug",
+                  "value": "00000000-0000-4000-8000-000000000000",
                   "description": "Path parameter `cartId`"
                 }
               ]
             },
-            "description": "`POST /storefront/{merchantSlug}/cart/{cartId}/items` requires `productId`, `quantity`."
+            "description": "`POST /storefront/cart/{cartId}/items` requires `productId`, `quantity`."
           },
           "response": [],
           "event": [
@@ -5298,6 +5328,13 @@
                 "key": "Content-Type",
                 "value": "application/json",
                 "type": "text"
+              },
+              {
+                "key": "X-Merchant-Slug",
+                "value": "{{merchantSlug}}",
+                "type": "text",
+                "disabled": false,
+                "description": "Slug of the storefront being browsed"
               }
             ],
             "body": {
@@ -5310,24 +5347,16 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/storefront/:merchantSlug/addresses",
+              "raw": "{{baseUrl}}/storefront/addresses",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "storefront",
-                ":merchantSlug",
                 "addresses"
-              ],
-              "variable": [
-                {
-                  "key": "merchantSlug",
-                  "value": "sample-merchantSlug",
-                  "description": "Path parameter `merchantSlug`"
-                }
               ]
             },
-            "description": "`POST /storefront/{merchantSlug}/addresses` requires `recipientName`, `line1`, `country`."
+            "description": "`POST /storefront/addresses` requires `recipientName`, `line1`, `country`."
           },
           "response": [],
           "event": [

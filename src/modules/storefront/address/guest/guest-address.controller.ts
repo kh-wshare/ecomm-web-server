@@ -36,6 +36,10 @@ import {
   AddressResponseDto,
   DeletedAddressDto,
 } from '#app/modules/address/dto/address-response.dto';
+import {
+  CurrentStorefrontMerchant,
+  StorefrontScoped,
+} from '#app/modules/storefront/context/current-storefront-merchant.decorator';
 import { GuestAddressService } from './guest-address.service';
 
 @Public()
@@ -43,7 +47,8 @@ import { GuestAddressService } from './guest-address.service';
 @ApiBearerAuth()
 @ApiTags('Cart')
 @ApiUnauthorizedResponse({ description: 'Missing or invalid cart token' })
-@Controller('storefront/:merchantSlug/cart/:cartId/addresses')
+@StorefrontScoped()
+@Controller('storefront/cart/:cartId/addresses')
 export class GuestAddressController {
   constructor(private readonly addresses: GuestAddressService) {}
 
@@ -55,12 +60,12 @@ export class GuestAddressController {
   })
   @ApiOkResponse({ type: [AddressResponseDto] })
   findAll(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Headers('X-Cart-Token') token?: string,
     @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.addresses.findAll(merchantSlug, cartId, token, user);
+    return this.addresses.findAll(merchantId, cartId, token, user);
   }
 
   @Post()
@@ -70,13 +75,13 @@ export class GuestAddressController {
     description: 'Cart has no contact name plus email or phone yet',
   })
   create(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Body() dto: CreateAddressDto,
     @Headers('X-Cart-Token') token?: string,
     @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.addresses.create(merchantSlug, cartId, token, dto, user);
+    return this.addresses.create(merchantId, cartId, token, dto, user);
   }
 
   @Patch(':addressId')
@@ -84,7 +89,7 @@ export class GuestAddressController {
   @ApiOkResponse({ type: AddressResponseDto })
   @ApiNotFoundResponse({ description: 'Address not found' })
   update(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Param('addressId', ParseUUIDPipe) addressId: string,
     @Body() dto: UpdateAddressDto,
@@ -92,7 +97,7 @@ export class GuestAddressController {
     @CurrentUser() user?: AuthenticatedUser,
   ) {
     return this.addresses.update(
-      merchantSlug,
+      merchantId,
       cartId,
       token,
       addressId,
@@ -111,13 +116,13 @@ export class GuestAddressController {
   @ApiOkResponse({ type: DeletedAddressDto })
   @ApiNotFoundResponse({ description: 'Address not found' })
   remove(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Param('addressId', ParseUUIDPipe) addressId: string,
     @Headers('X-Cart-Token') token?: string,
     @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.addresses.remove(merchantSlug, cartId, token, addressId, user);
+    return this.addresses.remove(merchantId, cartId, token, addressId, user);
   }
 
   @Patch(':addressId/assign')
@@ -129,7 +134,7 @@ export class GuestAddressController {
   @ApiOkResponse({ type: CartDto })
   @ApiNotFoundResponse({ description: 'Address not found' })
   assign(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('cartId', ParseUUIDPipe) cartId: string,
     @Param('addressId', ParseUUIDPipe) addressId: string,
     @Body() dto: AssignCartAddressDto,
@@ -137,7 +142,7 @@ export class GuestAddressController {
     @CurrentUser() user?: AuthenticatedUser,
   ) {
     return this.addresses.assignToCart(
-      merchantSlug,
+      merchantId,
       cartId,
       token,
       addressId,

@@ -11,11 +11,16 @@ import {
   QuoteDeliveryDto,
   TrackOrderQueryDto,
 } from './dto/storefront-delivery.dto';
+import {
+  CurrentStorefrontMerchant,
+  StorefrontScoped,
+} from '#app/modules/storefront/context/current-storefront-merchant.decorator';
 import { StorefrontDeliveryService } from './storefront-delivery.service';
 
 @Public()
 @ApiTags('Delivery')
-@Controller('storefront/:merchantSlug')
+@StorefrontScoped()
+@Controller('storefront')
 export class StorefrontDeliveryController {
   constructor(private readonly delivery: StorefrontDeliveryService) {}
 
@@ -27,10 +32,10 @@ export class StorefrontDeliveryController {
   })
   @ApiOkResponse({ type: [DeliveryOptionDto] })
   quote(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Query() query: QuoteDeliveryDto,
   ) {
-    return this.delivery.quote(merchantSlug, query);
+    return this.delivery.quote(merchantId, query);
   }
 
   @Get('orders/:orderNumber/tracking')
@@ -39,12 +44,12 @@ export class StorefrontDeliveryController {
   })
   @ApiNotFoundResponse({ description: 'Order not found' })
   track(
-    @Param('merchantSlug') merchantSlug: string,
+    @CurrentStorefrontMerchant('id') merchantId: string,
     @Param('orderNumber') orderNumber: string,
     @Query() query: TrackOrderQueryDto,
   ) {
     return this.delivery.trackOrder(
-      merchantSlug,
+      merchantId,
       orderNumber,
       query.customerEmail,
     );
