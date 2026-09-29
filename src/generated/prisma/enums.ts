@@ -298,6 +298,14 @@ export const PaymentRefundStatus = {
 export type PaymentRefundStatus = (typeof PaymentRefundStatus)[keyof typeof PaymentRefundStatus]
 
 
+export const ReportExportStatus = {
+  READY: 'READY',
+  FAILED: 'FAILED'
+} as const
+
+export type ReportExportStatus = (typeof ReportExportStatus)[keyof typeof ReportExportStatus]
+
+
 export const OutboxEventStatus = {
   PENDING: 'PENDING',
   PUBLISHED: 'PUBLISHED',

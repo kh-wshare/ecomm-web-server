@@ -35,6 +35,8 @@ export class InventoryExpiryWorker implements OnModuleInit, OnModuleDestroy {
     try {
       const expired = await this.inventoryService.expireReservations();
       if (expired) this.logger.log(`Expired ${expired} stock reservations`);
+      const staleOrders = await this.inventoryService.expireStaleOrders();
+      if (staleOrders) this.logger.log(`Expired ${staleOrders} unpaid orders`);
     } catch (error) {
       this.logger.error(
         'Inventory reservation expiry failed',

@@ -47,6 +47,7 @@ export type MerchantMinAggregateOutputType = {
   returnStockOnRefund: boolean | null
   loyaltyEnabled: boolean | null
   loyaltyPointsPerUnit: number | null
+  setupDismissedAt: Date | null
 }
 
 export type MerchantMaxAggregateOutputType = {
@@ -62,6 +63,7 @@ export type MerchantMaxAggregateOutputType = {
   returnStockOnRefund: boolean | null
   loyaltyEnabled: boolean | null
   loyaltyPointsPerUnit: number | null
+  setupDismissedAt: Date | null
 }
 
 export type MerchantCountAggregateOutputType = {
@@ -77,6 +79,7 @@ export type MerchantCountAggregateOutputType = {
   returnStockOnRefund: number
   loyaltyEnabled: number
   loyaltyPointsPerUnit: number
+  setupDismissedAt: number
   _all: number
 }
 
@@ -102,6 +105,7 @@ export type MerchantMinAggregateInputType = {
   returnStockOnRefund?: true
   loyaltyEnabled?: true
   loyaltyPointsPerUnit?: true
+  setupDismissedAt?: true
 }
 
 export type MerchantMaxAggregateInputType = {
@@ -117,6 +121,7 @@ export type MerchantMaxAggregateInputType = {
   returnStockOnRefund?: true
   loyaltyEnabled?: true
   loyaltyPointsPerUnit?: true
+  setupDismissedAt?: true
 }
 
 export type MerchantCountAggregateInputType = {
@@ -132,6 +137,7 @@ export type MerchantCountAggregateInputType = {
   returnStockOnRefund?: true
   loyaltyEnabled?: true
   loyaltyPointsPerUnit?: true
+  setupDismissedAt?: true
   _all?: true
 }
 
@@ -234,6 +240,7 @@ export type MerchantGroupByOutputType = {
   returnStockOnRefund: boolean
   loyaltyEnabled: boolean
   loyaltyPointsPerUnit: number
+  setupDismissedAt: Date | null
   _count: MerchantCountAggregateOutputType | null
   _avg: MerchantAvgAggregateOutputType | null
   _sum: MerchantSumAggregateOutputType | null
@@ -272,6 +279,7 @@ export type MerchantWhereInput = {
   returnStockOnRefund?: Prisma.BoolFilter<"Merchant"> | boolean
   loyaltyEnabled?: Prisma.BoolFilter<"Merchant"> | boolean
   loyaltyPointsPerUnit?: Prisma.IntFilter<"Merchant"> | number
+  setupDismissedAt?: Prisma.DateTimeNullableFilter<"Merchant"> | Date | string | null
   memberships?: Prisma.MerchantUserListRelationFilter
   roles?: Prisma.RoleListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
@@ -305,6 +313,8 @@ export type MerchantWhereInput = {
   deliveryMethods?: Prisma.DeliveryMethodListRelationFilter
   deliveryZones?: Prisma.DeliveryZoneListRelationFilter
   shipments?: Prisma.ShipmentListRelationFilter
+  settlementAccount?: Prisma.XOR<Prisma.SettlementAccountNullableScalarRelationFilter, Prisma.SettlementAccountWhereInput> | null
+  reportExports?: Prisma.ReportExportListRelationFilter
 }
 
 export type MerchantOrderByWithRelationInput = {
@@ -320,6 +330,7 @@ export type MerchantOrderByWithRelationInput = {
   returnStockOnRefund?: Prisma.SortOrder
   loyaltyEnabled?: Prisma.SortOrder
   loyaltyPointsPerUnit?: Prisma.SortOrder
+  setupDismissedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   memberships?: Prisma.MerchantUserOrderByRelationAggregateInput
   roles?: Prisma.RoleOrderByRelationAggregateInput
   sessions?: Prisma.SessionOrderByRelationAggregateInput
@@ -353,6 +364,8 @@ export type MerchantOrderByWithRelationInput = {
   deliveryMethods?: Prisma.DeliveryMethodOrderByRelationAggregateInput
   deliveryZones?: Prisma.DeliveryZoneOrderByRelationAggregateInput
   shipments?: Prisma.ShipmentOrderByRelationAggregateInput
+  settlementAccount?: Prisma.SettlementAccountOrderByWithRelationInput
+  reportExports?: Prisma.ReportExportOrderByRelationAggregateInput
 }
 
 export type MerchantWhereUniqueInput = Prisma.AtLeast<{
@@ -371,6 +384,7 @@ export type MerchantWhereUniqueInput = Prisma.AtLeast<{
   returnStockOnRefund?: Prisma.BoolFilter<"Merchant"> | boolean
   loyaltyEnabled?: Prisma.BoolFilter<"Merchant"> | boolean
   loyaltyPointsPerUnit?: Prisma.IntFilter<"Merchant"> | number
+  setupDismissedAt?: Prisma.DateTimeNullableFilter<"Merchant"> | Date | string | null
   memberships?: Prisma.MerchantUserListRelationFilter
   roles?: Prisma.RoleListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
@@ -404,6 +418,8 @@ export type MerchantWhereUniqueInput = Prisma.AtLeast<{
   deliveryMethods?: Prisma.DeliveryMethodListRelationFilter
   deliveryZones?: Prisma.DeliveryZoneListRelationFilter
   shipments?: Prisma.ShipmentListRelationFilter
+  settlementAccount?: Prisma.XOR<Prisma.SettlementAccountNullableScalarRelationFilter, Prisma.SettlementAccountWhereInput> | null
+  reportExports?: Prisma.ReportExportListRelationFilter
 }, "id" | "slug">
 
 export type MerchantOrderByWithAggregationInput = {
@@ -419,6 +435,7 @@ export type MerchantOrderByWithAggregationInput = {
   returnStockOnRefund?: Prisma.SortOrder
   loyaltyEnabled?: Prisma.SortOrder
   loyaltyPointsPerUnit?: Prisma.SortOrder
+  setupDismissedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.MerchantCountOrderByAggregateInput
   _avg?: Prisma.MerchantAvgOrderByAggregateInput
   _max?: Prisma.MerchantMaxOrderByAggregateInput
@@ -442,6 +459,7 @@ export type MerchantScalarWhereWithAggregatesInput = {
   returnStockOnRefund?: Prisma.BoolWithAggregatesFilter<"Merchant"> | boolean
   loyaltyEnabled?: Prisma.BoolWithAggregatesFilter<"Merchant"> | boolean
   loyaltyPointsPerUnit?: Prisma.IntWithAggregatesFilter<"Merchant"> | number
+  setupDismissedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Merchant"> | Date | string | null
 }
 
 export type MerchantCreateInput = {
@@ -457,6 +475,7 @@ export type MerchantCreateInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -490,6 +509,8 @@ export type MerchantCreateInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateInput = {
@@ -505,6 +526,7 @@ export type MerchantUncheckedCreateInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -538,6 +560,8 @@ export type MerchantUncheckedCreateInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUpdateInput = {
@@ -553,6 +577,7 @@ export type MerchantUpdateInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -586,6 +611,8 @@ export type MerchantUpdateInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateInput = {
@@ -601,6 +628,7 @@ export type MerchantUncheckedUpdateInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -634,6 +662,8 @@ export type MerchantUncheckedUpdateInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateManyInput = {
@@ -649,6 +679,7 @@ export type MerchantCreateManyInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
 }
 
 export type MerchantUpdateManyMutationInput = {
@@ -664,6 +695,7 @@ export type MerchantUpdateManyMutationInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type MerchantUncheckedUpdateManyInput = {
@@ -679,6 +711,7 @@ export type MerchantUncheckedUpdateManyInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type MerchantCountOrderByAggregateInput = {
@@ -694,6 +727,7 @@ export type MerchantCountOrderByAggregateInput = {
   returnStockOnRefund?: Prisma.SortOrder
   loyaltyEnabled?: Prisma.SortOrder
   loyaltyPointsPerUnit?: Prisma.SortOrder
+  setupDismissedAt?: Prisma.SortOrder
 }
 
 export type MerchantAvgOrderByAggregateInput = {
@@ -713,6 +747,7 @@ export type MerchantMaxOrderByAggregateInput = {
   returnStockOnRefund?: Prisma.SortOrder
   loyaltyEnabled?: Prisma.SortOrder
   loyaltyPointsPerUnit?: Prisma.SortOrder
+  setupDismissedAt?: Prisma.SortOrder
 }
 
 export type MerchantMinOrderByAggregateInput = {
@@ -728,6 +763,7 @@ export type MerchantMinOrderByAggregateInput = {
   returnStockOnRefund?: Prisma.SortOrder
   loyaltyEnabled?: Prisma.SortOrder
   loyaltyPointsPerUnit?: Prisma.SortOrder
+  setupDismissedAt?: Prisma.SortOrder
 }
 
 export type MerchantSumOrderByAggregateInput = {
@@ -1222,6 +1258,34 @@ export type MerchantUpdateOneRequiredWithoutShipmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.MerchantUpdateToOneWithWhereWithoutShipmentsInput, Prisma.MerchantUpdateWithoutShipmentsInput>, Prisma.MerchantUncheckedUpdateWithoutShipmentsInput>
 }
 
+export type MerchantCreateNestedOneWithoutSettlementAccountInput = {
+  create?: Prisma.XOR<Prisma.MerchantCreateWithoutSettlementAccountInput, Prisma.MerchantUncheckedCreateWithoutSettlementAccountInput>
+  connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutSettlementAccountInput
+  connect?: Prisma.MerchantWhereUniqueInput
+}
+
+export type MerchantUpdateOneRequiredWithoutSettlementAccountNestedInput = {
+  create?: Prisma.XOR<Prisma.MerchantCreateWithoutSettlementAccountInput, Prisma.MerchantUncheckedCreateWithoutSettlementAccountInput>
+  connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutSettlementAccountInput
+  upsert?: Prisma.MerchantUpsertWithoutSettlementAccountInput
+  connect?: Prisma.MerchantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MerchantUpdateToOneWithWhereWithoutSettlementAccountInput, Prisma.MerchantUpdateWithoutSettlementAccountInput>, Prisma.MerchantUncheckedUpdateWithoutSettlementAccountInput>
+}
+
+export type MerchantCreateNestedOneWithoutReportExportsInput = {
+  create?: Prisma.XOR<Prisma.MerchantCreateWithoutReportExportsInput, Prisma.MerchantUncheckedCreateWithoutReportExportsInput>
+  connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutReportExportsInput
+  connect?: Prisma.MerchantWhereUniqueInput
+}
+
+export type MerchantUpdateOneRequiredWithoutReportExportsNestedInput = {
+  create?: Prisma.XOR<Prisma.MerchantCreateWithoutReportExportsInput, Prisma.MerchantUncheckedCreateWithoutReportExportsInput>
+  connectOrCreate?: Prisma.MerchantCreateOrConnectWithoutReportExportsInput
+  upsert?: Prisma.MerchantUpsertWithoutReportExportsInput
+  connect?: Prisma.MerchantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MerchantUpdateToOneWithWhereWithoutReportExportsInput, Prisma.MerchantUpdateWithoutReportExportsInput>, Prisma.MerchantUncheckedUpdateWithoutReportExportsInput>
+}
+
 export type MerchantCreateWithoutBranchesInput = {
   id?: string
   name: string
@@ -1235,6 +1299,7 @@ export type MerchantCreateWithoutBranchesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -1267,6 +1332,8 @@ export type MerchantCreateWithoutBranchesInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutBranchesInput = {
@@ -1282,6 +1349,7 @@ export type MerchantUncheckedCreateWithoutBranchesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -1314,6 +1382,8 @@ export type MerchantUncheckedCreateWithoutBranchesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutBranchesInput = {
@@ -1345,6 +1415,7 @@ export type MerchantUpdateWithoutBranchesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -1377,6 +1448,8 @@ export type MerchantUpdateWithoutBranchesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutBranchesInput = {
@@ -1392,6 +1465,7 @@ export type MerchantUncheckedUpdateWithoutBranchesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -1424,6 +1498,8 @@ export type MerchantUncheckedUpdateWithoutBranchesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutProductsInput = {
@@ -1439,6 +1515,7 @@ export type MerchantCreateWithoutProductsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -1471,6 +1548,8 @@ export type MerchantCreateWithoutProductsInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutProductsInput = {
@@ -1486,6 +1565,7 @@ export type MerchantUncheckedCreateWithoutProductsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -1518,6 +1598,8 @@ export type MerchantUncheckedCreateWithoutProductsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutProductsInput = {
@@ -1549,6 +1631,7 @@ export type MerchantUpdateWithoutProductsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -1581,6 +1664,8 @@ export type MerchantUpdateWithoutProductsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutProductsInput = {
@@ -1596,6 +1681,7 @@ export type MerchantUncheckedUpdateWithoutProductsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -1628,6 +1714,8 @@ export type MerchantUncheckedUpdateWithoutProductsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutProductCategoriesInput = {
@@ -1643,6 +1731,7 @@ export type MerchantCreateWithoutProductCategoriesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -1675,6 +1764,8 @@ export type MerchantCreateWithoutProductCategoriesInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutProductCategoriesInput = {
@@ -1690,6 +1781,7 @@ export type MerchantUncheckedCreateWithoutProductCategoriesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -1722,6 +1814,8 @@ export type MerchantUncheckedCreateWithoutProductCategoriesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutProductCategoriesInput = {
@@ -1753,6 +1847,7 @@ export type MerchantUpdateWithoutProductCategoriesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -1785,6 +1880,8 @@ export type MerchantUpdateWithoutProductCategoriesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutProductCategoriesInput = {
@@ -1800,6 +1897,7 @@ export type MerchantUncheckedUpdateWithoutProductCategoriesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -1832,6 +1930,8 @@ export type MerchantUncheckedUpdateWithoutProductCategoriesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutThemeInput = {
@@ -1847,6 +1947,7 @@ export type MerchantCreateWithoutThemeInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -1879,6 +1980,8 @@ export type MerchantCreateWithoutThemeInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutThemeInput = {
@@ -1894,6 +1997,7 @@ export type MerchantUncheckedCreateWithoutThemeInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -1926,6 +2030,8 @@ export type MerchantUncheckedCreateWithoutThemeInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutThemeInput = {
@@ -1957,6 +2063,7 @@ export type MerchantUpdateWithoutThemeInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -1989,6 +2096,8 @@ export type MerchantUpdateWithoutThemeInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutThemeInput = {
@@ -2004,6 +2113,7 @@ export type MerchantUncheckedUpdateWithoutThemeInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -2036,6 +2146,8 @@ export type MerchantUncheckedUpdateWithoutThemeInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutInventoryStocksInput = {
@@ -2051,6 +2163,7 @@ export type MerchantCreateWithoutInventoryStocksInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -2083,6 +2196,8 @@ export type MerchantCreateWithoutInventoryStocksInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutInventoryStocksInput = {
@@ -2098,6 +2213,7 @@ export type MerchantUncheckedCreateWithoutInventoryStocksInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -2130,6 +2246,8 @@ export type MerchantUncheckedCreateWithoutInventoryStocksInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutInventoryStocksInput = {
@@ -2161,6 +2279,7 @@ export type MerchantUpdateWithoutInventoryStocksInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -2193,6 +2312,8 @@ export type MerchantUpdateWithoutInventoryStocksInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutInventoryStocksInput = {
@@ -2208,6 +2329,7 @@ export type MerchantUncheckedUpdateWithoutInventoryStocksInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -2240,6 +2362,8 @@ export type MerchantUncheckedUpdateWithoutInventoryStocksInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutInventoryReservationsInput = {
@@ -2255,6 +2379,7 @@ export type MerchantCreateWithoutInventoryReservationsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -2287,6 +2412,8 @@ export type MerchantCreateWithoutInventoryReservationsInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutInventoryReservationsInput = {
@@ -2302,6 +2429,7 @@ export type MerchantUncheckedCreateWithoutInventoryReservationsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -2334,6 +2462,8 @@ export type MerchantUncheckedCreateWithoutInventoryReservationsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutInventoryReservationsInput = {
@@ -2365,6 +2495,7 @@ export type MerchantUpdateWithoutInventoryReservationsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -2397,6 +2528,8 @@ export type MerchantUpdateWithoutInventoryReservationsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutInventoryReservationsInput = {
@@ -2412,6 +2545,7 @@ export type MerchantUncheckedUpdateWithoutInventoryReservationsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -2444,6 +2578,8 @@ export type MerchantUncheckedUpdateWithoutInventoryReservationsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutCheckoutSessionsInput = {
@@ -2459,6 +2595,7 @@ export type MerchantCreateWithoutCheckoutSessionsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -2491,6 +2628,8 @@ export type MerchantCreateWithoutCheckoutSessionsInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutCheckoutSessionsInput = {
@@ -2506,6 +2645,7 @@ export type MerchantUncheckedCreateWithoutCheckoutSessionsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -2538,6 +2678,8 @@ export type MerchantUncheckedCreateWithoutCheckoutSessionsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutCheckoutSessionsInput = {
@@ -2569,6 +2711,7 @@ export type MerchantUpdateWithoutCheckoutSessionsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -2601,6 +2744,8 @@ export type MerchantUpdateWithoutCheckoutSessionsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutCheckoutSessionsInput = {
@@ -2616,6 +2761,7 @@ export type MerchantUncheckedUpdateWithoutCheckoutSessionsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -2648,6 +2794,8 @@ export type MerchantUncheckedUpdateWithoutCheckoutSessionsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutOrdersInput = {
@@ -2663,6 +2811,7 @@ export type MerchantCreateWithoutOrdersInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -2695,6 +2844,8 @@ export type MerchantCreateWithoutOrdersInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutOrdersInput = {
@@ -2710,6 +2861,7 @@ export type MerchantUncheckedCreateWithoutOrdersInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -2742,6 +2894,8 @@ export type MerchantUncheckedCreateWithoutOrdersInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutOrdersInput = {
@@ -2773,6 +2927,7 @@ export type MerchantUpdateWithoutOrdersInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -2805,6 +2960,8 @@ export type MerchantUpdateWithoutOrdersInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutOrdersInput = {
@@ -2820,6 +2977,7 @@ export type MerchantUncheckedUpdateWithoutOrdersInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -2852,6 +3010,8 @@ export type MerchantUncheckedUpdateWithoutOrdersInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutPaymentProvidersInput = {
@@ -2867,6 +3027,7 @@ export type MerchantCreateWithoutPaymentProvidersInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -2899,6 +3060,8 @@ export type MerchantCreateWithoutPaymentProvidersInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutPaymentProvidersInput = {
@@ -2914,6 +3077,7 @@ export type MerchantUncheckedCreateWithoutPaymentProvidersInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -2946,6 +3110,8 @@ export type MerchantUncheckedCreateWithoutPaymentProvidersInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutPaymentProvidersInput = {
@@ -2977,6 +3143,7 @@ export type MerchantUpdateWithoutPaymentProvidersInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -3009,6 +3176,8 @@ export type MerchantUpdateWithoutPaymentProvidersInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutPaymentProvidersInput = {
@@ -3024,6 +3193,7 @@ export type MerchantUncheckedUpdateWithoutPaymentProvidersInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -3056,6 +3226,8 @@ export type MerchantUncheckedUpdateWithoutPaymentProvidersInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutPaymentsInput = {
@@ -3071,6 +3243,7 @@ export type MerchantCreateWithoutPaymentsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -3103,6 +3276,8 @@ export type MerchantCreateWithoutPaymentsInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutPaymentsInput = {
@@ -3118,6 +3293,7 @@ export type MerchantUncheckedCreateWithoutPaymentsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -3150,6 +3326,8 @@ export type MerchantUncheckedCreateWithoutPaymentsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutPaymentsInput = {
@@ -3181,6 +3359,7 @@ export type MerchantUpdateWithoutPaymentsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -3213,6 +3392,8 @@ export type MerchantUpdateWithoutPaymentsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutPaymentsInput = {
@@ -3228,6 +3409,7 @@ export type MerchantUncheckedUpdateWithoutPaymentsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -3260,6 +3442,8 @@ export type MerchantUncheckedUpdateWithoutPaymentsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutPaymentWebhookEventsInput = {
@@ -3275,6 +3459,7 @@ export type MerchantCreateWithoutPaymentWebhookEventsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -3307,6 +3492,8 @@ export type MerchantCreateWithoutPaymentWebhookEventsInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutPaymentWebhookEventsInput = {
@@ -3322,6 +3509,7 @@ export type MerchantUncheckedCreateWithoutPaymentWebhookEventsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -3354,6 +3542,8 @@ export type MerchantUncheckedCreateWithoutPaymentWebhookEventsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutPaymentWebhookEventsInput = {
@@ -3385,6 +3575,7 @@ export type MerchantUpdateWithoutPaymentWebhookEventsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -3417,6 +3608,8 @@ export type MerchantUpdateWithoutPaymentWebhookEventsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutPaymentWebhookEventsInput = {
@@ -3432,6 +3625,7 @@ export type MerchantUncheckedUpdateWithoutPaymentWebhookEventsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -3464,6 +3658,8 @@ export type MerchantUncheckedUpdateWithoutPaymentWebhookEventsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutPaymentRefundsInput = {
@@ -3479,6 +3675,7 @@ export type MerchantCreateWithoutPaymentRefundsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -3511,6 +3708,8 @@ export type MerchantCreateWithoutPaymentRefundsInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutPaymentRefundsInput = {
@@ -3526,6 +3725,7 @@ export type MerchantUncheckedCreateWithoutPaymentRefundsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -3558,6 +3758,8 @@ export type MerchantUncheckedCreateWithoutPaymentRefundsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutPaymentRefundsInput = {
@@ -3589,6 +3791,7 @@ export type MerchantUpdateWithoutPaymentRefundsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -3621,6 +3824,8 @@ export type MerchantUpdateWithoutPaymentRefundsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutPaymentRefundsInput = {
@@ -3636,6 +3841,7 @@ export type MerchantUncheckedUpdateWithoutPaymentRefundsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -3668,6 +3874,8 @@ export type MerchantUncheckedUpdateWithoutPaymentRefundsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutPosDevicesInput = {
@@ -3683,6 +3891,7 @@ export type MerchantCreateWithoutPosDevicesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -3715,6 +3924,8 @@ export type MerchantCreateWithoutPosDevicesInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutPosDevicesInput = {
@@ -3730,6 +3941,7 @@ export type MerchantUncheckedCreateWithoutPosDevicesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -3762,6 +3974,8 @@ export type MerchantUncheckedCreateWithoutPosDevicesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutPosDevicesInput = {
@@ -3793,6 +4007,7 @@ export type MerchantUpdateWithoutPosDevicesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -3825,6 +4040,8 @@ export type MerchantUpdateWithoutPosDevicesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutPosDevicesInput = {
@@ -3840,6 +4057,7 @@ export type MerchantUncheckedUpdateWithoutPosDevicesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -3872,6 +4090,8 @@ export type MerchantUncheckedUpdateWithoutPosDevicesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutPosShiftsInput = {
@@ -3887,6 +4107,7 @@ export type MerchantCreateWithoutPosShiftsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -3919,6 +4140,8 @@ export type MerchantCreateWithoutPosShiftsInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutPosShiftsInput = {
@@ -3934,6 +4157,7 @@ export type MerchantUncheckedCreateWithoutPosShiftsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -3966,6 +4190,8 @@ export type MerchantUncheckedCreateWithoutPosShiftsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutPosShiftsInput = {
@@ -3997,6 +4223,7 @@ export type MerchantUpdateWithoutPosShiftsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -4029,6 +4256,8 @@ export type MerchantUpdateWithoutPosShiftsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutPosShiftsInput = {
@@ -4044,6 +4273,7 @@ export type MerchantUncheckedUpdateWithoutPosShiftsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -4076,6 +4306,8 @@ export type MerchantUncheckedUpdateWithoutPosShiftsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutPosTablesInput = {
@@ -4091,6 +4323,7 @@ export type MerchantCreateWithoutPosTablesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -4123,6 +4356,8 @@ export type MerchantCreateWithoutPosTablesInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutPosTablesInput = {
@@ -4138,6 +4373,7 @@ export type MerchantUncheckedCreateWithoutPosTablesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -4170,6 +4406,8 @@ export type MerchantUncheckedCreateWithoutPosTablesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutPosTablesInput = {
@@ -4201,6 +4439,7 @@ export type MerchantUpdateWithoutPosTablesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -4233,6 +4472,8 @@ export type MerchantUpdateWithoutPosTablesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutPosTablesInput = {
@@ -4248,6 +4489,7 @@ export type MerchantUncheckedUpdateWithoutPosTablesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -4280,6 +4522,8 @@ export type MerchantUncheckedUpdateWithoutPosTablesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutCustomersInput = {
@@ -4295,6 +4539,7 @@ export type MerchantCreateWithoutCustomersInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -4327,6 +4572,8 @@ export type MerchantCreateWithoutCustomersInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutCustomersInput = {
@@ -4342,6 +4589,7 @@ export type MerchantUncheckedCreateWithoutCustomersInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -4374,6 +4622,8 @@ export type MerchantUncheckedCreateWithoutCustomersInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutCustomersInput = {
@@ -4405,6 +4655,7 @@ export type MerchantUpdateWithoutCustomersInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -4437,6 +4688,8 @@ export type MerchantUpdateWithoutCustomersInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutCustomersInput = {
@@ -4452,6 +4705,7 @@ export type MerchantUncheckedUpdateWithoutCustomersInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -4484,6 +4738,8 @@ export type MerchantUncheckedUpdateWithoutCustomersInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutLoyaltyEntriesInput = {
@@ -4499,6 +4755,7 @@ export type MerchantCreateWithoutLoyaltyEntriesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -4531,6 +4788,8 @@ export type MerchantCreateWithoutLoyaltyEntriesInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutLoyaltyEntriesInput = {
@@ -4546,6 +4805,7 @@ export type MerchantUncheckedCreateWithoutLoyaltyEntriesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -4578,6 +4838,8 @@ export type MerchantUncheckedCreateWithoutLoyaltyEntriesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutLoyaltyEntriesInput = {
@@ -4609,6 +4871,7 @@ export type MerchantUpdateWithoutLoyaltyEntriesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -4641,6 +4904,8 @@ export type MerchantUpdateWithoutLoyaltyEntriesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutLoyaltyEntriesInput = {
@@ -4656,6 +4921,7 @@ export type MerchantUncheckedUpdateWithoutLoyaltyEntriesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -4688,6 +4954,8 @@ export type MerchantUncheckedUpdateWithoutLoyaltyEntriesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutKitchenOrdersInput = {
@@ -4703,6 +4971,7 @@ export type MerchantCreateWithoutKitchenOrdersInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -4735,6 +5004,8 @@ export type MerchantCreateWithoutKitchenOrdersInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutKitchenOrdersInput = {
@@ -4750,6 +5021,7 @@ export type MerchantUncheckedCreateWithoutKitchenOrdersInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -4782,6 +5054,8 @@ export type MerchantUncheckedCreateWithoutKitchenOrdersInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutKitchenOrdersInput = {
@@ -4813,6 +5087,7 @@ export type MerchantUpdateWithoutKitchenOrdersInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -4845,6 +5120,8 @@ export type MerchantUpdateWithoutKitchenOrdersInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutKitchenOrdersInput = {
@@ -4860,6 +5137,7 @@ export type MerchantUncheckedUpdateWithoutKitchenOrdersInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -4892,6 +5170,8 @@ export type MerchantUncheckedUpdateWithoutKitchenOrdersInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutIdempotencyKeysInput = {
@@ -4907,6 +5187,7 @@ export type MerchantCreateWithoutIdempotencyKeysInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -4939,6 +5220,8 @@ export type MerchantCreateWithoutIdempotencyKeysInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutIdempotencyKeysInput = {
@@ -4954,6 +5237,7 @@ export type MerchantUncheckedCreateWithoutIdempotencyKeysInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -4986,6 +5270,8 @@ export type MerchantUncheckedCreateWithoutIdempotencyKeysInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutIdempotencyKeysInput = {
@@ -5017,6 +5303,7 @@ export type MerchantUpdateWithoutIdempotencyKeysInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -5049,6 +5336,8 @@ export type MerchantUpdateWithoutIdempotencyKeysInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutIdempotencyKeysInput = {
@@ -5064,6 +5353,7 @@ export type MerchantUncheckedUpdateWithoutIdempotencyKeysInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -5096,6 +5386,8 @@ export type MerchantUncheckedUpdateWithoutIdempotencyKeysInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutNotificationsInput = {
@@ -5111,6 +5403,7 @@ export type MerchantCreateWithoutNotificationsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -5143,6 +5436,8 @@ export type MerchantCreateWithoutNotificationsInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutNotificationsInput = {
@@ -5158,6 +5453,7 @@ export type MerchantUncheckedCreateWithoutNotificationsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -5190,6 +5486,8 @@ export type MerchantUncheckedCreateWithoutNotificationsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutNotificationsInput = {
@@ -5221,6 +5519,7 @@ export type MerchantUpdateWithoutNotificationsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -5253,6 +5552,8 @@ export type MerchantUpdateWithoutNotificationsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutNotificationsInput = {
@@ -5268,6 +5569,7 @@ export type MerchantUncheckedUpdateWithoutNotificationsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -5300,6 +5602,8 @@ export type MerchantUncheckedUpdateWithoutNotificationsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutSocialPostsInput = {
@@ -5315,6 +5619,7 @@ export type MerchantCreateWithoutSocialPostsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -5347,6 +5652,8 @@ export type MerchantCreateWithoutSocialPostsInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutSocialPostsInput = {
@@ -5362,6 +5669,7 @@ export type MerchantUncheckedCreateWithoutSocialPostsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -5394,6 +5702,8 @@ export type MerchantUncheckedCreateWithoutSocialPostsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutSocialPostsInput = {
@@ -5425,6 +5735,7 @@ export type MerchantUpdateWithoutSocialPostsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -5457,6 +5768,8 @@ export type MerchantUpdateWithoutSocialPostsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutSocialPostsInput = {
@@ -5472,6 +5785,7 @@ export type MerchantUncheckedUpdateWithoutSocialPostsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -5504,6 +5818,8 @@ export type MerchantUncheckedUpdateWithoutSocialPostsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutWebsiteArticlesInput = {
@@ -5519,6 +5835,7 @@ export type MerchantCreateWithoutWebsiteArticlesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -5551,6 +5868,8 @@ export type MerchantCreateWithoutWebsiteArticlesInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutWebsiteArticlesInput = {
@@ -5566,6 +5885,7 @@ export type MerchantUncheckedCreateWithoutWebsiteArticlesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -5598,6 +5918,8 @@ export type MerchantUncheckedCreateWithoutWebsiteArticlesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutWebsiteArticlesInput = {
@@ -5629,6 +5951,7 @@ export type MerchantUpdateWithoutWebsiteArticlesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -5661,6 +5984,8 @@ export type MerchantUpdateWithoutWebsiteArticlesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutWebsiteArticlesInput = {
@@ -5676,6 +6001,7 @@ export type MerchantUncheckedUpdateWithoutWebsiteArticlesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -5708,6 +6034,8 @@ export type MerchantUncheckedUpdateWithoutWebsiteArticlesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutInventoryMovementsInput = {
@@ -5723,6 +6051,7 @@ export type MerchantCreateWithoutInventoryMovementsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -5755,6 +6084,8 @@ export type MerchantCreateWithoutInventoryMovementsInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutInventoryMovementsInput = {
@@ -5770,6 +6101,7 @@ export type MerchantUncheckedCreateWithoutInventoryMovementsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -5802,6 +6134,8 @@ export type MerchantUncheckedCreateWithoutInventoryMovementsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutInventoryMovementsInput = {
@@ -5833,6 +6167,7 @@ export type MerchantUpdateWithoutInventoryMovementsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -5865,6 +6200,8 @@ export type MerchantUpdateWithoutInventoryMovementsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutInventoryMovementsInput = {
@@ -5880,6 +6217,7 @@ export type MerchantUncheckedUpdateWithoutInventoryMovementsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -5912,6 +6250,8 @@ export type MerchantUncheckedUpdateWithoutInventoryMovementsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutMembershipsInput = {
@@ -5927,6 +6267,7 @@ export type MerchantCreateWithoutMembershipsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
   invitations?: Prisma.MerchantInvitationCreateNestedManyWithoutMerchantInput
@@ -5959,6 +6300,8 @@ export type MerchantCreateWithoutMembershipsInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutMembershipsInput = {
@@ -5974,6 +6317,7 @@ export type MerchantUncheckedCreateWithoutMembershipsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
   invitations?: Prisma.MerchantInvitationUncheckedCreateNestedManyWithoutMerchantInput
@@ -6006,6 +6350,8 @@ export type MerchantUncheckedCreateWithoutMembershipsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutMembershipsInput = {
@@ -6037,6 +6383,7 @@ export type MerchantUpdateWithoutMembershipsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
   invitations?: Prisma.MerchantInvitationUpdateManyWithoutMerchantNestedInput
@@ -6069,6 +6416,8 @@ export type MerchantUpdateWithoutMembershipsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutMembershipsInput = {
@@ -6084,6 +6433,7 @@ export type MerchantUncheckedUpdateWithoutMembershipsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
   invitations?: Prisma.MerchantInvitationUncheckedUpdateManyWithoutMerchantNestedInput
@@ -6116,6 +6466,8 @@ export type MerchantUncheckedUpdateWithoutMembershipsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutRolesInput = {
@@ -6131,6 +6483,7 @@ export type MerchantCreateWithoutRolesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
   invitations?: Prisma.MerchantInvitationCreateNestedManyWithoutMerchantInput
@@ -6163,6 +6516,8 @@ export type MerchantCreateWithoutRolesInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutRolesInput = {
@@ -6178,6 +6533,7 @@ export type MerchantUncheckedCreateWithoutRolesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
   invitations?: Prisma.MerchantInvitationUncheckedCreateNestedManyWithoutMerchantInput
@@ -6210,6 +6566,8 @@ export type MerchantUncheckedCreateWithoutRolesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutRolesInput = {
@@ -6241,6 +6599,7 @@ export type MerchantUpdateWithoutRolesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
   invitations?: Prisma.MerchantInvitationUpdateManyWithoutMerchantNestedInput
@@ -6273,6 +6632,8 @@ export type MerchantUpdateWithoutRolesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutRolesInput = {
@@ -6288,6 +6649,7 @@ export type MerchantUncheckedUpdateWithoutRolesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
   invitations?: Prisma.MerchantInvitationUncheckedUpdateManyWithoutMerchantNestedInput
@@ -6320,6 +6682,8 @@ export type MerchantUncheckedUpdateWithoutRolesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutSessionsInput = {
@@ -6335,6 +6699,7 @@ export type MerchantCreateWithoutSessionsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   invitations?: Prisma.MerchantInvitationCreateNestedManyWithoutMerchantInput
@@ -6367,6 +6732,8 @@ export type MerchantCreateWithoutSessionsInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutSessionsInput = {
@@ -6382,6 +6749,7 @@ export type MerchantUncheckedCreateWithoutSessionsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   invitations?: Prisma.MerchantInvitationUncheckedCreateNestedManyWithoutMerchantInput
@@ -6414,6 +6782,8 @@ export type MerchantUncheckedCreateWithoutSessionsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutSessionsInput = {
@@ -6445,6 +6815,7 @@ export type MerchantUpdateWithoutSessionsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   invitations?: Prisma.MerchantInvitationUpdateManyWithoutMerchantNestedInput
@@ -6477,6 +6848,8 @@ export type MerchantUpdateWithoutSessionsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutSessionsInput = {
@@ -6492,6 +6865,7 @@ export type MerchantUncheckedUpdateWithoutSessionsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   invitations?: Prisma.MerchantInvitationUncheckedUpdateManyWithoutMerchantNestedInput
@@ -6524,6 +6898,8 @@ export type MerchantUncheckedUpdateWithoutSessionsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutInvitationsInput = {
@@ -6539,6 +6915,7 @@ export type MerchantCreateWithoutInvitationsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -6571,6 +6948,8 @@ export type MerchantCreateWithoutInvitationsInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutInvitationsInput = {
@@ -6586,6 +6965,7 @@ export type MerchantUncheckedCreateWithoutInvitationsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -6618,6 +6998,8 @@ export type MerchantUncheckedCreateWithoutInvitationsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutInvitationsInput = {
@@ -6649,6 +7031,7 @@ export type MerchantUpdateWithoutInvitationsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -6681,6 +7064,8 @@ export type MerchantUpdateWithoutInvitationsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutInvitationsInput = {
@@ -6696,6 +7081,7 @@ export type MerchantUncheckedUpdateWithoutInvitationsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -6728,6 +7114,8 @@ export type MerchantUncheckedUpdateWithoutInvitationsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutAuditLogsInput = {
@@ -6743,6 +7131,7 @@ export type MerchantCreateWithoutAuditLogsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -6775,6 +7164,8 @@ export type MerchantCreateWithoutAuditLogsInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutAuditLogsInput = {
@@ -6790,6 +7181,7 @@ export type MerchantUncheckedCreateWithoutAuditLogsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -6822,6 +7214,8 @@ export type MerchantUncheckedCreateWithoutAuditLogsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutAuditLogsInput = {
@@ -6853,6 +7247,7 @@ export type MerchantUpdateWithoutAuditLogsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -6885,6 +7280,8 @@ export type MerchantUpdateWithoutAuditLogsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutAuditLogsInput = {
@@ -6900,6 +7297,7 @@ export type MerchantUncheckedUpdateWithoutAuditLogsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -6932,6 +7330,8 @@ export type MerchantUncheckedUpdateWithoutAuditLogsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutCartsInput = {
@@ -6947,6 +7347,7 @@ export type MerchantCreateWithoutCartsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -6979,6 +7380,8 @@ export type MerchantCreateWithoutCartsInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutCartsInput = {
@@ -6994,6 +7397,7 @@ export type MerchantUncheckedCreateWithoutCartsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -7026,6 +7430,8 @@ export type MerchantUncheckedCreateWithoutCartsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutCartsInput = {
@@ -7057,6 +7463,7 @@ export type MerchantUpdateWithoutCartsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -7089,6 +7496,8 @@ export type MerchantUpdateWithoutCartsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutCartsInput = {
@@ -7104,6 +7513,7 @@ export type MerchantUncheckedUpdateWithoutCartsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -7136,6 +7546,8 @@ export type MerchantUncheckedUpdateWithoutCartsInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutCustomerAddressesInput = {
@@ -7151,6 +7563,7 @@ export type MerchantCreateWithoutCustomerAddressesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -7183,6 +7596,8 @@ export type MerchantCreateWithoutCustomerAddressesInput = {
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutCustomerAddressesInput = {
@@ -7198,6 +7613,7 @@ export type MerchantUncheckedCreateWithoutCustomerAddressesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -7230,6 +7646,8 @@ export type MerchantUncheckedCreateWithoutCustomerAddressesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutCustomerAddressesInput = {
@@ -7261,6 +7679,7 @@ export type MerchantUpdateWithoutCustomerAddressesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -7293,6 +7712,8 @@ export type MerchantUpdateWithoutCustomerAddressesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutCustomerAddressesInput = {
@@ -7308,6 +7729,7 @@ export type MerchantUncheckedUpdateWithoutCustomerAddressesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -7340,6 +7762,8 @@ export type MerchantUncheckedUpdateWithoutCustomerAddressesInput = {
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutDeliveryMethodsInput = {
@@ -7355,6 +7779,7 @@ export type MerchantCreateWithoutDeliveryMethodsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -7387,6 +7812,8 @@ export type MerchantCreateWithoutDeliveryMethodsInput = {
   customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutDeliveryMethodsInput = {
@@ -7402,6 +7829,7 @@ export type MerchantUncheckedCreateWithoutDeliveryMethodsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -7434,6 +7862,8 @@ export type MerchantUncheckedCreateWithoutDeliveryMethodsInput = {
   customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutDeliveryMethodsInput = {
@@ -7465,6 +7895,7 @@ export type MerchantUpdateWithoutDeliveryMethodsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -7497,6 +7928,8 @@ export type MerchantUpdateWithoutDeliveryMethodsInput = {
   customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutDeliveryMethodsInput = {
@@ -7512,6 +7945,7 @@ export type MerchantUncheckedUpdateWithoutDeliveryMethodsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -7544,6 +7978,8 @@ export type MerchantUncheckedUpdateWithoutDeliveryMethodsInput = {
   customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutDeliveryZonesInput = {
@@ -7559,6 +7995,7 @@ export type MerchantCreateWithoutDeliveryZonesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -7591,6 +8028,8 @@ export type MerchantCreateWithoutDeliveryZonesInput = {
   customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutDeliveryZonesInput = {
@@ -7606,6 +8045,7 @@ export type MerchantUncheckedCreateWithoutDeliveryZonesInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -7638,6 +8078,8 @@ export type MerchantUncheckedCreateWithoutDeliveryZonesInput = {
   customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutDeliveryZonesInput = {
@@ -7669,6 +8111,7 @@ export type MerchantUpdateWithoutDeliveryZonesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -7701,6 +8144,8 @@ export type MerchantUpdateWithoutDeliveryZonesInput = {
   customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutDeliveryZonesInput = {
@@ -7716,6 +8161,7 @@ export type MerchantUncheckedUpdateWithoutDeliveryZonesInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -7748,6 +8194,8 @@ export type MerchantUncheckedUpdateWithoutDeliveryZonesInput = {
   customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantCreateWithoutShipmentsInput = {
@@ -7763,6 +8211,7 @@ export type MerchantCreateWithoutShipmentsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
@@ -7795,6 +8244,8 @@ export type MerchantCreateWithoutShipmentsInput = {
   customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
   deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantUncheckedCreateWithoutShipmentsInput = {
@@ -7810,6 +8261,7 @@ export type MerchantUncheckedCreateWithoutShipmentsInput = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
   memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
@@ -7842,6 +8294,8 @@ export type MerchantUncheckedCreateWithoutShipmentsInput = {
   customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
   deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
 }
 
 export type MerchantCreateOrConnectWithoutShipmentsInput = {
@@ -7873,6 +8327,7 @@ export type MerchantUpdateWithoutShipmentsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
@@ -7905,6 +8360,8 @@ export type MerchantUpdateWithoutShipmentsInput = {
   customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
   deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
 }
 
 export type MerchantUncheckedUpdateWithoutShipmentsInput = {
@@ -7920,6 +8377,7 @@ export type MerchantUncheckedUpdateWithoutShipmentsInput = {
   returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
@@ -7952,6 +8410,440 @@ export type MerchantUncheckedUpdateWithoutShipmentsInput = {
   customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
   deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
+}
+
+export type MerchantCreateWithoutSettlementAccountInput = {
+  id?: string
+  name: string
+  slug: string
+  email?: string | null
+  phone?: string | null
+  status?: $Enums.MerchantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  returnStockOnRefund?: boolean
+  loyaltyEnabled?: boolean
+  loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
+  memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
+  roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
+  invitations?: Prisma.MerchantInvitationCreateNestedManyWithoutMerchantInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutMerchantInput
+  products?: Prisma.ProductCreateNestedManyWithoutMerchantInput
+  inventoryStocks?: Prisma.InventoryStockCreateNestedManyWithoutMerchantInput
+  inventoryReservations?: Prisma.InventoryReservationCreateNestedManyWithoutMerchantInput
+  inventoryMovements?: Prisma.InventoryMovementCreateNestedManyWithoutMerchantInput
+  theme?: Prisma.MerchantThemeCreateNestedOneWithoutMerchantInput
+  checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutMerchantInput
+  orders?: Prisma.OrderCreateNestedManyWithoutMerchantInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryCreateNestedManyWithoutMerchantInput
+  paymentProviders?: Prisma.PaymentProviderCreateNestedManyWithoutMerchantInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutMerchantInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventCreateNestedManyWithoutMerchantInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutMerchantInput
+  socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
+  websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
+  branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
+  posDevices?: Prisma.PosDeviceCreateNestedManyWithoutMerchantInput
+  posShifts?: Prisma.PosShiftCreateNestedManyWithoutMerchantInput
+  posTables?: Prisma.PosTableCreateNestedManyWithoutMerchantInput
+  customers?: Prisma.CustomerCreateNestedManyWithoutMerchantInput
+  kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
+  paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  reportExports?: Prisma.ReportExportCreateNestedManyWithoutMerchantInput
+}
+
+export type MerchantUncheckedCreateWithoutSettlementAccountInput = {
+  id?: string
+  name: string
+  slug: string
+  email?: string | null
+  phone?: string | null
+  status?: $Enums.MerchantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  returnStockOnRefund?: boolean
+  loyaltyEnabled?: boolean
+  loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
+  memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
+  invitations?: Prisma.MerchantInvitationUncheckedCreateNestedManyWithoutMerchantInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutMerchantInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryStocks?: Prisma.InventoryStockUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryReservations?: Prisma.InventoryReservationUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryMovements?: Prisma.InventoryMovementUncheckedCreateNestedManyWithoutMerchantInput
+  theme?: Prisma.MerchantThemeUncheckedCreateNestedOneWithoutMerchantInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutMerchantInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutMerchantInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedCreateNestedManyWithoutMerchantInput
+  paymentProviders?: Prisma.PaymentProviderUncheckedCreateNestedManyWithoutMerchantInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutMerchantInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUncheckedCreateNestedManyWithoutMerchantInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMerchantInput
+  socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
+  websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
+  branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
+  posDevices?: Prisma.PosDeviceUncheckedCreateNestedManyWithoutMerchantInput
+  posShifts?: Prisma.PosShiftUncheckedCreateNestedManyWithoutMerchantInput
+  posTables?: Prisma.PosTableUncheckedCreateNestedManyWithoutMerchantInput
+  customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutMerchantInput
+  kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
+  paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  reportExports?: Prisma.ReportExportUncheckedCreateNestedManyWithoutMerchantInput
+}
+
+export type MerchantCreateOrConnectWithoutSettlementAccountInput = {
+  where: Prisma.MerchantWhereUniqueInput
+  create: Prisma.XOR<Prisma.MerchantCreateWithoutSettlementAccountInput, Prisma.MerchantUncheckedCreateWithoutSettlementAccountInput>
+}
+
+export type MerchantUpsertWithoutSettlementAccountInput = {
+  update: Prisma.XOR<Prisma.MerchantUpdateWithoutSettlementAccountInput, Prisma.MerchantUncheckedUpdateWithoutSettlementAccountInput>
+  create: Prisma.XOR<Prisma.MerchantCreateWithoutSettlementAccountInput, Prisma.MerchantUncheckedCreateWithoutSettlementAccountInput>
+  where?: Prisma.MerchantWhereInput
+}
+
+export type MerchantUpdateToOneWithWhereWithoutSettlementAccountInput = {
+  where?: Prisma.MerchantWhereInput
+  data: Prisma.XOR<Prisma.MerchantUpdateWithoutSettlementAccountInput, Prisma.MerchantUncheckedUpdateWithoutSettlementAccountInput>
+}
+
+export type MerchantUpdateWithoutSettlementAccountInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMerchantStatusFieldUpdateOperationsInput | $Enums.MerchantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
+  invitations?: Prisma.MerchantInvitationUpdateManyWithoutMerchantNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutMerchantNestedInput
+  products?: Prisma.ProductUpdateManyWithoutMerchantNestedInput
+  inventoryStocks?: Prisma.InventoryStockUpdateManyWithoutMerchantNestedInput
+  inventoryReservations?: Prisma.InventoryReservationUpdateManyWithoutMerchantNestedInput
+  inventoryMovements?: Prisma.InventoryMovementUpdateManyWithoutMerchantNestedInput
+  theme?: Prisma.MerchantThemeUpdateOneWithoutMerchantNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutMerchantNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutMerchantNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUpdateManyWithoutMerchantNestedInput
+  paymentProviders?: Prisma.PaymentProviderUpdateManyWithoutMerchantNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutMerchantNestedInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUpdateManyWithoutMerchantNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutMerchantNestedInput
+  socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
+  websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
+  branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
+  posDevices?: Prisma.PosDeviceUpdateManyWithoutMerchantNestedInput
+  posShifts?: Prisma.PosShiftUpdateManyWithoutMerchantNestedInput
+  posTables?: Prisma.PosTableUpdateManyWithoutMerchantNestedInput
+  customers?: Prisma.CustomerUpdateManyWithoutMerchantNestedInput
+  kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
+  paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUpdateManyWithoutMerchantNestedInput
+}
+
+export type MerchantUncheckedUpdateWithoutSettlementAccountInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMerchantStatusFieldUpdateOperationsInput | $Enums.MerchantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
+  invitations?: Prisma.MerchantInvitationUncheckedUpdateManyWithoutMerchantNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutMerchantNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryStocks?: Prisma.InventoryStockUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryReservations?: Prisma.InventoryReservationUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryMovements?: Prisma.InventoryMovementUncheckedUpdateManyWithoutMerchantNestedInput
+  theme?: Prisma.MerchantThemeUncheckedUpdateOneWithoutMerchantNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutMerchantNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutMerchantNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentProviders?: Prisma.PaymentProviderUncheckedUpdateManyWithoutMerchantNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUncheckedUpdateManyWithoutMerchantNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMerchantNestedInput
+  socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
+  websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
+  branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
+  posDevices?: Prisma.PosDeviceUncheckedUpdateManyWithoutMerchantNestedInput
+  posShifts?: Prisma.PosShiftUncheckedUpdateManyWithoutMerchantNestedInput
+  posTables?: Prisma.PosTableUncheckedUpdateManyWithoutMerchantNestedInput
+  customers?: Prisma.CustomerUncheckedUpdateManyWithoutMerchantNestedInput
+  kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  reportExports?: Prisma.ReportExportUncheckedUpdateManyWithoutMerchantNestedInput
+}
+
+export type MerchantCreateWithoutReportExportsInput = {
+  id?: string
+  name: string
+  slug: string
+  email?: string | null
+  phone?: string | null
+  status?: $Enums.MerchantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  returnStockOnRefund?: boolean
+  loyaltyEnabled?: boolean
+  loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
+  memberships?: Prisma.MerchantUserCreateNestedManyWithoutMerchantInput
+  roles?: Prisma.RoleCreateNestedManyWithoutMerchantInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutMerchantInput
+  invitations?: Prisma.MerchantInvitationCreateNestedManyWithoutMerchantInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutMerchantInput
+  products?: Prisma.ProductCreateNestedManyWithoutMerchantInput
+  inventoryStocks?: Prisma.InventoryStockCreateNestedManyWithoutMerchantInput
+  inventoryReservations?: Prisma.InventoryReservationCreateNestedManyWithoutMerchantInput
+  inventoryMovements?: Prisma.InventoryMovementCreateNestedManyWithoutMerchantInput
+  theme?: Prisma.MerchantThemeCreateNestedOneWithoutMerchantInput
+  checkoutSessions?: Prisma.CheckoutSessionCreateNestedManyWithoutMerchantInput
+  orders?: Prisma.OrderCreateNestedManyWithoutMerchantInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryCreateNestedManyWithoutMerchantInput
+  paymentProviders?: Prisma.PaymentProviderCreateNestedManyWithoutMerchantInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutMerchantInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventCreateNestedManyWithoutMerchantInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutMerchantInput
+  socialPosts?: Prisma.SocialPostCreateNestedManyWithoutMerchantInput
+  websiteArticles?: Prisma.WebsiteArticleCreateNestedManyWithoutMerchantInput
+  branches?: Prisma.MerchantBranchCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryCreateNestedManyWithoutMerchantInput
+  posDevices?: Prisma.PosDeviceCreateNestedManyWithoutMerchantInput
+  posShifts?: Prisma.PosShiftCreateNestedManyWithoutMerchantInput
+  posTables?: Prisma.PosTableCreateNestedManyWithoutMerchantInput
+  customers?: Prisma.CustomerCreateNestedManyWithoutMerchantInput
+  kitchenOrders?: Prisma.KitchenOrderCreateNestedManyWithoutMerchantInput
+  paymentRefunds?: Prisma.PaymentRefundCreateNestedManyWithoutMerchantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountCreateNestedOneWithoutMerchantInput
+}
+
+export type MerchantUncheckedCreateWithoutReportExportsInput = {
+  id?: string
+  name: string
+  slug: string
+  email?: string | null
+  phone?: string | null
+  status?: $Enums.MerchantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  returnStockOnRefund?: boolean
+  loyaltyEnabled?: boolean
+  loyaltyPointsPerUnit?: number
+  setupDismissedAt?: Date | string | null
+  memberships?: Prisma.MerchantUserUncheckedCreateNestedManyWithoutMerchantInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutMerchantInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMerchantInput
+  invitations?: Prisma.MerchantInvitationUncheckedCreateNestedManyWithoutMerchantInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutMerchantInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryStocks?: Prisma.InventoryStockUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryReservations?: Prisma.InventoryReservationUncheckedCreateNestedManyWithoutMerchantInput
+  inventoryMovements?: Prisma.InventoryMovementUncheckedCreateNestedManyWithoutMerchantInput
+  theme?: Prisma.MerchantThemeUncheckedCreateNestedOneWithoutMerchantInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedCreateNestedManyWithoutMerchantInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutMerchantInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedCreateNestedManyWithoutMerchantInput
+  paymentProviders?: Prisma.PaymentProviderUncheckedCreateNestedManyWithoutMerchantInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutMerchantInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUncheckedCreateNestedManyWithoutMerchantInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutMerchantInput
+  socialPosts?: Prisma.SocialPostUncheckedCreateNestedManyWithoutMerchantInput
+  websiteArticles?: Prisma.WebsiteArticleUncheckedCreateNestedManyWithoutMerchantInput
+  branches?: Prisma.MerchantBranchUncheckedCreateNestedManyWithoutMerchantInput
+  productCategories?: Prisma.ProductCategoryUncheckedCreateNestedManyWithoutMerchantInput
+  posDevices?: Prisma.PosDeviceUncheckedCreateNestedManyWithoutMerchantInput
+  posShifts?: Prisma.PosShiftUncheckedCreateNestedManyWithoutMerchantInput
+  posTables?: Prisma.PosTableUncheckedCreateNestedManyWithoutMerchantInput
+  customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutMerchantInput
+  kitchenOrders?: Prisma.KitchenOrderUncheckedCreateNestedManyWithoutMerchantInput
+  paymentRefunds?: Prisma.PaymentRefundUncheckedCreateNestedManyWithoutMerchantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutMerchantInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutMerchantInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedCreateNestedManyWithoutMerchantInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedCreateNestedManyWithoutMerchantInput
+  shipments?: Prisma.ShipmentUncheckedCreateNestedManyWithoutMerchantInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedCreateNestedOneWithoutMerchantInput
+}
+
+export type MerchantCreateOrConnectWithoutReportExportsInput = {
+  where: Prisma.MerchantWhereUniqueInput
+  create: Prisma.XOR<Prisma.MerchantCreateWithoutReportExportsInput, Prisma.MerchantUncheckedCreateWithoutReportExportsInput>
+}
+
+export type MerchantUpsertWithoutReportExportsInput = {
+  update: Prisma.XOR<Prisma.MerchantUpdateWithoutReportExportsInput, Prisma.MerchantUncheckedUpdateWithoutReportExportsInput>
+  create: Prisma.XOR<Prisma.MerchantCreateWithoutReportExportsInput, Prisma.MerchantUncheckedCreateWithoutReportExportsInput>
+  where?: Prisma.MerchantWhereInput
+}
+
+export type MerchantUpdateToOneWithWhereWithoutReportExportsInput = {
+  where?: Prisma.MerchantWhereInput
+  data: Prisma.XOR<Prisma.MerchantUpdateWithoutReportExportsInput, Prisma.MerchantUncheckedUpdateWithoutReportExportsInput>
+}
+
+export type MerchantUpdateWithoutReportExportsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMerchantStatusFieldUpdateOperationsInput | $Enums.MerchantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  memberships?: Prisma.MerchantUserUpdateManyWithoutMerchantNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutMerchantNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutMerchantNestedInput
+  invitations?: Prisma.MerchantInvitationUpdateManyWithoutMerchantNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutMerchantNestedInput
+  products?: Prisma.ProductUpdateManyWithoutMerchantNestedInput
+  inventoryStocks?: Prisma.InventoryStockUpdateManyWithoutMerchantNestedInput
+  inventoryReservations?: Prisma.InventoryReservationUpdateManyWithoutMerchantNestedInput
+  inventoryMovements?: Prisma.InventoryMovementUpdateManyWithoutMerchantNestedInput
+  theme?: Prisma.MerchantThemeUpdateOneWithoutMerchantNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUpdateManyWithoutMerchantNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutMerchantNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUpdateManyWithoutMerchantNestedInput
+  paymentProviders?: Prisma.PaymentProviderUpdateManyWithoutMerchantNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutMerchantNestedInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUpdateManyWithoutMerchantNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutMerchantNestedInput
+  socialPosts?: Prisma.SocialPostUpdateManyWithoutMerchantNestedInput
+  websiteArticles?: Prisma.WebsiteArticleUpdateManyWithoutMerchantNestedInput
+  branches?: Prisma.MerchantBranchUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUpdateManyWithoutMerchantNestedInput
+  posDevices?: Prisma.PosDeviceUpdateManyWithoutMerchantNestedInput
+  posShifts?: Prisma.PosShiftUpdateManyWithoutMerchantNestedInput
+  posTables?: Prisma.PosTableUpdateManyWithoutMerchantNestedInput
+  customers?: Prisma.CustomerUpdateManyWithoutMerchantNestedInput
+  kitchenOrders?: Prisma.KitchenOrderUpdateManyWithoutMerchantNestedInput
+  paymentRefunds?: Prisma.PaymentRefundUpdateManyWithoutMerchantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUpdateOneWithoutMerchantNestedInput
+}
+
+export type MerchantUncheckedUpdateWithoutReportExportsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMerchantStatusFieldUpdateOperationsInput | $Enums.MerchantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  returnStockOnRefund?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  loyaltyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  loyaltyPointsPerUnit?: Prisma.IntFieldUpdateOperationsInput | number
+  setupDismissedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  memberships?: Prisma.MerchantUserUncheckedUpdateManyWithoutMerchantNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutMerchantNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutMerchantNestedInput
+  invitations?: Prisma.MerchantInvitationUncheckedUpdateManyWithoutMerchantNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutMerchantNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryStocks?: Prisma.InventoryStockUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryReservations?: Prisma.InventoryReservationUncheckedUpdateManyWithoutMerchantNestedInput
+  inventoryMovements?: Prisma.InventoryMovementUncheckedUpdateManyWithoutMerchantNestedInput
+  theme?: Prisma.MerchantThemeUncheckedUpdateOneWithoutMerchantNestedInput
+  checkoutSessions?: Prisma.CheckoutSessionUncheckedUpdateManyWithoutMerchantNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutMerchantNestedInput
+  loyaltyEntries?: Prisma.LoyaltyLedgerEntryUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentProviders?: Prisma.PaymentProviderUncheckedUpdateManyWithoutMerchantNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentWebhookEvents?: Prisma.PaymentWebhookEventUncheckedUpdateManyWithoutMerchantNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutMerchantNestedInput
+  socialPosts?: Prisma.SocialPostUncheckedUpdateManyWithoutMerchantNestedInput
+  websiteArticles?: Prisma.WebsiteArticleUncheckedUpdateManyWithoutMerchantNestedInput
+  branches?: Prisma.MerchantBranchUncheckedUpdateManyWithoutMerchantNestedInput
+  productCategories?: Prisma.ProductCategoryUncheckedUpdateManyWithoutMerchantNestedInput
+  posDevices?: Prisma.PosDeviceUncheckedUpdateManyWithoutMerchantNestedInput
+  posShifts?: Prisma.PosShiftUncheckedUpdateManyWithoutMerchantNestedInput
+  posTables?: Prisma.PosTableUncheckedUpdateManyWithoutMerchantNestedInput
+  customers?: Prisma.CustomerUncheckedUpdateManyWithoutMerchantNestedInput
+  kitchenOrders?: Prisma.KitchenOrderUncheckedUpdateManyWithoutMerchantNestedInput
+  paymentRefunds?: Prisma.PaymentRefundUncheckedUpdateManyWithoutMerchantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutMerchantNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutMerchantNestedInput
+  customerAddresses?: Prisma.CustomerAddressUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryMethods?: Prisma.DeliveryMethodUncheckedUpdateManyWithoutMerchantNestedInput
+  deliveryZones?: Prisma.DeliveryZoneUncheckedUpdateManyWithoutMerchantNestedInput
+  shipments?: Prisma.ShipmentUncheckedUpdateManyWithoutMerchantNestedInput
+  settlementAccount?: Prisma.SettlementAccountUncheckedUpdateOneWithoutMerchantNestedInput
 }
 
 
@@ -7992,6 +8884,7 @@ export type MerchantCountOutputType = {
   deliveryMethods: number
   deliveryZones: number
   shipments: number
+  reportExports: number
 }
 
 export type MerchantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -8027,6 +8920,7 @@ export type MerchantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   deliveryMethods?: boolean | MerchantCountOutputTypeCountDeliveryMethodsArgs
   deliveryZones?: boolean | MerchantCountOutputTypeCountDeliveryZonesArgs
   shipments?: boolean | MerchantCountOutputTypeCountShipmentsArgs
+  reportExports?: boolean | MerchantCountOutputTypeCountReportExportsArgs
 }
 
 /**
@@ -8263,6 +9157,13 @@ export type MerchantCountOutputTypeCountShipmentsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.ShipmentWhereInput
 }
 
+/**
+ * MerchantCountOutputType without action
+ */
+export type MerchantCountOutputTypeCountReportExportsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReportExportWhereInput
+}
+
 
 export type MerchantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -8277,6 +9178,7 @@ export type MerchantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: boolean
+  setupDismissedAt?: boolean
   memberships?: boolean | Prisma.Merchant$membershipsArgs<ExtArgs>
   roles?: boolean | Prisma.Merchant$rolesArgs<ExtArgs>
   sessions?: boolean | Prisma.Merchant$sessionsArgs<ExtArgs>
@@ -8310,6 +9212,8 @@ export type MerchantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   deliveryMethods?: boolean | Prisma.Merchant$deliveryMethodsArgs<ExtArgs>
   deliveryZones?: boolean | Prisma.Merchant$deliveryZonesArgs<ExtArgs>
   shipments?: boolean | Prisma.Merchant$shipmentsArgs<ExtArgs>
+  settlementAccount?: boolean | Prisma.Merchant$settlementAccountArgs<ExtArgs>
+  reportExports?: boolean | Prisma.Merchant$reportExportsArgs<ExtArgs>
   _count?: boolean | Prisma.MerchantCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["merchant"]>
 
@@ -8326,6 +9230,7 @@ export type MerchantSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: boolean
+  setupDismissedAt?: boolean
 }, ExtArgs["result"]["merchant"]>
 
 export type MerchantSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -8341,6 +9246,7 @@ export type MerchantSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: boolean
+  setupDismissedAt?: boolean
 }, ExtArgs["result"]["merchant"]>
 
 export type MerchantSelectScalar = {
@@ -8356,9 +9262,10 @@ export type MerchantSelectScalar = {
   returnStockOnRefund?: boolean
   loyaltyEnabled?: boolean
   loyaltyPointsPerUnit?: boolean
+  setupDismissedAt?: boolean
 }
 
-export type MerchantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "email" | "phone" | "status" | "createdAt" | "updatedAt" | "deletedAt" | "returnStockOnRefund" | "loyaltyEnabled" | "loyaltyPointsPerUnit", ExtArgs["result"]["merchant"]>
+export type MerchantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "email" | "phone" | "status" | "createdAt" | "updatedAt" | "deletedAt" | "returnStockOnRefund" | "loyaltyEnabled" | "loyaltyPointsPerUnit" | "setupDismissedAt", ExtArgs["result"]["merchant"]>
 export type MerchantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   memberships?: boolean | Prisma.Merchant$membershipsArgs<ExtArgs>
   roles?: boolean | Prisma.Merchant$rolesArgs<ExtArgs>
@@ -8393,6 +9300,8 @@ export type MerchantInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   deliveryMethods?: boolean | Prisma.Merchant$deliveryMethodsArgs<ExtArgs>
   deliveryZones?: boolean | Prisma.Merchant$deliveryZonesArgs<ExtArgs>
   shipments?: boolean | Prisma.Merchant$shipmentsArgs<ExtArgs>
+  settlementAccount?: boolean | Prisma.Merchant$settlementAccountArgs<ExtArgs>
+  reportExports?: boolean | Prisma.Merchant$reportExportsArgs<ExtArgs>
   _count?: boolean | Prisma.MerchantCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MerchantIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -8434,6 +9343,8 @@ export type $MerchantPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     deliveryMethods: Prisma.$DeliveryMethodPayload<ExtArgs>[]
     deliveryZones: Prisma.$DeliveryZonePayload<ExtArgs>[]
     shipments: Prisma.$ShipmentPayload<ExtArgs>[]
+    settlementAccount: Prisma.$SettlementAccountPayload<ExtArgs> | null
+    reportExports: Prisma.$ReportExportPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -8455,6 +9366,11 @@ export type $MerchantPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
      * Points granted per whole currency unit of an order's paid subtotal.
      */
     loyaltyPointsPerUnit: number
+    /**
+     * When the merchant last dismissed the dashboard setup checklist; null if
+     * it has never been dismissed (or was reset by a newly added task).
+     */
+    setupDismissedAt: Date | null
   }, ExtArgs["result"]["merchant"]>
   composites: {}
 }
@@ -8882,6 +9798,8 @@ export interface Prisma__MerchantClient<T, Null = never, ExtArgs extends runtime
   deliveryMethods<T extends Prisma.Merchant$deliveryMethodsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Merchant$deliveryMethodsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DeliveryMethodPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   deliveryZones<T extends Prisma.Merchant$deliveryZonesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Merchant$deliveryZonesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DeliveryZonePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   shipments<T extends Prisma.Merchant$shipmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Merchant$shipmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  settlementAccount<T extends Prisma.Merchant$settlementAccountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Merchant$settlementAccountArgs<ExtArgs>>): Prisma.Prisma__SettlementAccountClient<runtime.Types.Result.GetResult<Prisma.$SettlementAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  reportExports<T extends Prisma.Merchant$reportExportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Merchant$reportExportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReportExportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8923,6 +9841,7 @@ export interface MerchantFieldRefs {
   readonly returnStockOnRefund: Prisma.FieldRef<"Merchant", 'Boolean'>
   readonly loyaltyEnabled: Prisma.FieldRef<"Merchant", 'Boolean'>
   readonly loyaltyPointsPerUnit: Prisma.FieldRef<"Merchant", 'Int'>
+  readonly setupDismissedAt: Prisma.FieldRef<"Merchant", 'DateTime'>
 }
     
 
@@ -10100,6 +11019,49 @@ export type Merchant$shipmentsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.ShipmentScalarFieldEnum | Prisma.ShipmentScalarFieldEnum[]
+}
+
+/**
+ * Merchant.settlementAccount
+ */
+export type Merchant$settlementAccountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SettlementAccount
+   */
+  select?: Prisma.SettlementAccountSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SettlementAccount
+   */
+  omit?: Prisma.SettlementAccountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SettlementAccountInclude<ExtArgs> | null
+  where?: Prisma.SettlementAccountWhereInput
+}
+
+/**
+ * Merchant.reportExports
+ */
+export type Merchant$reportExportsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReportExport
+   */
+  select?: Prisma.ReportExportSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReportExport
+   */
+  omit?: Prisma.ReportExportOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReportExportInclude<ExtArgs> | null
+  where?: Prisma.ReportExportWhereInput
+  orderBy?: Prisma.ReportExportOrderByWithRelationInput | Prisma.ReportExportOrderByWithRelationInput[]
+  cursor?: Prisma.ReportExportWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReportExportScalarFieldEnum | Prisma.ReportExportScalarFieldEnum[]
 }
 
 /**

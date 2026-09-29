@@ -4331,6 +4331,88 @@
                   }
                 }
               ]
+            },
+            {
+              "name": "Abandon an open payment attempt to pay another way",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "X-Checkout-Token",
+                    "value": "{{checkoutToken}}",
+                    "type": "text",
+                    "disabled": false
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/payments/:paymentId/cancel",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "payments",
+                    ":paymentId",
+                    "cancel"
+                  ],
+                  "variable": [
+                    {
+                      "key": "paymentId",
+                      "value": "{{paymentId}}",
+                      "description": "Path parameter `id`"
+                    }
+                  ]
+                },
+                "description": "`POST /payments/{id}/cancel`\n\nOperation id: `StorefrontPaymentController_cancel`\n\nDocumented responses: **200** · **409** Payment is no longer open"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"cancelId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
             }
           ]
         },

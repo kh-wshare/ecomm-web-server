@@ -101,7 +101,9 @@ export const ModelName = {
   DeliveryZone: 'DeliveryZone',
   Shipment: 'Shipment',
   ShipmentItem: 'ShipmentItem',
-  ShipmentEvent: 'ShipmentEvent'
+  ShipmentEvent: 'ShipmentEvent',
+  SettlementAccount: 'SettlementAccount',
+  ReportExport: 'ReportExport'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -167,7 +169,8 @@ export const MerchantScalarFieldEnum = {
   deletedAt: 'deletedAt',
   returnStockOnRefund: 'returnStockOnRefund',
   loyaltyEnabled: 'loyaltyEnabled',
-  loyaltyPointsPerUnit: 'loyaltyPointsPerUnit'
+  loyaltyPointsPerUnit: 'loyaltyPointsPerUnit',
+  setupDismissedAt: 'setupDismissedAt'
 } as const
 
 export type MerchantScalarFieldEnum = (typeof MerchantScalarFieldEnum)[keyof typeof MerchantScalarFieldEnum]
@@ -1030,6 +1033,42 @@ export const ShipmentEventScalarFieldEnum = {
 } as const
 
 export type ShipmentEventScalarFieldEnum = (typeof ShipmentEventScalarFieldEnum)[keyof typeof ShipmentEventScalarFieldEnum]
+
+
+export const SettlementAccountScalarFieldEnum = {
+  id: 'id',
+  merchantId: 'merchantId',
+  bankName: 'bankName',
+  holderName: 'holderName',
+  accountNumber: 'accountNumber',
+  currency: 'currency',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SettlementAccountScalarFieldEnum = (typeof SettlementAccountScalarFieldEnum)[keyof typeof SettlementAccountScalarFieldEnum]
+
+
+export const ReportExportScalarFieldEnum = {
+  id: 'id',
+  merchantId: 'merchantId',
+  userId: 'userId',
+  report: 'report',
+  format: 'format',
+  range: 'range',
+  fromDate: 'fromDate',
+  toDate: 'toDate',
+  branchId: 'branchId',
+  status: 'status',
+  rowCount: 'rowCount',
+  fileKey: 'fileKey',
+  downloadUrl: 'downloadUrl',
+  error: 'error',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ReportExportScalarFieldEnum = (typeof ReportExportScalarFieldEnum)[keyof typeof ReportExportScalarFieldEnum]
 
 
 export const SortOrder = {

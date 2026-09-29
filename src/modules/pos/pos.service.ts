@@ -10,6 +10,7 @@ import { PrismaService } from '#app/infrastructure/database/prisma.service';
 import { InventoryService } from '#app/modules/inventory/inventory.service';
 import { OrderService } from '#app/modules/order/order.service';
 import { CartPricingService } from '#app/modules/pricing/cart-pricing.service';
+import { PosPaymentsService } from './payments/pos-payments.service';
 import { CreatePosSaleDto } from './dto/pos-sale-input.dto';
 
 type AuditMetadata = {
@@ -32,6 +33,7 @@ export class PosService {
     private readonly inventory: InventoryService,
     private readonly orders: OrderService,
     private readonly pricing: CartPricingService,
+    private readonly posPayments: PosPaymentsService,
   ) {}
 
   /**
@@ -219,6 +221,24 @@ export class PosService {
       throw new ConflictException('Cash received is below the sale total');
     }
 
+    // A quick sale is rung up at a counter, so it belongs to the shift open
+    // there — the cashier's own if they have one. That is what puts it in
+    // the shift's cash count and the branch's reports.
+    const shift =
+      (await this.prisma.posShift.findFirst({
+        where: {
+          merchantId,
+          branchId: branch.id,
+          status: 'OPEN',
+          openedById: userId,
+        },
+        orderBy: { openedAt: 'desc' },
+      })) ??
+      (await this.prisma.posShift.findFirst({
+        where: { merchantId, branchId: branch.id, status: 'OPEN' },
+        orderBy: { openedAt: 'desc' },
+      }));
+
     const checkoutSessionId = randomUUID();
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
     await this.prisma.$transaction(async (tx) => {
@@ -226,6 +246,8 @@ export class PosService {
         data: {
           id: checkoutSessionId,
           merchantId,
+          branchId: branch.id,
+          posDeviceId: shift?.posDeviceId,
           customerName: dto.customerName?.trim() || 'Walk-in customer',
           sourceChannel: SalesChannel.POS,
           accessTokenHash: this.hashToken(
@@ -285,29 +307,38 @@ export class PosService {
     const order = await this.orders.confirmCheckout(
       checkoutSessionId,
       metadata,
+      {
+        branchId: branch.id,
+        posDeviceId: shift?.posDeviceId,
+        posShiftId: shift?.id,
+      },
     );
     if (!order) throw new ConflictException('Unable to create POS order');
 
-    const reservations = await this.prisma.inventoryReservation.findMany({
-      where: { checkoutSessionId, status: 'ACTIVE' },
-      orderBy: { inventoryStockId: 'asc' },
-    });
-    for (const reservation of reservations) {
-      await this.inventory.confirm(
-        merchantId,
-        userId,
-        { reservationId: reservation.id, orderId: order.id },
-        metadata,
-      );
-    }
+    // Taken through the normal POS payment path, so the sale has a real
+    // Payment row: refundable, in the shift's cash count, stock sold and
+    // loyalty granted by the same rules as any other POS order. A KHQR sale
+    // stays unpaid until the QR is paid, rather than being marked paid on
+    // trust.
+    const payment = totalAmount.gt(0)
+      ? await this.posPayments.create(
+          merchantId,
+          userId,
+          order.id,
+          {
+            paymentMethod: dto.paymentMethod,
+            amount: totalAmount.toNumber(),
+            currency,
+            ...(dto.paymentMethod === 'CASH'
+              ? { cashReceived: cashReceived.toNumber() }
+              : {}),
+          },
+          metadata,
+        )
+      : null;
 
-    const paidOrder = await this.prisma.order.update({
+    const paidOrder = await this.prisma.order.findUniqueOrThrow({
       where: { id: order.id },
-      data: {
-        status: 'PAID',
-        paymentStatus: 'PAID',
-        paidAt: new Date(),
-      },
       include: { items: true },
     });
     await this.prisma.auditLog.create({
@@ -320,7 +351,9 @@ export class PosService {
         after: {
           orderNumber: paidOrder.orderNumber,
           branchId: branch.id,
+          posShiftId: shift?.id ?? null,
           paymentMethod: dto.paymentMethod,
+          paymentStatus: paidOrder.paymentStatus,
           cashReceived: cashReceived.toString(),
           changeDue: this.changeDue(
             dto.paymentMethod,
@@ -334,6 +367,7 @@ export class PosService {
 
     return {
       order: paidOrder,
+      payment,
       receipt: this.toReceipt({
         branchName: branch.name,
         cashierName,

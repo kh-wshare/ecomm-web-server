@@ -3591,6 +3591,591 @@
           "Social Commerce"
         ]
       }
+    },
+    "/dashboard/revenue": {
+      "get": {
+        "operationId": "DashboardController_getRevenue",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "range",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "30d",
+              "type": "string",
+              "enum": [
+                "today",
+                "7d",
+                "30d",
+                "90d",
+                "custom"
+              ]
+            }
+          },
+          {
+            "name": "interval",
+            "required": false,
+            "in": "query",
+            "description": "Defaults based on range when omitted",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "hour",
+                "day",
+                "week"
+              ]
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Required when range is custom",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Required when range is custom",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevenueResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get revenue and order totals over time",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/dashboard/top-products": {
+      "get": {
+        "operationId": "DashboardController_getTopProducts",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "range",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "30d",
+              "type": "string",
+              "enum": [
+                "today",
+                "7d",
+                "30d",
+                "90d",
+                "custom"
+              ]
+            }
+          },
+          {
+            "name": "interval",
+            "required": false,
+            "in": "query",
+            "description": "Defaults based on range when omitted",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "hour",
+                "day",
+                "week"
+              ]
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Required when range is custom",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Required when range is custom",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 10,
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Object"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TopProductsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get best-selling products over time",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/dashboard/setup": {
+      "get": {
+        "operationId": "DashboardController_getSetup",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetupResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get the merchant onboarding setup checklist",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/dashboard/setup/dismiss": {
+      "post": {
+        "operationId": "DashboardController_dismissSetup",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Dismiss the onboarding setup checklist banner",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/dashboard/setup/restore": {
+      "post": {
+        "operationId": "DashboardController_restoreSetup",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Restore a dismissed onboarding setup checklist banner",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/dashboard/setup/qr.svg": {
+      "get": {
+        "operationId": "DashboardController_getSetupQrCode",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a QR code (SVG) linking to the storefront",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/dashboard/balance": {
+      "get": {
+        "operationId": "DashboardController_getBalance",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BalanceResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get available and pending balance",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/dashboard/payouts": {
+      "get": {
+        "operationId": "DashboardController_getPayouts",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayoutsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get available balance, pending balance, and next payout",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/dashboard/summary": {
+      "get": {
+        "operationId": "DashboardController_getSummary",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "range",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "30d",
+              "type": "string",
+              "enum": [
+                "today",
+                "7d",
+                "30d",
+                "90d",
+                "custom"
+              ]
+            }
+          },
+          {
+            "name": "interval",
+            "required": false,
+            "in": "query",
+            "description": "Defaults based on range when omitted",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "hour",
+                "day",
+                "week"
+              ]
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Required when range is custom",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Required when range is custom",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummaryResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get the top-of-dashboard KPI summary",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/reports/exports": {
+      "post": {
+        "operationId": "ReportExportController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReportExportDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportExportResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Generate a CSV export of a merchant report",
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/reports/exports/{exportId}": {
+      "get": {
+        "operationId": "ReportExportController_findOne",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "exportId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportExportResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get the status and download link of a report export",
+        "tags": [
+          "Reports"
+        ]
+      }
     }
   },
   "info": {
@@ -5017,30 +5602,263 @@
           "count"
         ]
       },
-      "ThemeConfigDto": {
+      "ThemeBrandDto": {
         "type": "object",
         "properties": {
-          "colors": {
-            "type": "object",
-            "additionalProperties": true
+          "storeName": {
+            "type": "string"
           },
-          "typography": {
+          "logoUrl": {
             "type": "object",
-            "additionalProperties": true
+            "nullable": true
           },
-          "layout": {
+          "faviconUrl": {
             "type": "object",
-            "additionalProperties": true
-          },
-          "hero": {
-            "type": "object",
-            "additionalProperties": true
+            "nullable": true
           }
         },
         "required": [
+          "storeName"
+        ]
+      },
+      "ThemeSchemeColorsDto": {
+        "type": "object",
+        "properties": {
+          "background": {
+            "type": "string"
+          },
+          "surface": {
+            "type": "string"
+          },
+          "foreground": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "background",
+          "surface",
+          "foreground"
+        ]
+      },
+      "ThemeColorsDto": {
+        "type": "object",
+        "properties": {
+          "preset": {
+            "type": "string"
+          },
+          "accent": {
+            "type": "string"
+          },
+          "scheme": {
+            "type": "string",
+            "enum": [
+              "light",
+              "dark",
+              "system"
+            ]
+          },
+          "light": {
+            "$ref": "#/components/schemas/ThemeSchemeColorsDto"
+          },
+          "dark": {
+            "$ref": "#/components/schemas/ThemeSchemeColorsDto"
+          }
+        },
+        "required": [
+          "preset",
+          "accent",
+          "scheme",
+          "light",
+          "dark"
+        ]
+      },
+      "ThemeTypographyDto": {
+        "type": "object",
+        "properties": {
+          "heading": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "baseSize": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "heading",
+          "body",
+          "baseSize"
+        ]
+      },
+      "ThemeShapeDto": {
+        "type": "object",
+        "properties": {
+          "radius": {
+            "type": "number"
+          },
+          "buttonStyle": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "radius",
+          "buttonStyle"
+        ]
+      },
+      "ThemeLayoutDto": {
+        "type": "object",
+        "properties": {
+          "headerAlign": {
+            "type": "string",
+            "enum": [
+              "left",
+              "center",
+              "right"
+            ]
+          },
+          "stickyHeader": {
+            "type": "boolean"
+          },
+          "productColumns": {
+            "type": "number"
+          },
+          "cardStyle": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "headerAlign",
+          "stickyHeader",
+          "productColumns",
+          "cardStyle"
+        ]
+      },
+      "ThemeAnnouncementDto": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "enabled",
+          "text"
+        ]
+      },
+      "ThemeHeroDto": {
+        "type": "object",
+        "properties": {
+          "imageUrl": {
+            "type": "object",
+            "nullable": true
+          },
+          "heading": {
+            "type": "string"
+          },
+          "subheading": {
+            "type": "string"
+          },
+          "ctaLabel": {
+            "type": "string"
+          },
+          "align": {
+            "type": "string",
+            "enum": [
+              "left",
+              "center",
+              "right"
+            ]
+          }
+        },
+        "required": [
+          "heading",
+          "subheading",
+          "ctaLabel",
+          "align"
+        ]
+      },
+      "ThemeSectionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "enabled"
+        ]
+      },
+      "ThemeMobileDto": {
+        "type": "object",
+        "properties": {
+          "bottomBar": {
+            "type": "boolean"
+          },
+          "floatingCart": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "bottomBar",
+          "floatingCart"
+        ]
+      },
+      "ThemeConfigDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "number"
+          },
+          "brand": {
+            "$ref": "#/components/schemas/ThemeBrandDto"
+          },
+          "colors": {
+            "$ref": "#/components/schemas/ThemeColorsDto"
+          },
+          "typography": {
+            "$ref": "#/components/schemas/ThemeTypographyDto"
+          },
+          "shape": {
+            "$ref": "#/components/schemas/ThemeShapeDto"
+          },
+          "layout": {
+            "$ref": "#/components/schemas/ThemeLayoutDto"
+          },
+          "announcement": {
+            "$ref": "#/components/schemas/ThemeAnnouncementDto"
+          },
+          "hero": {
+            "$ref": "#/components/schemas/ThemeHeroDto"
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ThemeSectionDto"
+            }
+          },
+          "mobile": {
+            "$ref": "#/components/schemas/ThemeMobileDto"
+          }
+        },
+        "required": [
+          "version",
+          "brand",
           "colors",
           "typography",
-          "layout"
+          "shape",
+          "layout",
+          "announcement",
+          "hero",
+          "sections",
+          "mobile"
         ]
       },
       "CurrentThemeDto": {
@@ -6517,6 +7335,526 @@
           "platform",
           "status",
           "createdAt"
+        ]
+      },
+      "RevenueTotalsDto": {
+        "type": "object",
+        "properties": {
+          "revenue": {
+            "type": "string"
+          },
+          "orders": {
+            "type": "number"
+          },
+          "changePct": {
+            "type": "number"
+          },
+          "trend": {
+            "type": "string",
+            "enum": [
+              "up",
+              "down",
+              "flat"
+            ]
+          }
+        },
+        "required": [
+          "revenue",
+          "orders",
+          "changePct",
+          "trend"
+        ]
+      },
+      "RevenuePointDto": {
+        "type": "object",
+        "properties": {
+          "bucket": {
+            "type": "string",
+            "description": "Bucket start, as an ISO date or hour"
+          },
+          "label": {
+            "type": "string"
+          },
+          "revenue": {
+            "type": "string"
+          },
+          "orders": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "bucket",
+          "label",
+          "revenue",
+          "orders"
+        ]
+      },
+      "RevenueResponseDto": {
+        "type": "object",
+        "properties": {
+          "range": {
+            "type": "string",
+            "enum": [
+              "today",
+              "7d",
+              "30d",
+              "90d",
+              "custom"
+            ]
+          },
+          "interval": {
+            "type": "string",
+            "enum": [
+              "hour",
+              "day",
+              "week"
+            ]
+          },
+          "currency": {
+            "type": "string"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/RevenueTotalsDto"
+          },
+          "points": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RevenuePointDto"
+            }
+          },
+          "generatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "range",
+          "interval",
+          "currency",
+          "totals",
+          "points",
+          "generatedAt"
+        ]
+      },
+      "Object": {
+        "type": "object",
+        "properties": {}
+      },
+      "TopProductStockDto": {
+        "type": "object",
+        "properties": {
+          "onHand": {
+            "type": "number"
+          },
+          "available": {
+            "type": "number"
+          },
+          "lowStock": {
+            "type": "boolean"
+          },
+          "tracked": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "onHand",
+          "available",
+          "lowStock",
+          "tracked"
+        ]
+      },
+      "TopProductItemDto": {
+        "type": "object",
+        "properties": {
+          "rank": {
+            "type": "number"
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variantId": {
+            "type": "object",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "object"
+          },
+          "unitsSold": {
+            "type": "number"
+          },
+          "revenue": {
+            "type": "string"
+          },
+          "sharePct": {
+            "type": "number"
+          },
+          "stock": {
+            "$ref": "#/components/schemas/TopProductStockDto"
+          }
+        },
+        "required": [
+          "rank",
+          "productId",
+          "name",
+          "sku",
+          "unitsSold",
+          "revenue",
+          "sharePct",
+          "stock"
+        ]
+      },
+      "TopProductsResponseDto": {
+        "type": "object",
+        "properties": {
+          "range": {
+            "type": "string",
+            "enum": [
+              "today",
+              "7d",
+              "30d",
+              "90d",
+              "custom"
+            ]
+          },
+          "currency": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TopProductItemDto"
+            }
+          }
+        },
+        "required": [
+          "range",
+          "currency",
+          "items"
+        ]
+      },
+      "SetupTaskDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "done": {
+            "type": "boolean"
+          },
+          "completedAt": {
+            "type": "object"
+          },
+          "href": {
+            "type": "string"
+          },
+          "recommended": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "done",
+          "href"
+        ]
+      },
+      "SetupStorefrontDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "qrCodeUrl": {
+            "type": "string"
+          },
+          "published": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "url",
+          "qrCodeUrl",
+          "published"
+        ]
+      },
+      "SetupResponseDto": {
+        "type": "object",
+        "properties": {
+          "completed": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "dismissedAt": {
+            "type": "object"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetupTaskDto"
+            }
+          },
+          "storefront": {
+            "$ref": "#/components/schemas/SetupStorefrontDto"
+          }
+        },
+        "required": [
+          "completed",
+          "total",
+          "tasks",
+          "storefront"
+        ]
+      },
+      "BalanceResponseDto": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string"
+          },
+          "available": {
+            "type": "string"
+          },
+          "pending": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "currency",
+          "available",
+          "pending"
+        ]
+      },
+      "NextPayoutDto": {
+        "type": "object",
+        "properties": {
+          "scheduledFor": {
+            "type": "string",
+            "format": "date"
+          },
+          "label": {
+            "type": "string"
+          },
+          "estimatedAmount": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "scheduledFor",
+          "label",
+          "estimatedAmount"
+        ]
+      },
+      "SettlementAccountDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bankName": {
+            "type": "string"
+          },
+          "last4": {
+            "type": "string"
+          },
+          "holderName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "bankName",
+          "last4",
+          "holderName"
+        ]
+      },
+      "PayoutsResponseDto": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string"
+          },
+          "available": {
+            "type": "string"
+          },
+          "pending": {
+            "type": "string"
+          },
+          "nextPayout": {
+            "$ref": "#/components/schemas/NextPayoutDto"
+          },
+          "settlementAccount": {
+            "$ref": "#/components/schemas/SettlementAccountDto"
+          },
+          "canRequestPayout": {
+            "type": "boolean"
+          },
+          "payoutBlockedReason": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "currency",
+          "available",
+          "pending",
+          "nextPayout",
+          "canRequestPayout"
+        ]
+      },
+      "SummarySetupDto": {
+        "type": "object",
+        "properties": {
+          "completed": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "completed",
+          "total"
+        ]
+      },
+      "SummaryResponseDto": {
+        "type": "object",
+        "properties": {
+          "range": {
+            "type": "string",
+            "enum": [
+              "today",
+              "7d",
+              "30d",
+              "90d",
+              "custom"
+            ]
+          },
+          "currency": {
+            "type": "string"
+          },
+          "revenue": {
+            "type": "string"
+          },
+          "orders": {
+            "type": "number"
+          },
+          "changePct": {
+            "type": "number"
+          },
+          "trend": {
+            "type": "string",
+            "enum": [
+              "up",
+              "down",
+              "flat"
+            ]
+          },
+          "averageOrderValue": {
+            "type": "string"
+          },
+          "setup": {
+            "$ref": "#/components/schemas/SummarySetupDto"
+          },
+          "generatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "range",
+          "currency",
+          "revenue",
+          "orders",
+          "changePct",
+          "trend",
+          "averageOrderValue",
+          "setup",
+          "generatedAt"
+        ]
+      },
+      "CreateReportExportDto": {
+        "type": "object",
+        "properties": {
+          "report": {
+            "type": "string",
+            "enum": [
+              "dashboard"
+            ]
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "csv"
+            ]
+          },
+          "range": {
+            "type": "string",
+            "enum": [
+              "today",
+              "7d",
+              "30d",
+              "90d",
+              "custom"
+            ]
+          },
+          "from": {
+            "type": "string",
+            "format": "date"
+          },
+          "to": {
+            "type": "string",
+            "format": "date"
+          },
+          "branchId": {
+            "type": "object",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "report",
+          "format",
+          "range"
+        ]
+      },
+      "ReportExportResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "READY",
+              "FAILED"
+            ]
+          },
+          "rowCount": {
+            "type": "object"
+          },
+          "downloadUrl": {
+            "type": "object"
+          },
+          "expiresAt": {
+            "type": "object"
+          },
+          "error": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "status"
         ]
       }
     }

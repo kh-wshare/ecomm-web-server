@@ -79,9 +79,39 @@ export class PosReceiptDto {
   changeDue!: number;
 }
 
+export class PosSalePaymentDto {
+  @ApiProperty({ format: 'uuid' })
+  paymentId!: string;
+
+  @ApiProperty({
+    example: 'CONFIRMED',
+    description: 'CONFIRMED for cash; PENDING for KHQR until the QR is paid',
+  })
+  status!: string;
+
+  @ApiPropertyOptional({ example: '12.50' })
+  amount?: string;
+
+  @ApiPropertyOptional({ example: '0.00', description: 'Cash change due' })
+  change?: string;
+
+  @ApiPropertyOptional({ description: 'KHQR payload to display' })
+  qr?: string;
+
+  @ApiPropertyOptional()
+  expiresAt?: Date;
+}
+
 export class PosSaleResponseDto {
   @ApiProperty({ type: OrderDto })
   order!: OrderDto;
+
+  @ApiPropertyOptional({
+    type: PosSalePaymentDto,
+    nullable: true,
+    description: 'Null when the sale total is zero',
+  })
+  payment!: PosSalePaymentDto | null;
 
   @ApiProperty({ type: PosReceiptDto })
   receipt!: PosReceiptDto;

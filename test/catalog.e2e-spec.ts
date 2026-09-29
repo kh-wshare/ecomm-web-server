@@ -97,6 +97,38 @@ describe('Product catalog (e2e)', () => {
       .expect(200);
     expect(list.body.data).toHaveLength(1);
     expect(list.body.meta).toMatchObject({ page: 1, limit: 5, total: 1 });
+    expect(list.body.data[0].variants).toEqual([
+      expect.objectContaining({ sku: payload.variants[0].sku.toUpperCase() }),
+    ]);
+    expect(list.body.data[0].channelVisibility).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ channel: 'WEBSITE', isVisible: true }),
+        expect.objectContaining({ channel: 'POS', isVisible: true }),
+      ]),
+    );
+
+    const noVariantPayload = productPayload();
+    delete (noVariantPayload as { variants?: unknown }).variants;
+    delete (noVariantPayload as { channelVisibility?: unknown })
+      .channelVisibility;
+    const noVariantCreated = await request(app.getHttpServer())
+      .post('/products')
+      .set('Authorization', `Bearer ${token}`)
+      .send(noVariantPayload)
+      .expect(201);
+    const noVariantList = await request(app.getHttpServer())
+      .get('/products')
+      .query({ search: noVariantPayload.sku, page: 1, limit: 5 })
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    expect(noVariantList.body.data).toHaveLength(1);
+    expect(noVariantList.body.data[0].id).toBe(noVariantCreated.body.data.id);
+    expect(noVariantList.body.data[0].variants).toEqual([]);
+    expect(noVariantList.body.data[0].channelVisibility).toEqual([]);
+    await request(app.getHttpServer())
+      .delete(`/products/${noVariantCreated.body.data.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
 
     const detail = await request(app.getHttpServer())
       .get(`/products/${productId}`)

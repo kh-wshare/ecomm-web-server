@@ -17,9 +17,11 @@ import { PrismaService } from '#app/infrastructure/database/prisma.service';
  *   balance — the same trust problem `GuestAddressService.visibility` solves
  *   for addresses.
  * - **Every movement is a ledger row, uniquely keyed on `(orderId, type)`.**
- *   The paid transition is reachable from a webhook, a poll and a manual
- *   confirmation, and those race. The unique index turns a double grant into a
- *   conflict that `grantForOrder` swallows, so retries are free.
+ *   The paid transition is reachable from a webhook, a poll and a POS
+ *   payment. Each entry point checks for its row before writing, under the
+ *   caller's lock on the order, so repeats are no-ops. The unique index is
+ *   only the backstop: inside a PostgreSQL transaction a caught conflict
+ *   still aborts everything after it, so it must never be the normal path.
  *
  * Both entry points take the caller's transaction: points move in the same
  * commit as the payment that earned them, or not at all.
@@ -64,25 +66,18 @@ export class LoyaltyService {
     );
     if (points <= 0) return;
 
-    try {
-      await this.apply(tx, {
-        merchantId: order.merchantId,
-        customerId: order.customerId,
-        orderId: order.id,
-        type: LoyaltyEntryType.EARNED,
-        points,
-        note: `Order ${order.orderNumber}`,
-      });
-    } catch (error) {
-      // The unique index on (order_id, type) is the idempotency guard: a
-      // redelivered webhook racing the original lands here, and the balance
-      // is already correct.
-      if (this.isDuplicate(error)) {
-        this.logger.debug(`Loyalty already granted for order ${order.id}`);
-        return;
-      }
-      throw error;
+    if (await this.hasEntry(tx, order.id, LoyaltyEntryType.EARNED)) {
+      this.logger.debug(`Loyalty already granted for order ${order.id}`);
+      return;
     }
+    await this.apply(tx, {
+      merchantId: order.merchantId,
+      customerId: order.customerId,
+      orderId: order.id,
+      type: LoyaltyEntryType.EARNED,
+      points,
+      note: `Order ${order.orderNumber}`,
+    });
   }
 
   /**
@@ -99,20 +94,16 @@ export class LoyaltyService {
       select: { merchantId: true, customerId: true, points: true },
     });
     if (!earned) return;
+    if (await this.hasEntry(tx, orderId, LoyaltyEntryType.REVERSED)) return;
 
-    try {
-      await this.apply(tx, {
-        merchantId: earned.merchantId,
-        customerId: earned.customerId,
-        orderId,
-        type: LoyaltyEntryType.REVERSED,
-        points: -earned.points,
-        note: 'Refunded',
-      });
-    } catch (error) {
-      if (this.isDuplicate(error)) return;
-      throw error;
-    }
+    await this.apply(tx, {
+      merchantId: earned.merchantId,
+      customerId: earned.customerId,
+      orderId,
+      type: LoyaltyEntryType.REVERSED,
+      points: -earned.points,
+      note: 'Refunded',
+    });
   }
 
   /** The shopper's current balance and recent movements at one merchant. */
@@ -184,10 +175,15 @@ export class LoyaltyService {
     return amount.floor().mul(perUnit).toNumber();
   }
 
-  private isDuplicate(error: unknown) {
-    return (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2002'
-    );
+  private async hasEntry(
+    tx: Prisma.TransactionClient,
+    orderId: string,
+    type: LoyaltyEntryType,
+  ) {
+    const entry = await tx.loyaltyLedgerEntry.findUnique({
+      where: { orderId_type: { orderId, type } },
+      select: { id: true },
+    });
+    return entry !== null;
   }
 }

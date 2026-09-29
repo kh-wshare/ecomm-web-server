@@ -15,6 +15,14 @@ import {
   RefundOrderDto,
   UpdateOrderStatusDto,
 } from './dto/order-input.dto';
+import {
+  assertOrderCancellable,
+  cancelOpenPayments,
+  cancelUnshippedShipments,
+  expireUnpaidOrders,
+  RECEIVED_PAYMENT_STATUSES,
+  RELEASED_SHIPMENT_STATUSES,
+} from './order-lifecycle';
 import { isOrderStatusTransitionAllowed } from './order-status';
 
 type AuditMetadata = {
@@ -24,8 +32,8 @@ type AuditMetadata = {
 
 export type PosOrderContext = {
   branchId: string;
-  posDeviceId: string;
-  posShiftId: string;
+  posDeviceId?: string;
+  posShiftId?: string;
   tableId?: string;
   localId?: string;
 };
@@ -353,9 +361,10 @@ export class OrderService {
       if (checkout.status === 'EXPIRED') return checkout;
       if (checkout.order) {
         await this.lockOrder(tx, checkout.merchantId, checkout.order.id);
-      }
-      if (checkout.order?.paymentStatus === 'PAID') {
-        throw new ConflictException('Paid order must use the refund flow');
+        const order = await tx.order.findUniqueOrThrow({
+          where: { id: checkout.order.id },
+        });
+        assertOrderCancellable(order);
       }
 
       const reservations = await tx.inventoryReservation.findMany({
@@ -379,6 +388,13 @@ export class OrderService {
             cancelledAt: new Date(),
           },
         });
+        await cancelOpenPayments(tx, [checkout.order.id]);
+        await cancelUnshippedShipments(
+          tx,
+          checkout.order.id,
+          null,
+          'Order cancelled',
+        );
       }
       const updated = await tx.checkoutSession.update({
         where: { id: checkout.id },
@@ -432,17 +448,9 @@ export class OrderService {
         null,
         metadata,
       );
-      await tx.order.updateMany({
-        where: {
-          checkoutSessionId,
-          paymentStatus: 'PENDING',
-          status: { in: ['PENDING_PAYMENT', 'RESERVED'] },
-        },
-        data: { status: 'EXPIRED' },
-      });
-      return tx.checkoutSession.update({
+      await expireUnpaidOrders(tx, [checkoutSessionId]);
+      return tx.checkoutSession.findUniqueOrThrow({
         where: { id: checkout.id },
-        data: { status: 'EXPIRED' },
       });
     });
     await this.notifications.syncCheckoutStockAlerts(
@@ -465,23 +473,53 @@ export class OrderService {
         where: { id: orderId, merchantId },
       });
       if (!order) throw new NotFoundException('Order not found');
-      if (order.status === dto.status) return this.findOne(merchantId, orderId);
+      if (order.status === dto.status) {
+        return tx.order.findUniqueOrThrow({
+          where: { id: order.id },
+          include: { items: true },
+        });
+      }
       if (!isOrderStatusTransitionAllowed(order.status, dto.status)) {
         throw new ConflictException(
           `Cannot transition order from ${order.status} to ${dto.status}`,
+        );
+      }
+      const completes =
+        dto.status === 'FULFILLED' || dto.status === 'COMPLETED';
+      // Once an order ships, its shipments decide fulfillment
+      // (ShipmentsService.syncOrderFulfillment); a manual status change can
+      // only follow them. Orders with no shipments — pickup, POS — are
+      // fulfilled by hand.
+      const liveShipments = await tx.shipment.count({
+        where: {
+          orderId: order.id,
+          status: { notIn: RELEASED_SHIPMENT_STATUSES },
+        },
+      });
+      if (
+        liveShipments &&
+        completes &&
+        order.fulfillmentStatus !== 'FULFILLED'
+      ) {
+        throw new ConflictException(
+          'Not every unit on this order has been delivered',
         );
       }
       const updated = await tx.order.update({
         where: { id: order.id },
         data: {
           status: dto.status,
-          fulfillmentStatus:
-            dto.status === 'PROCESSING'
-              ? 'PROCESSING'
-              : dto.status === 'FULFILLED' || dto.status === 'COMPLETED'
-                ? 'FULFILLED'
-                : order.fulfillmentStatus,
-          ...(dto.status === 'FULFILLED' || dto.status === 'COMPLETED'
+          ...(liveShipments
+            ? {}
+            : {
+                fulfillmentStatus:
+                  dto.status === 'PROCESSING'
+                    ? 'PROCESSING'
+                    : completes
+                      ? 'FULFILLED'
+                      : order.fulfillmentStatus,
+              }),
+          ...(completes
             ? { fulfilledAt: order.fulfilledAt ?? new Date() }
             : {}),
         },
@@ -525,12 +563,7 @@ export class OrderService {
       });
       if (!order) throw new NotFoundException('Order not found');
       if (order.status === 'CANCELLED') return order;
-      if (order.paymentStatus === 'PAID' || order.status === 'PAID') {
-        throw new ConflictException('Paid order must use the refund flow');
-      }
-      if (['REFUNDED', 'COMPLETED', 'FULFILLED'].includes(order.status)) {
-        throw new ConflictException(`Cannot cancel a ${order.status} order`);
-      }
+      assertOrderCancellable(order);
 
       const reservations = await tx.inventoryReservation.findMany({
         where: { orderId: order.id },
@@ -557,6 +590,8 @@ export class OrderService {
         where: { id: order.checkoutSessionId },
         data: { status: 'CANCELLED' },
       });
+      await cancelOpenPayments(tx, [order.id]);
+      await cancelUnshippedShipments(tx, order.id, userId, 'Order cancelled');
       await this.writeOrderAudit(
         tx,
         merchantId,
@@ -584,79 +619,176 @@ export class OrderService {
       await this.lockOrder(tx, merchantId, orderId);
       const order = await tx.order.findFirst({
         where: { id: orderId, merchantId },
-        include: { items: true, merchant: true },
+        include: { items: true, merchant: true, payments: true },
       });
       if (!order) throw new NotFoundException('Order not found');
-      if (order.status === 'REFUNDED') return order;
-      if (order.paymentStatus !== 'PAID') {
+      if (order.status === 'REFUNDED') {
+        return tx.order.findUniqueOrThrow({
+          where: { id: order.id },
+          include: { items: true },
+        });
+      }
+      // Money can also sit on an order that closed before it arrived — a
+      // payment received after expiry or cancellation — and that is exactly
+      // the money a merchant needs to give back.
+      const holdsMoney =
+        order.paymentStatus === 'PAID' ||
+        order.paymentStatus === 'PARTIAL' ||
+        order.payments.some((payment) => payment.status === 'CONFIRMED');
+      if (!holdsMoney) {
         throw new ConflictException('Only a paid order can be refunded');
       }
 
       const returnStock = dto.returnStock ?? order.merchant.returnStockOnRefund;
-      if (returnStock) {
-        const reservations = await tx.inventoryReservation.findMany({
-          where: { orderId: order.id, status: 'CONFIRMED' },
-          orderBy: { inventoryStockId: 'asc' },
+      // The money goes back per payment, so payment reports and the POS
+      // ledger see the refund rather than a payment that still looks kept.
+      // No provider refund API is wired up yet: this records a refund the
+      // merchant makes by hand.
+      for (const payment of order.payments) {
+        if (!RECEIVED_PAYMENT_STATUSES.some((s) => s === payment.status)) {
+          continue;
+        }
+        const refunded = await tx.paymentRefund.aggregate({
+          where: { paymentId: payment.id, status: 'SUCCESS' },
+          _sum: { amount: true },
         });
-        for (const reservation of reservations) {
-          const stock = await this.lockStock(
-            tx,
-            merchantId,
-            reservation.inventoryStockId,
-          );
-          if (stock.soldStock < reservation.quantity) {
-            throw new ConflictException('Inventory sold balance is invalid');
-          }
-          await tx.inventoryStock.update({
-            where: { id: stock.id },
-            data: { soldStock: { decrement: reservation.quantity } },
-          });
-          await tx.inventoryMovement.create({
+        const outstanding = payment.amount.sub(
+          refunded._sum.amount ?? new Prisma.Decimal(0),
+        );
+        if (outstanding.gt(0)) {
+          await tx.paymentRefund.create({
             data: {
               merchantId,
-              inventoryStockId: stock.id,
-              productId: stock.productId,
-              variantId: stock.variantId,
-              type: 'REFUND_RETURN',
-              quantity: reservation.quantity,
-              referenceId: order.id,
-              referenceType: 'order_refund',
-              createdById: userId,
+              paymentId: payment.id,
+              orderId: order.id,
+              amount: outstanding,
+              status: 'SUCCESS',
+              returnedStock: returnStock,
+              requestedById: userId,
             },
           });
         }
+        if (payment.status !== 'REFUNDED') {
+          await tx.payment.update({
+            where: { id: payment.id },
+            data: { status: 'REFUNDED' },
+          });
+        }
       }
-
-      const updated = await tx.order.update({
-        where: { id: order.id },
-        data: {
-          status: 'REFUNDED',
-          paymentStatus: 'REFUNDED',
-          refundedAt: new Date(),
-        },
-        include: { items: true },
-      });
-      await this.writeOrderAudit(
-        tx,
+      return this.markRefundedInTx(tx, {
         merchantId,
+        orderId: order.id,
         userId,
-        order.id,
-        'order.refunded',
-        { status: order.status, paymentStatus: order.paymentStatus },
-        {
-          status: updated.status,
-          paymentStatus: updated.paymentStatus,
-          returnStock,
-        },
+        returnStock,
         metadata,
-      );
-      // Points the refunded order earned go back out in the same commit, so a
-      // balance can never outlive the purchase that created it.
-      await this.loyalty.reverseForOrder(tx, order.id);
-      return updated;
+      });
     });
     await this.notifications.syncOrderStockAlerts(merchantId, orderId);
     return result;
+  }
+
+  /**
+   * Everything a fully refunded order implies, for a caller that has already
+   * locked the order and recorded the money going back: optional stock
+   * return, REFUNDED status, shipments that never left called off, and the
+   * loyalty points the order earned taken back.
+   */
+  async markRefundedInTx(
+    tx: Prisma.TransactionClient,
+    input: {
+      merchantId: string;
+      orderId: string;
+      userId: string;
+      returnStock: boolean;
+      metadata: AuditMetadata;
+    },
+  ) {
+    const { merchantId, orderId, userId, returnStock, metadata } = input;
+    const order = await tx.order.findUniqueOrThrow({ where: { id: orderId } });
+
+    if (returnStock) {
+      const reservations = await tx.inventoryReservation.findMany({
+        where: { orderId, status: 'CONFIRMED' },
+        select: { inventoryStockId: true, quantity: true },
+      });
+      // A POS order paid after its reservation was lost sells straight from
+      // stock with no reservation behind it; that goes back too.
+      const unreserved = await tx.inventoryMovement.findMany({
+        where: {
+          referenceId: orderId,
+          referenceType: 'pos_order_payment_unreserved',
+          type: 'SOLD',
+        },
+        select: { inventoryStockId: true, quantity: true },
+      });
+      const sold = [...reservations, ...unreserved].sort((a, b) =>
+        a.inventoryStockId.localeCompare(b.inventoryStockId),
+      );
+      for (const line of sold) {
+        const stock = await this.lockStock(
+          tx,
+          merchantId,
+          line.inventoryStockId,
+        );
+        if (stock.soldStock < line.quantity) {
+          throw new ConflictException('Inventory sold balance is invalid');
+        }
+        await tx.inventoryStock.update({
+          where: { id: stock.id },
+          data: { soldStock: { decrement: line.quantity } },
+        });
+        await tx.inventoryMovement.create({
+          data: {
+            merchantId,
+            inventoryStockId: stock.id,
+            productId: stock.productId,
+            variantId: stock.variantId,
+            type: 'REFUND_RETURN',
+            quantity: line.quantity,
+            referenceId: orderId,
+            referenceType: 'order_refund',
+            createdById: userId,
+          },
+        });
+      }
+    }
+
+    await cancelUnshippedShipments(tx, orderId, userId, 'Order refunded');
+    // Nothing on its way to the customer means nothing will be fulfilled.
+    const outstandingShipments = await tx.shipment.count({
+      where: { orderId, status: { notIn: RELEASED_SHIPMENT_STATUSES } },
+    });
+    const updated = await tx.order.update({
+      where: { id: orderId },
+      data: {
+        status: 'REFUNDED',
+        paymentStatus: 'REFUNDED',
+        refundedAt: new Date(),
+        ...(order.fulfillmentStatus !== 'FULFILLED' && !outstandingShipments
+          ? { fulfillmentStatus: 'CANCELLED' }
+          : {}),
+      },
+      include: { items: true },
+    });
+    await this.writeOrderAudit(
+      tx,
+      merchantId,
+      userId,
+      orderId,
+      'order.refunded',
+      { status: order.status, paymentStatus: order.paymentStatus },
+      {
+        status: updated.status,
+        paymentStatus: updated.paymentStatus,
+        fulfillmentStatus: updated.fulfillmentStatus,
+        returnStock,
+      },
+      metadata,
+    );
+    // Points the refunded order earned go back out in the same commit, so a
+    // balance can never outlive the purchase that created it.
+    await this.loyalty.reverseForOrder(tx, orderId);
+    return updated;
   }
 
   private async releaseReservations(

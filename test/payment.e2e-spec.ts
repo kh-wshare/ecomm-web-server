@@ -5,6 +5,7 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/infrastructure/database/prisma.service';
+import { InventoryService } from '../src/modules/inventory/inventory.service';
 
 describe('Payments (e2e)', () => {
   let app: INestApplication<App>;
@@ -284,27 +285,26 @@ describe('Payments (e2e)', () => {
     ).toBe(1);
   });
 
-  it('releases reservations when a signed payment failure arrives', async () => {
+  it('keeps the order open after a failed attempt so the shopper can pay again', async () => {
     const owner = await register();
     await connectProvider(owner);
     const { product, checkout, order } = await createOrder(owner, 3);
-    const payment = await createIntent(order.id, checkout.checkoutToken);
-    const payload = {
+    const failed = await createIntent(order.id, checkout.checkoutToken);
+    const failure = {
       eventId: `failed-${unique()}`,
-      paymentId: payment.id,
-      providerTransactionId: payment.providerTransactionId,
+      paymentId: failed.id,
+      providerTransactionId: failed.providerTransactionId,
       status: 'FAILED',
       amount: '73.50',
       currency: 'USD',
     };
-
     await request(app.getHttpServer())
       .post('/payments/webhook/HMAC')
-      .set('X-Payment-Signature', sign(payload))
-      .send(payload)
+      .set('X-Payment-Signature', sign(failure))
+      .send(failure)
       .expect(200);
 
-    const [storedOrder, reservation, stock] = await Promise.all([
+    const [afterFailure, heldReservation, heldStock] = await Promise.all([
       prisma.order.findUniqueOrThrow({ where: { id: order.id } }),
       prisma.inventoryReservation.findFirstOrThrow({
         where: { orderId: order.id },
@@ -313,12 +313,173 @@ describe('Payments (e2e)', () => {
         where: { productId: product.id },
       }),
     ]);
-    expect(storedOrder).toMatchObject({
-      status: 'PAYMENT_FAILED',
-      paymentStatus: 'FAILED',
+    expect(afterFailure).toMatchObject({
+      status: 'PENDING_PAYMENT',
+      paymentStatus: 'PENDING',
     });
-    expect(reservation.status).toBe('RELEASED');
-    expect(stock).toMatchObject({ reservedStock: 0, soldStock: 0 });
+    expect(heldReservation.status).toBe('ACTIVE');
+    expect(heldStock).toMatchObject({ reservedStock: 3, soldStock: 0 });
+
+    const retry = await createIntent(order.id, checkout.checkoutToken);
+    expect(retry.id).not.toBe(failed.id);
+    const success = {
+      eventId: `paid-${unique()}`,
+      paymentId: retry.id,
+      providerTransactionId: retry.providerTransactionId,
+      status: 'CONFIRMED',
+      amount: '73.50',
+      currency: 'USD',
+    };
+    await request(app.getHttpServer())
+      .post('/payments/webhook/HMAC')
+      .set('X-Payment-Signature', sign(success))
+      .send(success)
+      .expect(200);
+    expect(
+      await prisma.order.findUniqueOrThrow({ where: { id: order.id } }),
+    ).toMatchObject({ status: 'PAID', paymentStatus: 'PAID' });
+    expect(
+      await prisma.inventoryStock.findFirstOrThrow({
+        where: { productId: product.id },
+      }),
+    ).toMatchObject({ reservedStock: 0, soldStock: 3 });
+  });
+
+  it('records a payment that lands after the order expired instead of rejecting it', async () => {
+    const owner = await register();
+    await connectProvider(owner);
+    const { product, checkout, order } = await createOrder(owner, 2);
+    const payment = await createIntent(order.id, checkout.checkoutToken);
+
+    // The checkout deadline passes and the sweeper expires the order.
+    await prisma.inventoryReservation.updateMany({
+      where: { orderId: order.id },
+      data: { expiresAt: new Date(Date.now() - 1000) },
+    });
+    await app.get(InventoryService).expireReservations();
+    expect(
+      await prisma.order.findUniqueOrThrow({ where: { id: order.id } }),
+    ).toMatchObject({ status: 'EXPIRED' });
+    expect(
+      await prisma.payment.findUniqueOrThrow({ where: { id: payment.id } }),
+    ).toMatchObject({ status: 'CANCELLED' });
+
+    const late = {
+      eventId: `late-${unique()}`,
+      paymentId: payment.id,
+      providerTransactionId: payment.providerTransactionId,
+      status: 'CONFIRMED',
+      amount: '49.00',
+      currency: 'USD',
+    };
+    const response = await request(app.getHttpServer())
+      .post('/payments/webhook/HMAC')
+      .set('X-Payment-Signature', sign(late))
+      .send(late)
+      .expect(200);
+    expect(response.body.data.payment.status).toBe('CONFIRMED');
+    await request(app.getHttpServer())
+      .post('/payments/webhook/HMAC')
+      .set('X-Payment-Signature', sign(late))
+      .send(late)
+      .expect(200);
+
+    expect(
+      await prisma.order.findUniqueOrThrow({ where: { id: order.id } }),
+    ).toMatchObject({ status: 'EXPIRED', paymentStatus: 'PENDING' });
+    expect(
+      await prisma.inventoryStock.findFirstOrThrow({
+        where: { productId: product.id },
+      }),
+    ).toMatchObject({ reservedStock: 0, soldStock: 0 });
+    expect(
+      await prisma.notification.count({
+        where: {
+          merchantId: owner.activeMerchant.merchant.id,
+          type: 'PAYMENT_RECEIVED_AFTER_CLOSE',
+        },
+      }),
+    ).toBe(1);
+
+    // The merchant can give that money back through the normal refund.
+    await request(app.getHttpServer())
+      .post(`/orders/${order.id}/refund`)
+      .set('Authorization', `Bearer ${owner.accessToken}`)
+      .send({})
+      .expect(200);
+    expect(
+      await prisma.paymentRefund.count({ where: { paymentId: payment.id } }),
+    ).toBe(1);
+  });
+
+  it('cancels an open intent so the shopper can switch provider', async () => {
+    const owner = await register();
+    await connectProvider(owner);
+    await request(app.getHttpServer())
+      .post('/payments/providers')
+      .set('Authorization', `Bearer ${owner.accessToken}`)
+      .send({
+        provider: 'KHQR',
+        providerSecret: 'bakong-test-token',
+        config: { accountId: 'test_store@bkrt', merchantName: 'Test Store' },
+      })
+      .expect(201);
+    const { checkout, order } = await createOrder(owner, 2);
+
+    const khqr = await request(app.getHttpServer())
+      .post('/payments/create-intent')
+      .send({
+        orderId: order.id,
+        checkoutToken: checkout.checkoutToken,
+        provider: 'KHQR',
+      })
+      .expect(201);
+    expect(khqr.body.data.action).toMatchObject({ type: 'QR' });
+    // Asking again returns the same QR, not a new one the shopper never saw.
+    const again = await request(app.getHttpServer())
+      .post('/payments/create-intent')
+      .send({
+        orderId: order.id,
+        checkoutToken: checkout.checkoutToken,
+        provider: 'KHQR',
+      })
+      .expect(201);
+    expect(again.body.data.id).toBe(khqr.body.data.id);
+    expect(again.body.data.providerTransactionId).toBe(
+      khqr.body.data.providerTransactionId,
+    );
+    expect(again.body.data.action.qrPayload).toBe(
+      khqr.body.data.action.qrPayload,
+    );
+
+    await request(app.getHttpServer())
+      .post('/payments/create-intent')
+      .send({
+        orderId: order.id,
+        checkoutToken: checkout.checkoutToken,
+        provider: 'HMAC',
+      })
+      .expect(409);
+    await request(app.getHttpServer())
+      .post(`/payments/${khqr.body.data.id}/cancel`)
+      .set('X-Checkout-Token', checkout.checkoutToken)
+      .expect(200);
+    const hmac = await createIntent(order.id, checkout.checkoutToken);
+    expect(hmac.provider).toBe('HMAC');
+  });
+
+  it('cancelling an order also cancels its open intent', async () => {
+    const owner = await register();
+    await connectProvider(owner);
+    const { checkout, order } = await createOrder(owner, 1);
+    const payment = await createIntent(order.id, checkout.checkoutToken);
+    await request(app.getHttpServer())
+      .post(`/orders/${order.id}/cancel`)
+      .set('Authorization', `Bearer ${owner.accessToken}`)
+      .expect(200);
+    expect(
+      await prisma.payment.findUniqueOrThrow({ where: { id: payment.id } }),
+    ).toMatchObject({ status: 'CANCELLED' });
   });
 
   it('takes payment for an order of non-stocked products, which holds no reservation', async () => {

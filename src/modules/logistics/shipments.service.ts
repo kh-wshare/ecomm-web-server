@@ -7,8 +7,13 @@ import {
 import { randomBytes } from 'node:crypto';
 import { PaginatedResult } from '#app/common/responses/pagination.response';
 import { Prisma } from '#app/generated/prisma/client';
-import { FulfillmentStatus, ShipmentStatus } from '#app/generated/prisma/enums';
+import {
+  FulfillmentStatus,
+  OrderStatus,
+  ShipmentStatus,
+} from '#app/generated/prisma/enums';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
+import { RELEASED_SHIPMENT_STATUSES } from '#app/modules/order/order-lifecycle';
 import { AddressSnapshot, toAddressSnapshot } from './address-snapshot';
 import {
   CreateShipmentDto,
@@ -114,15 +119,28 @@ export class ShipmentsService {
     metadata: AuditMetadata,
   ) {
     const shipment = await this.prisma.$transaction(async (tx) => {
+      // Locked so two parcels created at once cannot both claim the same
+      // unshipped units.
+      await this.lockOrder(tx, merchantId, orderId);
       const order = await tx.order.findFirst({
         where: { id: orderId, merchantId },
         include: { items: true },
       });
       if (!order) throw new NotFoundException('Order not found');
-      if (order.status === 'CANCELLED' || order.status === 'EXPIRED') {
+      if (
+        order.status === 'CANCELLED' ||
+        order.status === 'EXPIRED' ||
+        order.status === 'REFUNDED'
+      ) {
         throw new ConflictException(
           `Cannot ship an order that is ${order.status.toLowerCase()}`,
         );
+      }
+      // Goods leave only once they are paid for. (There is no
+      // cash-on-delivery method yet; when there is, it becomes an explicit
+      // exception here.)
+      if (order.paymentStatus !== 'PAID') {
+        throw new ConflictException('Cannot ship an order that is not paid');
       }
 
       const remaining = await this.remainingByOrderItem(tx, order.id);
@@ -193,7 +211,7 @@ export class ShipmentsService {
         include: shipmentInclude,
       });
 
-      await this.syncOrderFulfillment(tx, order.id);
+      await this.syncOrderFulfillment(tx, order.id, userId, metadata);
       await this.audit(tx, {
         action: 'shipment.created',
         after: {
@@ -219,6 +237,7 @@ export class ShipmentsService {
     metadata: AuditMetadata,
   ) {
     return this.prisma.$transaction(async (tx) => {
+      await this.lockShipment(tx, merchantId, shipmentId);
       const before = await tx.shipment.findFirst({
         where: { id: shipmentId, merchantId },
         select: { id: true, status: true, trackingNumber: true },
@@ -275,11 +294,19 @@ export class ShipmentsService {
     metadata: AuditMetadata,
   ) {
     return this.prisma.$transaction(async (tx) => {
-      const before = await tx.shipment.findFirst({
+      const located = await tx.shipment.findFirst({
         where: { id: shipmentId, merchantId },
+        select: { orderId: true },
+      });
+      if (!located) throw new NotFoundException('Shipment not found');
+      // Order first, then shipment — the same order every writer takes — so
+      // two status changes cannot both pass the transition check.
+      await this.lockOrder(tx, merchantId, located.orderId);
+      await this.lockShipment(tx, merchantId, shipmentId);
+      const before = await tx.shipment.findUniqueOrThrow({
+        where: { id: shipmentId },
         select: { id: true, orderId: true, status: true },
       });
-      if (!before) throw new NotFoundException('Shipment not found');
       if (!isShipmentStatusTransitionAllowed(before.status, dto.status)) {
         throw new ConflictException(
           `Cannot move a shipment from ${before.status} to ${dto.status}`,
@@ -313,7 +340,7 @@ export class ShipmentsService {
         include: shipmentInclude,
       });
 
-      await this.syncOrderFulfillment(tx, before.orderId);
+      await this.syncOrderFulfillment(tx, before.orderId, userId, metadata);
       await this.audit(tx, {
         action: 'shipment.status_changed',
         after: { status: dto.status },
@@ -364,8 +391,8 @@ export class ShipmentsService {
 
   /**
    * How many units of each order item are not yet covered by a live shipment.
-   * Cancelled shipments release their units back so a failed parcel can be
-   * re-shipped.
+   * Cancelled and returned shipments release their units back, so a parcel
+   * that never arrived can be shipped again.
    */
   private async remainingByOrderItem(
     tx: Prisma.TransactionClient,
@@ -379,7 +406,7 @@ export class ShipmentsService {
       by: ['orderItemId'],
       where: {
         orderItem: { orderId },
-        shipment: { status: { not: ShipmentStatus.CANCELLED } },
+        shipment: { status: { notIn: RELEASED_SHIPMENT_STATUSES } },
       },
       _sum: { quantity: true },
     });
@@ -400,15 +427,20 @@ export class ShipmentsService {
   }
 
   /**
-   * Derives the order's fulfillment status from its shipments rather than
-   * letting each status change set it directly — with split shipments, only
-   * the aggregate can tell PROCESSING from FULFILLED.
+   * Derives the order's fulfillment from its shipments, and moves the order
+   * along with them: its first live shipment starts processing, and the
+   * order is FULFILLED once every unit is delivered. With split shipments
+   * only the aggregate can tell PROCESSING from FULFILLED, so no single
+   * status change sets it directly.
    */
   private async syncOrderFulfillment(
     tx: Prisma.TransactionClient,
     orderId: string,
+    userId: string,
+    metadata: AuditMetadata,
   ) {
-    const [items, shipments] = await Promise.all([
+    const [order, items, shipments] = await Promise.all([
+      tx.order.findUniqueOrThrow({ where: { id: orderId } }),
       tx.orderItem.findMany({
         where: { orderId },
         select: { id: true, quantity: true, cancelledQuantity: true },
@@ -421,18 +453,21 @@ export class ShipmentsService {
         },
       }),
     ]);
-
-    const live = shipments.filter(
-      (shipment) => shipment.status !== ShipmentStatus.CANCELLED,
-    );
-    if (live.length === 0) {
-      await tx.order.update({
-        where: { id: orderId },
-        data: { fulfillmentStatus: FulfillmentStatus.UNFULFILLED },
-      });
+    // A closed order stays closed: a parcel that arrives or is called off
+    // afterwards must not reopen it.
+    if (
+      order.fulfillmentStatus === FulfillmentStatus.CANCELLED ||
+      order.status === OrderStatus.CANCELLED ||
+      order.status === OrderStatus.REFUNDED ||
+      order.status === OrderStatus.EXPIRED
+    ) {
       return;
     }
 
+    const live = shipments.filter(
+      (shipment) =>
+        !RELEASED_SHIPMENT_STATUSES.some((s) => s === shipment.status),
+    );
     const orderedUnits = items.reduce(
       (total, item) => total + item.quantity - item.cancelledQuantity,
       0,
@@ -444,17 +479,76 @@ export class ShipmentsService {
           total + shipment.items.reduce((sum, item) => sum + item.quantity, 0),
         0,
       );
+    const fulfilled =
+      live.length > 0 && orderedUnits > 0 && deliveredUnits >= orderedUnits;
+    const fulfillmentStatus = live.length
+      ? fulfilled
+        ? FulfillmentStatus.FULFILLED
+        : FulfillmentStatus.PROCESSING
+      : FulfillmentStatus.UNFULFILLED;
 
-    const fulfilled = orderedUnits > 0 && deliveredUnits >= orderedUnits;
+    let status = order.status;
+    if (live.length && status === OrderStatus.PAID) {
+      status = OrderStatus.PROCESSING;
+    }
+    if (
+      fulfilled &&
+      (status === OrderStatus.PAID || status === OrderStatus.PROCESSING)
+    ) {
+      status = OrderStatus.FULFILLED;
+    }
+
     await tx.order.update({
       where: { id: orderId },
       data: {
-        fulfillmentStatus: fulfilled
-          ? FulfillmentStatus.FULFILLED
-          : FulfillmentStatus.PROCESSING,
-        ...(fulfilled ? { fulfilledAt: new Date() } : { fulfilledAt: null }),
+        status,
+        fulfillmentStatus,
+        // Set once, when the last unit arrives; later syncs keep that time.
+        fulfilledAt: fulfilled ? (order.fulfilledAt ?? new Date()) : null,
       },
     });
+    if (status !== order.status) {
+      await tx.auditLog.create({
+        data: {
+          merchantId: order.merchantId,
+          userId,
+          action: 'order.status_updated',
+          entityType: 'order',
+          entityId: orderId,
+          before: { status: order.status },
+          after: { status, fulfillmentStatus, source: 'shipment' },
+          ...metadata,
+        },
+      });
+    }
+  }
+
+  private async lockOrder(
+    tx: Prisma.TransactionClient,
+    merchantId: string,
+    orderId: string,
+  ) {
+    const rows = await tx.$queryRaw<Array<{ id: string }>>(Prisma.sql`
+      SELECT "id" FROM "orders"
+      WHERE "id" = CAST(${orderId} AS uuid)
+        AND "merchant_id" = CAST(${merchantId} AS uuid)
+      FOR UPDATE
+    `);
+    if (!rows[0]) throw new NotFoundException('Order not found');
+  }
+
+  private async lockShipment(
+    tx: Prisma.TransactionClient,
+    merchantId: string,
+    shipmentId: string,
+  ) {
+    const rows = await tx.$queryRaw<Array<{ id: string }>>(Prisma.sql`
+      SELECT "id" FROM "shipments"
+      WHERE "id" = CAST(${shipmentId} AS uuid)
+        AND "merchant_id" = CAST(${merchantId} AS uuid)
+      FOR UPDATE
+    `);
+    if (!rows[0]) throw new NotFoundException('Shipment not found');
   }
 
   private addressFields(address: AddressSnapshot) {

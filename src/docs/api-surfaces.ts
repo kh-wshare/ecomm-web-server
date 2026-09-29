@@ -6,6 +6,7 @@ import { BranchModule } from '@modules/branch/branch.module';
 import { CategoriesModule } from '@modules/catalog/categories/categories.module';
 import { CatalogModule } from '@modules/catalog/catalog.module';
 import { CheckoutModule } from '@modules/checkout/checkout.module';
+import { DashboardModule } from '@modules/merchant/dashboard/dashboard.module';
 import { FileStorageModule } from '@modules/merchant/file-storage/file-storage.module';
 import { InventoryModule } from '@modules/inventory/inventory.module';
 import { LogisticsModule } from '@modules/logistics/logistics.module';
@@ -90,6 +91,7 @@ export const API_SURFACES: readonly ApiSurface[] = [
       LogisticsModule,
       SocialPostModule,
       NotificationModule,
+      DashboardModule,
     ],
   },
   {

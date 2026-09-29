@@ -434,7 +434,9 @@ export const ModelName = {
   DeliveryZone: 'DeliveryZone',
   Shipment: 'Shipment',
   ShipmentItem: 'ShipmentItem',
-  ShipmentEvent: 'ShipmentEvent'
+  ShipmentEvent: 'ShipmentEvent',
+  SettlementAccount: 'SettlementAccount',
+  ReportExport: 'ReportExport'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -450,7 +452,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "authIdentity" | "merchant" | "merchantBranch" | "product" | "productCategory" | "merchantTheme" | "productVariant" | "productMedia" | "productChannelVisibility" | "inventoryStock" | "inventoryReservation" | "checkoutSession" | "checkoutItem" | "order" | "orderItem" | "paymentProvider" | "payment" | "paymentWebhookEvent" | "paymentRefund" | "posDevice" | "posShift" | "posTable" | "customer" | "loyaltyLedgerEntry" | "kitchenOrder" | "kitchenOrderItem" | "outboxEvent" | "idempotencyKey" | "notification" | "socialPost" | "shoppableHotspot" | "socialPostPublishLog" | "websiteArticle" | "inventoryMovement" | "merchantUser" | "role" | "permission" | "rolePermission" | "session" | "passwordResetToken" | "merchantInvitation" | "auditLog" | "cart" | "cartItem" | "customerAddress" | "deliveryMethod" | "deliveryZone" | "shipment" | "shipmentItem" | "shipmentEvent"
+    modelProps: "user" | "authIdentity" | "merchant" | "merchantBranch" | "product" | "productCategory" | "merchantTheme" | "productVariant" | "productMedia" | "productChannelVisibility" | "inventoryStock" | "inventoryReservation" | "checkoutSession" | "checkoutItem" | "order" | "orderItem" | "paymentProvider" | "payment" | "paymentWebhookEvent" | "paymentRefund" | "posDevice" | "posShift" | "posTable" | "customer" | "loyaltyLedgerEntry" | "kitchenOrder" | "kitchenOrderItem" | "outboxEvent" | "idempotencyKey" | "notification" | "socialPost" | "shoppableHotspot" | "socialPostPublishLog" | "websiteArticle" | "inventoryMovement" | "merchantUser" | "role" | "permission" | "rolePermission" | "session" | "passwordResetToken" | "merchantInvitation" | "auditLog" | "cart" | "cartItem" | "customerAddress" | "deliveryMethod" | "deliveryZone" | "shipment" | "shipmentItem" | "shipmentEvent" | "settlementAccount" | "reportExport"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4228,6 +4230,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SettlementAccount: {
+      payload: Prisma.$SettlementAccountPayload<ExtArgs>
+      fields: Prisma.SettlementAccountFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SettlementAccountFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettlementAccountPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SettlementAccountFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettlementAccountPayload>
+        }
+        findFirst: {
+          args: Prisma.SettlementAccountFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettlementAccountPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SettlementAccountFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettlementAccountPayload>
+        }
+        findMany: {
+          args: Prisma.SettlementAccountFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettlementAccountPayload>[]
+        }
+        create: {
+          args: Prisma.SettlementAccountCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettlementAccountPayload>
+        }
+        createMany: {
+          args: Prisma.SettlementAccountCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SettlementAccountCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettlementAccountPayload>[]
+        }
+        delete: {
+          args: Prisma.SettlementAccountDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettlementAccountPayload>
+        }
+        update: {
+          args: Prisma.SettlementAccountUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettlementAccountPayload>
+        }
+        deleteMany: {
+          args: Prisma.SettlementAccountDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SettlementAccountUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SettlementAccountUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettlementAccountPayload>[]
+        }
+        upsert: {
+          args: Prisma.SettlementAccountUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettlementAccountPayload>
+        }
+        aggregate: {
+          args: Prisma.SettlementAccountAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSettlementAccount>
+        }
+        groupBy: {
+          args: Prisma.SettlementAccountGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SettlementAccountGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SettlementAccountCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SettlementAccountCountAggregateOutputType> | number
+        }
+      }
+    }
+    ReportExport: {
+      payload: Prisma.$ReportExportPayload<ExtArgs>
+      fields: Prisma.ReportExportFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ReportExportFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportExportPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ReportExportFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportExportPayload>
+        }
+        findFirst: {
+          args: Prisma.ReportExportFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportExportPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ReportExportFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportExportPayload>
+        }
+        findMany: {
+          args: Prisma.ReportExportFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportExportPayload>[]
+        }
+        create: {
+          args: Prisma.ReportExportCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportExportPayload>
+        }
+        createMany: {
+          args: Prisma.ReportExportCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ReportExportCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportExportPayload>[]
+        }
+        delete: {
+          args: Prisma.ReportExportDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportExportPayload>
+        }
+        update: {
+          args: Prisma.ReportExportUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportExportPayload>
+        }
+        deleteMany: {
+          args: Prisma.ReportExportDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ReportExportUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ReportExportUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportExportPayload>[]
+        }
+        upsert: {
+          args: Prisma.ReportExportUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportExportPayload>
+        }
+        aggregate: {
+          args: Prisma.ReportExportAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateReportExport>
+        }
+        groupBy: {
+          args: Prisma.ReportExportGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReportExportGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ReportExportCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReportExportCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -4314,7 +4464,8 @@ export const MerchantScalarFieldEnum = {
   deletedAt: 'deletedAt',
   returnStockOnRefund: 'returnStockOnRefund',
   loyaltyEnabled: 'loyaltyEnabled',
-  loyaltyPointsPerUnit: 'loyaltyPointsPerUnit'
+  loyaltyPointsPerUnit: 'loyaltyPointsPerUnit',
+  setupDismissedAt: 'setupDismissedAt'
 } as const
 
 export type MerchantScalarFieldEnum = (typeof MerchantScalarFieldEnum)[keyof typeof MerchantScalarFieldEnum]
@@ -5179,6 +5330,42 @@ export const ShipmentEventScalarFieldEnum = {
 export type ShipmentEventScalarFieldEnum = (typeof ShipmentEventScalarFieldEnum)[keyof typeof ShipmentEventScalarFieldEnum]
 
 
+export const SettlementAccountScalarFieldEnum = {
+  id: 'id',
+  merchantId: 'merchantId',
+  bankName: 'bankName',
+  holderName: 'holderName',
+  accountNumber: 'accountNumber',
+  currency: 'currency',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SettlementAccountScalarFieldEnum = (typeof SettlementAccountScalarFieldEnum)[keyof typeof SettlementAccountScalarFieldEnum]
+
+
+export const ReportExportScalarFieldEnum = {
+  id: 'id',
+  merchantId: 'merchantId',
+  userId: 'userId',
+  report: 'report',
+  format: 'format',
+  range: 'range',
+  fromDate: 'fromDate',
+  toDate: 'toDate',
+  branchId: 'branchId',
+  status: 'status',
+  rowCount: 'rowCount',
+  fileKey: 'fileKey',
+  downloadUrl: 'downloadUrl',
+  error: 'error',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ReportExportScalarFieldEnum = (typeof ReportExportScalarFieldEnum)[keyof typeof ReportExportScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -5829,6 +6016,20 @@ export type ListEnumShipmentStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'ReportExportStatus'
+ */
+export type EnumReportExportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportExportStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ReportExportStatus[]'
+ */
+export type ListEnumReportExportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportExportStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -6002,6 +6203,8 @@ export type GlobalOmitConfig = {
   shipment?: Prisma.ShipmentOmit
   shipmentItem?: Prisma.ShipmentItemOmit
   shipmentEvent?: Prisma.ShipmentEventOmit
+  settlementAccount?: Prisma.SettlementAccountOmit
+  reportExport?: Prisma.ReportExportOmit
 }
 
 /* Types for Logging */

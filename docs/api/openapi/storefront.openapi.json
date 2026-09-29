@@ -2266,6 +2266,51 @@
         ]
       }
     },
+    "/payments/{id}/cancel": {
+      "post": {
+        "operationId": "StorefrontPaymentController_cancel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Checkout-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Payment is no longer open"
+          }
+        },
+        "security": [
+          {}
+        ],
+        "summary": "Abandon an open payment attempt to pay another way",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
     "/payments/webhook/callback": {
       "post": {
         "operationId": "PaymentWebhookController_paywayCallback",

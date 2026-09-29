@@ -3,13 +3,17 @@ import {
   Controller,
   Get,
   Headers,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
   Req,
 } from '@nestjs/common';
 import {
+  ApiConflictResponse,
   ApiCreatedResponse,
+  ApiHeader,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -44,6 +48,23 @@ export class StorefrontPaymentController {
     @Headers('X-Checkout-Token') token: string | undefined,
   ) {
     return this.payments.findByToken(id, token);
+  }
+
+  @Public()
+  @Post(':id/cancel')
+  @HttpCode(HttpStatus.OK)
+  @ApiHeader({ name: 'X-Checkout-Token', required: true })
+  @ApiOperation({
+    summary: 'Abandon an open payment attempt to pay another way',
+  })
+  @ApiOkResponse({ type: PaymentDto })
+  @ApiConflictResponse({ description: 'Payment is no longer open' })
+  cancel(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Headers('X-Checkout-Token') token: string | undefined,
+    @Req() request: Request,
+  ) {
+    return this.payments.cancelIntent(id, token, this.metadata(request));
   }
 
   private metadata(request: Request) {

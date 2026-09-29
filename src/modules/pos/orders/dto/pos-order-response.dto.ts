@@ -18,10 +18,13 @@ export class PosOrderTotalsDto {
   @ApiProperty()
   total!: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Money received and kept (after refunds)' })
   paid!: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Money given back through refunds' })
+  refunded!: string;
+
+  @ApiProperty({ description: 'Still owed; refunds do not add to it' })
   remaining!: string;
 }
 

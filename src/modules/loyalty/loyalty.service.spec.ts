@@ -19,6 +19,7 @@ describe('LoyaltyService', () => {
       order?: Partial<typeof baseOrder> | null;
       merchant?: { loyaltyEnabled: boolean; loyaltyPointsPerUnit: number };
       earned?: { merchantId: string; customerId: string; points: number };
+      reversed?: boolean;
     } = {},
   ) => {
     const entryCreate = jest
@@ -51,7 +52,20 @@ describe('LoyaltyService', () => {
       customer: { update: customerUpdate },
       loyaltyLedgerEntry: {
         create: entryCreate,
-        findUnique: jest.fn().mockResolvedValue(overrides.earned ?? null),
+        findUnique: jest.fn(
+          ({
+            where,
+          }: {
+            where: { orderId_type: { type: LoyaltyEntryType } };
+          }) =>
+            Promise.resolve(
+              where.orderId_type.type === LoyaltyEntryType.EARNED
+                ? (overrides.earned ?? null)
+                : overrides.reversed
+                  ? { id: 'reversal-1' }
+                  : null,
+            ),
+        ),
       },
     } as unknown as Prisma.TransactionClient;
 
@@ -117,18 +131,21 @@ describe('LoyaltyService', () => {
       });
     });
 
-    it('swallows the duplicate-grant conflict so a redelivered webhook is a no-op', async () => {
-      const { service, tx, entryCreate } = createHarness();
-      entryCreate.mockRejectedValue(
-        new Prisma.PrismaClientKnownRequestError('duplicate', {
-          code: 'P2002',
-          clientVersion: 'test',
-        }),
-      );
+    it('is a no-op for an order that already earned, without touching the balance', async () => {
+      const { service, tx, entryCreate, customerUpdate } = createHarness({
+        earned: {
+          merchantId: 'merchant-1',
+          customerId: 'customer-1',
+          points: 25,
+        },
+      });
 
-      await expect(
-        service.grantForOrder(tx, 'order-1'),
-      ).resolves.toBeUndefined();
+      await service.grantForOrder(tx, 'order-1');
+
+      // Checked up front: a caught unique-key conflict would already have
+      // aborted the caller's PostgreSQL transaction.
+      expect(customerUpdate).not.toHaveBeenCalled();
+      expect(entryCreate).not.toHaveBeenCalled();
     });
 
     it('propagates anything that is not a duplicate', async () => {
@@ -159,6 +176,21 @@ describe('LoyaltyService', () => {
       expect(entryCreate.mock.calls[0][0]).toMatchObject({
         data: { type: LoyaltyEntryType.REVERSED, points: -40 },
       });
+    });
+
+    it('reverses only once', async () => {
+      const { service, tx, entryCreate } = createHarness({
+        earned: {
+          merchantId: 'merchant-1',
+          customerId: 'customer-1',
+          points: 40,
+        },
+        reversed: true,
+      });
+
+      await service.reverseForOrder(tx, 'order-1');
+
+      expect(entryCreate).not.toHaveBeenCalled();
     });
 
     it('does nothing for an order that never earned', async () => {

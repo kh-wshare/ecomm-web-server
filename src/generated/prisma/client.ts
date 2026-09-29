@@ -320,3 +320,15 @@ export type ShipmentItem = Prisma.ShipmentItemModel
  * reads these rather than the shipment's current status alone.
  */
 export type ShipmentEvent = Prisma.ShipmentEventModel
+/**
+ * Model SettlementAccount
+ * The bank account a merchant's cleared balance is paid out to. One per
+ * merchant; the dashboard payouts summary reads from this.
+ */
+export type SettlementAccount = Prisma.SettlementAccountModel
+/**
+ * Model ReportExport
+ * A generated CSV/export job for a merchant-facing report. Generation is
+ * synchronous today, so rows are always created already READY or FAILED.
+ */
+export type ReportExport = Prisma.ReportExportModel

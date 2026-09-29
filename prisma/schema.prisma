@@ -207,6 +207,11 @@ enum PaymentRefundStatus {
   FAILED
 }
 
+enum ReportExportStatus {
+  READY
+  FAILED
+}
+
 enum OutboxEventStatus {
   PENDING
   PUBLISHED
@@ -358,6 +363,11 @@ model Merchant {
   deliveryMethods       DeliveryMethod[]
   deliveryZones         DeliveryZone[]
   shipments             Shipment[]
+  settlementAccount     SettlementAccount?
+  reportExports         ReportExport[]
+  /// When the merchant last dismissed the dashboard setup checklist; null if
+  /// it has never been dismissed (or was reset by a newly added task).
+  setupDismissedAt      DateTime?              @map("setup_dismissed_at")
 
   @@map("merchants")
 }
@@ -1530,4 +1540,46 @@ model ShipmentEvent {
 
   @@index([shipmentId, occurredAt])
   @@map("shipment_events")
+}
+
+/// The bank account a merchant's cleared balance is paid out to. One per
+/// merchant; the dashboard payouts summary reads from this.
+model SettlementAccount {
+  id            String   @id @default(uuid()) @db.Uuid
+  merchantId    String   @unique @map("merchant_id") @db.Uuid
+  bankName      String   @map("bank_name")
+  holderName    String   @map("holder_name")
+  /// Full account number, kept only to derive the last4 shown to the merchant.
+  accountNumber String   @map("account_number")
+  currency      String   @default("USD") @db.Char(3)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  merchant      Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  @@map("settlement_accounts")
+}
+
+/// A generated CSV/export job for a merchant-facing report. Generation is
+/// synchronous today, so rows are always created already READY or FAILED.
+model ReportExport {
+  id          String             @id @default(uuid()) @db.Uuid
+  merchantId  String             @map("merchant_id") @db.Uuid
+  userId      String             @map("user_id") @db.Uuid
+  report      String
+  format      String
+  range       String
+  fromDate    DateTime?          @map("from_date")
+  toDate      DateTime?          @map("to_date")
+  branchId    String?            @map("branch_id") @db.Uuid
+  status      ReportExportStatus @default(READY)
+  rowCount    Int?               @map("row_count")
+  fileKey     String?            @map("file_key")
+  downloadUrl String?            @map("download_url")
+  error       String?
+  expiresAt   DateTime?          @map("expires_at")
+  createdAt   DateTime           @default(now()) @map("created_at")
+  merchant    Merchant           @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  @@index([merchantId, createdAt])
+  @@map("report_exports")
 }

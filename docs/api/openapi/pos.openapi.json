@@ -2425,6 +2425,137 @@
         ]
       }
     },
+    "/pos/orders/{orderId}/payments": {
+      "post": {
+        "operationId": "PosPaymentsController_create",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePosPaymentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Take a payment (cash or KHQR) against an order",
+        "tags": [
+          "POS Payments"
+        ]
+      }
+    },
+    "/pos/payments/{paymentId}": {
+      "get": {
+        "operationId": "PosPaymentsController_findOne",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get payment status (polls KHQR provider if still pending)",
+        "tags": [
+          "POS Payments"
+        ]
+      }
+    },
+    "/pos/payments/{paymentId}/refund": {
+      "post": {
+        "operationId": "PosPaymentsController_refund",
+        "parameters": [
+          {
+            "name": "X-Merchant-ID",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePosRefundDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Refund all or part of a confirmed payment",
+        "tags": [
+          "POS Payments"
+        ]
+      }
+    },
     "/pos/tables": {
       "get": {
         "operationId": "PosTablesController_findAll",
@@ -2749,137 +2880,6 @@
         "summary": "Advance a kitchen order’s status",
         "tags": [
           "POS Kitchen"
-        ]
-      }
-    },
-    "/pos/orders/{orderId}/payments": {
-      "post": {
-        "operationId": "PosPaymentsController_create",
-        "parameters": [
-          {
-            "name": "X-Merchant-ID",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "orderId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreatePosPaymentDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Take a payment (cash or KHQR) against an order",
-        "tags": [
-          "POS Payments"
-        ]
-      }
-    },
-    "/pos/payments/{paymentId}": {
-      "get": {
-        "operationId": "PosPaymentsController_findOne",
-        "parameters": [
-          {
-            "name": "X-Merchant-ID",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "paymentId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Get payment status (polls KHQR provider if still pending)",
-        "tags": [
-          "POS Payments"
-        ]
-      }
-    },
-    "/pos/payments/{paymentId}/refund": {
-      "post": {
-        "operationId": "PosPaymentsController_refund",
-        "parameters": [
-          {
-            "name": "X-Merchant-ID",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "paymentId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreatePosRefundDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Refund all or part of a confirmed payment",
-        "tags": [
-          "POS Payments"
         ]
       }
     },
@@ -5373,6 +5373,41 @@
           "items"
         ]
       },
+      "PosSalePaymentDto": {
+        "type": "object",
+        "properties": {
+          "paymentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "example": "CONFIRMED",
+            "description": "CONFIRMED for cash; PENDING for KHQR until the QR is paid"
+          },
+          "amount": {
+            "type": "string",
+            "example": "12.50"
+          },
+          "change": {
+            "type": "string",
+            "example": "0.00",
+            "description": "Cash change due"
+          },
+          "qr": {
+            "type": "string",
+            "description": "KHQR payload to display"
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "paymentId",
+          "status"
+        ]
+      },
       "PosReceiptItemDto": {
         "type": "object",
         "properties": {
@@ -5499,6 +5534,16 @@
         "properties": {
           "order": {
             "$ref": "#/components/schemas/OrderDto"
+          },
+          "payment": {
+            "nullable": true,
+            "description": "Null when the sale total is zero",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PosSalePaymentDto"
+              }
+            ]
           },
           "receipt": {
             "$ref": "#/components/schemas/PosReceiptDto"
@@ -5775,10 +5820,16 @@
             "type": "string"
           },
           "paid": {
-            "type": "string"
+            "type": "string",
+            "description": "Money received and kept (after refunds)"
+          },
+          "refunded": {
+            "type": "string",
+            "description": "Money given back through refunds"
           },
           "remaining": {
-            "type": "string"
+            "type": "string",
+            "description": "Still owed; refunds do not add to it"
           }
         },
         "required": [
@@ -5787,6 +5838,7 @@
           "tax",
           "total",
           "paid",
+          "refunded",
           "remaining"
         ]
       },
@@ -5896,6 +5948,61 @@
         },
         "required": [
           "tableId"
+        ]
+      },
+      "CreatePosPaymentDto": {
+        "type": "object",
+        "properties": {
+          "paymentMethod": {
+            "type": "string",
+            "enum": [
+              "CASH",
+              "KHQR"
+            ]
+          },
+          "amount": {
+            "type": "number",
+            "example": 10
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "cashReceived": {
+            "type": "number",
+            "description": "Cash tendered by the customer (CASH only)"
+          },
+          "orderItemIds": {
+            "description": "Order item ids this payment settles (informational; full/partial split by amount is always enforced)",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "paymentMethod",
+          "amount"
+        ]
+      },
+      "CreatePosRefundDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 10
+          },
+          "reason": {
+            "type": "string",
+            "example": "Customer cancellation"
+          },
+          "returnStock": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "amount"
         ]
       },
       "CreatePosTableDto": {
@@ -6041,61 +6148,6 @@
         },
         "required": [
           "status"
-        ]
-      },
-      "CreatePosPaymentDto": {
-        "type": "object",
-        "properties": {
-          "paymentMethod": {
-            "type": "string",
-            "enum": [
-              "CASH",
-              "KHQR"
-            ]
-          },
-          "amount": {
-            "type": "number",
-            "example": 10
-          },
-          "currency": {
-            "type": "string",
-            "example": "USD"
-          },
-          "cashReceived": {
-            "type": "number",
-            "description": "Cash tendered by the customer (CASH only)"
-          },
-          "orderItemIds": {
-            "description": "Order item ids this payment settles (informational; full/partial split by amount is always enforced)",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "paymentMethod",
-          "amount"
-        ]
-      },
-      "CreatePosRefundDto": {
-        "type": "object",
-        "properties": {
-          "amount": {
-            "type": "number",
-            "example": 10
-          },
-          "reason": {
-            "type": "string",
-            "example": "Customer cancellation"
-          },
-          "returnStock": {
-            "type": "boolean",
-            "default": false
-          }
-        },
-        "required": [
-          "amount"
         ]
       },
       "CreateCustomerDto": {

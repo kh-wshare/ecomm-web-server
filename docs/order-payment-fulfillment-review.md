@@ -8,6 +8,61 @@ Each problem below is written as a task with where it lives, what goes wrong,
 the fix and how to prove it. Line numbers are as of the review (2026-09-24,
 branch `feat/cart-address-loyalty`).
 
+## Status (2026-09-24)
+
+All eighteen tasks are fixed on `feat/cart-address-loyalty`. The shared
+status rules now live in
+[order-lifecycle.ts](../src/modules/order/order-lifecycle.ts): when an order
+can be cancelled, what "expired" means, cancelling open payment attempts and
+unshipped shipments, and how payment status follows the money received and
+refunded. Coverage is in `test/order-lifecycle.e2e-spec.ts`,
+`test/pos.e2e-spec.ts` and `test/payment.e2e-spec.ts`.
+
+Found while fixing, and fixed too: POS KHQR used `POS-<orderNumber>` (27
+characters) as the bill number, over KHQR's 25-character limit, so every POS
+KHQR payment failed with "Bill Name Length is invalid".
+
+**Behaviour clients will notice**
+
+- A failed payment attempt no longer ends the order: it stays
+  `PENDING_PAYMENT` with its stock held, and the shopper can create a new
+  intent (T13).
+- New `POST /payments/:id/cancel` (checkout token) abandons an open attempt;
+  a KHQR whose QR has lapsed is cancelled automatically when a new intent is
+  requested (T13).
+- `create-intent` for KHQR returns the same QR while it is valid, and now
+  includes `action.expiresAt` (T2).
+- A payment that lands after the order closed is recorded as `CONFIRMED`
+  with the order left as it is; the merchant gets a
+  `PAYMENT_RECEIVED_AFTER_CLOSE` notification and the event
+  `payment.received_after_close` is published. `POST /orders/:id/refund`
+  accepts such an order (T1).
+- `POST /pos/sales` returns a `payment` object. A KHQR quick sale stays
+  unpaid until the QR is paid instead of being marked paid immediately (T5).
+- POS order `totals` gain `refunded`; `remaining` no longer counts refunded
+  money as owed (T7).
+- POS payments are taken only on `PENDING_PAYMENT` orders; paid POS orders
+  can no longer be edited (T3, T15).
+- Shipments require a paid order, and move the order to PROCESSING and then
+  FULFILLED; a manual FULFILLED/COMPLETED is refused while undelivered
+  shipments remain (T10, T11).
+- `PATCH /orders/:id/status` rejects statuses other than PROCESSING,
+  FULFILLED and COMPLETED at validation (400) instead of at the transition
+  check (409) (T18).
+- Unpaid orders of non-stocked products now expire at their checkout
+  deadline: 15 minutes online, 6 hours for a POS order (T17).
+
+**Deliberately left**
+
+- No provider refund API is called: refunds are recorded as made by hand
+  (T8). Wiring PayWay/KHQR refunds is separate work.
+- A late payment is not used to revive the order (re-reserving stock); the
+  merchant refunds it (T1).
+- There is no cash-on-delivery method, so no exception to "ship only when
+  paid" (T10).
+- Order status still only moves forward after PAID; cancelling a paid order
+  is a refund (T18).
+
 **Severity**
 
 - **P0** — money or stock ends up wrong: a customer is charged with no order,

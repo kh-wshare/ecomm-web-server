@@ -8,6 +8,7 @@ import { Prisma } from '#app/generated/prisma/client';
 import { SalesChannel } from '#app/generated/prisma/enums';
 import { PrismaService } from '#app/infrastructure/database/prisma.service';
 import { NotificationService } from '#app/modules/merchant/notification/notification.service';
+import { expireUnpaidOrders } from '#app/modules/order/order-lifecycle';
 import {
   AdjustInventoryDto,
   ConfirmInventoryDto,
@@ -288,6 +289,10 @@ export class InventoryService {
       throw new ConflictException('Duplicate checkout stock item');
     }
 
+    // Reservations expired inline below belong to other checkouts; their
+    // orders are expired after this transaction commits, never inside it, so
+    // this stock lock is not held while order rows are locked.
+    const expiredElsewhere = new Set<string>();
     const results = await this.prisma.$transaction(async (tx) => {
       const results: Array<{
         reservation: {
@@ -312,7 +317,7 @@ export class InventoryService {
         .filter((t) => t.trackStock)
         .sort((a, b) => a.stockKey.localeCompare(b.stockKey))) {
         let stock = await this.lockStock(tx, merchantId, target.stockKey);
-        stock = await this.expireLockedStock(tx, stock);
+        stock = await this.expireLockedStock(tx, stock, expiredElsewhere);
 
         const existing = await tx.inventoryReservation.findUnique({
           where: {
@@ -397,6 +402,10 @@ export class InventoryService {
       }
       return results;
     });
+    expiredElsewhere.delete(checkoutSessionId);
+    if (expiredElsewhere.size) {
+      await this.expireCheckoutStates([...expiredElsewhere]);
+    }
     await Promise.all(
       results.map(({ reservation }) =>
         this.notifications.syncStockAlert(
@@ -441,8 +450,17 @@ export class InventoryService {
   }
 
   async expireReservations(limit = 100) {
+    const partlyPaid = await this.partlyPaidOrderIds(this.prisma);
     const reservations = await this.prisma.inventoryReservation.findMany({
-      where: { status: 'ACTIVE', expiresAt: { lte: new Date() } },
+      where: {
+        status: 'ACTIVE',
+        expiresAt: { lte: new Date() },
+        ...(partlyPaid.length
+          ? {
+              OR: [{ orderId: null }, { orderId: { notIn: partlyPaid } }],
+            }
+          : {}),
+      },
       select: {
         id: true,
         merchantId: true,
@@ -598,21 +616,60 @@ export class InventoryService {
     return { reservation: result.reservation, stock: result.stock };
   }
 
+  /**
+   * Expires unpaid orders whose checkout deadline has passed but that hold no
+   * active reservation — above all, orders made only of NON_STOCKED products,
+   * which never get a reservation for `expireReservations` to find.
+   */
+  async expireStaleOrders(limit = 100) {
+    const stale = await this.prisma.order.findMany({
+      where: {
+        status: { in: ['PENDING_PAYMENT', 'RESERVED'] },
+        paymentStatus: 'PENDING',
+        checkoutSession: { expiresAt: { lte: new Date() } },
+      },
+      select: { id: true, checkoutSessionId: true },
+      orderBy: { createdAt: 'asc' },
+      take: limit,
+    });
+    if (!stale.length) return 0;
+    // Orders still holding stock are left to `expireReservations`, which
+    // releases the stock and expires the order in one go.
+    const holding = await this.prisma.inventoryReservation.findMany({
+      where: { orderId: { in: stale.map(({ id }) => id) }, status: 'ACTIVE' },
+      select: { orderId: true },
+      distinct: ['orderId'],
+    });
+    const holdingIds = new Set(holding.map(({ orderId }) => orderId));
+    const checkoutIds = stale
+      .filter(({ id }) => !holdingIds.has(id))
+      .map(({ checkoutSessionId }) => checkoutSessionId);
+    if (!checkoutIds.length) return 0;
+    const expired = await this.prisma.$transaction((tx) =>
+      expireUnpaidOrders(tx, checkoutIds),
+    );
+    return expired.length;
+  }
+
   private async expireCheckoutStates(checkoutSessionIds: string[]) {
-    await this.prisma.$transaction([
-      this.prisma.checkoutSession.updateMany({
-        where: { id: { in: checkoutSessionIds }, status: 'ACTIVE' },
-        data: { status: 'EXPIRED' },
-      }),
-      this.prisma.order.updateMany({
-        where: {
-          checkoutSessionId: { in: checkoutSessionIds },
-          paymentStatus: 'PENDING',
-          status: { in: ['PENDING_PAYMENT', 'RESERVED'] },
-        },
-        data: { status: 'EXPIRED' },
-      }),
-    ]);
+    await this.prisma.$transaction((tx) =>
+      expireUnpaidOrders(tx, checkoutSessionIds),
+    );
+  }
+
+  /**
+   * Orders that have taken some money but not all of it. Their stock stays
+   * held past the reservation deadline: the customer has paid part of it, so
+   * releasing it would let the goods be sold twice.
+   */
+  private async partlyPaidOrderIds(
+    client: Prisma.TransactionClient | PrismaService,
+  ) {
+    const orders = await client.order.findMany({
+      where: { paymentStatus: 'PARTIAL' },
+      select: { id: true },
+    });
+    return orders.map(({ id }) => id);
   }
 
   private async expireReservation(merchantId: string, reservationId: string) {
@@ -639,6 +696,7 @@ export class InventoryService {
   private async expireLockedStock(
     tx: Prisma.TransactionClient,
     stock: LockedStock,
+    expiredCheckoutIds: Set<string>,
   ) {
     const expired = await tx.inventoryReservation.findMany({
       where: {
@@ -647,8 +705,26 @@ export class InventoryService {
         expiresAt: { lte: new Date() },
       },
     });
+    const orderIds = expired.flatMap(({ orderId }) =>
+      orderId ? [orderId] : [],
+    );
+    const partlyPaid = orderIds.length
+      ? new Set(
+          (
+            await tx.order.findMany({
+              where: { id: { in: orderIds }, paymentStatus: 'PARTIAL' },
+              select: { id: true },
+            })
+          ).map(({ id }) => id),
+        )
+      : new Set<string>();
     for (const reservation of expired) {
+      if (reservation.orderId && partlyPaid.has(reservation.orderId)) continue;
+      const before = stock;
       stock = await this.expireLockedReservation(tx, stock, reservation);
+      if (stock !== before) {
+        expiredCheckoutIds.add(reservation.checkoutSessionId);
+      }
     }
     return stock;
   }

@@ -17,6 +17,10 @@ import { LoyaltyService } from '#app/modules/loyalty/loyalty.service';
 import { EventBusService } from '#app/infrastructure/events/event-bus.service';
 import { NotificationService } from '#app/modules/merchant/notification/notification.service';
 import {
+  expireUnpaidOrders,
+  OPEN_PAYMENT_STATUSES,
+} from '#app/modules/order/order-lifecycle';
+import {
   ConnectPaymentProviderDto,
   CreatePaymentIntentDto,
   PaymentQueryDto,
@@ -60,6 +64,24 @@ const LOCKED_STOCK_COLUMNS = Prisma.sql`
   "reserved_stock" AS "reservedStock",
   "sold_stock" AS "soldStock"
 `;
+
+type SettledPayment = {
+  payment: {
+    id: string;
+    merchantId: string;
+    orderId: string;
+    provider: PaymentProviderCode;
+    providerTransactionId: string;
+    amount: Prisma.Decimal;
+    currency: string;
+    status: PaymentTransactionStatus;
+    paidAt: Date | null;
+    createdAt: Date;
+  };
+  duplicate: boolean;
+  /** Money that arrived for an order that could no longer take it. */
+  late: boolean;
+};
 
 type StoredProviderConfig = {
   settings: Record<string, unknown>;
@@ -271,21 +293,29 @@ export class PaymentService {
           'Order total does not require a payment intent',
         );
       }
-      // An order can now hold multiple Payment rows (split/multi-tender checkout),
-      // but only one intent may be open (unresolved) at a time — reuse it if the
-      // same provider asks again, otherwise reject a concurrent different-provider intent.
-      const openPayment = order.payments.find(
-        (existing) =>
-          existing.status === PaymentTransactionStatus.PENDING ||
-          existing.status === PaymentTransactionStatus.PROCESSING,
-      );
-      if (openPayment) {
-        if (openPayment.provider !== dto.provider) {
+      // One attempt at a time. Asking again with the same provider returns
+      // the open attempt — for KHQR, the very QR the shopper may already have
+      // scanned. A KHQR whose QR has lapsed can no longer be paid, so it is
+      // cancelled instead of blocking a new attempt.
+      for (const existing of order.payments) {
+        if (
+          !OPEN_PAYMENT_STATUSES.some((status) => status === existing.status)
+        ) {
+          continue;
+        }
+        if (this.khqrLapsed(existing)) {
+          await tx.payment.update({
+            where: { id: existing.id },
+            data: { status: 'CANCELLED' },
+          });
+          continue;
+        }
+        if (existing.provider !== dto.provider) {
           throw new ConflictException(
-            'Order already has an open intent with another provider',
+            'Order already has an open intent with another provider; cancel it first',
           );
         }
-        return openPayment;
+        return existing;
       }
       const provider = await tx.paymentProvider.findUnique({
         where: {
@@ -311,15 +341,39 @@ export class PaymentService {
       ) {
         throw new ConflictException('Order inventory reservation has expired');
       }
+      // KHQR is generated locally, so it is created here and stored with the
+      // payment: its md5 is the reference Bakong is asked about later.
+      const khqr =
+        provider.provider === PaymentProviderCode.KHQR
+          ? this.khqr.createQr({
+              config: this.providerConfig(provider.config)
+                .settings as unknown as KhqrConfig,
+              amount: order.totalAmount.toString(),
+              currency: order.currency,
+              billNumber: order.orderNumber,
+            })
+          : null;
       const payment = await tx.payment.create({
         data: {
           merchantId: order.merchantId,
           orderId: order.id,
           paymentProviderId: provider.id,
           provider: provider.provider,
-          providerTransactionId: this.transactionId(provider.provider),
+          providerTransactionId:
+            khqr?.reference ?? this.transactionId(provider.provider),
           amount: order.totalAmount,
           currency: order.currency,
+          ...(khqr
+            ? {
+                metadata: {
+                  khqr: {
+                    qrPayload: khqr.qrPayload,
+                    expiresAt: khqr.expiresAt.toISOString(),
+                    billNumber: order.orderNumber,
+                  },
+                },
+              }
+            : {}),
         },
       });
       await tx.auditLog.create({
@@ -341,26 +395,15 @@ export class PaymentService {
       return payment;
     });
     const view = this.paymentView(payment);
-    if (payment.provider === PaymentProviderCode.KHQR) {
-      const provider = await this.prisma.paymentProvider.findUniqueOrThrow({
-        where: { id: payment.paymentProviderId },
-      });
-      const config = this.providerConfig(provider.config);
-      const year = new Date().getFullYear();
-      const billNumber = `INV-${year}-${'00001'.toString().padStart(3, '0')}`;
-      const action = this.khqr.createQr({
-        config: config.settings as unknown as KhqrConfig,
-        amount: payment.amount.toString(),
-        currency: payment.currency,
-        billNumber,
-      });
-      const updated = await this.prisma.payment.update({
-        where: { id: payment.id },
-        data: { providerTransactionId: action.reference },
-      });
+    const khqr = this.storedKhqr(payment);
+    if (khqr) {
       return {
-        ...this.paymentView(updated),
-        action: { type: action.type, qrPayload: action.qrPayload },
+        ...view,
+        action: {
+          type: 'QR' as const,
+          qrPayload: khqr.qrPayload,
+          expiresAt: khqr.expiresAt,
+        },
       };
     }
     if (payment.provider !== PaymentProviderCode.ABA_PAYWAY) return view;
@@ -389,6 +432,65 @@ export class PaymentService {
       ).toString('base64'),
     });
     return { ...view, action };
+  }
+
+  /**
+   * Abandons an open payment attempt so the shopper can pay another way. A
+   * KHQR cancelled here that is still paid before its QR lapses is recorded
+   * as received-after-close by the status poll.
+   */
+  async cancelIntent(
+    paymentId: string,
+    checkoutToken: string | undefined,
+    metadata: RequestMetadata,
+  ) {
+    if (!checkoutToken) {
+      throw new UnauthorizedException('Checkout token is required');
+    }
+    const candidate = await this.prisma.payment.findUnique({
+      where: { id: paymentId },
+      include: {
+        order: {
+          include: { checkoutSession: { select: { accessTokenHash: true } } },
+        },
+      },
+    });
+    if (!candidate) throw new NotFoundException('Payment not found');
+    this.verifyCheckoutToken(
+      candidate.order.checkoutSession.accessTokenHash,
+      checkoutToken,
+    );
+    const payment = await this.prisma.$transaction(async (tx) => {
+      await this.lockCheckout(tx, candidate.order.checkoutSessionId);
+      await this.lockOrder(tx, candidate.merchantId, candidate.orderId);
+      await this.lockPayment(tx, paymentId);
+      const current = await tx.payment.findUniqueOrThrow({
+        where: { id: paymentId },
+      });
+      if (current.status === 'CANCELLED') return current;
+      if (!OPEN_PAYMENT_STATUSES.some((status) => status === current.status)) {
+        throw new ConflictException(
+          `Payment is already ${current.status.toLowerCase()}`,
+        );
+      }
+      const cancelled = await tx.payment.update({
+        where: { id: paymentId },
+        data: { status: 'CANCELLED' },
+      });
+      await tx.auditLog.create({
+        data: {
+          merchantId: current.merchantId,
+          action: 'payment.cancelled',
+          entityType: 'payment',
+          entityId: current.id,
+          before: { status: current.status },
+          after: { status: 'CANCELLED', orderId: current.orderId },
+          ...metadata,
+        },
+      });
+      return cancelled;
+    });
+    return this.paymentView(payment);
   }
 
   async findOne(merchantId: string, paymentId: string) {
@@ -445,9 +547,16 @@ export class PaymentService {
       payment.order.checkoutSession.accessTokenHash,
       checkoutToken,
     );
+    // A cancelled KHQR whose QR has not lapsed can still be paid from the
+    // shopper's banking app, so it is checked too; such a payment is
+    // recorded as received-after-close rather than missed.
+    const khqr = this.storedKhqr(payment);
     if (
       payment.provider === PaymentProviderCode.KHQR &&
-      payment.status === 'PENDING'
+      (payment.status === 'PENDING' ||
+        (payment.status === 'CANCELLED' &&
+          !!khqr &&
+          new Date(khqr.expiresAt).getTime() > Date.now()))
     ) {
       const config = this.providerConfig(payment.paymentProvider.config);
       const verified = await this.khqr.checkPayment({
@@ -465,8 +574,15 @@ export class PaymentService {
           currency: payment.currency,
         };
         const event = await this.createWebhookEvent(payment, dto);
-        if (event.shouldProcess)
-          await this.confirmPayment(payment.id, event.record.id, dto, {});
+        if (event.shouldProcess) {
+          const result = await this.confirmPayment(
+            payment.id,
+            event.record.id,
+            dto,
+            {},
+          );
+          await this.afterPaymentSettled(result, 'CONFIRMED');
+        }
         const refreshed = await this.prisma.payment.findUniqueOrThrow({
           where: { id: payment.id },
         });
@@ -540,17 +656,9 @@ export class PaymentService {
               metadata,
             )
           : await this.failPayment(payment.id, event.record.id, dto, metadata);
-      await this.notifications.syncOrderStockAlerts(
-        result.payment.merchantId,
-        result.payment.orderId,
-      );
-      this.events.publish(
-        dto.status === 'CONFIRMED' ? 'payment.confirmed' : 'payment.failed',
-        {
-          merchantId: result.payment.merchantId,
-          paymentId: result.payment.id,
-          orderId: result.payment.orderId,
-        },
+      await this.afterPaymentSettled(
+        result,
+        dto.status === 'CONFIRMED' ? 'CONFIRMED' : 'FAILED',
       );
       return {
         duplicate: result.duplicate,
@@ -628,6 +736,7 @@ export class PaymentService {
       const result = approved
         ? await this.confirmPayment(payment.id, event.record.id, dto, metadata)
         : await this.failPayment(payment.id, event.record.id, dto, metadata);
+      await this.afterPaymentSettled(result, approved ? 'CONFIRMED' : 'FAILED');
       return {
         duplicate: result.duplicate,
         eventId: dto.eventId,
@@ -650,7 +759,7 @@ export class PaymentService {
     eventRecordId: string,
     dto: PaymentWebhookDto,
     metadata: RequestMetadata,
-  ) {
+  ): Promise<SettledPayment> {
     return this.prisma.$transaction(async (tx) => {
       const candidate = await tx.payment.findUniqueOrThrow({
         where: { id: paymentId },
@@ -665,33 +774,39 @@ export class PaymentService {
       });
       this.assertWebhookMatches(payment, dto);
       if (isPaymentConfirmationApplied(payment.status)) {
-        await tx.paymentWebhookEvent.update({
-          where: { id: eventRecordId },
-          data: { status: 'PROCESSED', processedAt: new Date(), error: null },
-        });
-        return { payment, duplicate: true };
+        await this.markEventProcessed(tx, eventRecordId);
+        return { payment, duplicate: true, late: false };
       }
-      if (payment.status !== 'PENDING') {
-        throw new ConflictException(
-          `Payment is already ${payment.status.toLowerCase()}`,
-        );
+      if (payment.status === 'REFUNDED') {
+        throw new ConflictException('Payment is already refunded');
       }
-      if (
-        payment.order.status !== 'PENDING_PAYMENT' ||
-        payment.order.paymentStatus !== 'PENDING'
-      ) {
-        throw new ConflictException('Order is not awaiting payment');
+      // The provider says the money arrived. If the order can no longer take
+      // it — expired, cancelled, already paid another way — that is recorded
+      // for the merchant to refund, never thrown away: rejecting it would
+      // leave the customer charged with nothing to show for it.
+      const payable =
+        OPEN_PAYMENT_STATUSES.some((status) => status === payment.status) &&
+        payment.order.status === 'PENDING_PAYMENT' &&
+        payment.order.paymentStatus === 'PENDING';
+      if (!payable) {
+        return this.recordLatePayment(tx, payment, eventRecordId, metadata);
       }
 
       const reservations = await tx.inventoryReservation.findMany({
         where: { orderId: payment.orderId },
         orderBy: { inventoryStockId: 'asc' },
       });
-      if (
-        !reservations.length &&
-        (await this.orderTracksStock(tx, payment.orderId))
-      ) {
-        throw new ConflictException('Order has no inventory reservation');
+      // An ACTIVE reservation past its deadline is still held — the sweeper
+      // just has not reached it — so it still counts. One that was already
+      // released or expired means the stock is gone.
+      const stockLost =
+        reservations.some(({ status }) => status !== 'ACTIVE') ||
+        (!reservations.length &&
+          (await this.orderTracksStock(tx, payment.orderId)));
+      if (stockLost) {
+        await this.releaseActiveReservations(tx, payment, reservations);
+        await expireUnpaidOrders(tx, [payment.order.checkoutSessionId]);
+        return this.recordLatePayment(tx, payment, eventRecordId, metadata);
       }
       for (const candidateReservation of reservations) {
         const stock = await this.lockStock(
@@ -702,12 +817,6 @@ export class PaymentService {
         const reservation = await tx.inventoryReservation.findUniqueOrThrow({
           where: { id: candidateReservation.id },
         });
-        if (
-          reservation.status !== 'ACTIVE' ||
-          reservation.expiresAt.getTime() <= Date.now()
-        ) {
-          throw new ConflictException('Inventory reservation has expired');
-        }
         if (stock.reservedStock < reservation.quantity) {
           throw new ConflictException(
             'Inventory reservation balance is invalid',
@@ -748,10 +857,7 @@ export class PaymentService {
         data: { status: 'PAID', paymentStatus: 'PAID', paidAt },
       });
       await this.loyalty.grantForOrder(tx, payment.orderId);
-      await tx.paymentWebhookEvent.update({
-        where: { id: eventRecordId },
-        data: { status: 'PROCESSED', processedAt: paidAt, error: null },
-      });
+      await this.markEventProcessed(tx, eventRecordId, paidAt);
       await this.notifications.createInTransaction(tx, {
         merchantId: payment.merchantId,
         dedupeKey: `payment:${payment.id}:confirmed`,
@@ -780,16 +886,141 @@ export class PaymentService {
           ...metadata,
         },
       });
-      return { payment: confirmedPayment, duplicate: false };
+      return { payment: confirmedPayment, duplicate: false, late: false };
     });
   }
 
+  /**
+   * Money that arrived for an order which can no longer take it. The payment
+   * is recorded as received and the merchant is told to refund it; the order
+   * itself is left as it was.
+   */
+  private async recordLatePayment(
+    tx: Prisma.TransactionClient,
+    payment: {
+      id: string;
+      merchantId: string;
+      orderId: string;
+      status: PaymentTransactionStatus;
+      amount: Prisma.Decimal;
+      currency: string;
+      metadata: Prisma.JsonValue;
+      providerTransactionId: string;
+    },
+    eventRecordId: string,
+    metadata: RequestMetadata,
+  ): Promise<SettledPayment> {
+    const order = await tx.order.findUniqueOrThrow({
+      where: { id: payment.orderId },
+      select: { orderNumber: true, status: true, paymentStatus: true },
+    });
+    const paidAt = new Date();
+    const confirmed = await tx.payment.update({
+      where: { id: payment.id },
+      data: {
+        status: 'CONFIRMED',
+        paidAt,
+        metadata: this.json({
+          ...this.metadataObject(payment.metadata),
+          receivedAfterClose: {
+            orderStatus: order.status,
+            orderPaymentStatus: order.paymentStatus,
+            previousPaymentStatus: payment.status,
+          },
+        }),
+      },
+    });
+    await this.markEventProcessed(tx, eventRecordId, paidAt);
+    await this.notifications.createInTransaction(tx, {
+      merchantId: payment.merchantId,
+      dedupeKey: `payment:${payment.id}:received-after-close`,
+      type: 'PAYMENT_RECEIVED_AFTER_CLOSE',
+      title: 'Payment received for a closed order',
+      message: `${payment.amount.toString()} ${payment.currency} arrived for order ${order.orderNumber}, which is ${order.status.toLowerCase()}. Refund it to the customer.`,
+      data: this.json({
+        paymentId: payment.id,
+        orderId: payment.orderId,
+        orderStatus: order.status,
+        amount: payment.amount.toString(),
+        currency: payment.currency,
+      }),
+    });
+    await tx.auditLog.create({
+      data: {
+        merchantId: payment.merchantId,
+        action: 'payment.received_after_close',
+        entityType: 'payment',
+        entityId: payment.id,
+        before: { status: payment.status },
+        after: {
+          status: 'CONFIRMED',
+          orderId: payment.orderId,
+          orderStatus: order.status,
+          providerTransactionId: payment.providerTransactionId,
+        },
+        ...metadata,
+      },
+    });
+    return { payment: confirmed, duplicate: false, late: true };
+  }
+
+  /** Gives back the stock of an order that can no longer be paid. */
+  private async releaseActiveReservations(
+    tx: Prisma.TransactionClient,
+    payment: { id: string; merchantId: string },
+    reservations: Array<{
+      id: string;
+      inventoryStockId: string;
+      quantity: number;
+      status: string;
+    }>,
+  ) {
+    for (const reservation of reservations) {
+      if (reservation.status !== 'ACTIVE') continue;
+      const stock = await this.lockStock(
+        tx,
+        payment.merchantId,
+        reservation.inventoryStockId,
+      );
+      const changed = await tx.inventoryReservation.updateMany({
+        where: { id: reservation.id, status: 'ACTIVE' },
+        data: { status: 'RELEASED' },
+      });
+      if (!changed.count) continue;
+      await tx.inventoryStock.update({
+        where: { id: stock.id },
+        data: {
+          reservedStock: {
+            decrement: Math.min(stock.reservedStock, reservation.quantity),
+          },
+        },
+      });
+      await tx.inventoryMovement.create({
+        data: {
+          merchantId: payment.merchantId,
+          inventoryStockId: stock.id,
+          productId: stock.productId,
+          variantId: stock.variantId,
+          type: 'RESERVATION_RELEASED',
+          quantity: -reservation.quantity,
+          referenceId: payment.id,
+          referenceType: 'expired_order_payment',
+        },
+      });
+    }
+  }
+
+  /**
+   * A declined attempt fails that payment only. The order keeps its stock
+   * and stays open, so the shopper can try again — with another card or
+   * another provider — until the checkout deadline expires it.
+   */
   private async failPayment(
     paymentId: string,
     eventRecordId: string,
     dto: PaymentWebhookDto,
     metadata: RequestMetadata,
-  ) {
+  ): Promise<SettledPayment> {
     return this.prisma.$transaction(async (tx) => {
       const candidate = await tx.payment.findUniqueOrThrow({
         where: { id: paymentId },
@@ -803,79 +1034,27 @@ export class PaymentService {
         include: { order: true },
       });
       this.assertWebhookMatches(payment, dto);
-      if (payment.status === 'FAILED') {
-        await tx.paymentWebhookEvent.update({
-          where: { id: eventRecordId },
-          data: { status: 'PROCESSED', processedAt: new Date(), error: null },
-        });
-        return { payment, duplicate: true };
+      if (payment.status === 'FAILED' || payment.status === 'CANCELLED') {
+        await this.markEventProcessed(tx, eventRecordId);
+        return { payment, duplicate: true, late: false };
       }
-      if (payment.status !== 'PENDING') {
+      if (!OPEN_PAYMENT_STATUSES.some((status) => status === payment.status)) {
         throw new ConflictException(
           `Payment is already ${payment.status.toLowerCase()}`,
         );
-      }
-
-      const reservations = await tx.inventoryReservation.findMany({
-        where: { orderId: payment.orderId, status: 'ACTIVE' },
-        orderBy: { inventoryStockId: 'asc' },
-      });
-      for (const reservation of reservations) {
-        const stock = await this.lockStock(
-          tx,
-          payment.merchantId,
-          reservation.inventoryStockId,
-        );
-        if (stock.reservedStock < reservation.quantity) {
-          throw new ConflictException(
-            'Inventory reservation balance is invalid',
-          );
-        }
-        const changed = await tx.inventoryReservation.updateMany({
-          where: { id: reservation.id, status: 'ACTIVE' },
-          data: { status: 'RELEASED' },
-        });
-        if (!changed.count) continue;
-        await tx.inventoryStock.update({
-          where: { id: stock.id },
-          data: { reservedStock: { decrement: reservation.quantity } },
-        });
-        await tx.inventoryMovement.create({
-          data: {
-            merchantId: payment.merchantId,
-            inventoryStockId: stock.id,
-            productId: stock.productId,
-            variantId: stock.variantId,
-            type: 'RESERVATION_RELEASED',
-            quantity: -reservation.quantity,
-            referenceId: payment.id,
-            referenceType: 'failed_payment',
-          },
-        });
       }
 
       const failedPayment = await tx.payment.update({
         where: { id: payment.id },
         data: { status: 'FAILED' },
       });
-      await tx.order.update({
-        where: { id: payment.orderId },
-        data: { status: 'PAYMENT_FAILED', paymentStatus: 'FAILED' },
-      });
-      await tx.checkoutSession.update({
-        where: { id: payment.order.checkoutSessionId },
-        data: { status: 'CANCELLED' },
-      });
-      await tx.paymentWebhookEvent.update({
-        where: { id: eventRecordId },
-        data: { status: 'PROCESSED', processedAt: new Date(), error: null },
-      });
+      await this.markEventProcessed(tx, eventRecordId);
       await this.notifications.createInTransaction(tx, {
         merchantId: payment.merchantId,
         dedupeKey: `payment:${payment.id}:failed`,
         type: 'PAYMENT_FAILED',
         title: 'Payment failed',
-        message: `Payment for order ${payment.order.orderNumber} failed.`,
+        message: `A payment attempt for order ${payment.order.orderNumber} failed. The customer can try again.`,
         data: this.json({
           paymentId: payment.id,
           orderId: payment.orderId,
@@ -892,8 +1071,74 @@ export class PaymentService {
           ...metadata,
         },
       });
-      return { payment: failedPayment, duplicate: false };
+      return { payment: failedPayment, duplicate: false, late: false };
     });
+  }
+
+  /**
+   * What every confirmation path — signed webhook, PayWay callback, KHQR
+   * status poll — does once a payment has settled, so none of them skips it.
+   */
+  private async afterPaymentSettled(
+    result: SettledPayment,
+    outcome: 'CONFIRMED' | 'FAILED',
+  ) {
+    await this.notifications.syncOrderStockAlerts(
+      result.payment.merchantId,
+      result.payment.orderId,
+    );
+    if (result.duplicate) return;
+    this.events.publish(
+      result.late
+        ? 'payment.received_after_close'
+        : outcome === 'CONFIRMED'
+          ? 'payment.confirmed'
+          : 'payment.failed',
+      {
+        merchantId: result.payment.merchantId,
+        paymentId: result.payment.id,
+        orderId: result.payment.orderId,
+      },
+    );
+  }
+
+  private async markEventProcessed(
+    tx: Prisma.TransactionClient,
+    eventRecordId: string,
+    processedAt = new Date(),
+  ) {
+    await tx.paymentWebhookEvent.update({
+      where: { id: eventRecordId },
+      data: { status: 'PROCESSED', processedAt, error: null },
+    });
+  }
+
+  /** The QR stored with a KHQR payment when it was created, if any. */
+  private storedKhqr(payment: { metadata: Prisma.JsonValue }) {
+    const khqr = this.metadataObject(payment.metadata).khqr;
+    if (!khqr || typeof khqr !== 'object' || Array.isArray(khqr)) return null;
+    const { qrPayload, expiresAt } = khqr as Record<string, unknown>;
+    return typeof qrPayload === 'string' && typeof expiresAt === 'string'
+      ? { qrPayload, expiresAt }
+      : null;
+  }
+
+  /** A KHQR attempt whose QR can no longer be paid. */
+  private khqrLapsed(payment: {
+    provider: PaymentProviderCode;
+    metadata: Prisma.JsonValue;
+  }) {
+    if (payment.provider !== PaymentProviderCode.KHQR) return false;
+    const khqr = this.storedKhqr(payment);
+    // Created before QRs were stored: its QR is unknown and was valid for
+    // 15 minutes at most, so it is treated as lapsed.
+    return !khqr || new Date(khqr.expiresAt).getTime() <= Date.now();
+  }
+
+  private metadataObject(value: Prisma.JsonValue): Record<string, unknown> {
+    return value && typeof value === 'object' && !Array.isArray(value)
+      ? value
+      : {};
   }
 
   private async createWebhookEvent(

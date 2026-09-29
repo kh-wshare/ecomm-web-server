@@ -41,7 +41,9 @@ const productSelect = {
   updatedAt: true,
   deletedAt: true,
   category: { select: productCategorySelect },
+  variants: { orderBy: { createdAt: 'asc' as const } },
   media: { orderBy: { sortOrder: 'asc' as const } },
+  channelVisibility: { orderBy: { channel: 'asc' as const } },
 } as const;
 
 const productDetailInclude = {

@@ -2551,6 +2551,855 @@
           ]
         },
         {
+          "name": "Dashboard",
+          "item": [
+            {
+              "name": "Get revenue and order totals over time",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-Merchant-ID",
+                    "value": "{{merchantId}}",
+                    "type": "text",
+                    "disabled": false
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboard/revenue?range=30d&interval=hour&from=sample-from&to=sample-to&branchId={{branchId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboard",
+                    "revenue"
+                  ],
+                  "query": [
+                    {
+                      "key": "range",
+                      "value": "30d",
+                      "disabled": true
+                    },
+                    {
+                      "key": "interval",
+                      "value": "hour",
+                      "disabled": true,
+                      "description": "Defaults based on range when omitted"
+                    },
+                    {
+                      "key": "from",
+                      "value": "sample-from",
+                      "disabled": true,
+                      "description": "Required when range is custom"
+                    },
+                    {
+                      "key": "to",
+                      "value": "sample-to",
+                      "disabled": true,
+                      "description": "Required when range is custom"
+                    },
+                    {
+                      "key": "branchId",
+                      "value": "{{branchId}}",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "`GET /dashboard/revenue`\n\nOperation id: `DashboardController_getRevenue`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"List payloads carry pagination meta when paginated\", function () {",
+                      "    if (Array.isArray(body.data) && body.meta) {",
+                      "      pm.expect(body.meta).to.include.all.keys(\"limit\", \"page\", \"total\");",
+                      "    }",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Get best-selling products over time",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-Merchant-ID",
+                    "value": "{{merchantId}}",
+                    "type": "text",
+                    "disabled": false
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboard/top-products?range=30d&interval=hour&from=sample-from&to=sample-to&branchId={{branchId}}&limit=10",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboard",
+                    "top-products"
+                  ],
+                  "query": [
+                    {
+                      "key": "range",
+                      "value": "30d",
+                      "disabled": true
+                    },
+                    {
+                      "key": "interval",
+                      "value": "hour",
+                      "disabled": true,
+                      "description": "Defaults based on range when omitted"
+                    },
+                    {
+                      "key": "from",
+                      "value": "sample-from",
+                      "disabled": true,
+                      "description": "Required when range is custom"
+                    },
+                    {
+                      "key": "to",
+                      "value": "sample-to",
+                      "disabled": true,
+                      "description": "Required when range is custom"
+                    },
+                    {
+                      "key": "branchId",
+                      "value": "{{branchId}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "`GET /dashboard/top-products`\n\nOperation id: `DashboardController_getTopProducts`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"List payloads carry pagination meta when paginated\", function () {",
+                      "    if (Array.isArray(body.data) && body.meta) {",
+                      "      pm.expect(body.meta).to.include.all.keys(\"limit\", \"page\", \"total\");",
+                      "    }",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Get the merchant onboarding setup checklist",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-Merchant-ID",
+                    "value": "{{merchantId}}",
+                    "type": "text",
+                    "disabled": false
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboard/setup",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboard",
+                    "setup"
+                  ]
+                },
+                "description": "`GET /dashboard/setup`\n\nOperation id: `DashboardController_getSetup`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"List payloads carry pagination meta when paginated\", function () {",
+                      "    if (Array.isArray(body.data) && body.meta) {",
+                      "      pm.expect(body.meta).to.include.all.keys(\"limit\", \"page\", \"total\");",
+                      "    }",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Dismiss the onboarding setup checklist banner",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "X-Merchant-ID",
+                    "value": "{{merchantId}}",
+                    "type": "text",
+                    "disabled": false
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboard/setup/dismiss",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboard",
+                    "setup",
+                    "dismiss"
+                  ]
+                },
+                "description": "`POST /dashboard/setup/dismiss`\n\nOperation id: `DashboardController_dismissSetup`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"dismissId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Restore a dismissed onboarding setup checklist banner",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "X-Merchant-ID",
+                    "value": "{{merchantId}}",
+                    "type": "text",
+                    "disabled": false
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboard/setup/restore",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboard",
+                    "setup",
+                    "restore"
+                  ]
+                },
+                "description": "`POST /dashboard/setup/restore`\n\nOperation id: `DashboardController_restoreSetup`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"restoreId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Get a QR code (SVG) linking to the storefront",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-Merchant-ID",
+                    "value": "{{merchantId}}",
+                    "type": "text",
+                    "disabled": false
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboard/setup/qr.svg",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboard",
+                    "setup",
+                    "qr.svg"
+                  ]
+                },
+                "description": "`GET /dashboard/setup/qr.svg`\n\nOperation id: `DashboardController_getSetupQrCode`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"List payloads carry pagination meta when paginated\", function () {",
+                      "    if (Array.isArray(body.data) && body.meta) {",
+                      "      pm.expect(body.meta).to.include.all.keys(\"limit\", \"page\", \"total\");",
+                      "    }",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Get available and pending balance",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-Merchant-ID",
+                    "value": "{{merchantId}}",
+                    "type": "text",
+                    "disabled": false
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboard/balance",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboard",
+                    "balance"
+                  ]
+                },
+                "description": "`GET /dashboard/balance`\n\nOperation id: `DashboardController_getBalance`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"List payloads carry pagination meta when paginated\", function () {",
+                      "    if (Array.isArray(body.data) && body.meta) {",
+                      "      pm.expect(body.meta).to.include.all.keys(\"limit\", \"page\", \"total\");",
+                      "    }",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Get available balance, pending balance, and next payout",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-Merchant-ID",
+                    "value": "{{merchantId}}",
+                    "type": "text",
+                    "disabled": false
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboard/payouts",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboard",
+                    "payouts"
+                  ]
+                },
+                "description": "`GET /dashboard/payouts`\n\nOperation id: `DashboardController_getPayouts`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"List payloads carry pagination meta when paginated\", function () {",
+                      "    if (Array.isArray(body.data) && body.meta) {",
+                      "      pm.expect(body.meta).to.include.all.keys(\"limit\", \"page\", \"total\");",
+                      "    }",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Get the top-of-dashboard KPI summary",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-Merchant-ID",
+                    "value": "{{merchantId}}",
+                    "type": "text",
+                    "disabled": false
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboard/summary?range=30d&interval=hour&from=sample-from&to=sample-to&branchId={{branchId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboard",
+                    "summary"
+                  ],
+                  "query": [
+                    {
+                      "key": "range",
+                      "value": "30d",
+                      "disabled": true
+                    },
+                    {
+                      "key": "interval",
+                      "value": "hour",
+                      "disabled": true,
+                      "description": "Defaults based on range when omitted"
+                    },
+                    {
+                      "key": "from",
+                      "value": "sample-from",
+                      "disabled": true,
+                      "description": "Required when range is custom"
+                    },
+                    {
+                      "key": "to",
+                      "value": "sample-to",
+                      "disabled": true,
+                      "description": "Required when range is custom"
+                    },
+                    {
+                      "key": "branchId",
+                      "value": "{{branchId}}",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "`GET /dashboard/summary`\n\nOperation id: `DashboardController_getSummary`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"List payloads carry pagination meta when paginated\", function () {",
+                      "    if (Array.isArray(body.data) && body.meta) {",
+                      "      pm.expect(body.meta).to.include.all.keys(\"limit\", \"page\", \"total\");",
+                      "    }",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "Delivery Methods",
           "item": [
             {
@@ -5780,6 +6629,190 @@
           ]
         },
         {
+          "name": "Reports",
+          "item": [
+            {
+              "name": "Generate a CSV export of a merchant report",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-Merchant-ID",
+                    "value": "{{merchantId}}",
+                    "type": "text",
+                    "disabled": false
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"report\": \"dashboard\",\n  \"format\": \"csv\",\n  \"range\": \"today\",\n  \"from\": \"sample-from\",\n  \"to\": \"sample-to\",\n  \"branchId\": \"{{branchId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/reports/exports",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "reports",
+                    "exports"
+                  ]
+                },
+                "description": "`POST /reports/exports`\n\nOperation id: `ReportExportController_create`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.id) setVar(\"exportId\", body.data?.id);",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Get the status and download link of a report export",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-Merchant-ID",
+                    "value": "{{merchantId}}",
+                    "type": "text",
+                    "disabled": false
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/reports/exports/:exportId",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "reports",
+                    "exports",
+                    ":exportId"
+                  ],
+                  "variable": [
+                    {
+                      "key": "exportId",
+                      "value": "{{exportId}}",
+                      "description": "Path parameter `exportId`"
+                    }
+                  ]
+                },
+                "description": "`GET /reports/exports/{exportId}`\n\nOperation id: `ReportExportController_findOne`\n\nDocumented responses: **200**"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const setVar = (key, value) => {",
+                      "  if (value === undefined || value === null) return;",
+                      "  if (pm.environment.has(key)) pm.environment.set(key, value);",
+                      "  else pm.collectionVariables.set(key, value);",
+                      "};",
+                      "",
+                      "const expected = [200];",
+                      "",
+                      "pm.test(\"Responds with a documented success code\", function () {",
+                      "  pm.expect(expected, \"body: \" + pm.response.text().slice(0, 400)).to.include(",
+                      "    pm.response.code,",
+                      "  );",
+                      "});",
+                      "",
+                      "pm.test(\"Responds within 2000ms\", function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});",
+                      "",
+                      "if (expected.includes(pm.response.code) && pm.response.code !== 204) {",
+                      "  const body = pm.response.json();",
+                      "",
+                      "  pm.test(\"Uses the standard response envelope\", function () {",
+                      "    pm.expect(body).to.have.property(\"statusCode\", pm.response.code);",
+                      "    pm.expect(body).to.have.property(\"data\");",
+                      "    pm.expect(body).to.have.property(\"timestamp\");",
+                      "    pm.expect(body).to.have.property(\"path\");",
+                      "  });",
+                      "",
+                      "  pm.test(\"Chained ids are captured for later requests\", function () {",
+                      "    if (body.data?.cartToken) setVar(\"cartToken\", body.data?.cartToken);",
+                      "    if (body.data?.checkoutToken) setVar(\"checkoutToken\", body.data?.checkoutToken);",
+                      "    if (body.data?.accessToken) setVar(\"accessToken\", body.data?.accessToken);",
+                      "    if (body.data?.refreshToken) setVar(\"refreshToken\", body.data?.refreshToken);",
+                      "    if (body.data?.order && body.data?.order?.id) setVar(\"orderId\", body.data?.order?.id);",
+                      "    if (body.data?.orderNumber) setVar(\"orderNumber\", body.data?.orderNumber);",
+                      "  });",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "Shipments",
           "item": [
             {
@@ -8078,6 +9111,114 @@
               }
             }
           ]
+        },
+        {
+          "name": "Dashboard · rejects a missing token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/revenue?range=30d&interval=hour&from=sample-from&to=sample-to&branchId={{branchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dashboard",
+                "revenue"
+              ],
+              "query": [
+                {
+                  "key": "range",
+                  "value": "30d",
+                  "disabled": true
+                },
+                {
+                  "key": "interval",
+                  "value": "hour",
+                  "disabled": true,
+                  "description": "Defaults based on range when omitted"
+                },
+                {
+                  "key": "from",
+                  "value": "sample-from",
+                  "disabled": true,
+                  "description": "Required when range is custom"
+                },
+                {
+                  "key": "to",
+                  "value": "sample-to",
+                  "disabled": true,
+                  "description": "Required when range is custom"
+                },
+                {
+                  "key": "branchId",
+                  "value": "{{branchId}}",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "`GET /dashboard/revenue` without an Authorization header must not leak tenant data."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Unauthenticated request is rejected with 401\", function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reports · rejects a missing token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reports/exports/:exportId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "exports",
+                ":exportId"
+              ],
+              "variable": [
+                {
+                  "key": "exportId",
+                  "value": "00000000-0000-4000-8000-000000000000",
+                  "description": "Path parameter `exportId`"
+                }
+              ]
+            },
+            "description": "`GET /reports/exports/{exportId}` without an Authorization header must not leak tenant data."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Unauthenticated request is rejected with 401\", function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
         }
       ]
     },
@@ -8562,6 +9703,75 @@
               }
             }
           ]
+        },
+        {
+          "name": "Reports · rejects an empty body",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Merchant-ID",
+                "value": "{{merchantId}}",
+                "type": "text",
+                "disabled": false
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reports/exports",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "exports"
+              ]
+            },
+            "description": "`POST /reports/exports` requires `report`, `format`, `range`."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Missing required fields are not accepted\", function () {",
+                  "  // 401/403 mean a guard refused first, which is also not acceptance.",
+                  "  pm.expect([400, 401, 403, 422]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Validation errors name the offending fields\", function () {",
+                  "  if (pm.response.code !== 400) return;",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(JSON.stringify(body)).to.match(/message|errors/i);",
+                  "});"
+                ]
+              }
+            }
+          ]
         }
       ]
     }
@@ -8609,6 +9819,11 @@
     },
     {
       "key": "deliveryMethodId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "exportId",
       "value": "",
       "type": "string"
     },

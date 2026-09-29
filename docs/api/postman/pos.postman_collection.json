@@ -7453,6 +7453,49 @@
           ]
         },
         {
+          "name": "POS Payments · rejects a missing token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/pos/payments/:paymentId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pos",
+                "payments",
+                ":paymentId"
+              ],
+              "variable": [
+                {
+                  "key": "paymentId",
+                  "value": "00000000-0000-4000-8000-000000000000",
+                  "description": "Path parameter `paymentId`"
+                }
+              ]
+            },
+            "description": "`GET /pos/payments/{paymentId}` without an Authorization header must not leak tenant data."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Unauthenticated request is rejected with 401\", function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
           "name": "POS Tables · rejects a missing token",
           "request": {
             "method": "GET",
@@ -7547,49 +7590,6 @@
               ]
             },
             "description": "`GET /pos/kitchen/orders` without an Authorization header must not leak tenant data."
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Unauthenticated request is rejected with 401\", function () {",
-                  "  pm.response.to.have.status(401);",
-                  "});"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "POS Payments · rejects a missing token",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "auth": {
-              "type": "noauth"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/pos/payments/:paymentId",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "pos",
-                "payments",
-                ":paymentId"
-              ],
-              "variable": [
-                {
-                  "key": "paymentId",
-                  "value": "00000000-0000-4000-8000-000000000000",
-                  "description": "Path parameter `paymentId`"
-                }
-              ]
-            },
-            "description": "`GET /pos/payments/{paymentId}` without an Authorization header must not leak tenant data."
           },
           "response": [],
           "event": [
@@ -8432,75 +8432,6 @@
           ]
         },
         {
-          "name": "POS Tables · rejects an empty body",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              },
-              {
-                "key": "X-Merchant-ID",
-                "value": "{{merchantId}}",
-                "type": "text",
-                "disabled": false
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/pos/tables",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "pos",
-                "tables"
-              ]
-            },
-            "description": "`POST /pos/tables` requires `branchId`, `name`."
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Missing required fields are not accepted\", function () {",
-                  "  // 401/403 mean a guard refused first, which is also not acceptance.",
-                  "  pm.expect([400, 401, 403, 422]).to.include(pm.response.code);",
-                  "});",
-                  "pm.test(\"Validation errors name the offending fields\", function () {",
-                  "  if (pm.response.code !== 400) return;",
-                  "  const body = pm.response.json();",
-                  "  pm.expect(JSON.stringify(body)).to.match(/message|errors/i);",
-                  "});"
-                ]
-              }
-            }
-          ]
-        },
-        {
           "name": "POS Payments · rejects an empty body",
           "request": {
             "method": "POST",
@@ -8556,6 +8487,75 @@
               ]
             },
             "description": "`POST /pos/orders/{orderId}/payments` requires `paymentMethod`, `amount`."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Missing required fields are not accepted\", function () {",
+                  "  // 401/403 mean a guard refused first, which is also not acceptance.",
+                  "  pm.expect([400, 401, 403, 422]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"Validation errors name the offending fields\", function () {",
+                  "  if (pm.response.code !== 400) return;",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(JSON.stringify(body)).to.match(/message|errors/i);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POS Tables · rejects an empty body",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Merchant-ID",
+                "value": "{{merchantId}}",
+                "type": "text",
+                "disabled": false
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/pos/tables",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pos",
+                "tables"
+              ]
+            },
+            "description": "`POST /pos/tables` requires `branchId`, `name`."
           },
           "response": [],
           "event": [

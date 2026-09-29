@@ -1,6 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsDateString, IsEnum, IsOptional } from 'class-validator';
+import {
+  IsBoolean,
+  IsDateString,
+  IsEnum,
+  IsIn,
+  IsOptional,
+} from 'class-validator';
 import { BaseQueryDto } from '#app/common/dto/base-query.dto';
 import {
   FulfillmentStatus,
@@ -41,16 +47,16 @@ export class OrderQueryDto extends BaseQueryDto {
   dateTo?: string;
 }
 
+const MANUAL_ORDER_STATUSES = [
+  OrderStatus.PROCESSING,
+  OrderStatus.FULFILLED,
+  OrderStatus.COMPLETED,
+] as const;
+
 export class UpdateOrderStatusDto {
-  @ApiProperty({
-    enum: [
-      OrderStatus.PROCESSING,
-      OrderStatus.FULFILLED,
-      OrderStatus.COMPLETED,
-    ],
-  })
-  @IsEnum(OrderStatus)
-  status!: OrderStatus;
+  @ApiProperty({ enum: MANUAL_ORDER_STATUSES })
+  @IsIn(MANUAL_ORDER_STATUSES)
+  status!: (typeof MANUAL_ORDER_STATUSES)[number];
 }
 
 export class RefundOrderDto {

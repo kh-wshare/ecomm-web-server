@@ -45,6 +45,8 @@ export const PERMISSIONS = [
   'social_post.update',
   'social_post.publish',
   'dashboard.read',
+  'payout.read',
+  'report.export',
 ] as const;
 
 export type PermissionCode = (typeof PERMISSIONS)[number];

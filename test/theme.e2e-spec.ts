@@ -24,43 +24,88 @@ describe('Theme Builder (e2e)', () => {
     return response.body.data;
   };
   const config = (accent = '#dc2626') => ({
-    preset: 'bold',
-    colors: {
-      primary: '#111827',
-      accent,
-      background: '#ffffff',
-      text: '#0f172a',
-    },
-    typography: {
-      headingFont: 'Space Grotesk',
-      bodyFont: 'Inter',
-    },
-    layout: {
-      productGridColumns: 3,
-      showHero: true,
-      borderRadius: 'large',
-      spacing: 'spacious',
-    },
-    hero: {
-      title: 'Fresh arrivals',
-      subtitle: 'Built for everyday use.',
-      imageUrl: 'https://cdn.example.com/theme/hero.jpg',
-    },
-    sections: [
-      { id: 'hero', type: 'hero', enabled: true },
-      { id: 'product-grid', type: 'productGrid', enabled: true },
-      { id: 'social-feed', type: 'socialFeed', enabled: true },
-      { id: 'footer', type: 'footer', enabled: true },
-    ],
-    featuredCollection: { title: 'New favorites' },
-    socialFeed: { title: 'Follow our story' },
-    contactForm: { title: 'Get in touch' },
-    footer: { text: 'Thanks for visiting.' },
-    storefront: {
-      seoTitle: 'Theme Store',
-      seoDescription: 'A storefront theme used by the end-to-end suite.',
+    version: 1,
+    brand: {
+      storeName: 'Theme Store',
       logoUrl: 'https://cdn.example.com/theme/logo.png',
       faviconUrl: 'https://cdn.example.com/theme/favicon.png',
+    },
+    colors: {
+      preset: 'rose',
+      accent,
+      scheme: 'light',
+      light: {
+        background: '#ffffff',
+        surface: '#f8fafc',
+        foreground: '#0f172a',
+      },
+      dark: {
+        background: '#09090b',
+        surface: '#18181b',
+        foreground: '#fafafa',
+      },
+    },
+    typography: {
+      heading: 'plus-jakarta',
+      body: 'manrope',
+      baseSize: 16,
+    },
+    shape: {
+      radius: 16,
+      buttonStyle: 'solid',
+    },
+    layout: {
+      template: 'classic',
+      headerAlign: 'left',
+      stickyHeader: true,
+      productColumns: 3,
+      cardStyle: 'bordered',
+    },
+    announcement: {
+      enabled: true,
+      text: 'Free delivery over $30',
+    },
+    hero: {
+      imageUrl: 'https://cdn.example.com/theme/hero.jpg',
+      heading: 'Fresh arrivals',
+      subheading: 'Built for everyday use.',
+      ctaLabel: 'Shop now',
+      align: 'left',
+      overlay: 35,
+      height: 'medium',
+    },
+    sections: [
+      { id: 'hero', enabled: true },
+      { id: 'featured', enabled: true },
+      { id: 'newsletter', enabled: true },
+    ],
+    productCard: {
+      imageRatio: 'portrait',
+      quickAdd: true,
+      secondImageOnHover: false,
+      showRiel: false,
+    },
+    productPage: {
+      gallery: 'thumbnails',
+      stickyBuyBar: true,
+      showDeliveryEstimate: true,
+    },
+    promises: {
+      items: [{ icon: 'truck', text: 'Same-day delivery' }],
+    },
+    footer: {
+      about: 'Small-batch goods.',
+      showPaymentBadges: true,
+      social: {
+        facebook: '',
+        instagram: '',
+        tiktok: '',
+        telegram: '',
+      },
+    },
+    mobile: {
+      bottomBar: true,
+      floatingCart: true,
     },
   });
 
@@ -90,7 +135,7 @@ describe('Theme Builder (e2e)', () => {
       .get('/storefront/theme')
       .set('X-Merchant-Slug', merchant.slug)
       .expect(200);
-    expect(cachedDefault.body.data.config.colors.accent).toBe('#2563eb');
+    expect(cachedDefault.body.data.config.colors.accent).toBe('#059669');
 
     const current = await request(app.getHttpServer())
       .get('/themes/current')
@@ -98,8 +143,8 @@ describe('Theme Builder (e2e)', () => {
       .expect(200);
     expect(current.body.data).toMatchObject({
       merchantId: merchant.id,
-      liveConfig: { colors: { accent: '#2563eb' } },
-      draftConfig: { colors: { accent: '#2563eb' } },
+      liveConfig: { colors: { accent: '#059669' } },
+      draftConfig: { colors: { accent: '#059669' } },
       publishedAt: null,
     });
 
@@ -111,14 +156,14 @@ describe('Theme Builder (e2e)', () => {
     expect(updated.body.data).toMatchObject({
       draftConfig: {
         colors: { accent: '#dc2626' },
-        layout: { borderRadius: 'large', spacing: 'spacious' },
+        layout: { productColumns: 3, cardStyle: 'bordered' },
         sections: expect.arrayContaining([
-          expect.objectContaining({ type: 'hero' }),
-          expect.objectContaining({ type: 'productGrid' }),
+          expect.objectContaining({ id: 'hero' }),
+          expect.objectContaining({ id: 'featured' }),
         ]),
-        storefront: { seoTitle: 'Theme Store' },
+        brand: { storeName: 'Theme Store' },
       },
-      liveConfig: { colors: { accent: '#2563eb' } },
+      liveConfig: { colors: { accent: '#059669' } },
       customDomain,
     });
 
@@ -126,7 +171,7 @@ describe('Theme Builder (e2e)', () => {
       .get('/storefront/theme')
       .set('X-Merchant-Slug', merchant.slug)
       .expect(200);
-    expect(publicBeforePublish.body.data.config.colors.accent).toBe('#2563eb');
+    expect(publicBeforePublish.body.data.config.colors.accent).toBe('#059669');
     expect(publicBeforePublish.body.data).not.toHaveProperty('draftConfig');
 
     const preview = await request(app.getHttpServer())
@@ -161,7 +206,7 @@ describe('Theme Builder (e2e)', () => {
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
     expect(reset.body.data).toMatchObject({
-      draftConfig: { colors: { accent: '#2563eb' } },
+      draftConfig: { colors: { accent: '#059669' } },
       liveConfig: { colors: { accent: '#dc2626' } },
     });
 
@@ -195,7 +240,12 @@ describe('Theme Builder (e2e)', () => {
       .send({
         config: {
           ...config(),
-          layout: { productGridColumns: 7, showHero: true },
+          layout: {
+            headerAlign: 'left',
+            stickyHeader: true,
+            productColumns: 7,
+            cardStyle: 'bordered',
+          },
         },
       })
       .expect(400);

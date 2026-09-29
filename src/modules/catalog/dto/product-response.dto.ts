@@ -108,12 +108,12 @@ export class ProductDto {
   @ApiPropertyOptional({ format: 'date-time', nullable: true })
   deletedAt!: Date | null;
 
-  @ApiPropertyOptional({ type: [ProductVariantDto] })
-  variants?: ProductVariantDto[];
+  @ApiProperty({ type: [ProductVariantDto] })
+  variants!: ProductVariantDto[];
 
   @ApiPropertyOptional({ type: [ProductMediaDto] })
   media?: ProductMediaDto[];
 
-  @ApiPropertyOptional({ type: [ProductChannelVisibilityDto] })
-  channelVisibility?: ProductChannelVisibilityDto[];
+  @ApiProperty({ type: [ProductChannelVisibilityDto] })
+  channelVisibility!: ProductChannelVisibilityDto[];
 }

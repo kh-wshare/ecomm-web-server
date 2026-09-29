@@ -35,6 +35,7 @@ describe('Inventory (e2e)', () => {
         sku: `inventory-${suffix}`,
         price: '19.99',
         status: 'ACTIVE',
+        trackStock: true,
         channelVisibility: [
           { channel: 'WEBSITE', isVisible: true, isPurchasable: true },
           { channel: 'POS', isVisible: true, isPurchasable: true },

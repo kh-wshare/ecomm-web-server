@@ -8,7 +8,12 @@ import { PrismaService } from '#app/infrastructure/database/prisma.service';
 import { OutboxService } from '#app/infrastructure/rabbitmq/outbox.service';
 import { calculateAvailableStock } from '#app/modules/inventory/inventory-calculation';
 import { InventoryService } from '#app/modules/inventory/inventory.service';
+import {
+  assertOrderCancellable,
+  RECEIVED_PAYMENT_STATUSES,
+} from '#app/modules/order/order-lifecycle';
 import { OrderService } from '#app/modules/order/order.service';
+import { PosPaymentsService } from '../payments/pos-payments.service';
 import {
   CartPricingService,
   PricedCartItem,
@@ -54,6 +59,7 @@ export class PosOrdersService {
     private readonly pricing: CartPricingService,
     private readonly inventory: InventoryService,
     private readonly orders: OrderService,
+    private readonly posPayments: PosPaymentsService,
     private readonly devices: PosDevicesService,
     private readonly shifts: PosShiftsService,
     private readonly tables: PosTablesService,
@@ -255,13 +261,7 @@ export class PosOrdersService {
       include: { items: true },
     });
     if (!order) throw new NotFoundException('Order not found');
-    if (!['PENDING_PAYMENT', 'PAID'].includes(order.status)) {
-      throw new PosDomainException(
-        'INVALID_ORDER_STATE',
-        `Cannot modify a ${order.status} order`,
-        HttpStatus.CONFLICT,
-      );
-    }
+    this.assertEditable(order);
 
     const { items: pricedItems } = await this.pricing.buildPricedItems(
       merchantId,
@@ -316,92 +316,116 @@ export class PosOrdersService {
       }
     }
 
-    await this.prisma.$transaction(async (tx) => {
-      for (const { item, priced } of increases) {
-        await this.adjustReservedQuantity(
-          tx,
+    // New lines reserve stock first (in their own transaction); if the edit
+    // below then fails, those reservations are released again rather than
+    // left holding stock for hours.
+    const added = additions.length
+      ? await this.inventory.reserveCheckout(
           merchantId,
           userId,
-          order.id,
-          item,
-          priced.quantity - item.quantity,
-          metadata,
-        );
-      }
-      for (const { item, newQuantity } of decreases) {
-        await this.adjustReservedQuantity(
-          tx,
-          merchantId,
-          userId,
-          order.id,
-          item,
-          newQuantity - item.quantity,
-          metadata,
-        );
-      }
-    });
-
-    if (additions.length) {
-      await this.inventory.reserveCheckout(
-        merchantId,
-        userId,
-        order.checkoutSessionId,
-        SalesChannel.POS,
-        additions.map((item) => ({
-          productId: item.productId,
-          variantId: item.variantId,
-          quantity: item.quantity,
-        })),
-        new Date(Date.now() + POS_ORDER_HOLD_MS),
-        metadata,
-      );
-      await this.prisma.$transaction(async (tx) => {
-        await tx.inventoryReservation.updateMany({
-          where: {
-            checkoutSessionId: order.checkoutSessionId,
-            orderId: null,
-            status: 'ACTIVE',
-          },
-          data: { orderId: order.id },
-        });
-        await tx.orderItem.createMany({
-          data: additions.map((item) => ({
-            orderId: order.id,
+          order.checkoutSessionId,
+          SalesChannel.POS,
+          additions.map((item) => ({
             productId: item.productId,
             variantId: item.variantId,
-            sku: item.sku,
-            name: item.name,
             quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            totalPrice: item.totalPrice,
           })),
+          new Date(Date.now() + POS_ORDER_HOLD_MS),
+          metadata,
+        )
+      : [];
+
+    try {
+      await this.prisma.$transaction(async (tx) => {
+        await this.lockOrder(tx, merchantId, order.id);
+        this.assertEditable(
+          await tx.order.findUniqueOrThrow({ where: { id: order.id } }),
+        );
+        for (const { item, priced } of increases) {
+          await this.adjustReservedQuantity(
+            tx,
+            merchantId,
+            userId,
+            order.id,
+            item,
+            priced.quantity - item.quantity,
+            metadata,
+          );
+        }
+        for (const { item, newQuantity } of decreases) {
+          await this.adjustReservedQuantity(
+            tx,
+            merchantId,
+            userId,
+            order.id,
+            item,
+            newQuantity - item.quantity,
+            metadata,
+          );
+        }
+        if (additions.length) {
+          await tx.inventoryReservation.updateMany({
+            where: {
+              checkoutSessionId: order.checkoutSessionId,
+              orderId: null,
+              status: 'ACTIVE',
+            },
+            data: { orderId: order.id },
+          });
+          await tx.orderItem.createMany({
+            data: additions.map((item) => ({
+              orderId: order.id,
+              productId: item.productId,
+              variantId: item.variantId,
+              sku: item.sku,
+              name: item.name,
+              quantity: item.quantity,
+              unitPrice: item.unitPrice,
+              totalPrice: item.totalPrice,
+            })),
+          });
+        }
+
+        await this.recomputeOrderTotals(tx, order.id);
+        // A tab that was part-paid may now be fully covered (lines removed),
+        // or owe more (lines added): the payment status follows the total.
+        await this.posPayments.applyLedger(tx, order.id, userId);
+        await tx.auditLog.create({
+          data: {
+            merchantId,
+            userId,
+            action: 'ORDER_UPDATED',
+            entityType: 'order',
+            entityId: order.id,
+            after: {
+              additions: additions.length,
+              increases: increases.length,
+              decreases: decreases.length,
+            },
+            ...metadata,
+          },
+        });
+        await this.outbox.write(tx, {
+          aggregateType: 'order',
+          aggregateId: order.id,
+          eventType: 'order.updated',
+          merchantId,
+          payload: { orderId: order.id },
         });
       });
+    } catch (error) {
+      for (const { reservation } of added) {
+        await this.inventory
+          .release(
+            merchantId,
+            userId,
+            { reservationId: reservation.id },
+            metadata,
+          )
+          .catch(() => undefined);
+      }
+      throw error;
     }
-
-    await this.recomputeOrderTotals(merchantId, order.id);
-    await this.prisma.auditLog.create({
-      data: {
-        merchantId,
-        userId,
-        action: 'ORDER_UPDATED',
-        entityType: 'order',
-        entityId: order.id,
-        after: {
-          additions: additions.length,
-          increases: increases.length,
-          decreases: decreases.length,
-        },
-        ...metadata,
-      },
-    });
-    await this.outbox.write(this.prisma, {
-      aggregateType: 'order',
-      aggregateId: order.id,
-      eventType: 'order.updated',
-      merchantId,
-      payload: { orderId: order.id },
-    });
 
     return this.findOne(merchantId, order.id);
   }
@@ -418,14 +442,21 @@ export class PosOrdersService {
     });
     if (!order) throw new NotFoundException('Order not found');
     if (order.status === 'CANCELLED') return this.findOne(merchantId, orderId);
-    if (order.paymentStatus === 'PAID' || order.status === 'PAID') {
+    // Any money taken — in full or in part — goes back through a refund.
+    if (
+      order.paymentStatus === 'PAID' ||
+      order.paymentStatus === 'PARTIAL' ||
+      order.status === 'PAID'
+    ) {
       throw new PosDomainException(
         'INVALID_PAYMENT_STATE',
         'A paid order must be refunded, not cancelled',
         HttpStatus.CONFLICT,
       );
     }
-    if (['REFUNDED', 'COMPLETED', 'FULFILLED'].includes(order.status)) {
+    try {
+      assertOrderCancellable(order);
+    } catch {
       throw new PosDomainException(
         'ORDER_ALREADY_CANCELLED',
         `Cannot cancel a ${order.status} order`,
@@ -512,6 +543,7 @@ export class PosOrdersService {
       id: string;
       productId: string;
       variantId: string | null;
+      quantity: number;
       unitPrice: Prisma.Decimal;
     },
     delta: number,
@@ -528,6 +560,26 @@ export class PosOrdersService {
       },
     });
     if (!reservation) {
+      // NON_STOCKED products never hold a reservation: only the line moves.
+      const product = await tx.product.findUnique({
+        where: { id: item.productId },
+        select: { trackStock: true },
+      });
+      if (product && !product.trackStock) {
+        const newQuantity = item.quantity + delta;
+        if (newQuantity <= 0) {
+          await tx.orderItem.delete({ where: { id: item.id } });
+        } else {
+          await tx.orderItem.update({
+            where: { id: item.id },
+            data: {
+              quantity: newQuantity,
+              totalPrice: item.unitPrice.mul(newQuantity),
+            },
+          });
+        }
+        return;
+      }
       throw new PosDomainException(
         'INVALID_ORDER_STATE',
         'No active stock reservation found for this order item',
@@ -623,22 +675,61 @@ export class PosOrdersService {
     });
   }
 
-  private async recomputeOrderTotals(merchantId: string, orderId: string) {
-    const items = await this.prisma.orderItem.findMany({ where: { orderId } });
+  private async recomputeOrderTotals(
+    tx: Prisma.TransactionClient,
+    orderId: string,
+  ) {
+    const items = await tx.orderItem.findMany({ where: { orderId } });
     const subtotal = items.reduce(
       (sum, item) => sum.add(item.totalPrice),
       new Prisma.Decimal(0),
     );
-    const order = await this.prisma.order.findUniqueOrThrow({
+    const order = await tx.order.findUniqueOrThrow({
       where: { id: orderId },
     });
     const totalAmount = this.maxZero(
       subtotal.sub(order.discountAmount).add(order.feeAmount),
     );
-    await this.prisma.order.update({
+    await tx.order.update({
       where: { id: orderId },
       data: { subtotalAmount: subtotal, totalAmount },
     });
+  }
+
+  /**
+   * Only an order still taking payment can change. A paid order is settled:
+   * changing it would move its total away from the money already taken, so
+   * it goes through a refund instead.
+   */
+  private assertEditable(order: { status: string; paymentStatus: string }) {
+    if (order.paymentStatus === 'PAID') {
+      throw new PosDomainException(
+        'INVALID_PAYMENT_STATE',
+        'A paid order cannot be changed; refund it instead',
+        HttpStatus.CONFLICT,
+      );
+    }
+    if (order.status !== 'PENDING_PAYMENT') {
+      throw new PosDomainException(
+        'INVALID_ORDER_STATE',
+        `Cannot modify a ${order.status} order`,
+        HttpStatus.CONFLICT,
+      );
+    }
+  }
+
+  private async lockOrder(
+    tx: Prisma.TransactionClient,
+    merchantId: string,
+    orderId: string,
+  ) {
+    const rows = await tx.$queryRaw<Array<{ id: string }>>(Prisma.sql`
+      SELECT "id" FROM "orders"
+      WHERE "id" = CAST(${orderId} AS uuid)
+        AND "merchant_id" = CAST(${merchantId} AS uuid)
+      FOR UPDATE
+    `);
+    if (!rows[0]) throw new NotFoundException('Order not found');
   }
 
   private async requireTable(
@@ -686,15 +777,19 @@ export class PosOrdersService {
       }>;
     },
   >(order: T) {
-    const grossPaid = (order.payments ?? [])
-      .filter((payment) => payment.status === 'CONFIRMED')
+    const received = (order.payments ?? [])
+      .filter((payment) =>
+        RECEIVED_PAYMENT_STATUSES.some((status) => status === payment.status),
+      )
       .reduce((sum, payment) => sum.add(payment.amount), new Prisma.Decimal(0));
     const refunded = (order.payments ?? [])
       .flatMap((payment) => payment.refunds ?? [])
       .filter((refund) => refund.status === 'SUCCESS')
       .reduce((sum, refund) => sum.add(refund.amount), new Prisma.Decimal(0));
-    const paid = this.maxZero(grossPaid.sub(refunded));
-    const remaining = this.maxZero(order.totalAmount.sub(paid));
+    // Money kept, and what is still owed. A refund gives money back; it does
+    // not put the refunded amount back on the bill.
+    const paid = this.maxZero(received.sub(refunded));
+    const remaining = this.maxZero(order.totalAmount.sub(received));
 
     return {
       id: order.id,
@@ -723,6 +818,7 @@ export class PosOrdersService {
         tax: order.feeAmount.toString(),
         total: order.totalAmount.toString(),
         paid: paid.toString(),
+        refunded: refunded.toString(),
         remaining: remaining.toString(),
       },
     };
